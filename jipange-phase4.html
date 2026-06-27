@@ -6644,7 +6644,9 @@ setTimeout(() => {
 
 function toggleNavMainMenu() {
     const dropdown = document.getElementById('navMainDropdown');
-    dropdown.classList.toggle('open');
+    if (dropdown) {
+        dropdown.classList.toggle('open');
+    }
 }
 
 function initializeNavMainMenu() {
@@ -6656,27 +6658,27 @@ function initializeNavMainMenu() {
 
     const screens = [
         { num: 1, title: '📋 About You', id: 'screen-1' },
-        { num: 2, title: '💰 Income', id: 'screen-2' },
-        { num: 3, title: '📊 Budget', id: 'screen-3' },
-        { num: 4, title: '📈 Scenarios', id: 'screen-4' },
+        { num: 2, title: '💰 Income Profiler', id: 'screen-2' },
+        { num: 3, title: '📊 Budget Engine', id: 'screen-3' },
+        { num: 4, title: '🎬 Scenario Planner', id: 'screen-4' },
         { num: 5, title: '💎 Wealth Dashboard', id: 'screen-5' },
-        { num: 6, title: '🎯 Optimizer', id: 'screen-6' },
-        { num: 7, title: '👨‍👩‍👧‍👦 Household', id: 'screen-7' },
-        { num: 8, title: '🔥 Goals & FIRE', id: 'screen-8' },
-        { num: 9, title: '📚 Learn & Grow', id: 'screen-9' },
-        { num: 10, title: '📄 Reports', id: 'screen-10' },
+        { num: 6, title: '🤖 Smart Optimizer', id: 'screen-6' },
+        { num: 7, title: '👨‍👩‍👧 Household Planning', id: 'screen-7' },
+        { num: 8, title: '🎯 Goals + FIRE', id: 'screen-8' },
+        { num: 9, title: '📚 Financial Literacy', id: 'screen-9' },
+        { num: 10, title: '📊 Reports & Export', id: 'screen-10' },
         { num: 11, title: '⏱️ How Long to Save?', id: 'screen-11' },
         { num: 12, title: '📱 M-Pesa Tracker', id: 'screen-12' },
-        { num: 13, title: '💼 Investment Portfolio', id: 'screen-13' },
-        { num: 14, title: '📊 Debt Planner', id: 'screen-14' },
-        { num: 15, title: '💼 Business Income', id: 'screen-15' },
-        { num: 16, title: '🏠 Assets', id: 'screen-16' },
-        { num: 17, title: '🎓 Tax Optimizer', id: 'screen-17' },
-        { num: 18, title: '👶 Education Savings', id: 'screen-18' },
-        { num: 19, title: '🏖️ Retirement Income', id: 'screen-19' },
-        { num: 20, title: '🤝 Business Scenarios', id: 'screen-20' },
-        { num: 21, title: '🛡️ Insurance Planning', id: 'screen-21' },
-        { num: 22, title: '💃 Chama Groups', id: 'screen-22' }
+        { num: 13, title: '📈 Investment Portfolio', id: 'screen-13' },
+        { num: 14, title: '💳 Debt Payoff Planner', id: 'screen-13' },
+        { num: 15, title: '🏢 Business Income', id: 'screen-14' },
+        { num: 16, title: '🏠 Asset Valuation', id: 'screen-15' },
+        { num: 17, title: '💰 Tax Optimizer', id: 'screen-16' },
+        { num: 18, title: '📚 Education Savings', id: 'screen-17' },
+        { num: 19, title: '🏖️ Retirement Income', id: 'screen-18' },
+        { num: 20, title: '🚀 Business Scenarios', id: 'screen-19' },
+        { num: 21, title: '🛡️ Insurance Planning', id: 'screen-20' },
+        { num: 22, title: '💰 Chama Group Planner', id: 'screen-21' }
     ];
 
     menu.innerHTML = `
@@ -6708,7 +6710,9 @@ function initializeNavMainMenu() {
 
 function closeNavMainMenu() {
     const dropdown = document.getElementById('navMainDropdown');
-    dropdown.classList.remove('open');
+    if (dropdown) {
+        dropdown.classList.remove('open');
+    }
 }
 
 // Close menu when clicking outside
