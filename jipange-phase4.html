@@ -2135,6 +2135,94 @@
             </div>
 
             <div class="card">
+                <h2 style="font-size: 1.1rem; color: var(--primary); margin-bottom: 1.5rem;">Education Financing Options (Loans)</h2>
+                <p style="font-size: 0.85rem; color: var(--text-3); margin-bottom: 1.5rem;">Reduce your shortfall using HELB (government) or SACCO (member) loans</p>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+                    <!-- HELB Loan Section -->
+                    <div style="padding: 1.2rem; background: rgba(46, 204, 113, 0.06); border-radius: 8px; border-left: 4px solid #2ECC71;">
+                        <div style="font-size: 0.95rem; font-weight: 700; color: #2ECC71; margin-bottom: 1rem;">🏦 HELB Loan</div>
+
+                        <div class="field-group" style="margin-bottom: 1rem;">
+                            <label for="helbLoanAmount">Loan Amount (KES 0 - 300,000)</label>
+                            <input type="range" id="helbLoanAmount" min="0" max="300000" step="10000" value="0"
+                                   onchange="updateLoanImpact()" style="width: 100%; cursor: pointer;">
+                            <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-3); margin-top: 0.3rem;">
+                                <span>KES 0</span>
+                                <span id="helbDisplayAmount" style="font-weight: 700; color: #2ECC71;">KES 0</span>
+                                <span>KES 300,000</span>
+                            </div>
+                        </div>
+
+                        <div style="padding: 0.8rem; background: rgba(46, 204, 113, 0.1); border-radius: 6px; font-size: 0.85rem; color: var(--text-2);">
+                            <div style="margin-bottom: 0.3rem;"><strong>Interest-free during studies</strong></div>
+                            <div style="font-size: 0.75rem;">Repayment begins after graduation (income-based)</div>
+                        </div>
+                    </div>
+
+                    <!-- SACCO Loan Section -->
+                    <div style="padding: 1.2rem; background: rgba(52, 152, 219, 0.06); border-radius: 8px; border-left: 4px solid #3498DB;">
+                        <div style="font-size: 0.95rem; font-weight: 700; color: #3498DB; margin-bottom: 1rem;">💰 SACCO Member Loan</div>
+
+                        <div class="field-group" style="margin-bottom: 0.8rem;">
+                            <label for="saccoLoanAmount">Loan Amount (KES)</label>
+                            <input type="number" id="saccoLoanAmount" min="0" max="500000" step="10000" value="0"
+                                   placeholder="Enter amount (max 500,000)" onchange="updateLoanImpact()">
+                        </div>
+
+                        <div class="field-group" style="margin-bottom: 0.8rem;">
+                            <label for="saccoInterestRate">Interest Rate (%)</label>
+                            <input type="range" id="saccoInterestRate" min="10" max="15" step="0.5" value="12"
+                                   onchange="updateLoanImpact()" style="width: 100%; cursor: pointer;">
+                            <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-3); margin-top: 0.3rem;">
+                                <span>10%</span>
+                                <span id="saccoDisplayRate" style="font-weight: 700; color: #3498DB;">12%</span>
+                                <span>15%</span>
+                            </div>
+                        </div>
+
+                        <div class="field-group">
+                            <label for="saccoRepaymentPeriod">Repayment Period</label>
+                            <select id="saccoRepaymentPeriod" onchange="updateLoanImpact()" style="width: 100%;">
+                                <option value="12">12 months (1 year)</option>
+                                <option value="24" selected>24 months (2 years)</option>
+                                <option value="36">36 months (3 years)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                    <!-- HELB Impact -->
+                    <div style="padding: 1rem; background: var(--offwhite); border-radius: 8px; border-left: 4px solid #2ECC71;">
+                        <div style="font-size: 0.75rem; color: var(--text-3); margin-bottom: 0.3rem; text-transform: uppercase; font-weight: 600;">HELB Benefit</div>
+                        <div style="font-size: 1.3rem; font-weight: 900; color: #2ECC71;" id="helbBenefit">KES 0</div>
+                        <div style="font-size: 0.7rem; color: var(--text-3); margin-top: 0.3rem;">Reduces shortfall</div>
+                    </div>
+
+                    <!-- SACCO Impact -->
+                    <div style="padding: 1rem; background: var(--offwhite); border-radius: 8px; border-left: 4px solid #3498DB;">
+                        <div style="font-size: 0.75rem; color: var(--text-3); margin-bottom: 0.3rem; text-transform: uppercase; font-weight: 600;">SACCO Monthly</div>
+                        <div style="font-size: 1.3rem; font-weight: 900; color: #3498DB;" id="saccoMonthlyPayment">KES 0</div>
+                        <div style="font-size: 0.7rem; color: var(--text-3); margin-top: 0.3rem;">Payment during repayment</div>
+                    </div>
+
+                    <!-- Combined Impact -->
+                    <div style="padding: 1rem; background: var(--offwhite); border-radius: 8px; border-left: 4px solid var(--secondary);">
+                        <div style="font-size: 0.75rem; color: var(--text-3); margin-bottom: 0.3rem; text-transform: uppercase; font-weight: 600;">Total Loan Benefit</div>
+                        <div style="font-size: 1.3rem; font-weight: 900; color: var(--secondary);" id="totalLoanBenefit">KES 0</div>
+                        <div style="font-size: 0.7rem; color: var(--text-3); margin-top: 0.3rem;">HELB + SACCO combined</div>
+                    </div>
+                </div>
+
+                <div style="padding: 1rem; background: var(--success-bg); border-radius: 8px; border-left: 4px solid var(--success); margin-bottom: 1rem;">
+                    <div style="font-size: 0.9rem; font-weight: 600; color: var(--success); margin-bottom: 0.5rem;">📊 Shortfall After Loans (Realistic Scenario)</div>
+                    <div style="font-size: 1.6rem; font-weight: 900; color: var(--success);" id="shortfallAfterLoans">KES 1,600,000</div>
+                    <div style="font-size: 0.8rem; color: var(--text-2); margin-top: 0.5rem;">Remaining gap after HELB + SACCO loans</div>
+                </div>
+            </div>
+
+            <div class="card">
                 <h2 style="font-size: 1.1rem; color: var(--primary); margin-bottom: 1.5rem;">Projection Results</h2>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
@@ -4469,6 +4557,94 @@ function calculateEducationSavings() {
         monthlyContribution,
         returnRate
     });
+
+    // Update loan impact display
+    updateLoanImpact();
+
+    saveState();
+}
+
+function updateLoanImpact() {
+    // Get HELB loan amount
+    const helbAmount = parseInt(document.getElementById('helbLoanAmount')?.value || 0);
+
+    // Get SACCO loan parameters
+    const saccoAmount = parseInt(document.getElementById('saccoLoanAmount')?.value || 0);
+    const saccoRate = parseFloat(document.getElementById('saccoInterestRate')?.value || 12) / 100;
+    const saccoPeriod = parseInt(document.getElementById('saccoRepaymentPeriod')?.value || 24);
+
+    // Calculate SACCO monthly payment and total interest
+    const saccoMonthlyRate = saccoRate / 12;
+    let saccoMonthlyPayment = 0;
+    let saccoTotalInterest = 0;
+
+    if (saccoAmount > 0 && saccoPeriod > 0) {
+        if (saccoMonthlyRate > 0) {
+            // Standard loan amortization formula: M = P * [r(1+r)^n] / [(1+r)^n - 1]
+            const monthlyFactor = Math.pow(1 + saccoMonthlyRate, saccoPeriod);
+            saccoMonthlyPayment = saccoAmount * (saccoMonthlyRate * monthlyFactor) / (monthlyFactor - 1);
+            saccoTotalInterest = (saccoMonthlyPayment * saccoPeriod) - saccoAmount;
+        } else {
+            // If 0% interest (unlikely but handle it)
+            saccoMonthlyPayment = saccoAmount / saccoPeriod;
+        }
+    }
+
+    // Update HELB display
+    const helbDisplayEl = document.getElementById('helbDisplayAmount');
+    if (helbDisplayEl) {
+        helbDisplayEl.textContent = `KES ${helbAmount.toLocaleString()}`;
+    }
+
+    const helbBenefitEl = document.getElementById('helbBenefit');
+    if (helbBenefitEl) {
+        helbBenefitEl.textContent = `KES ${helbAmount.toLocaleString()}`;
+    }
+
+    // Update SACCO display
+    const saccoRateDisplay = document.getElementById('saccoDisplayRate');
+    if (saccoRateDisplay) {
+        saccoRateDisplay.textContent = `${(saccoRate * 100).toFixed(1)}%`;
+    }
+
+    const saccoPaymentEl = document.getElementById('saccoMonthlyPayment');
+    if (saccoPaymentEl) {
+        saccoPaymentEl.textContent = `KES ${Math.round(saccoMonthlyPayment).toLocaleString()}`;
+    }
+
+    // Total loan benefit
+    const totalLoanBenefit = helbAmount + saccoAmount;
+    const totalLoanEl = document.getElementById('totalLoanBenefit');
+    if (totalLoanEl) {
+        totalLoanEl.textContent = `KES ${totalLoanBenefit.toLocaleString()}`;
+    }
+
+    // Update shortfall after loans (using realistic scenario)
+    const realisticGapText = document.getElementById('scenarioRealisticGap')?.textContent || 'KES 0';
+    const realisticGapValue = parseInt(realisticGapText.replace(/[^\d]/g, '')) || 0;
+
+    // Determine if gap is positive (surplus) or negative (shortfall)
+    const isShortfall = realisticGapText.includes('-');
+    const shortfallAmount = isShortfall ? Math.abs(realisticGapValue) : 0;
+    const surplusAmount = !isShortfall ? realisticGapValue : 0;
+
+    // Calculate remaining shortfall after loans
+    let remainingShortfall = 0;
+    if (shortfallAmount > 0) {
+        remainingShortfall = Math.max(0, shortfallAmount - totalLoanBenefit);
+    }
+
+    const shortfallEl = document.getElementById('shortfallAfterLoans');
+    if (shortfallEl) {
+        if (remainingShortfall > 0) {
+            shortfallEl.textContent = `KES ${Math.round(remainingShortfall).toLocaleString()}`;
+            shortfallEl.style.color = 'var(--danger)';
+        } else {
+            const finalSurplus = totalLoanBenefit - shortfallAmount;
+            shortfallEl.textContent = `KES ${Math.round(finalSurplus).toLocaleString()} Surplus`;
+            shortfallEl.style.color = 'var(--success)';
+        }
+    }
 
     saveState();
 }
