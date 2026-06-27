@@ -151,13 +151,23 @@
         }
 
         .metric-card {
-            background: linear-gradient(135deg, var(--white) 0%, #fafaf7 100%); border-left: 4px solid var(--amber);
-            border-radius: 8px; padding: 1.5rem; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            background: linear-gradient(135deg, var(--white) 0%, #FEFCF8 100%); border-left: 6px solid var(--secondary);
+            border-radius: 12px; padding: 1.8rem; box-shadow: 0 4px 12px rgba(139, 46, 46, 0.08);
+            transition: all 0.3s; position: relative;
+        }
+
+        .metric-card:hover {
+            box-shadow: 0 6px 16px rgba(139, 46, 46, 0.12); transform: translateY(-2px);
         }
 
         .metric-card.success { border-left-color: var(--success); }
+        .metric-card.success:hover { box-shadow: 0 6px 16px rgba(45, 118, 89, 0.15); }
+
         .metric-card.warning { border-left-color: var(--warning); }
+        .metric-card.warning:hover { box-shadow: 0 6px 16px rgba(212, 160, 23, 0.15); }
+
         .metric-card.danger { border-left-color: var(--danger); }
+        .metric-card.danger:hover { box-shadow: 0 6px 16px rgba(163, 45, 45, 0.15); }
 
         .card-title { font-size: 0.8rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 0.5rem; }
         .card-value { font-size: 2rem; font-weight: 900; color: var(--primary); margin-bottom: 0.5rem; }
@@ -358,11 +368,25 @@
 
         /* Education Cards */
         .lesson-card {
-            background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem;
-            margin-bottom: 1.5rem; cursor: pointer; transition: all 0.3s;
+            background: linear-gradient(135deg, var(--white) 0%, #FEFCF8 100%); border: 2px solid var(--border);
+            border-radius: 16px; padding: 2rem; margin-bottom: 1.5rem; cursor: pointer; transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(139, 46, 46, 0.08); position: relative; overflow: hidden;
         }
 
-        .lesson-card:hover { border-color: var(--amber); box-shadow: 0 4px 12px rgba(255, 194, 0, 0.15); }
+        .lesson-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+            background: linear-gradient(90deg, var(--secondary), var(--tertiary));
+            transition: all 0.3s;
+        }
+
+        .lesson-card:hover {
+            border-color: var(--secondary); box-shadow: 0 8px 24px rgba(139, 46, 46, 0.15);
+            transform: translateY(-4px);
+        }
+
+        .lesson-card:hover::before {
+            height: 6px; box-shadow: 0 2px 8px rgba(212, 160, 23, 0.3);
+        }
 
         .lesson-header { display: flex; gap: 1rem; align-items: start; margin-bottom: 1rem; }
         .lesson-icon { font-size: 2rem; }
@@ -1015,6 +1039,30 @@
         <p class="section-subtitle">AI-powered recommendations based on your complete financial picture. Ranked by impact.</p>
 
         <div id="recommendationsContainer"></div>
+
+        <!-- SACCO Integration Section -->
+        <div style="margin-top: 3rem; padding: 2rem; background: linear-gradient(135deg, #E8F5F0 0%, #D5EFE8 100%); border-radius: 16px; border-left: 6px solid var(--success);">
+            <h3 style="color: var(--primary); font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.8rem;">
+                👥 SACCO Opportunity
+            </h3>
+            <p style="color: var(--text-2); margin-bottom: 1rem; line-height: 1.6;">
+                <strong>Kenya's Secret Weapon for Wealth Building:</strong> SACCOs (Savings and Credit Co-operatives) are community-based financial groups that help Kenyans save together and access affordable loans. Perfect for your financial journey.
+            </p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1.5rem;">
+                <div style="background: var(--white); padding: 1rem; border-radius: 10px; border: 2px solid var(--success);">
+                    <div style="font-weight: 700; color: var(--success); font-size: 0.9rem; text-transform: uppercase; margin-bottom: 0.5rem;">💰 Savings Growth</div>
+                    <div style="color: var(--text-2); font-size: 0.85rem;">Earn 5-15% annual dividends on your contributions</div>
+                </div>
+                <div style="background: var(--white); padding: 1rem; border-radius: 10px; border: 2px solid var(--success);">
+                    <div style="font-weight: 700; color: var(--success); font-size: 0.9rem; text-transform: uppercase; margin-bottom: 0.5rem;">📈 Affordable Loans</div>
+                    <div style="color: var(--text-2); font-size: 0.85rem;">Borrow at 1-2% monthly (vs 3-5% from banks)</div>
+                </div>
+                <div style="background: var(--white); padding: 1rem; border-radius: 10px; border: 2px solid var(--success);">
+                    <div style="font-weight: 700; color: var(--success); font-size: 0.9rem; text-transform: uppercase; margin-bottom: 0.5rem;">🤝 Community</div>
+                    <div style="color: var(--text-2); font-size: 0.85rem;">Join thousands of Kenyans building wealth together</div>
+                </div>
+            </div>
+        </div>
 
         <div class="button-group">
             <button onclick="showScreen('screen-5')">← Wealth</button>
