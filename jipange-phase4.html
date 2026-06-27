@@ -2015,6 +2015,126 @@
             </div>
 
             <div class="card">
+                <h2 style="font-size: 1.1rem; color: var(--primary); margin-bottom: 1.5rem;">Cost Breakdown (Itemized)</h2>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                    <div style="padding: 1rem; background: rgba(45, 118, 89, 0.08); border-radius: 8px; border-left: 4px solid var(--primary);">
+                        <div style="font-size: 0.75rem; color: var(--text-3); margin-bottom: 0.3rem; text-transform: uppercase; font-weight: 600;">Tuition</div>
+                        <div style="font-size: 1.2rem; font-weight: 700; color: var(--primary);" id="breakdownTuition">KES 650,000</div>
+                        <div style="font-size: 0.7rem; color: var(--text-3); margin-top: 0.3rem;">Annual cost</div>
+                    </div>
+
+                    <div style="padding: 1rem; background: rgba(212, 160, 23, 0.08); border-radius: 8px; border-left: 4px solid var(--secondary);">
+                        <div style="font-size: 0.75rem; color: var(--text-3); margin-bottom: 0.3rem; text-transform: uppercase; font-weight: 600;">Uniforms & Books</div>
+                        <div style="font-size: 1.2rem; font-weight: 700; color: var(--secondary);" id="breakdownUniforms">KES 35,000</div>
+                        <div style="font-size: 0.7rem; color: var(--text-3); margin-top: 0.3rem;">Annual cost</div>
+                    </div>
+
+                    <div style="padding: 1rem; background: rgba(230, 126, 34, 0.08); border-radius: 8px; border-left: 4px solid #E67E22;">
+                        <div style="font-size: 0.75rem; color: var(--text-3); margin-bottom: 0.3rem; text-transform: uppercase; font-weight: 600;">Transport & Activities</div>
+                        <div style="font-size: 1.2rem; font-weight: 700; color: #E67E22;" id="breakdownTransport">KES 30,000</div>
+                        <div style="font-size: 0.7rem; color: var(--text-3); margin-top: 0.3rem;">Annual cost</div>
+                    </div>
+                </div>
+
+                <div style="padding: 1rem; background: var(--offwhite); border-radius: 8px; border-left: 4px solid var(--primary); margin-bottom: 1rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-size: 0.85rem; color: var(--text-3); margin-bottom: 0.3rem;">Total Annual Cost</div>
+                            <div style="font-size: 1.6rem; font-weight: 900; color: var(--primary);" id="breakdownTotal">KES 715,000</div>
+                        </div>
+                        <div style="text-align: right; font-size: 0.8rem; color: var(--text-3);">
+                            <div>× <span id="breakdownYears">4</span> years</div>
+                            <div style="margin-top: 0.3rem;"><strong id="breakdownTotalAll">KES 2,860,000</strong></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 style="font-size: 1.1rem; color: var(--primary); margin-bottom: 1.5rem;">Three-Scenario Projections</h2>
+                <p style="font-size: 0.85rem; color: var(--text-3); margin-bottom: 1.5rem;">Compare outcomes based on different inflation assumptions</p>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                    <!-- Conservative Scenario -->
+                    <div style="padding: 1.2rem; background: rgba(46, 204, 113, 0.06); border-radius: 8px; border: 2px solid rgba(46, 204, 113, 0.3);">
+                        <div style="font-size: 0.9rem; font-weight: 700; color: #2ECC71; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                            ✅ Conservative
+                            <span style="font-size: 0.75rem; font-weight: 600; color: var(--text-3);">-2% inflation</span>
+                        </div>
+
+                        <div style="margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(46, 204, 113, 0.2);">
+                            <div style="font-size: 0.75rem; color: var(--text-3); margin-bottom: 0.3rem;">Total Cost Needed</div>
+                            <div style="font-size: 1.3rem; font-weight: 900; color: #2ECC71;" id="scenarioConservativeCost">KES 2,700,000</div>
+                        </div>
+
+                        <div style="margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(46, 204, 113, 0.2);">
+                            <div style="font-size: 0.75rem; color: var(--text-3); margin-bottom: 0.3rem;">Projected Savings</div>
+                            <div style="font-size: 1.3rem; font-weight: 900; color: #2ECC71;" id="scenarioConservativeSavings">KES 1,500,000</div>
+                        </div>
+
+                        <div style="padding: 0.8rem; background: rgba(46, 204, 113, 0.1); border-radius: 6px;">
+                            <div style="font-size: 0.75rem; color: var(--text-3); margin-bottom: 0.2rem; text-transform: uppercase; font-weight: 600;">Gap/Surplus</div>
+                            <div style="font-size: 1.4rem; font-weight: 900;" id="scenarioConservativeGap" style="color: #2ECC71;">KES 1,200,000</div>
+                            <div style="font-size: 0.7rem; color: var(--text-3); margin-top: 0.3rem;">Best case: Lower cost inflation</div>
+                        </div>
+                    </div>
+
+                    <!-- Realistic Scenario -->
+                    <div style="padding: 1.2rem; background: rgba(241, 196, 15, 0.06); border-radius: 8px; border: 2px solid rgba(241, 196, 15, 0.3);">
+                        <div style="font-size: 0.9rem; font-weight: 700; color: #F1C40F; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                            ⚡ Realistic
+                            <span style="font-size: 0.75rem; font-weight: 600; color: var(--text-3);">+7% inflation</span>
+                        </div>
+
+                        <div style="margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(241, 196, 15, 0.2);">
+                            <div style="font-size: 0.75rem; color: var(--text-3); margin-bottom: 0.3rem;">Total Cost Needed</div>
+                            <div style="font-size: 1.3rem; font-weight: 900; color: #F1C40F;" id="scenarioRealisticCost">KES 3,100,000</div>
+                        </div>
+
+                        <div style="margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(241, 196, 15, 0.2);">
+                            <div style="font-size: 0.75rem; color: var(--text-3); margin-bottom: 0.3rem;">Projected Savings</div>
+                            <div style="font-size: 1.3rem; font-weight: 900; color: #F1C40F;" id="scenarioRealisticSavings">KES 1,500,000</div>
+                        </div>
+
+                        <div style="padding: 0.8rem; background: rgba(241, 196, 15, 0.1); border-radius: 6px;">
+                            <div style="font-size: 0.75rem; color: var(--text-3); margin-bottom: 0.2rem; text-transform: uppercase; font-weight: 600;">Gap/Surplus</div>
+                            <div style="font-size: 1.4rem; font-weight: 900;" id="scenarioRealisticGap">KES -1,600,000</div>
+                            <div style="font-size: 0.7rem; color: var(--text-3); margin-top: 0.3rem;">Most likely (Kenya avg)</div>
+                        </div>
+                    </div>
+
+                    <!-- Optimistic Scenario -->
+                    <div style="padding: 1.2rem; background: rgba(52, 152, 219, 0.06); border-radius: 8px; border: 2px solid rgba(52, 152, 219, 0.3);">
+                        <div style="font-size: 0.9rem; font-weight: 700; color: #3498DB; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                            🚀 Optimistic
+                            <span style="font-size: 0.75rem; font-weight: 600; color: var(--text-3);">+5% inflation</span>
+                        </div>
+
+                        <div style="margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(52, 152, 219, 0.2);">
+                            <div style="font-size: 0.75rem; color: var(--text-3); margin-bottom: 0.3rem;">Total Cost Needed</div>
+                            <div style="font-size: 1.3rem; font-weight: 900; color: #3498DB;" id="scenarioOptimisticCost">KES 2,900,000</div>
+                        </div>
+
+                        <div style="margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(52, 152, 219, 0.2);">
+                            <div style="font-size: 0.75rem; color: var(--text-3); margin-bottom: 0.3rem;">Projected Savings</div>
+                            <div style="font-size: 1.3rem; font-weight: 900; color: #3498DB;" id="scenarioOptimisticSavings">KES 1,500,000</div>
+                        </div>
+
+                        <div style="padding: 0.8rem; background: rgba(52, 152, 219, 0.1); border-radius: 6px;">
+                            <div style="font-size: 0.75rem; color: var(--text-3); margin-bottom: 0.2rem; text-transform: uppercase; font-weight: 600;">Gap/Surplus</div>
+                            <div style="font-size: 1.4rem; font-weight: 900;" id="scenarioOptimisticGap">KES -1,400,000</div>
+                            <div style="font-size: 0.7rem; color: var(--text-3); margin-top: 0.3rem;">Good case: Lower inflation</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="padding: 1rem; background: var(--surface); border-radius: 8px; border-left: 4px solid var(--warning); font-size: 0.85rem; color: var(--text-2);">
+                    <strong>📊 How to use:</strong> Conservative assumes lower inflation (good planning). Realistic is based on Kenya's historical 7% education inflation. Optimistic assumes better returns on your savings.
+                </div>
+            </div>
+
+            <div class="card">
                 <h2 style="font-size: 1.1rem; color: var(--primary); margin-bottom: 1.5rem;">Projection Results</h2>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
@@ -4247,15 +4367,28 @@ function calculateEducationSavings() {
     const annualAdditional = uniformsBooks + transportFees;
     const totalAnnualCost = annualCost + annualAdditional;
 
+    // UPDATE ITEMIZED BREAKDOWN DISPLAY
+    if (document.getElementById('breakdownTuition')) {
+        document.getElementById('breakdownTuition').textContent = `KES ${annualCost.toLocaleString()}`;
+    }
+    if (document.getElementById('breakdownUniforms')) {
+        document.getElementById('breakdownUniforms').textContent = `KES ${uniformsBooks.toLocaleString()}`;
+    }
+    if (document.getElementById('breakdownTransport')) {
+        document.getElementById('breakdownTransport').textContent = `KES ${transportFees.toLocaleString()}`;
+    }
+    if (document.getElementById('breakdownTotal')) {
+        document.getElementById('breakdownTotal').textContent = `KES ${totalAnnualCost.toLocaleString()}`;
+    }
+    if (document.getElementById('breakdownYears')) {
+        document.getElementById('breakdownYears').textContent = educationYears;
+    }
+    if (document.getElementById('breakdownTotalAll')) {
+        document.getElementById('breakdownTotalAll').textContent = `KES ${(totalAnnualCost * educationYears).toLocaleString()}`;
+    }
+
     // Inflation-adjust the total cost
     let inflationAdjustedCost = totalAnnualCost * educationYears;
-    for (let i = 1; i < yearsUntilEducation; i++) {
-        const costInYear = totalAnnualCost * Math.pow(1 + inflation / 100, i);
-        if (i < yearsUntilEducation && i < yearsUntilEducation + educationYears) {
-            // Only add if this year falls within education period
-        }
-    }
-    // Simpler approach: use average inflation
     inflationAdjustedCost *= Math.pow(1 + inflation / 100, yearsUntilEducation / 2);
 
     // Apply scholarship/bursary reduction
@@ -4324,7 +4457,83 @@ function calculateEducationSavings() {
         document.getElementById('requiredLumpSum').textContent = `${Math.round(shortfall / 1000)}k`;
     }
 
+    // CALCULATE THREE SCENARIOS
+    calculateEducationScenarios({
+        annualCost,
+        uniformsBooks,
+        transportFees,
+        educationYears,
+        yearsUntilEducation,
+        scholarship,
+        currentSavings,
+        monthlyContribution,
+        returnRate
+    });
+
     saveState();
+}
+
+function calculateEducationScenarios(baseData) {
+    const { annualCost, uniformsBooks, transportFees, educationYears, yearsUntilEducation, scholarship, currentSavings, monthlyContribution, returnRate } = baseData;
+
+    const totalAnnualCost = annualCost + uniformsBooks + transportFees;
+    const monthlyRate = returnRate / 100 / 12;
+    const monthsUntilEducation = Math.max(0, yearsUntilEducation * 12);
+
+    // Calculate projected savings (same for all scenarios)
+    let projSavings = currentSavings * Math.pow(1 + monthlyRate, monthsUntilEducation);
+    if (monthsUntilEducation > 0 && monthlyRate > 0) {
+        const fvAnnuity = monthlyContribution * (Math.pow(1 + monthlyRate, monthsUntilEducation) - 1) / monthlyRate;
+        projSavings += fvAnnuity;
+    } else if (monthsUntilEducation > 0) {
+        projSavings += monthlyContribution * monthsUntilEducation;
+    }
+
+    // THREE SCENARIOS with different inflation rates
+    const scenarios = {
+        conservative: { inflation: -0.02 },  // -2% (best case, lower inflation)
+        realistic: { inflation: 0.07 },       // +7% (Kenya avg education inflation)
+        optimistic: { inflation: 0.05 }       // +5% (good case)
+    };
+
+    Object.entries(scenarios).forEach(([key, scenario]) => {
+        // Apply inflation to the base cost before education period
+        const inflationFactor = Math.pow(1 + scenario.inflation, yearsUntilEducation / 2);
+
+        // Total cost over education years with inflation adjustment
+        let totalCost = 0;
+        for (let year = 0; year < educationYears; year++) {
+            const costInYear = totalAnnualCost * Math.pow(1 + scenario.inflation, year + yearsUntilEducation / 2);
+            totalCost += costInYear;
+        }
+
+        // Apply scholarship/bursary deduction
+        const scholarshipTotal = scholarship * educationYears;
+        const costAfterScholarship = Math.max(0, totalCost - scholarshipTotal);
+
+        // Calculate gap (negative = shortfall, positive = surplus)
+        const gap = projSavings - costAfterScholarship;
+        const gapDisplay = gap >= 0 ? `KES ${Math.round(gap).toLocaleString()}` : `KES -${Math.round(Math.abs(gap)).toLocaleString()}`;
+        const gapColor = gap >= 0 ? 'var(--success)' : 'var(--danger)';
+
+        // Update scenario displays
+        const capital = key.charAt(0).toUpperCase() + key.slice(1);
+        const costId = `scenario${capital}Cost`;
+        const savingsId = `scenario${capital}Savings`;
+        const gapId = `scenario${capital}Gap`;
+
+        if (document.getElementById(costId)) {
+            document.getElementById(costId).textContent = `KES ${Math.round(costAfterScholarship).toLocaleString()}`;
+        }
+        if (document.getElementById(savingsId)) {
+            document.getElementById(savingsId).textContent = `KES ${Math.round(projSavings).toLocaleString()}`;
+        }
+        if (document.getElementById(gapId)) {
+            const el = document.getElementById(gapId);
+            el.textContent = gapDisplay;
+            el.style.color = gapColor;
+        }
+    });
 }
 
 function addEducationChild() {
