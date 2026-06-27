@@ -111,13 +111,14 @@
         .dropdown-menu {
             position: absolute; top: 100%; left: 0; background: var(--white);
             border: 2px solid var(--border); border-radius: 8px; min-width: 200px;
-            box-shadow: 0 8px 24px rgba(139, 46, 46, 0.2); z-index: 1000;
-            max-height: 0; overflow: hidden; transition: max-height 0.3s ease; opacity: 0;
-            transform-origin: top; transform: scaleY(0.95);
+            box-shadow: 0 8px 24px rgba(139, 46, 46, 0.2); z-index: 1001;
+            max-height: 0; overflow: hidden; transition: max-height 0.3s ease, opacity 0.3s ease;
+            opacity: 0; transform-origin: top; transform: scaleY(0.95);
+            pointer-events: none;
         }
 
         .nav-dropdown.open .dropdown-menu {
-            max-height: 600px; opacity: 1; transform: scaleY(1);
+            max-height: 600px; opacity: 1; transform: scaleY(1); pointer-events: auto;
         }
 
         .dropdown-item {
