@@ -1513,7 +1513,254 @@
 
         <div class="button-group">
             <button onclick="showScreen('screen-12')">← Portfolio</button>
-            <button class="primary" onclick="markStepComplete(13); showScreen('screen-1')">Back to Start</button>
+            <button class="primary" onclick="markStepComplete(13); showScreen('screen-14')">Business Income →</button>
+        </div>
+    </section>
+
+    <!-- Screen 14: Business Income Tracker (NEW) -->
+    <section id="screen-14">
+        <h1 class="section-title">🏢 Business Income Tracker</h1>
+        <p class="section-subtitle">Detailed tracking for self-employed income. Calculate net income after expenses and tax obligations.</p>
+
+        <div class="card-grid">
+            <div class="card">
+                <h2 style="font-size: 1.1rem; color: var(--primary); margin-bottom: 1.5rem;">Business Details</h2>
+
+                <div class="field-group">
+                    <label for="bizName">Business Name</label>
+                    <input type="text" id="bizName" placeholder="e.g., Consulting Services">
+                </div>
+
+                <div class="field-group">
+                    <label for="bizType">Business Type</label>
+                    <select id="bizType">
+                        <option>Consulting</option>
+                        <option>Trading</option>
+                        <option>Professional Services</option>
+                        <option>Manufacturing</option>
+                        <option>Transport</option>
+                        <option>Agriculture</option>
+                        <option>Real Estate</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+
+                <div class="field-group">
+                    <label for="bizMonthlyRevenue">Monthly Revenue (KES)</label>
+                    <input type="number" id="bizMonthlyRevenue" value="0" min="0">
+                </div>
+
+                <div class="field-group">
+                    <label for="bizMonthlyExpenses">Monthly Expenses (KES)</label>
+                    <input type="number" id="bizMonthlyExpenses" value="0" min="0">
+                </div>
+
+                <div class="field-group">
+                    <label for="bizTaxRate">Estimated Tax Rate (%)</label>
+                    <input type="number" id="bizTaxRate" value="15" min="0" max="35">
+                </div>
+
+                <button class="primary" onclick="calculateBusinessTax()" style="width: 100%; margin-top: 1rem;">Calculate Net Income</button>
+            </div>
+
+            <div class="card">
+                <h2 style="font-size: 1.1rem; color: var(--primary); margin-bottom: 1.5rem;">Income Summary</h2>
+
+                <div style="display: flex; flex-direction: column; gap: 1.2rem;">
+                    <div style="padding: 1.2rem; background: var(--surface); border-radius: 10px;">
+                        <div style="font-size: 0.9rem; color: var(--text-3); text-transform: uppercase; font-weight: 600; margin-bottom: 0.5rem;">Monthly Revenue</div>
+                        <div id="bizRevenueDisplay" style="font-size: 1.8rem; font-weight: 900; color: var(--secondary);">KES 0</div>
+                    </div>
+
+                    <div style="padding: 1.2rem; background: var(--surface); border-radius: 10px;">
+                        <div style="font-size: 0.9rem; color: var(--text-3); text-transform: uppercase; font-weight: 600; margin-bottom: 0.5rem;">Total Expenses</div>
+                        <div id="bizExpenseDisplay" style="font-size: 1.8rem; font-weight: 900; color: var(--danger);">KES 0</div>
+                    </div>
+
+                    <div style="padding: 1.2rem; background: var(--success-bg); border-radius: 10px; border: 2px solid var(--success);">
+                        <div style="font-size: 0.9rem; color: var(--text-3); text-transform: uppercase; font-weight: 600; margin-bottom: 0.5rem;">Gross Profit</div>
+                        <div id="bizProfitDisplay" style="font-size: 1.8rem; font-weight: 900; color: var(--success);">KES 0</div>
+                    </div>
+
+                    <div style="padding: 1.2rem; background: var(--warning-bg); border-radius: 10px; border: 2px solid var(--warning);">
+                        <div style="font-size: 0.9rem; color: var(--text-3); text-transform: uppercase; font-weight: 600; margin-bottom: 0.5rem;">Estimated Tax</div>
+                        <div id="bizTaxDisplay" style="font-size: 1.8rem; font-weight: 900; color: var(--warning);">KES 0</div>
+                    </div>
+
+                    <div style="padding: 1.2rem; background: linear-gradient(135deg, #E8F5F0 0%, #D5EFE8 100%); border-radius: 10px; border: 2px solid var(--success);">
+                        <div style="font-size: 0.9rem; color: var(--text-3); text-transform: uppercase; font-weight: 600; margin-bottom: 0.5rem;">Net Income (After Tax)</div>
+                        <div id="bizNetDisplay" style="font-size: 2rem; font-weight: 900; color: var(--primary);">KES 0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button onclick="showScreen('screen-13')">← Debts</button>
+            <button class="primary" onclick="markStepComplete(14); showScreen('screen-15')">Assets →</button>
+        </div>
+    </section>
+
+    <!-- Screen 15: Asset Valuation (NEW) -->
+    <section id="screen-15">
+        <h1 class="section-title">🏠 Asset Valuation</h1>
+        <p class="section-subtitle">Track personal assets: property, vehicles, equipment. Monitor appreciation and depreciation.</p>
+
+        <div class="card-grid">
+            <div class="card">
+                <h2 style="font-size: 1.1rem; color: var(--primary); margin-bottom: 1.5rem;">Add Asset</h2>
+
+                <div class="field-group">
+                    <label for="assetType">Asset Type</label>
+                    <select id="assetType">
+                        <option>Residential Property</option>
+                        <option>Commercial Property</option>
+                        <option>Vehicle</option>
+                        <option>Equipment</option>
+                        <option>Jewelry/Valuables</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+
+                <div class="field-group">
+                    <label for="assetName">Asset Description</label>
+                    <input type="text" id="assetName" placeholder="e.g., 3-bedroom house in Karen">
+                </div>
+
+                <div class="field-group">
+                    <label for="assetValue">Current Value (KES)</label>
+                    <input type="number" id="assetValue" value="0" min="0">
+                </div>
+
+                <div class="field-group">
+                    <label for="assetPurchasePrice">Purchase Price (KES)</label>
+                    <input type="number" id="assetPurchasePrice" value="0" min="0">
+                </div>
+
+                <div class="field-group">
+                    <label for="assetDepreciationRate">Annual Change (%)</label>
+                    <input type="number" id="assetDepreciationRate" value="0" min="-10" max="10" step="0.1">
+                    <span class="input-hint">Positive for appreciation, negative for depreciation</span>
+                </div>
+
+                <button class="primary" onclick="addAsset()" style="width: 100%; margin-top: 1rem;">Add Asset</button>
+            </div>
+
+            <div class="card">
+                <h2 style="font-size: 1.1rem; color: var(--primary); margin-bottom: 1rem;">Net Worth Breakdown</h2>
+
+                <div id="assetSummary" style="display: flex; flex-direction: column; gap: 1rem;">
+                    <div style="text-align: center; padding: 2rem; background: var(--success-bg); border-radius: 10px; border: 2px solid var(--success);">
+                        <div style="font-size: 0.9rem; color: var(--text-3); text-transform: uppercase; font-weight: 600; margin-bottom: 0.5rem;">Total Assets</div>
+                        <div id="totalAssetValue" style="font-size: 2rem; font-weight: 900; color: var(--success);">KES 0</div>
+                    </div>
+
+                    <div style="text-align: center; padding: 2rem; background: var(--danger-bg); border-radius: 10px; border: 2px solid var(--danger);">
+                        <div style="font-size: 0.9rem; color: var(--text-3); text-transform: uppercase; font-weight: 600; margin-bottom: 0.5rem;">Total Liabilities</div>
+                        <div id="totalLiabilities" style="font-size: 2rem; font-weight: 900; color: var(--danger);">KES 0</div>
+                    </div>
+
+                    <div style="text-align: center; padding: 2rem; background: linear-gradient(135deg, #E8F5F0 0%, #D5EFE8 100%); border-radius: 10px; border: 2px solid var(--primary);">
+                        <div style="font-size: 0.9rem; color: var(--text-3); text-transform: uppercase; font-weight: 600; margin-bottom: 0.5rem;">Net Worth</div>
+                        <div id="totalNetWorth" style="font-size: 2rem; font-weight: 900; color: var(--primary);">KES 0</div>
+                    </div>
+                </div>
+
+                <div id="assetsList" style="margin-top: 2rem;"></div>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button onclick="showScreen('screen-14')">← Business</button>
+            <button class="primary" onclick="markStepComplete(15); showScreen('screen-16')">Tax Optimizer →</button>
+        </div>
+    </section>
+
+    <!-- Screen 16: Tax Optimizer (NEW) -->
+    <section id="screen-16">
+        <h1 class="section-title">💰 Tax Optimizer</h1>
+        <p class="section-subtitle">Strategies to minimize your tax burden legally. Kenya-specific tax planning tips.</p>
+
+        <div class="card-grid">
+            <div class="card">
+                <h2 style="font-size: 1.1rem; color: var(--primary); margin-bottom: 1.5rem;">Tax Planning Tools</h2>
+
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <div style="padding: 1.2rem; background: var(--warning-bg); border-radius: 10px; border-left: 6px solid var(--warning);">
+                        <div style="font-weight: 700; color: var(--warning); font-size: 0.95rem; margin-bottom: 0.5rem;">📋 NSSF Optimization</div>
+                        <div style="font-size: 0.85rem; color: var(--text-2); line-height: 1.5;">
+                            Max out NSSF Tier 1&2 contributions to reduce taxable income. Up to KES ~36,000/year is tax-deductible.
+                        </div>
+                    </div>
+
+                    <div style="padding: 1.2rem; background: var(--success-bg); border-radius: 10px; border-left: 6px solid var(--success);">
+                        <div style="font-weight: 700; color: var(--success); font-size: 0.95rem; margin-bottom: 0.5rem;">🏠 Mortgage Interest</div>
+                        <div style="font-size: 0.85rem; color: var(--text-2); line-height: 1.5;">
+                            First KES 300,000 of mortgage interest is tax-deductible. Spreads your tax benefit over the loan period.
+                        </div>
+                    </div>
+
+                    <div style="padding: 1.2rem; background: var(--success-bg); border-radius: 10px; border-left: 6px solid var(--success);">
+                        <div style="font-weight: 700; color: var(--success); font-size: 0.95rem; margin-bottom: 0.5rem;">💼 Business Expenses</div>
+                        <div style="font-size: 0.85rem; color: var(--text-2); line-height: 1.5;">
+                            All legitimate business expenses reduce taxable profit. Keep detailed records for audits.
+                        </div>
+                    </div>
+
+                    <div style="padding: 1.2rem; background: var(--success-bg); border-radius: 10px; border-left: 6px solid var(--success);">
+                        <div style="font-weight: 700; color: var(--success); font-size: 0.95rem; margin-bottom: 0.5rem;">📊 Investment Losses</div>
+                        <div style="font-size: 0.85rem; color: var(--text-2); line-height: 1.5;">
+                            Capital losses can offset gains. Plan your investment sales strategically across tax years.
+                        </div>
+                    </div>
+
+                    <div style="padding: 1.2rem; background: var(--warning-bg); border-radius: 10px; border-left: 6px solid var(--warning);">
+                        <div style="font-weight: 700; color: var(--warning); font-size: 0.95rem; margin-bottom: 0.5rem;">🎓 Education Allowance</div>
+                        <div style="font-size: 0.85rem; color: var(--text-2); line-height: 1.5;">
+                            Employers provide KES 20,000/month education allowance for children (tax-free for employer).
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 style="font-size: 1.1rem; color: var(--primary); margin-bottom: 1.5rem;">Tax Calculator</h2>
+
+                <div class="field-group">
+                    <label for="taxGrossIncome">Gross Annual Income (KES)</label>
+                    <input type="number" id="taxGrossIncome" value="0" min="0">
+                </div>
+
+                <div class="field-group">
+                    <label for="taxDeductions">Total Deductions (KES)</label>
+                    <input type="number" id="taxDeductions" value="0" min="0">
+                    <span class="input-hint">NSSF, mortgage interest, business losses, etc.</span>
+                </div>
+
+                <button class="primary" onclick="calculateTaxOptimization()" style="width: 100%; margin-top: 1rem;">Calculate Tax Savings</button>
+
+                <div id="taxOptimizationResults" style="margin-top: 2rem; display: flex; flex-direction: column; gap: 1rem;">
+                    <div style="text-align: center; padding: 1rem; background: var(--surface); border-radius: 10px;">
+                        <div style="font-size: 0.85rem; color: var(--text-3); text-transform: uppercase; font-weight: 600;">Without Optimization</div>
+                        <div id="taxWithout" style="font-size: 1.5rem; font-weight: 900; color: var(--danger);">KES 0</div>
+                    </div>
+
+                    <div style="text-align: center; padding: 1rem; background: var(--surface); border-radius: 10px;">
+                        <div style="font-size: 0.85rem; color: var(--text-3); text-transform: uppercase; font-weight: 600;">With Optimization</div>
+                        <div id="taxWith" style="font-size: 1.5rem; font-weight: 900; color: var(--primary);">KES 0</div>
+                    </div>
+
+                    <div style="text-align: center; padding: 1.2rem; background: var(--success-bg); border-radius: 10px; border: 2px solid var(--success);">
+                        <div style="font-size: 0.85rem; color: var(--text-3); text-transform: uppercase; font-weight: 600;">Annual Tax Savings</div>
+                        <div id="taxSavings" style="font-size: 1.8rem; font-weight: 900; color: var(--success);">KES 0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button onclick="showScreen('screen-15')">← Assets</button>
+            <button class="primary" onclick="markStepComplete(16); showScreen('screen-1')">Finish Planning</button>
         </div>
     </section>
 
@@ -1582,7 +1829,16 @@ const DEFAULT_STATE = {
         monthlyTarget: 10000, currentSaved: 0
     },
     investments: [],
-    debts: []
+    debts: [],
+    business: {
+        monthlyRevenue: 0, monthlyExpenses: 0, taxRate: 30,
+        _grossProfit: 0, _taxLiability: 0, _netIncome: 0
+    },
+    assets: [],
+    tax: {
+        grossIncome: 0, totalDeductions: 0,
+        _taxWithout: 0, _taxWith: 0, _taxSavings: 0
+    }
 };
 
 let state = loadState();
@@ -1638,7 +1894,7 @@ function init() {
 
 function buildNavbar() {
     const navTabs = document.getElementById('navTabs');
-    const screens = ['Profile', 'Income', 'Budget', 'Scenarios', 'Wealth', 'Optimizer', 'Household', 'Goals', 'Learning', 'Reports', 'M-Pesa', 'Portfolio', 'Debts'];
+    const screens = ['Profile', 'Income', 'Budget', 'Scenarios', 'Wealth', 'Optimizer', 'Household', 'Goals', 'Learning', 'Reports', 'M-Pesa', 'Portfolio', 'Debts', 'Business', 'Assets', 'Tax'];
     navTabs.innerHTML = '';
     screens.forEach((name, i) => {
         const num = i + 1;
@@ -1730,9 +1986,36 @@ function attachEventListeners() {
         if (el) el.addEventListener('input', updateMpesaUI);
     });
 
+    // Business income listeners
+    const bizFields = ['bizMonthlyRevenue', 'bizMonthlyExpenses', 'bizTaxRate'];
+    bizFields.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('input', (e) => {
+            const key = id.replace('biz', '').toLowerCase();
+            if (key === 'monthlyrevenue') state.business.monthlyRevenue = parseInt(e.target.value) || 0;
+            if (key === 'monthlyexpenses') state.business.monthlyExpenses = parseInt(e.target.value) || 0;
+            if (key === 'taxrate') state.business.taxRate = parseInt(e.target.value) || 30;
+            saveState();
+            calculateBusinessTax();
+        });
+    });
+
+    // Tax optimizer listeners
+    const taxFields = ['taxGrossIncome', 'taxDeductions'];
+    taxFields.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('input', (e) => {
+            const key = id.replace('tax', '').toLowerCase();
+            if (key === 'grossincome') state.tax.grossIncome = parseInt(e.target.value) || 0;
+            if (key === 'deductions') state.tax.totalDeductions = parseInt(e.target.value) || 0;
+            saveState();
+        });
+    });
+
     // Initial load of investment and debt UIs
     if (state.investments && state.investments.length > 0) updateInvestmentUI();
     if (state.debts && state.debts.length > 0) updateDebtUI();
+    if (state.assets && state.assets.length > 0) updateAssetUI();
 
     loadFormValues();
 }
@@ -1799,6 +2082,24 @@ function loadFormValues() {
     if (document.getElementById('fireSWR')) document.getElementById('fireSWR').value = state.fire.swr;
     if (document.getElementById('fireInflation')) document.getElementById('fireInflation').value = state.fire.inflation;
     if (document.getElementById('fireGrowth')) document.getElementById('fireGrowth').value = state.fire.growthRate;
+
+    // M-Pesa fields
+    if (document.getElementById('mpesaTarget')) document.getElementById('mpesaTarget').value = state.mpesa.monthlyTarget;
+    if (document.getElementById('mpesaCurrent')) document.getElementById('mpesaCurrent').value = state.mpesa.currentSaved;
+
+    // Business fields
+    if (document.getElementById('bizMonthlyRevenue')) document.getElementById('bizMonthlyRevenue').value = state.business.monthlyRevenue;
+    if (document.getElementById('bizMonthlyExpenses')) document.getElementById('bizMonthlyExpenses').value = state.business.monthlyExpenses;
+    if (document.getElementById('bizTaxRate')) document.getElementById('bizTaxRate').value = state.business.taxRate;
+
+    // Tax fields
+    if (document.getElementById('taxGrossIncome')) document.getElementById('taxGrossIncome').value = state.tax.grossIncome;
+    if (document.getElementById('taxDeductions')) document.getElementById('taxDeductions').value = state.tax.totalDeductions;
+
+    // Update display values
+    updateMpesaUI();
+    calculateBusinessTax();
+    if (state.assets && state.assets.length > 0) updateAssetUI();
 }
 
 // ============ CALCULATIONS ============
@@ -2408,6 +2709,136 @@ function updateMpesaUI() {
     document.getElementById('mpesaBar').textContent = `${percent}%`;
 
     state.mpesa = { monthlyTarget: target, currentSaved: current };
+    saveState();
+}
+
+// ============ BUSINESS INCOME ============
+function calculateBusinessTax() {
+    const revenue = state.business.monthlyRevenue;
+    const expenses = state.business.monthlyExpenses;
+    const taxRate = state.business.taxRate;
+
+    const grossProfit = revenue - expenses;
+    const taxLiability = Math.max(0, (grossProfit * taxRate) / 100);
+    const netIncome = grossProfit - taxLiability;
+
+    state.business._grossProfit = grossProfit;
+    state.business._taxLiability = taxLiability;
+    state.business._netIncome = netIncome;
+
+    const bizRevEl = document.getElementById('bizRevenueDisplay');
+    const bizExpEl = document.getElementById('bizExpenseDisplay');
+    const bizProfEl = document.getElementById('bizProfitDisplay');
+    const bizTaxEl = document.getElementById('bizTaxDisplay');
+    const bizNetEl = document.getElementById('bizNetDisplay');
+
+    if (bizRevEl) bizRevEl.textContent = `KES ${revenue.toLocaleString()}`;
+    if (bizExpEl) bizExpEl.textContent = `KES ${expenses.toLocaleString()}`;
+    if (bizProfEl) bizProfEl.textContent = `KES ${grossProfit.toLocaleString()}`;
+    if (bizTaxEl) bizTaxEl.textContent = `KES ${Math.round(taxLiability).toLocaleString()}`;
+    if (bizNetEl) bizNetEl.textContent = `KES ${Math.round(netIncome).toLocaleString()}`;
+
+    saveState();
+}
+
+// ============ ASSET VALUATION ============
+function addAsset() {
+    const assetType = document.getElementById('assetType').value || 'property';
+    const assetName = document.getElementById('assetName').value || 'Asset';
+    const assetValue = parseInt(document.getElementById('assetValue').value) || 0;
+    const assetPurchasePrice = parseInt(document.getElementById('assetPurchasePrice').value) || 0;
+    const assetDepreciationRate = parseFloat(document.getElementById('assetDepreciationRate').value) || 0;
+
+    const newAsset = {
+        id: Date.now(),
+        type: assetType,
+        name: assetName,
+        value: assetValue,
+        purchasePrice: assetPurchasePrice,
+        depreciationRate: assetDepreciationRate,
+        gain: assetValue - assetPurchasePrice
+    };
+
+    if (!state.assets) state.assets = [];
+    state.assets.push(newAsset);
+    saveState();
+    updateAssetUI();
+
+    document.getElementById('assetName').value = '';
+    document.getElementById('assetValue').value = 0;
+    document.getElementById('assetPurchasePrice').value = 0;
+    document.getElementById('assetDepreciationRate').value = 0;
+}
+
+function updateAssetUI() {
+    if (!state.assets) state.assets = [];
+    const assetsList = document.getElementById('assetsList');
+    if (!assetsList) return;
+
+    const totalValue = state.assets.reduce((sum, a) => sum + a.value, 0);
+    const totalGain = state.assets.reduce((sum, a) => sum + a.gain, 0);
+
+    assetsList.innerHTML = state.assets.map(asset => `
+        <div style="padding: 1rem; background: var(--offwhite); border-radius: 8px; border-left: 4px solid var(--success);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                <div>
+                    <strong>${asset.name}</strong>
+                    <span style="color: var(--text-3); font-size: 0.85rem;">· ${asset.type}</span>
+                </div>
+                <button onclick="removeAsset(${asset.id})" style="background: var(--danger); color: white; border: none; padding: 0.3rem 0.8rem; border-radius: 4px; cursor: pointer;">Remove</button>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-size: 0.9rem;">
+                <div><div style="color: var(--text-3);">Current Value</div><div style="font-weight: 600;">KES ${asset.value.toLocaleString()}</div></div>
+                <div><div style="color: var(--text-3);">Gain/Loss</div><div style="font-weight: 600; color: ${asset.gain >= 0 ? 'var(--success)' : 'var(--danger)'};">KES ${asset.gain.toLocaleString()}</div></div>
+            </div>
+        </div>
+    `).join('');
+
+    const totalValueEl = document.getElementById('totalAssetValue');
+    const totalGainEl = document.getElementById('totalAssetGain');
+    if (totalValueEl) totalValueEl.textContent = `KES ${totalValue.toLocaleString()}`;
+    if (totalGainEl) totalGainEl.textContent = `KES ${totalGain.toLocaleString()}`;
+}
+
+function removeAsset(id) {
+    state.assets = state.assets.filter(a => a.id !== id);
+    saveState();
+    updateAssetUI();
+}
+
+// ============ TAX OPTIMIZATION ============
+function calculateTaxOptimization() {
+    const grossIncome = state.tax.grossIncome;
+    const deductions = state.tax.totalDeductions;
+
+    const taxableIncome = Math.max(0, grossIncome - deductions);
+    let taxWithout = 0;
+    let taxWith = 0;
+
+    for (const band of KENYA_RATES.paye_bands) {
+        if (grossIncome > band.min) {
+            const taxableInBand = Math.min(grossIncome, band.max) - band.min;
+            taxWithout += taxableInBand * band.rate;
+        }
+        if (taxableIncome > band.min) {
+            const taxableInBand = Math.min(taxableIncome, band.max) - band.min;
+            taxWith += taxableInBand * band.rate;
+        }
+    }
+
+    taxWithout = Math.max(0, taxWithout - KENYA_RATES.paye_relief);
+    taxWith = Math.max(0, taxWith - KENYA_RATES.paye_relief);
+
+    const savings = taxWithout - taxWith;
+
+    state.tax._taxWithout = taxWithout;
+    state.tax._taxWith = taxWith;
+    state.tax._taxSavings = savings;
+
+    document.getElementById('taxWithout').textContent = `KES ${Math.round(taxWithout).toLocaleString()}`;
+    document.getElementById('taxWith').textContent = `KES ${Math.round(taxWith).toLocaleString()}`;
+    document.getElementById('taxSavings').textContent = `KES ${Math.round(savings).toLocaleString()}`;
+
     saveState();
 }
 
