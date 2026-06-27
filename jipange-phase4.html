@@ -321,14 +321,41 @@
 
         /* Footer */
         .footer {
-            position: fixed; bottom: 0; left: 0; right: 0; background: linear-gradient(135deg, var(--navy) 0%, #0f2647 100%);
-            color: var(--white); text-align: center; padding: 1.5rem 2rem; font-size: 0.85rem; line-height: 1.5;
-            border-top: 3px solid var(--amber); z-index: 50;
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: var(--white); text-align: center; padding: 1.5rem 2rem; font-size: 0.85rem; line-height: 1.6;
+            border-top: 4px solid var(--secondary); z-index: 50; box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
         }
 
         .footer-content { max-width: 1200px; margin: 0 auto; }
-        .footer-primary { font-weight: 600; color: var(--amber); margin-bottom: 0.25rem; }
-        .footer-secondary { color: rgba(255, 255, 255, 0.8); font-size: 0.8rem; }
+        .footer-primary {
+            font-weight: 700; color: var(--secondary); margin-bottom: 0.5rem;
+            font-size: 0.95rem; letter-spacing: 0.3px;
+        }
+        .footer-secondary {
+            color: rgba(255, 255, 255, 0.95); font-size: 0.8rem; line-height: 1.5;
+            display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .footer-link {
+            color: rgba(255, 255, 255, 0.95); text-decoration: none; transition: all 0.2s;
+            border-bottom: 2px solid transparent; padding-bottom: 2px;
+        }
+
+        .footer-link:hover {
+            color: var(--secondary); border-bottom-color: var(--secondary);
+        }
+
+        .footer-divider {
+            width: 1px; height: 16px; background: rgba(255, 255, 255, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .footer { padding: 1rem 1.5rem; }
+            .footer-secondary { flex-direction: column; gap: 0.5rem; }
+            .footer-divider { display: none; }
+        }
 
         /* Responsive */
         @media (max-width: 768px) {
@@ -1852,21 +1879,35 @@
 
                     <div class="field-group">
                         <label for="childEducationLevel">Target Education Level</label>
-                        <select id="childEducationLevel">
-                            <option value="primary">Primary (KES 150,000/year)</option>
-                            <option value="secondary">Secondary (KES 350,000/year)</option>
-                            <option value="university" selected>University (KES 500,000/year)</option>
-                            <option value="vocational">Vocational (KES 200,000/year)</option>
+                        <select id="childEducationLevel" onchange="updateEducationDefaults()">
+                            <optgroup label="Primary">
+                                <option value="primary">Primary (6 years, KES 180,000/year)</option>
+                            </optgroup>
+                            <optgroup label="Secondary (CBC - New Structure)">
+                                <option value="secondary_jnr">Junior Secondary (3 years, KES 400,000/year)</option>
+                                <option value="secondary_snr">Senior Secondary (3 years, KES 450,000/year)</option>
+                                <option value="secondary_complete">Complete Secondary (6 years, KES 425,000/year)</option>
+                            </optgroup>
+                            <optgroup label="Tertiary">
+                                <option value="university" selected>University (4 years, KES 650,000/year)</option>
+                                <option value="university_ext">University Extended (5-6 years, KES 650,000/year)</option>
+                                <option value="vocational">TVET/Vocational (2-3 years, KES 250,000/year)</option>
+                            </optgroup>
                         </select>
                     </div>
                 </div>
 
                 <div class="field-group">
                     <label for="childRegion">Region (for cost adjustment)</label>
-                    <select id="childRegion">
+                    <select id="childRegion" onchange="calculateEducationSavings()">
                         <option value="nairobi">Nairobi (+15%)</option>
-                        <option value="upcountry" selected>Upcountry</option>
-                        <option value="coastal">Coastal (+5%)</option>
+                        <option value="coastal">Coastal - Mombasa (+10%)</option>
+                        <option value="central">Central Region (-10%)</option>
+                        <option value="rift_valley">Rift Valley (-15%)</option>
+                        <option value="western">Western Region (-20%)</option>
+                        <option value="nyanza">Nyanza Region (-20%)</option>
+                        <option value="eastern">Eastern Region (-25%)</option>
+                        <option value="upcountry" selected>Upcountry Average (Baseline)</option>
                     </select>
                 </div>
             </div>
@@ -1887,8 +1928,57 @@
                 </div>
 
                 <div style="padding: 1rem; background: var(--success-bg); border-radius: 8px; border-left: 4px solid var(--success); margin-top: 1rem;">
-                    <div style="font-size: 0.85rem; color: var(--text-3); margin-bottom: 0.5rem;">Total Education Cost</div>
+                    <div style="font-size: 0.85rem; color: var(--text-3); margin-bottom: 0.5rem;">Total Tuition Cost</div>
                     <div style="font-size: 1.8rem; font-weight: 900; color: var(--success);" id="totalEducationCost">KES 2,000,000</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 style="font-size: 1.1rem; color: var(--primary); margin-bottom: 1.5rem;">School Type & Additional Costs</h2>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                    <div class="field-group">
+                        <label for="schoolType">School Type</label>
+                        <select id="schoolType" onchange="calculateEducationSavings()">
+                            <option value="public">Public School</option>
+                            <option value="private" selected>Private School</option>
+                            <option value="mixed">Mixed (Some years public)</option>
+                        </select>
+                    </div>
+
+                    <div class="field-group">
+                        <label for="boardingType">Boarding Status</label>
+                        <select id="boardingType" onchange="calculateEducationSavings()">
+                            <option value="day" selected>Day Scholar</option>
+                            <option value="boarding">Full Boarding</option>
+                            <option value="partial">Partial Boarding</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="field-group">
+                        <label for="uniformsBooks">Uniforms & Books (Annual, KES)</label>
+                        <input type="number" id="uniformsBooks" value="35000" min="0">
+                        <span class="input-hint">Estimated annual cost</span>
+                    </div>
+
+                    <div class="field-group">
+                        <label for="transportFees">Transport & Activities (Annual, KES)</label>
+                        <input type="number" id="transportFees" value="30000" min="0">
+                        <span class="input-hint">Transport, clubs, sports fees</span>
+                    </div>
+                </div>
+
+                <div class="field-group">
+                    <label for="scholarshipBursary">Scholarship/Bursary Amount (Annual, KES)</label>
+                    <input type="number" id="scholarshipBursary" value="0" min="0">
+                    <span class="input-hint">Will be deducted from total education cost</span>
+                </div>
+
+                <div style="padding: 1rem; background: rgba(212, 160, 23, 0.08); border-radius: 8px; border-left: 4px solid var(--secondary); margin-top: 1rem;">
+                    <div style="font-size: 0.85rem; color: var(--text-3); margin-bottom: 0.5rem;">Total Annual Cost (with additional items)</div>
+                    <div style="font-size: 1.6rem; font-weight: 900; color: var(--primary);" id="totalAnnualCost">KES 565,000</div>
                 </div>
             </div>
 
@@ -2697,10 +2787,15 @@
 <!-- Footer -->
 <footer class="footer">
     <div class="footer-content">
-        <div class="footer-primary">JiPange — Kenya's Financial Operating System · v2.0</div>
+        <div class="footer-primary">🇰🇪 JiPange — Kenya's Financial Operating System (v3.0)</div>
         <div class="footer-secondary">
-            📧 hello@dnconsultancy.co.ke · 🌐 dnconsultancy.co.ke<br>
-            <em>For financial planning purposes only. Not professional financial advice.</em>
+            <span class="footer-link">📧 hello@dnconsultancy.co.ke</span>
+            <span class="footer-divider"></span>
+            <span class="footer-link">🌐 dnconsultancy.co.ke</span>
+            <span class="footer-divider"></span>
+            <span style="color: rgba(255, 255, 255, 0.9); font-size: 0.75rem;">
+                ⓘ For planning purposes only. Not professional financial advice. Always consult a qualified advisor.
+            </span>
         </div>
     </div>
 </footer>
@@ -4063,41 +4158,108 @@ function calculateTaxOptimization() {
 }
 
 // ============ EDUCATION SAVINGS PLANNER ============
+function updateEducationDefaults() {
+    const level = document.getElementById('childEducationLevel').value;
+    const costDefaults = {
+        'primary': { years: 6, baseCost: 180000 },
+        'secondary_jnr': { years: 3, baseCost: 400000 },
+        'secondary_snr': { years: 3, baseCost: 450000 },
+        'secondary_complete': { years: 6, baseCost: 425000 },
+        'university': { years: 4, baseCost: 650000 },
+        'university_ext': { years: 5, baseCost: 650000 },
+        'vocational': { years: 3, baseCost: 250000 }
+    };
+
+    if (costDefaults[level]) {
+        const defaults = costDefaults[level];
+        document.getElementById('annualEducationCost').value = defaults.baseCost;
+        document.getElementById('educationYears').value = defaults.years;
+    }
+
+    calculateEducationSavings();
+}
+
 function calculateEducationSavings() {
     const childAge = parseInt(document.getElementById('childAge').value) || 0;
     const educationLevel = document.getElementById('childEducationLevel').value;
     const region = document.getElementById('childRegion').value;
+    const schoolType = document.getElementById('schoolType')?.value || 'private';
+    const boardingType = document.getElementById('boardingType')?.value || 'day';
+
     let annualCost = parseInt(document.getElementById('annualEducationCost').value) || 500000;
-    const educationYears = parseInt(document.getElementById('educationYears').value) || 4;
+    let educationYears = parseInt(document.getElementById('educationYears').value) || 4;
+
+    const uniformsBooks = parseInt(document.getElementById('uniformsBooks')?.value) || 0;
+    const transportFees = parseInt(document.getElementById('transportFees')?.value) || 0;
+    const scholarship = parseInt(document.getElementById('scholarshipBursary')?.value) || 0;
+
     const currentSavings = parseInt(document.getElementById('currentEducationSavings').value) || 0;
     const monthlyContribution = parseInt(document.getElementById('monthlyEducationContribution').value) || 20000;
     const returnRate = parseFloat(document.getElementById('educationReturnRate').value) || 8;
     const inflation = parseFloat(document.getElementById('educationInflation').value) || 7;
 
-    // Adjust cost by education level if needed
-    const costByLevel = { primary: 150000, secondary: 350000, university: 500000, vocational: 200000 };
+    // Adjust cost by education level
+    const costByLevel = {
+        'primary': 180000,
+        'secondary_jnr': 400000,
+        'secondary_snr': 450000,
+        'secondary_complete': 425000,
+        'university': 650000,
+        'university_ext': 650000,
+        'vocational': 250000
+    };
     if (costByLevel[educationLevel]) annualCost = costByLevel[educationLevel];
 
+    // Adjust for boarding type
+    if (boardingType === 'boarding') annualCost *= 1.5;
+    else if (boardingType === 'partial') annualCost *= 1.25;
+
     // Adjust for region
-    let regionMultiplier = 1.0;
-    if (region === 'nairobi') regionMultiplier = 1.15;
-    else if (region === 'coastal') regionMultiplier = 1.05;
-    annualCost = Math.round(annualCost * regionMultiplier);
+    const regionMultipliers = {
+        'nairobi': 1.15,
+        'coastal': 1.1,
+        'upcountry': 1.0,
+        'rift_valley': 0.85,
+        'western': 0.8,
+        'nyanza': 0.8,
+        'central': 0.9,
+        'eastern': 0.75
+    };
+    const multiplier = regionMultipliers[region] || 1.0;
+    annualCost = Math.round(annualCost * multiplier);
 
     // Calculate years until education starts
     let yearsUntilEducation = 0;
-    const ageByLevel = { primary: 6, secondary: 13, university: 18, vocational: 16 };
+    const ageByLevel = {
+        'primary': 6,
+        'secondary_jnr': 13,
+        'secondary_snr': 15,
+        'secondary_complete': 13,
+        'university': 18,
+        'university_ext': 18,
+        'vocational': 16
+    };
     if (ageByLevel[educationLevel]) {
-        yearsUntilEducation = ageByLevel[educationLevel] - childAge;
-        if (yearsUntilEducation < 0) yearsUntilEducation = 0;
+        yearsUntilEducation = Math.max(0, ageByLevel[educationLevel] - childAge);
     }
 
+    // Calculate total annual cost including extras
+    const annualAdditional = uniformsBooks + transportFees;
+    const totalAnnualCost = annualCost + annualAdditional;
+
     // Inflation-adjust the total cost
-    const baseCost = annualCost * educationYears;
-    let inflationAdjustedCost = baseCost;
-    for (let i = 0; i < yearsUntilEducation; i++) {
-        inflationAdjustedCost = baseCost * Math.pow(1 + inflation / 100, i);
+    let inflationAdjustedCost = totalAnnualCost * educationYears;
+    for (let i = 1; i < yearsUntilEducation; i++) {
+        const costInYear = totalAnnualCost * Math.pow(1 + inflation / 100, i);
+        if (i < yearsUntilEducation && i < yearsUntilEducation + educationYears) {
+            // Only add if this year falls within education period
+        }
     }
+    // Simpler approach: use average inflation
+    inflationAdjustedCost *= Math.pow(1 + inflation / 100, yearsUntilEducation / 2);
+
+    // Apply scholarship/bursary reduction
+    const totalCostAfterScholarship = Math.max(0, inflationAdjustedCost - (scholarship * educationYears));
 
     // Project savings with compound interest
     let projectedSavings = currentSavings;
@@ -4108,38 +4270,59 @@ function calculateEducationSavings() {
     projectedSavings *= Math.pow(1 + monthlyRate, monthsUntilEducation);
 
     // Future value of monthly contributions
-    if (monthsUntilEducation > 0) {
+    if (monthsUntilEducation > 0 && monthlyRate > 0) {
         const fvAnnuity = monthlyContribution * (Math.pow(1 + monthlyRate, monthsUntilEducation) - 1) / monthlyRate;
         projectedSavings += fvAnnuity;
+    } else if (monthsUntilEducation > 0) {
+        projectedSavings += monthlyContribution * monthsUntilEducation;
     }
 
-    const shortfall = inflationAdjustedCost - projectedSavings;
+    const shortfall = Math.max(0, totalCostAfterScholarship - projectedSavings);
+    const surplus = projectedSavings > totalCostAfterScholarship ? projectedSavings - totalCostAfterScholarship : 0;
 
     // Calculate required monthly payment to cover gap
     let requiredMonthly = monthlyContribution;
     if (monthsUntilEducation > 0 && shortfall > 0) {
-        requiredMonthly = monthlyContribution + (shortfall / monthsUntilEducation) * 0.1; // Rough estimate
+        const monthlyShortfall = (shortfall / educationYears) / 12;
+        requiredMonthly = monthlyContribution + monthlyShortfall;
     }
 
     // Update UI
-    document.getElementById('totalEducationCost').textContent = `KES ${baseCost.toLocaleString()}`;
-    document.getElementById('inflationAdjustedCost').textContent = `KES ${Math.round(inflationAdjustedCost).toLocaleString()}`;
-    document.getElementById('projectedEducationSavings').textContent = `KES ${Math.round(projectedSavings).toLocaleString()}`;
+    if (document.getElementById('totalEducationCost')) {
+        document.getElementById('totalEducationCost').textContent = `KES ${(annualCost * educationYears).toLocaleString()}`;
+    }
+    if (document.getElementById('totalAnnualCost')) {
+        document.getElementById('totalAnnualCost').textContent = `KES ${totalAnnualCost.toLocaleString()}`;
+    }
+    if (document.getElementById('inflationAdjustedCost')) {
+        document.getElementById('inflationAdjustedCost').textContent = `KES ${Math.round(totalCostAfterScholarship).toLocaleString()}`;
+    }
+    if (document.getElementById('projectedEducationSavings')) {
+        document.getElementById('projectedEducationSavings').textContent = `KES ${Math.round(projectedSavings).toLocaleString()}`;
+    }
 
     const shortfallEl = document.getElementById('educationShortfall');
     const noteEl = document.getElementById('educationShortfallNote');
-    shortfallEl.textContent = `KES ${Math.round(shortfall).toLocaleString()}`;
 
-    if (shortfall > 0) {
-        shortfallEl.style.color = 'var(--danger)';
-        noteEl.textContent = `Shortfall of KES ${Math.round(shortfall).toLocaleString()} - increase contributions or explore education loans`;
-    } else {
-        shortfallEl.style.color = 'var(--success)';
-        noteEl.textContent = `Surplus of KES ${Math.round(Math.abs(shortfall)).toLocaleString()} - on track to fund education!`;
+    if (shortfallEl) {
+        const displayAmount = shortfall > 0 ? shortfall : surplus;
+        shortfallEl.textContent = `KES ${Math.round(displayAmount).toLocaleString()}`;
+
+        if (shortfall > 0) {
+            shortfallEl.style.color = 'var(--danger)';
+            if (noteEl) noteEl.textContent = `Shortfall of KES ${Math.round(shortfall).toLocaleString()} - increase contributions or explore education loans`;
+        } else {
+            shortfallEl.style.color = 'var(--success)';
+            if (noteEl) noteEl.textContent = `Surplus of KES ${Math.round(surplus).toLocaleString()} - on track to fund education!`;
+        }
     }
 
-    document.getElementById('requiredMonthlyPayment').textContent = `KES ${Math.round(requiredMonthly).toLocaleString()}/month`;
-    document.getElementById('requiredLumpSum').textContent = `${Math.round(shortfall / 1000)}k`;
+    if (document.getElementById('requiredMonthlyPayment')) {
+        document.getElementById('requiredMonthlyPayment').textContent = `KES ${Math.round(requiredMonthly).toLocaleString()}/month`;
+    }
+    if (document.getElementById('requiredLumpSum')) {
+        document.getElementById('requiredLumpSum').textContent = `${Math.round(shortfall / 1000)}k`;
+    }
 
     saveState();
 }
