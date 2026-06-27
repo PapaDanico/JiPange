@@ -1913,7 +1913,198 @@
 
         <div class="button-group">
             <button onclick="showScreen('screen-16')">← Tax Optimizer</button>
-            <button class="primary" onclick="markStepComplete(17); showScreen('screen-1')">Complete Planning</button>
+            <button class="primary" onclick="markStepComplete(17); showScreen('screen-18')">Retirement Income →</button>
+        </div>
+    </section>
+
+    <!-- SCREEN 18: RETIREMENT INCOME SIMULATOR -->
+    <section id="screen-18">
+        <div class="screen-header">
+            <h1>🏖️ Retirement Income Simulator</h1>
+            <p>Plan your retirement income, understand your cash flow, and ensure your nest egg lasts</p>
+        </div>
+
+        <div class="form-container">
+            <div class="card">
+                <h2 style="font-size: 1.1rem; color: var(--primary); margin-bottom: 1.5rem;">Retirement Timeline</h2>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                    <div class="field-group">
+                        <label for="retireCurrentAge">Current Age</label>
+                        <input type="number" id="retireCurrentAge" min="20" max="100" value="45">
+                    </div>
+
+                    <div class="field-group">
+                        <label for="retireTargetAge">Target Retirement Age</label>
+                        <input type="number" id="retireTargetAge" min="40" max="80" value="60">
+                    </div>
+
+                    <div class="field-group">
+                        <label for="retireLifeExpectancy">Life Expectancy (planning to)</label>
+                        <input type="number" id="retireLifeExpectancy" min="60" max="110" value="85">
+                        <span class="input-hint">Kenya avg: 72, conservative: 90</span>
+                    </div>
+
+                    <div class="field-group">
+                        <label for="retireInflationRate">Inflation Rate (% annually)</label>
+                        <input type="number" id="retireInflationRate" min="0" max="10" step="0.5" value="6.5">
+                        <span class="input-hint">Kenya inflation avg: 6.5%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 style="font-size: 1.1rem; color: var(--primary); margin-bottom: 1.5rem;">Current Assets & Contributions</h2>
+
+                <div class="field-group">
+                    <label for="retireCurrentSavings">Current Retirement Savings (KES)</label>
+                    <input type="number" id="retireCurrentSavings" min="0" value="2000000">
+                </div>
+
+                <div class="field-group">
+                    <label for="retireMonthlyContribution">Monthly Contribution Until Retirement (KES)</label>
+                    <input type="number" id="retireMonthlyContribution" min="0" value="50000">
+                </div>
+
+                <div class="field-group">
+                    <label for="retirePreRetirementReturn">Expected Return Rate Pre-Retirement (%)</label>
+                    <input type="number" id="retirePreRetirementReturn" min="0" max="20" step="0.5" value="10">
+                    <span class="input-hint">Growth phase: 8-12% typical</span>
+                </div>
+
+                <div class="field-group">
+                    <label for="retirePostRetirementReturn">Expected Return Rate In Retirement (%)</label>
+                    <input type="number" id="retirePostRetirementReturn" min="0" max="15" step="0.5" value="6">
+                    <span class="input-hint">Conservative phase: 4-6% typical</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 style="font-size: 1.1rem; color: var(--primary); margin-bottom: 1.5rem;">Retirement Income Sources</h2>
+
+                <div class="field-group">
+                    <label for="retireNSSFAnnual">NSSF Annual Pension (KES)</label>
+                    <input type="number" id="retireNSSFAnnual" min="0" value="120000">
+                    <span class="input-hint">Tier 1 calculated from contributions</span>
+                </div>
+
+                <div class="field-group">
+                    <label for="retirePensionAnnual">Other Pension/Annuity Income (KES/year)</label>
+                    <input type="number" id="retirePensionAnnual" min="0" value="0">
+                </div>
+
+                <div class="field-group">
+                    <label for="retireRentalIncome">Rental Income (KES/month)</label>
+                    <input type="number" id="retireRentalIncome" min="0" value="0">
+                </div>
+
+                <div class="field-group">
+                    <label for="retireBusinessIncome">Business/Consulting Income (KES/month)</label>
+                    <input type="number" id="retireBusinessIncome" min="0" value="0">
+                </div>
+
+                <div class="field-group">
+                    <label for="retireOtherIncome">Other Fixed Income (KES/month)</label>
+                    <input type="number" id="retireOtherIncome" min="0" value="0">
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 style="font-size: 1.1rem; color: var(--primary); margin-bottom: 1.5rem;">Retirement Spending</h2>
+
+                <div class="field-group">
+                    <label for="retireAnnualSpending">Expected Annual Spending (KES)</label>
+                    <input type="number" id="retireAnnualSpending" min="0" value="3000000">
+                    <span class="input-hint">Often 70-80% of working years spending</span>
+                </div>
+
+                <div class="field-group">
+                    <label for="retireHealthcareAnnual">Annual Healthcare Costs (KES)</label>
+                    <input type="number" id="retireHealthcareAnnual" min="0" value="400000">
+                    <span class="input-hint">Critical in retirement - inflation sensitive</span>
+                </div>
+
+                <div class="field-group">
+                    <label for="retireWithdrawalRate">Safe Withdrawal Rate (%) — The 4% Rule</label>
+                    <input type="number" id="retireWithdrawalRate" min="2" max="8" step="0.1" value="4">
+                    <span class="input-hint">4% = 95% success rate over 30 years</span>
+                </div>
+
+                <button class="primary" onclick="calculateRetirementIncome()" style="width: 100%; margin-top: 1rem;">Calculate Retirement Plan</button>
+            </div>
+
+            <div class="card">
+                <h2 style="font-size: 1.1rem; color: var(--primary); margin-bottom: 1.5rem;">Retirement Projection Results</h2>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                    <div style="padding: 1rem; background: var(--offwhite); border-radius: 8px; border-left: 4px solid var(--chart-blue);">
+                        <div style="font-size: 0.85rem; color: var(--text-3); margin-bottom: 0.5rem;">Nest Egg at Retirement</div>
+                        <div style="font-size: 1.4rem; font-weight: 700; color: var(--chart-blue);" id="nestEggAtRetirement">KES 5,000,000</div>
+                    </div>
+
+                    <div style="padding: 1rem; background: var(--offwhite); border-radius: 8px; border-left: 4px solid var(--success);">
+                        <div style="font-size: 0.85rem; color: var(--text-3); margin-bottom: 0.5rem;">Safe Annual Withdrawal (4%)</div>
+                        <div style="font-size: 1.4rem; font-weight: 700; color: var(--success);" id="safeWithdrawal">KES 200,000</div>
+                    </div>
+
+                    <div style="padding: 1rem; background: var(--offwhite); border-radius: 8px; border-left: 4px solid var(--warning);">
+                        <div style="font-size: 0.85rem; color: var(--text-3); margin-bottom: 0.5rem;">Total Annual Income (w/ pensions)</div>
+                        <div style="font-size: 1.4rem; font-weight: 700; color: var(--warning);" id="totalRetirementIncome">KES 3,600,000</div>
+                    </div>
+
+                    <div style="padding: 1rem; background: var(--offwhite); border-radius: 8px; border-left: 4px solid var(--primary);">
+                        <div style="font-size: 0.85rem; color: var(--text-3); margin-bottom: 0.5rem;">Monthly Cash Flow</div>
+                        <div style="font-size: 1.4rem; font-weight: 700; color: var(--primary);" id="monthlyRetirementIncome">KES 300,000</div>
+                    </div>
+                </div>
+
+                <div style="padding: 1.2rem; background: var(--surface); border-radius: 8px; border: 2px solid var(--border); margin-bottom: 1.5rem;">
+                    <div style="font-size: 0.85rem; color: var(--text-3); text-transform: uppercase; font-weight: 600; margin-bottom: 0.5rem;">Retirement Sustainability</div>
+                    <div style="font-size: 1.8rem; font-weight: 900;" id="retirementStatus">✅ Sustainable</div>
+                    <div style="font-size: 0.9rem; color: var(--text-2); margin-top: 0.5rem;" id="retirementNote">Your nest egg should support your lifestyle</div>
+                </div>
+
+                <div style="padding: 1rem; background: var(--success-bg); border-radius: 8px; border-left: 4px solid var(--success);">
+                    <div style="font-size: 0.9rem; font-weight: 600; color: var(--success); margin-bottom: 0.5rem;">💡 Kenya Retirement Options</div>
+                    <ul style="font-size: 0.85rem; color: var(--text-2); margin-left: 1.2rem; line-height: 1.8;">
+                        <li><strong>NSSF Tier 1</strong> — Mandatory benefits at age 60 (monthly pension)</li>
+                        <li><strong>NSSF Tier 2</strong> — Voluntary savings for higher pension income</li>
+                        <li><strong>Annuity Products</strong> — Insurance-backed fixed income (6-8% per annum)</li>
+                        <li><strong>Real Estate</strong> — Rental income remains steady inflation hedge</li>
+                        <li><strong>CDF Allowance</strong> — Constituency Development Fund support for elderly</li>
+                        <li><strong>Dividend Income</strong> — NSE stocks, mutual funds (3-5% yields)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 style="font-size: 1.1rem; color: var(--primary); margin-bottom: 1.5rem;">Longevity & Confidence Analysis</h2>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                    <div style="padding: 1rem; background: var(--surface); border-radius: 8px;">
+                        <div style="font-size: 0.85rem; color: var(--text-3); margin-bottom: 0.5rem;">Years in Retirement</div>
+                        <div style="font-size: 1.6rem; font-weight: 700; color: var(--primary);" id="retirementYears">25 years</div>
+                    </div>
+
+                    <div style="padding: 1rem; background: var(--surface); border-radius: 8px;">
+                        <div style="font-size: 0.85rem; color: var(--text-3); margin-bottom: 0.5rem;">Success Rate (4% Rule)</div>
+                        <div style="font-size: 1.6rem; font-weight: 700; color: var(--success);" id="successRate">95% confidence</div>
+                    </div>
+                </div>
+
+                <div style="padding: 1rem; background: var(--warning-bg); border-radius: 8px; border-left: 4px solid var(--warning);">
+                    <div style="font-size: 0.9rem; font-weight: 600; color: var(--warning); margin-bottom: 0.5rem;">⚠️ Life Expectancy Notes</div>
+                    <p style="font-size: 0.85rem; color: var(--text-2); margin: 0;">
+                        Plan conservatively for age 85-90. Medical advances and healthier lifestyles extend retirement horizon.
+                        Consider long-term care insurance for ages 80+. Healthcare inflation (8-10% annually) significantly impacts costs.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button onclick="showScreen('screen-17')">← Education</button>
+            <button class="primary" onclick="markStepComplete(18); showScreen('screen-1')">Complete Full Plan</button>
         </div>
     </section>
 
@@ -1995,6 +2186,15 @@ const DEFAULT_STATE = {
     education: {
         children: [],
         _totalNeeded: 0, _totalProjected: 0, _totalShortfall: 0
+    },
+    retirement: {
+        currentAge: 45, targetAge: 60, lifeExpectancy: 85, inflationRate: 6.5,
+        currentSavings: 2000000, monthlyContribution: 50000,
+        preRetirementReturn: 10, postRetirementReturn: 6,
+        nssfAnnual: 120000, pensionAnnual: 0, rentalIncome: 0, businessIncome: 0, otherIncome: 0,
+        annualSpending: 3000000, healthcareAnnual: 400000, withdrawalRate: 4,
+        _nestEggAtRetirement: 0, _safeWithdrawal: 0, _totalRetirementIncome: 0, _monthlyIncome: 0,
+        _yearsInRetirement: 0, _isSustainable: false
     }
 };
 
@@ -2051,7 +2251,7 @@ function init() {
 
 function buildNavbar() {
     const navTabs = document.getElementById('navTabs');
-    const screens = ['Profile', 'Income', 'Budget', 'Scenarios', 'Wealth', 'Optimizer', 'Household', 'Goals', 'Learning', 'Reports', 'M-Pesa', 'Portfolio', 'Debts', 'Business', 'Assets', 'Tax', 'Education'];
+    const screens = ['Profile', 'Income', 'Budget', 'Scenarios', 'Wealth', 'Optimizer', 'Household', 'Goals', 'Learning', 'Reports', 'M-Pesa', 'Portfolio', 'Debts', 'Business', 'Assets', 'Tax', 'Education', 'Retirement'];
     navTabs.innerHTML = '';
     screens.forEach((name, i) => {
         const num = i + 1;
@@ -2176,6 +2376,33 @@ function attachEventListeners() {
         if (el) el.addEventListener('input', calculateEducationSavings);
     });
 
+    // Retirement income listeners
+    const retirementFields = ['retireCurrentAge', 'retireTargetAge', 'retireLifeExpectancy', 'retireInflationRate', 'retireCurrentSavings', 'retireMonthlyContribution', 'retirePreRetirementReturn', 'retirePostRetirementReturn', 'retireNSSFAnnual', 'retirePensionAnnual', 'retireRentalIncome', 'retireBusinessIncome', 'retireOtherIncome', 'retireAnnualSpending', 'retireHealthcareAnnual', 'retireWithdrawalRate'];
+    retirementFields.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('input', (e) => {
+            const key = id.replace('retire', '').toLowerCase();
+            const value = parseInt(e.target.value) || parseFloat(e.target.value) || 0;
+            if (key === 'currentage') state.retirement.currentAge = value;
+            if (key === 'targetage') state.retirement.targetAge = value;
+            if (key === 'lifeexpectancy') state.retirement.lifeExpectancy = value;
+            if (key === 'inflationrate') state.retirement.inflationRate = value;
+            if (key === 'currentsavings') state.retirement.currentSavings = value;
+            if (key === 'monthlycontribution') state.retirement.monthlyContribution = value;
+            if (key === 'preretirementreturn') state.retirement.preRetirementReturn = value;
+            if (key === 'postretirementreturn') state.retirement.postRetirementReturn = value;
+            if (key === 'nssfannual') state.retirement.nssfAnnual = value;
+            if (key === 'pensionannual') state.retirement.pensionAnnual = value;
+            if (key === 'rentalincome') state.retirement.rentalIncome = value;
+            if (key === 'businessincome') state.retirement.businessIncome = value;
+            if (key === 'otherincome') state.retirement.otherIncome = value;
+            if (key === 'annualspending') state.retirement.annualSpending = value;
+            if (key === 'healthcareannual') state.retirement.healthcareAnnual = value;
+            if (key === 'withdrawalrate') state.retirement.withdrawalRate = value;
+            saveState();
+        });
+    });
+
     // Initial load of investment and debt UIs
     if (state.investments && state.investments.length > 0) updateInvestmentUI();
     if (state.debts && state.debts.length > 0) updateDebtUI();
@@ -2260,7 +2487,7 @@ function loadFormValues() {
     if (document.getElementById('taxGrossIncome')) document.getElementById('taxGrossIncome').value = state.tax.grossIncome;
     if (document.getElementById('taxDeductions')) document.getElementById('taxDeductions').value = state.tax.totalDeductions;
 
-    // Education fields (currently showing empty - will load from state)
+    // Education fields
     if (document.getElementById('childAge')) document.getElementById('childAge').value = 8;
     if (document.getElementById('childEducationLevel')) document.getElementById('childEducationLevel').value = 'university';
     if (document.getElementById('annualEducationCost')) document.getElementById('annualEducationCost').value = 500000;
@@ -2270,11 +2497,30 @@ function loadFormValues() {
     if (document.getElementById('educationReturnRate')) document.getElementById('educationReturnRate').value = 8;
     if (document.getElementById('educationInflation')) document.getElementById('educationInflation').value = 7;
 
+    // Retirement fields
+    if (document.getElementById('retireCurrentAge')) document.getElementById('retireCurrentAge').value = state.retirement.currentAge;
+    if (document.getElementById('retireTargetAge')) document.getElementById('retireTargetAge').value = state.retirement.targetAge;
+    if (document.getElementById('retireLifeExpectancy')) document.getElementById('retireLifeExpectancy').value = state.retirement.lifeExpectancy;
+    if (document.getElementById('retireInflationRate')) document.getElementById('retireInflationRate').value = state.retirement.inflationRate;
+    if (document.getElementById('retireCurrentSavings')) document.getElementById('retireCurrentSavings').value = state.retirement.currentSavings;
+    if (document.getElementById('retireMonthlyContribution')) document.getElementById('retireMonthlyContribution').value = state.retirement.monthlyContribution;
+    if (document.getElementById('retirePreRetirementReturn')) document.getElementById('retirePreRetirementReturn').value = state.retirement.preRetirementReturn;
+    if (document.getElementById('retirePostRetirementReturn')) document.getElementById('retirePostRetirementReturn').value = state.retirement.postRetirementReturn;
+    if (document.getElementById('retireNSSFAnnual')) document.getElementById('retireNSSFAnnual').value = state.retirement.nssfAnnual;
+    if (document.getElementById('retirePensionAnnual')) document.getElementById('retirePensionAnnual').value = state.retirement.pensionAnnual;
+    if (document.getElementById('retireRentalIncome')) document.getElementById('retireRentalIncome').value = state.retirement.rentalIncome;
+    if (document.getElementById('retireBusinessIncome')) document.getElementById('retireBusinessIncome').value = state.retirement.businessIncome;
+    if (document.getElementById('retireOtherIncome')) document.getElementById('retireOtherIncome').value = state.retirement.otherIncome;
+    if (document.getElementById('retireAnnualSpending')) document.getElementById('retireAnnualSpending').value = state.retirement.annualSpending;
+    if (document.getElementById('retireHealthcareAnnual')) document.getElementById('retireHealthcareAnnual').value = state.retirement.healthcareAnnual;
+    if (document.getElementById('retireWithdrawalRate')) document.getElementById('retireWithdrawalRate').value = state.retirement.withdrawalRate;
+
     // Update display values
     updateMpesaUI();
     calculateBusinessTax();
     if (state.assets && state.assets.length > 0) updateAssetUI();
     if (state.education && state.education.children.length > 0) viewEducationSummary();
+    calculateRetirementIncome();
 }
 
 // ============ CALCULATIONS ============
@@ -3151,6 +3397,91 @@ function removeEducationChild(id) {
     state.education.children = state.education.children.filter(c => c.id !== id);
     saveState();
     viewEducationSummary();
+}
+
+// ============ RETIREMENT INCOME SIMULATOR ============
+function calculateRetirementIncome() {
+    const currentAge = state.retirement.currentAge;
+    const targetAge = state.retirement.targetAge;
+    const lifeExpectancy = state.retirement.lifeExpectancy;
+    const inflationRate = state.retirement.inflationRate / 100;
+    const currentSavings = state.retirement.currentSavings;
+    const monthlyContribution = state.retirement.monthlyContribution;
+    const preRetirementReturn = state.retirement.preRetirementReturn / 100 / 12;
+    const postRetirementReturn = state.retirement.postRetirementReturn / 100 / 12;
+    const nssfAnnual = state.retirement.nssfAnnual;
+    const pensionAnnual = state.retirement.pensionAnnual;
+    const rentalIncome = state.retirement.rentalIncome * 12;
+    const businessIncome = state.retirement.businessIncome * 12;
+    const otherIncome = state.retirement.otherIncome * 12;
+    const annualSpending = state.retirement.annualSpending;
+    const healthcareAnnual = state.retirement.healthcareAnnual;
+    const withdrawalRate = state.retirement.withdrawalRate / 100;
+
+    // Calculate years to retirement and years in retirement
+    const yearsToRetirement = targetAge - currentAge;
+    const yearsInRetirement = lifeExpectancy - targetAge;
+
+    // Project nest egg at retirement (growth phase)
+    let nestEgg = currentSavings * Math.pow(1 + preRetirementReturn, yearsToRetirement * 12);
+    const fvContributions = monthlyContribution * (Math.pow(1 + preRetirementReturn, yearsToRetirement * 12) - 1) / preRetirementReturn;
+    nestEgg += fvContributions;
+
+    // Safe withdrawal based on 4% rule
+    const safeWithdrawal = nestEgg * withdrawalRate;
+
+    // Inflation-adjust fixed income sources
+    let fixedIncome = nssfAnnual + pensionAnnual + rentalIncome + businessIncome + otherIncome;
+    fixedIncome *= Math.pow(1 + inflationRate, yearsToRetirement);
+
+    // Total annual retirement income
+    const totalRetirementIncome = safeWithdrawal + fixedIncome;
+    const monthlyRetirementIncome = totalRetirementIncome / 12;
+
+    // Total retirement spending (inflation-adjusted)
+    const inflationAdjustedSpending = annualSpending * Math.pow(1 + inflationRate, yearsToRetirement);
+    const totalRetirementSpending = inflationAdjustedSpending + healthcareAnnual;
+
+    // Determine sustainability
+    const isSustainable = totalRetirementIncome >= totalRetirementSpending;
+    const deficit = totalRetirementSpending - totalRetirementIncome;
+
+    // Success rate based on 4% rule (95% for 30 years, 90% for 40 years)
+    let successRate = 95;
+    if (yearsInRetirement > 40) successRate = 75;
+    else if (yearsInRetirement > 35) successRate = 85;
+    else if (yearsInRetirement > 30) successRate = 90;
+
+    // Update state
+    state.retirement._nestEggAtRetirement = nestEgg;
+    state.retirement._safeWithdrawal = safeWithdrawal;
+    state.retirement._totalRetirementIncome = totalRetirementIncome;
+    state.retirement._monthlyIncome = monthlyRetirementIncome;
+    state.retirement._yearsInRetirement = yearsInRetirement;
+    state.retirement._isSustainable = isSustainable;
+
+    // Update UI
+    document.getElementById('nestEggAtRetirement').textContent = `KES ${Math.round(nestEgg).toLocaleString()}`;
+    document.getElementById('safeWithdrawal').textContent = `KES ${Math.round(safeWithdrawal).toLocaleString()}`;
+    document.getElementById('totalRetirementIncome').textContent = `KES ${Math.round(totalRetirementIncome).toLocaleString()}`;
+    document.getElementById('monthlyRetirementIncome').textContent = `KES ${Math.round(monthlyRetirementIncome).toLocaleString()}`;
+    document.getElementById('retirementYears').textContent = `${yearsInRetirement} years`;
+    document.getElementById('successRate').textContent = `${successRate}% confidence`;
+
+    const statusEl = document.getElementById('retirementStatus');
+    const noteEl = document.getElementById('retirementNote');
+
+    if (isSustainable) {
+        statusEl.textContent = '✅ Sustainable';
+        statusEl.style.color = 'var(--success)';
+        noteEl.textContent = `Your income (KES ${Math.round(monthlyRetirementIncome).toLocaleString()}/month) exceeds spending needs. You're on track!`;
+    } else {
+        statusEl.textContent = '⚠️ Gap Identified';
+        statusEl.style.color = 'var(--warning)';
+        noteEl.textContent = `Monthly shortfall: KES ${Math.round(deficit / 12).toLocaleString()}. Increase contributions, work longer, or reduce spending.`;
+    }
+
+    saveState();
 }
 
 // ============ EXPORT & REPORTING ============
