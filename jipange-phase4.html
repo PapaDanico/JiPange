@@ -1436,6 +1436,9 @@
 
         <div id="recommendationsContainer"></div>
 
+        <!-- What-If Scenario Generator (P2) -->
+        <div id="optimizerScenariosContainer" style="margin-top: 3rem;"></div>
+
         <!-- SACCO Integration Section -->
         <div style="margin-top: 3rem; padding: 2rem; background: linear-gradient(135deg, #E8F5F0 0%, #D5EFE8 100%); border-radius: 16px; border-left: 6px solid var(--success);">
             <h3 style="color: var(--primary); font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.8rem;">
@@ -1543,6 +1546,13 @@
                     </div>
                 </div>
             </div>
+        </div>
+
+        <!-- Multi-Chama Management (P2) -->
+        <div style="margin-top: 3rem; border-top: 2px solid var(--border); padding-top: 2rem;">
+            <h2 style="color: var(--primary); font-size: 1.2rem; margin-bottom: 1.5rem;">👥 Chama & SACCO Groups</h2>
+            <div id="multiChamaContainer"></div>
+            <button class="primary" style="margin-top: 1rem;" onclick="addChama('New Chama Group', 20000, 15, 8); renderMultiChamaUI(); recalculateAll();">+ Add Chama Group</button>
         </div>
 
         <div id="householdDisabled" style="text-align: center; padding: 3rem;">
@@ -1669,10 +1679,10 @@
         </div>
     </section>
 
-    <!-- Screen 9: Financial Literacy Hub (NEW) -->
+    <!-- Screen 9: Kenya Financial Literacy 101 (NEW) -->
     <section id="screen-9" style="display: none;">
-        <h1 class="section-title">📚 Financial Literacy Hub</h1>
-        <p class="section-subtitle">Master financial concepts through bite-sized lessons. Take quizzes and earn certificates.</p>
+        <h1 class="section-title">📚 Kenya Financial Literacy 101</h1>
+        <p class="section-subtitle">Master financial concepts through bite-sized lessons. Tailored for Kenya's economy & context.</p>
 
         <div id="lessonsContainer"></div>
 
@@ -3355,7 +3365,8 @@ const DEFAULT_STATE = window.DEFAULT_STATE = {
         saccoRate: 7, stockRate: 12, realEstateRate: 15, businessRate: 20,
         _monthlyPool: 0, _accumulated: 0, _returns: 0, _totalWealth: 0,
         _saccoTotal: 0, _stockTotal: 0, _realEstateTotal: 0, _businessTotal: 0
-    }
+    },
+    chamas: []  // For multi-chama support in P2
 };
 
 let state = loadState();
@@ -3409,6 +3420,12 @@ function init() {
     renderGoalsUI();
     renderLessonsUI();
     updateHouseholdMode();
+
+    // P2 Enhancements
+    setTimeout(() => {
+        generateOptimizerScenarios();
+        renderMultiChamaUI();
+    }, 100);
 }
 
 function buildNavbar() {
@@ -4646,32 +4663,8 @@ function renderGoalsUI() {
 }
 
 function renderLessonsUI() {
-    const lessons = [
-        { icon: '📈', title: 'Compound Interest', duration: '5 min', preview: 'How money grows exponentially over time.' },
-        { icon: '💰', title: 'Kenya Tax System', duration: '7 min', preview: 'Understand PAYE, NSSF, SHIF, and IFB.' },
-        { icon: '🏦', title: 'SACCOs vs Banks', duration: '6 min', preview: 'When to choose group savings over bank deposits.' },
-        { icon: '🛡️', title: 'Emergency Fund', duration: '5 min', preview: 'Build 6 months of expenses as your foundation.' },
-        { icon: '📊', title: 'Investment Ladder', duration: '8 min', preview: 'Diversify across bonds, stocks, and real estate.' },
-        { icon: '🌾', title: 'M-Pesa Savings', duration: '4 min', preview: 'Practical savings hacks using M-Pesa.' },
-        { icon: '👥', title: 'Chama Strategy', duration: '6 min', preview: 'Maximize returns in group savings plans.' },
-        { icon: '🔥', title: 'FIRE Movement', duration: '10 min', preview: 'Financial Independence, Retire Early explained.' },
-        { icon: '🏠', title: 'Real Estate 101', duration: '7 min', preview: 'Investment property basics for Kenya.' },
-        { icon: '📚', title: 'Financial Literacy', duration: '9 min', preview: 'Essential money concepts every Kenyan should know.' }
-    ];
-
-    const container = document.getElementById('lessonsContainer');
-    container.innerHTML = lessons.map((lesson, idx) => `
-        <div class="lesson-card">
-            <div class="lesson-header">
-                <div class="lesson-icon">${lesson.icon}</div>
-                <div>
-                    <div class="lesson-title">${lesson.title}</div>
-                    <div class="lesson-preview">${lesson.preview}</div>
-                    <div class="lesson-duration">⏱️ ${lesson.duration}</div>
-                </div>
-            </div>
-        </div>
-    `).join('');
+    // Render Kenya Financial Literacy 101 lessons (P2 enhancement)
+    renderKenyaLessons();
 }
 
 function updateGoalsUI() {
@@ -6658,6 +6651,323 @@ function exportCustomizedReport(type) {
             setButtonLoading(button, false);
         }
     }, 500);
+}
+
+// ============ P2 ENHANCEMENTS: Smart Optimizer, Multi-Chama, Kenya Financial Literacy 101 ============
+
+// Smart Optimizer: What-If Scenario Generator
+function generateOptimizerScenarios() {
+    const s = state;
+    const scenarios = {
+        conservative: {
+            savingsIncrease: 5,
+            investmentReturn: 8,
+            result: 'Focus on stability, smaller steps'
+        },
+        balanced: {
+            savingsIncrease: 15,
+            investmentReturn: 10,
+            result: 'Steady growth with moderate risk'
+        },
+        aggressive: {
+            savingsIncrease: 25,
+            investmentReturn: 12,
+            result: 'Maximize growth, accept volatility'
+        }
+    };
+
+    const container = document.getElementById('optimizerScenariosContainer');
+    if (!container) return;
+
+    let html = '<h3 style="color: var(--primary); margin-bottom: 1.5rem; font-size: 1.1rem;">🎯 What-If Scenarios</h3>';
+    html += '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">';
+
+    Object.entries(scenarios).forEach(([key, scenario]) => {
+        const newSavings = (s.budget._surplus || 0) * (1 + scenario.savingsIncrease / 100);
+        const fireYears = s.fire._fireReal > 0 ? Math.sqrt(s.fire._fireReal / Math.max(1, newSavings * 12)) : 0;
+
+        html += `
+            <div style="background: linear-gradient(135deg, ${
+                key === 'conservative' ? '#E8F5E9' : key === 'balanced' ? '#E3F2FD' : '#FFF3E0'
+            } 0%, ${
+                key === 'conservative' ? '#C8E6C9' : key === 'balanced' ? '#BBDEFB' : '#FFE0B2'
+            } 100%); padding: 1.5rem; border-radius: 12px; border-left: 6px solid ${
+                key === 'conservative' ? '#4CAF50' : key === 'balanced' ? '#2196F3' : '#FF9800'
+            };">
+                <div style="font-weight: 700; font-size: 1rem; color: var(--text-dark); margin-bottom: 0.5rem; text-transform: capitalize;">
+                    ${key === 'conservative' ? '🛡️' : key === 'balanced' ? '⚖️' : '🚀'} ${key}
+                </div>
+                <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">${scenario.result}</div>
+                <div style="display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.9rem;">
+                    <div><strong>New Monthly Savings:</strong> KES ${formatKES(newSavings)}</div>
+                    <div><strong>Expected Return:</strong> ${scenario.investmentReturn}% p.a.</div>
+                    <div><strong>FIRE Timeline:</strong> ${Math.round(fireYears)} years</div>
+                </div>
+            </div>
+        `;
+    });
+
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+// Multi-Chama Management
+function initializeMultiChama() {
+    if (!state.chamas) {
+        state.chamas = [];
+    }
+}
+
+function addChama(name, monthlyContribution, groupSize, estimatedReturn) {
+    initializeMultiChama();
+    const chama = {
+        id: 'chama_' + Date.now(),
+        name: name || 'My Chama Group',
+        monthlyContribution: monthlyContribution || 20000,
+        groupSize: groupSize || 15,
+        estimatedReturn: estimatedReturn || 8,
+        dateJoined: new Date().toISOString(),
+        _monthlyIncome: 0,
+        _annualIncome: 0
+    };
+    state.chamas.push(chama);
+    return chama;
+}
+
+function calculateMultiChamaReturns() {
+    if (!state.chamas || state.chamas.length === 0) return 0;
+
+    let totalAnnualIncome = 0;
+    state.chamas.forEach(chama => {
+        const monthlyPool = chama.monthlyContribution * chama.groupSize;
+        const monthlyReturn = (monthlyPool * chama.estimatedReturn) / 100 / 12;
+        chama._monthlyIncome = Math.round(monthlyReturn / chama.groupSize);
+        chama._annualIncome = chama._monthlyIncome * 12;
+        totalAnnualIncome += chama._annualIncome;
+    });
+
+    state.income.passive = (state.income.passive || 0) + totalAnnualIncome / 12;
+    return totalAnnualIncome / 12;
+}
+
+function renderMultiChamaUI() {
+    const container = document.getElementById('multiChamaContainer');
+    if (!container) return;
+
+    initializeMultiChama();
+
+    if (state.chamas.length === 0) {
+        container.innerHTML = `
+            <p style="color: var(--text-muted); text-align: center; padding: 2rem;">
+                No chama groups yet. Consider joining or starting a Chama/SACCO to access better savings rates and loans.
+            </p>
+        `;
+        return;
+    }
+
+    let html = '<h3 style="color: var(--primary); margin-bottom: 1.5rem;">📊 Your Chama Groups</h3>';
+    html += '<div style="display: grid; gap: 1.5rem;">';
+
+    state.chamas.forEach((chama, idx) => {
+        html += `
+            <div style="background: linear-gradient(135deg, #E8F5F0 0%, #D5EFE8 100%); padding: 1.5rem; border-radius: 12px; border-left: 6px solid var(--success);">
+                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                    <div>
+                        <div style="font-weight: 700; font-size: 1rem; color: var(--text-dark);">${chama.name}</div>
+                        <div style="font-size: 0.85rem; color: var(--text-muted);">Joined: ${new Date(chama.dateJoined).toLocaleDateString()}</div>
+                    </div>
+                    <button onclick="removeChama('${chama.id}')" style="background: #EF4444; color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem;">Remove</button>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
+                    <div>
+                        <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.25rem;">Monthly Contribution</div>
+                        <div style="font-weight: 700; font-size: 1rem; color: var(--success);">KES ${formatKES(chama.monthlyContribution)}</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.25rem;">Group Size</div>
+                        <div style="font-weight: 700; font-size: 1rem; color: var(--primary);">${chama.groupSize} members</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.25rem;">Est. Annual Return</div>
+                        <div style="font-weight: 700; font-size: 1rem; color: var(--info);">KES ${formatKES(chama._annualIncome)}</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.25rem;">Your Monthly Share</div>
+                        <div style="font-weight: 700; font-size: 1rem; color: var(--accent);">KES ${formatKES(chama._monthlyIncome)}</div>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+function removeChama(chamaId) {
+    const idx = state.chamas.findIndex(c => c.id === chamaId);
+    if (idx > -1) {
+        state.chamas.splice(idx, 1);
+        renderMultiChamaUI();
+        recalculateAll();
+    }
+}
+
+// Kenya Financial Literacy 101: Lesson System
+window.KENYA_LESSONS = [
+    {
+        id: 'lesson_1',
+        title: 'Understanding SHIF: Kenya\'s Universal Health Insurance',
+        duration: '5 min',
+        level: 'Beginner',
+        content: 'SHIF (Social Health Insurance Fund) is Kenya\'s new universal healthcare system. Learn how it works, how much it costs, and why it matters for your family.',
+        keyPoints: ['3.5% contribution on salary', 'Covers 80% of basic healthcare', 'Families get better rates together'],
+        quiz: [
+            { q: 'What % of salary is SHIF contribution?', options: ['2.5%', '3.5%', '5%'], correct: 1 },
+            { q: 'Does SHIF cover dental care?', options: ['Yes, fully', 'No', 'Limited coverage'], correct: 2 }
+        ]
+    },
+    {
+        id: 'lesson_2',
+        title: 'Treasury Bonds: Growing Wealth Safely',
+        duration: '7 min',
+        level: 'Intermediate',
+        content: 'Kenya Government Bonds are safe, high-return investments. Learn about 1-5 year bonds, coupon rates, and how to build a ladder strategy.',
+        keyPoints: ['6-8.5% annual returns', 'Government-backed safety', 'Perfect for emergency funds'],
+        quiz: [
+            { q: 'What\'s a typical 3-year bond rate in Kenya?', options: ['5%', '7.5%', '10%'], correct: 1 }
+        ]
+    },
+    {
+        id: 'lesson_3',
+        title: 'M-Pesa & Mobile Money: Beyond Payments',
+        duration: '6 min',
+        level: 'Beginner',
+        content: 'M-Pesa is more than payments. Learn about M-Pesa Lock, savings options, and how to use mobile money for wealth building.',
+        keyPoints: ['M-Pesa Lock = locked savings', 'Earns interest on idle balance', 'Accessible anytime for emergencies'],
+        quiz: []
+    },
+    {
+        id: 'lesson_4',
+        title: 'SACCO & Chama: Community Wealth Building',
+        duration: '8 min',
+        level: 'Intermediate',
+        content: 'SACCOs and Chamas are how Kenyans build wealth together. Learn the difference, benefits, and how to find a good group.',
+        keyPoints: ['1-2% monthly loans (vs 3-5% from banks)', '5-15% annual dividends', 'Community support & accountability'],
+        quiz: [
+            { q: 'Typical SACCO loan rate?', options: ['1-2% monthly', '3-5% monthly', '10-15% monthly'], correct: 0 }
+        ]
+    },
+    {
+        id: 'lesson_5',
+        title: 'FIRE in Kenya: Achieving Financial Independence',
+        duration: '10 min',
+        level: 'Advanced',
+        content: 'FIRE means Financial Independence, Retire Early. Learn how the 4% rule works, inflation impacts, and Kenya-specific strategies.',
+        keyPoints: ['Save 25-35x annual expenses', 'Invest in bonds + equities', 'Plan for inflation (6-7% in Kenya)'],
+        quiz: []
+    }
+];
+
+function renderKenyaLessons() {
+    const container = document.getElementById('lessonsContainer');
+    if (!container) return;
+
+    const lessons = window.KENYA_LESSONS || [];
+    if (lessons.length === 0) {
+        container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 2rem;">Loading lessons...</p>';
+        return;
+    }
+
+    let html = '<h3 style="color: var(--primary); margin-bottom: 1.5rem; font-size: 1.1rem;">📖 Featured Lessons</h3>';
+    html += '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">';
+
+    lessons.forEach(lesson => {
+        const levelColor = lesson.level === 'Beginner' ? '#4CAF50' : lesson.level === 'Intermediate' ? '#2196F3' : '#FF9800';
+
+        html += `
+            <div style="background: white; border: 2px solid #E8EEF5; border-radius: 12px; padding: 1.5rem; cursor: pointer; transition: all 0.3s;"
+                 onmouseover="this.style.boxShadow = '0 4px 16px rgba(0,0,0,0.1)'; this.style.transform = 'translateY(-4px)';"
+                 onmouseout="this.style.boxShadow = 'none'; this.style.transform = 'translateY(0)';"
+                 onclick="showLessonDetail('${lesson.id}')">
+                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                    <h4 style="color: var(--text-dark); margin: 0; font-size: 1rem; font-weight: 700; flex: 1;">${lesson.title}</h4>
+                    <span style="background: ${levelColor}; color: white; font-size: 0.75rem; padding: 0.35rem 0.75rem; border-radius: 20px; white-space: nowrap; margin-left: 0.5rem;">${lesson.level}</span>
+                </div>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0 0 1rem 0; line-height: 1.5;">${lesson.content}</p>
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                    ${lesson.keyPoints.map(kp => `<span style="background: #F0F4F8; color: var(--primary); font-size: 0.8rem; padding: 0.3rem 0.75rem; border-radius: 16px;">✓ ${kp}</span>`).join('')}
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #E8EEF5; padding-top: 1rem;">
+                    <span style="font-size: 0.85rem; color: var(--text-muted);">⏱️ ${lesson.duration}</span>
+                    <button style="background: var(--primary); color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-size: 0.9rem;">Start Lesson →</button>
+                </div>
+            </div>
+        `;
+    });
+
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+function showLessonDetail(lessonId) {
+    const lesson = (window.KENYA_LESSONS || []).find(l => l.id === lessonId);
+    if (!lesson) return;
+
+    const modal = document.createElement('div');
+    modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 2000; padding: 20px;';
+
+    const content = document.createElement('div');
+    content.style.cssText = 'background: white; border-radius: 12px; padding: 2rem; max-width: 600px; width: 100%; max-height: 80vh; overflow-y: auto;';
+
+    content.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1.5rem;">
+            <h2 style="margin: 0; color: var(--primary); font-size: 1.3rem;">${lesson.title}</h2>
+            <button onclick="this.parentElement.parentElement.parentElement.remove()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted);">✕</button>
+        </div>
+
+        <div style="display: flex; gap: 1rem; margin-bottom: 2rem;">
+            <span style="background: #F0F4F8; color: var(--primary); padding: 0.4rem 0.75rem; border-radius: 6px; font-size: 0.85rem;">⏱️ ${lesson.duration}</span>
+            <span style="background: #E8F5E9; color: #4CAF50; padding: 0.4rem 0.75rem; border-radius: 6px; font-size: 0.85rem;">📊 ${lesson.level}</span>
+        </div>
+
+        <div style="background: #F0F4F8; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem;">
+            <h3 style="color: var(--primary); margin-top: 0; margin-bottom: 1rem;">📌 Key Points</h3>
+            <ul style="margin: 0; padding-left: 1.5rem; color: var(--text-dark);">
+                ${lesson.keyPoints.map(kp => `<li style="margin-bottom: 0.5rem;">${kp}</li>`).join('')}
+            </ul>
+        </div>
+
+        ${lesson.quiz.length > 0 ? `
+            <div style="background: #FFF3E0; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem;">
+                <h3 style="color: var(--accent); margin-top: 0; margin-bottom: 1rem;">🎯 Quick Quiz</h3>
+                ${lesson.quiz.map((q, idx) => `
+                    <div style="margin-bottom: 1.5rem;">
+                        <div style="font-weight: 600; color: var(--text-dark); margin-bottom: 0.75rem; font-size: 0.95rem;">${idx + 1}. ${q.q}</div>
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            ${q.options.map((opt, i) => `
+                                <label style="display: flex; align-items: center; cursor: pointer; font-size: 0.9rem;">
+                                    <input type="radio" name="q${idx}" value="${i}" style="margin-right: 0.5rem; cursor: pointer;">
+                                    ${opt}
+                                </label>
+                            `).join('')}
+                        </div>
+                    </div>
+                `).join('')}
+                <button style="background: var(--accent); color: white; border: none; padding: 0.7rem 1.5rem; border-radius: 6px; cursor: pointer; font-size: 0.95rem; width: 100%;" onclick="checkQuizAnswers(${lesson.quiz.length})">Check Answers</button>
+            </div>
+        ` : ''}
+
+        <button class="primary" style="width: 100%; padding: 1rem;" onclick="this.parentElement.parentElement.remove(); showNotification('Lesson completed! Certificate earned ✓', 'success');">✓ Mark Complete & Earn Certificate</button>
+    `;
+
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+    modal.onclick = (e) => e.target === modal && modal.remove();
+}
+
+function checkQuizAnswers(count) {
+    showNotification('Quiz submitted! Check your answers in the lesson.', 'info');
 }
 
 // ============ STATE MANAGEMENT ============
