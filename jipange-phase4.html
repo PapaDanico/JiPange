@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JiPange — Kenya's Financial Operating System</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         :root {
             /* African Tribal Palette - Inspired by Kenyan heritage */
@@ -239,7 +241,11 @@
         .field-group { margin-bottom: 1.8rem; }
         label {
             display: block; font-size: 0.9rem; font-weight: 700; color: var(--primary); margin-bottom: 0.7rem;
-            text-transform: uppercase; letter-spacing: 0.4px;
+            text-transform: uppercase; letter-spacing: 0.4px; display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .label-hint {
+            font-size: 0.75rem; font-weight: 400; color: var(--text-3); text-transform: none; letter-spacing: 0;
         }
 
         input[type="text"], input[type="number"], select, textarea {
@@ -257,6 +263,17 @@
 
         .input-hint { font-size: 0.8rem; color: var(--text-3); margin-top: 0.3rem; display: block; }
         .input-value { font-size: 0.9rem; color: var(--primary); font-weight: 600; margin-top: 0.5rem; }
+
+        /* Animations */
+        @keyframes slideIn {
+            from { transform: translateX(400px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
 
         /* Buttons */
         button {
@@ -1381,6 +1398,19 @@
             </div>
         </div>
 
+        <!-- Quick Share & Print -->
+        <div class="card">
+            <h2 style="font-size: 1.1rem; color: var(--navy); margin-bottom: 1rem;">Share & Print</h2>
+            <p style="font-size: 0.9rem; color: var(--text-2); margin-bottom: 1.5rem;">Share your plan with family, advisors, or print for records.</p>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+                <button onclick="printPlan()" style="background: #4CAF50; color: white;">🖨️ Print Plan</button>
+                <button onclick="shareWhatsApp()" style="background: #25D366; color: white;">💬 Share via WhatsApp</button>
+                <button onclick="shareEmail()" style="background: #EA4335; color: white;">📧 Share via Email</button>
+                <button onclick="exportCSV()" style="background: #FF9800; color: white;">📊 Export to CSV</button>
+            </div>
+        </div>
+
         <!-- Data Management -->
         <div class="card">
             <h2 style="font-size: 1.1rem; color: var(--navy); margin-bottom: 1rem;">Data Management</h2>
@@ -1398,6 +1428,28 @@
             <button class="primary" onclick="showScreen('screen-1')">Start Over</button>
         </div>
     </section>
+
+    <!-- Progress Indicator -->
+    <div id="progress-indicator" style="
+        position: fixed; top: 0; left: 0; right: 0; height: 3px;
+        background: transparent; z-index: 101;
+    ">
+        <div id="progress-bar" style="
+            height: 100%; background: linear-gradient(90deg, var(--secondary), var(--tertiary));
+            width: 4%; transition: width 0.3s ease;
+        "></div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="notification-toast" style="
+        position: fixed; bottom: 20px; right: 20px;
+        background: #2D7659; color: white; padding: 15px 20px;
+        border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        display: none; z-index: 1000; animation: slideIn 0.3s ease;
+        max-width: 300px; font-size: 14px;
+    ">
+        <span id="notification-message"></span>
+    </div>
 
     <!-- Screen 11: M-Pesa Savings Tracker (NEW) -->
     <section id="screen-11">
@@ -3762,6 +3814,7 @@ function showScreen(screenId) {
     document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
     document.getElementById(screenId).classList.add('active');
     window.scrollTo(0, 0);
+    updateProgressBar();
 }
 
 function markStepComplete(stepNum) {
@@ -4628,21 +4681,165 @@ function calculateChamaProjections() {
     saveState();
 }
 
+// ============ NOTIFICATIONS ============
+function showNotification(message, type = 'success') {
+    const toast = document.getElementById('notification-toast');
+    const msgEl = document.getElementById('notification-message');
+    msgEl.textContent = message;
+    toast.style.background = type === 'success' ? '#2D7659' : type === 'error' ? '#A32D2D' : '#D4A017';
+    toast.style.display = 'block';
+    setTimeout(() => toast.style.display = 'none', 3000);
+}
+
+function updateProgressBar() {
+    const screens = document.querySelectorAll('section[id^="screen-"]');
+    const currentScreen = document.querySelector('section:not([style*="display: none"])');
+    if (currentScreen && screens.length > 0) {
+        let currentIndex = 0;
+        for (let i = 0; i < screens.length; i++) {
+            if (screens[i] === currentScreen) {
+                currentIndex = i + 1;
+                break;
+            }
+        }
+        const percentage = (currentIndex / screens.length) * 100;
+        document.getElementById('progress-bar').style.width = percentage + '%';
+    }
+}
+
 // ============ EXPORT & REPORTING ============
+async function generatePDF(title, contentId) {
+    const element = document.getElementById(contentId) || document.querySelector('.active-screen');
+    const opt = {
+        margin: 10,
+        filename: `jipange-${title}-${new Date().toISOString().split('T')[0]}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
+    };
+    await html2pdf().set(opt).from(element).save();
+}
+
 function exportMonthlyReport() {
-    alert('📊 Monthly Report: Feature coming in final build');
+    const content = `
+    <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+        <h1>📅 Monthly Snapshot Report</h1>
+        <p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
+        <hr>
+        <h2>Monthly Overview</h2>
+        <table style="width: 100%; border-collapse: collapse;">
+            <tr><td><strong>Monthly Income:</strong></td><td>KES ${formatNumber(state.income.monthlyIncome)}</td></tr>
+            <tr><td><strong>Total Expenses:</strong></td><td>KES ${formatNumber(state.expenses.totalMonthly)}</td></tr>
+            <tr><td><strong>Monthly Savings:</strong></td><td>KES ${formatNumber(state.income.monthlyIncome - state.expenses.totalMonthly)}</td></tr>
+            <tr><td><strong>Savings Rate:</strong></td><td>${((((state.income.monthlyIncome - state.expenses.totalMonthly) / state.income.monthlyIncome) * 100) || 0).toFixed(1)}%</td></tr>
+        </table>
+        <h2>Top 5 Expense Categories</h2>
+        <ul>
+            ${Object.entries(state.expenses).filter(([k, v]) => k !== 'totalMonthly' && typeof v === 'number').sort((a, b) => b[1] - a[1]).slice(0, 5).map(([k, v]) => `<li>${k.replace(/_/g, ' ')}: KES ${formatNumber(v)}</li>`).join('')}
+        </ul>
+    </div>`;
+    downloadPDF(content, `monthly-snapshot-${new Date().toISOString().split('T')[0]}.pdf`);
+    showNotification('✅ Monthly Report PDF downloaded successfully!');
 }
 
 function exportAnnualReview() {
-    alert('📈 Annual Review: Feature coming in final build');
+    const annualIncome = state.income.monthlyIncome * 12;
+    const annualExpense = state.expenses.totalMonthly * 12;
+    const annualSavings = annualIncome - annualExpense;
+    const content = `
+    <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+        <h1>📈 Annual Review Report</h1>
+        <p><strong>Report Date:</strong> ${new Date().toLocaleDateString()}</p>
+        <hr>
+        <h2>Annual Financial Summary</h2>
+        <table style="width: 100%; border-collapse: collapse;">
+            <tr><td><strong>Annual Gross Income:</strong></td><td>KES ${formatNumber(annualIncome)}</td></tr>
+            <tr><td><strong>Annual Expenses:</strong></td><td>KES ${formatNumber(annualExpense)}</td></tr>
+            <tr><td><strong>Annual Net Savings:</strong></td><td>KES ${formatNumber(annualSavings)}</td></tr>
+            <tr><td><strong>Average Monthly Savings:</strong></td><td>KES ${formatNumber(annualSavings / 12)}</td></tr>
+        </table>
+        <h2>Wealth Growth Projections</h2>
+        <p><strong>5-Year Target:</strong> KES ${formatNumber(annualSavings * 5)}</p>
+        <p><strong>10-Year Target:</strong> KES ${formatNumber(annualSavings * 10)}</p>
+        <h2>Goals Progress</h2>
+        ${state.goals.map(g => `<p>🎯 ${g.name}: ${((g.currentAmount / g.targetAmount) * 100).toFixed(1)}% complete</p>`).join('')}
+    </div>`;
+    downloadPDF(content, `annual-review-${new Date().toISOString().split('T')[0]}.pdf`);
+    showNotification('✅ Annual Review PDF downloaded successfully!');
 }
 
 function exportScenarioComparison() {
-    alert('🎬 Scenario Comparison: Feature coming in final build');
+    const scenarios = state.scenarios;
+    const content = `
+    <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+        <h1>🎬 Scenario Comparison Report</h1>
+        <p><strong>Analysis Date:</strong> ${new Date().toLocaleDateString()}</p>
+        <hr>
+        <h2>Scenario Comparison Table</h2>
+        <table style="width: 100%; border-collapse: collapse; border: 1px solid #ddd;">
+            <tr style="background: #f0f0f0;">
+                <th style="border: 1px solid #ddd; padding: 8px;">Scenario</th>
+                <th style="border: 1px solid #ddd; padding: 8px;">Inflation Rate</th>
+                <th style="border: 1px solid #ddd; padding: 8px;">10-Year Projection</th>
+            </tr>
+            ${scenarios.map(s => `<tr><td style="border: 1px solid #ddd; padding: 8px;">${s.name}</td><td style="border: 1px solid #ddd; padding: 8px;">${s.inflationRate}%</td><td style="border: 1px solid #ddd; padding: 8px;">KES ${formatNumber(s.tenYearTarget || 0)}</td></tr>`).join('')}
+        </table>
+        <h2>Recommendation</h2>
+        <p>Choose the scenario that best aligns with your risk tolerance and financial goals.</p>
+    </div>`;
+    downloadPDF(content, `scenario-comparison-${new Date().toISOString().split('T')[0]}.pdf`);
+    showNotification('✅ Scenario Comparison PDF downloaded successfully!');
 }
 
 function exportShareablePlan() {
-    alert('🔗 Shareable Plan: Feature coming in final build');
+    const summaryData = {
+        monthlyIncome: state.income.monthlyIncome,
+        totalExpenses: state.expenses.totalMonthly,
+        goals: state.goals,
+        children: state.education.children,
+        retirement: state.retirement
+    };
+    const content = `
+    <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+        <h1>🔗 Complete Financial Plan</h1>
+        <p><strong>Plan Owner:</strong> ${state._meta.userName || 'JiPange User'}</p>
+        <p><strong>Generated:</strong> ${new Date().toLocaleDateString()}</p>
+        <hr>
+        <h2>Financial Snapshot</h2>
+        <p><strong>Monthly Income:</strong> KES ${formatNumber(summaryData.monthlyIncome)}</p>
+        <p><strong>Monthly Expenses:</strong> KES ${formatNumber(summaryData.totalExpenses)}</p>
+        <p><strong>Monthly Savings Capacity:</strong> KES ${formatNumber(summaryData.monthlyIncome - summaryData.totalExpenses)}</p>
+        <h2>Financial Goals (${summaryData.goals.length})</h2>
+        ${summaryData.goals.map(g => `<p>🎯 ${g.name}: KES ${formatNumber(g.targetAmount)} (${((g.currentAmount / g.targetAmount) * 100).toFixed(1)}% complete)</p>`).join('')}
+        <h2>Children's Education (${summaryData.children.length})</h2>
+        ${summaryData.children.map(c => `<p>👨‍👧 ${c.name} (Age ${c.age}): Level ${c.educationLevel}</p>`).join('')}
+        <h2>Retirement Planning</h2>
+        <p><strong>Target Age:</strong> ${summaryData.retirement.retirementAge}</p>
+        <p><strong>Target Monthly Income:</strong> KES ${formatNumber(summaryData.retirement.targetMonthlyRetirement)}</p>
+        <hr>
+        <p style="font-size: 12px; color: #999;">Generated by JiPange Financial Planning App</p>
+    </div>`;
+    downloadPDF(content, `jipange-complete-plan-${new Date().toISOString().split('T')[0]}.pdf`);
+    showNotification('✅ Complete Plan PDF downloaded successfully!');
+}
+
+function downloadPDF(content, filename) {
+    const element = document.createElement('div');
+    element.innerHTML = content;
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    const opt = {
+        margin: 10,
+        filename: filename,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, logging: false },
+        jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
+    };
+
+    html2pdf().set(opt).from(element).save().then(() => {
+        document.body.removeChild(element);
+    });
 }
 
 function exportFullPlan() {
@@ -4654,6 +4851,135 @@ function exportFullPlan() {
     a.href = url;
     a.download = filename;
     a.click();
+    showNotification('✅ Full Plan JSON exported successfully!');
+}
+
+function printPlan() {
+    showNotification('🖨️ Opening print dialog...');
+    const printWindow = window.open('', '', 'height=700,width=900');
+    const content = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>JiPange Financial Plan - Print</title>
+        <style>
+            body { font-family: Arial, sans-serif; padding: 20px; color: #333; }
+            h1, h2 { color: #8B2E2E; }
+            table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+            th { background: #f0f0f0; }
+            .section { page-break-inside: avoid; margin-bottom: 20px; }
+            @media print { body { margin: 0; } }
+        </style>
+    </head>
+    <body>
+        <h1>JiPange Financial Plan</h1>
+        <p>Generated: ${new Date().toLocaleString()}</p>
+        <hr>
+
+        <div class="section">
+            <h2>Income & Expenses</h2>
+            <table>
+                <tr><th>Category</th><th>Amount (KES)</th></tr>
+                <tr><td>Monthly Income</td><td>${formatNumber(state.income.monthlyIncome)}</td></tr>
+                <tr><td>Total Monthly Expenses</td><td>${formatNumber(state.expenses.totalMonthly)}</td></tr>
+                <tr><td>Monthly Surplus</td><td>${formatNumber(state.income.monthlyIncome - state.expenses.totalMonthly)}</td></tr>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>Financial Goals (${state.goals.length})</h2>
+            <table>
+                <tr><th>Goal</th><th>Target</th><th>Current</th><th>Progress</th></tr>
+                ${state.goals.map(g => `<tr><td>${g.name}</td><td>${formatNumber(g.targetAmount)}</td><td>${formatNumber(g.currentAmount)}</td><td>${((g.currentAmount / g.targetAmount) * 100).toFixed(1)}%</td></tr>`).join('')}
+            </table>
+        </div>
+
+        ${state.education.children.length > 0 ? `
+        <div class="section">
+            <h2>Children's Education</h2>
+            <table>
+                <tr><th>Child Name</th><th>Age</th><th>Education Level</th></tr>
+                ${state.education.children.map(c => `<tr><td>${c.name}</td><td>${c.age}</td><td>${c.educationLevel}</td></tr>`).join('')}
+            </table>
+        </div>
+        ` : ''}
+
+        <p style="margin-top: 30px; color: #999; font-size: 12px;">This document was generated by JiPange Financial Planning App - Kenya's Financial Operating System</p>
+    </body>
+    </html>`;
+    printWindow.document.write(content);
+    printWindow.document.close();
+    setTimeout(() => printWindow.print(), 500);
+}
+
+function shareWhatsApp() {
+    const summary = `Hi! I'd like to share my financial plan with you via JiPange:
+
+📊 *Financial Summary*
+💰 Monthly Income: KES ${formatNumber(state.income.monthlyIncome)}
+📉 Monthly Expenses: KES ${formatNumber(state.expenses.totalMonthly)}
+💾 Monthly Savings: KES ${formatNumber(state.income.monthlyIncome - state.expenses.totalMonthly)}
+
+🎯 Goals: ${state.goals.length} active goals
+👨‍👧 Children: ${state.education.children.length} children's education planned
+🏦 Retirement: Target age ${state.retirement.retirementAge}
+
+Check out JiPange for your financial planning! 📱💡`;
+
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(summary)}`;
+    window.open(whatsappUrl, '_blank');
+    showNotification('💬 WhatsApp sharing opened!');
+}
+
+function shareEmail() {
+    const summary = `Financial Summary from JiPange:
+Monthly Income: KES ${formatNumber(state.income.monthlyIncome)}
+Monthly Expenses: KES ${formatNumber(state.expenses.totalMonthly)}
+Monthly Savings: KES ${formatNumber(state.income.monthlyIncome - state.expenses.totalMonthly)}
+Active Goals: ${state.goals.length}
+Children's Education: ${state.education.children.length}
+Retirement Target Age: ${state.retirement.retirementAge}`;
+
+    const emailUrl = `mailto:?subject=My JiPange Financial Plan&body=${encodeURIComponent(summary)}`;
+    window.open(emailUrl, '_blank');
+    showNotification('📧 Email sharing opened!');
+}
+
+function exportCSV() {
+    let csv = 'JiPange Financial Plan Export\n';
+    csv += `Generated: ${new Date().toLocaleString()}\n\n`;
+
+    csv += 'INCOME & EXPENSES\n';
+    csv += 'Category,Amount (KES)\n';
+    csv += `Monthly Income,${state.income.monthlyIncome}\n`;
+    csv += `Monthly Expenses,${state.expenses.totalMonthly}\n`;
+    csv += `Monthly Surplus,${state.income.monthlyIncome - state.expenses.totalMonthly}\n\n`;
+
+    csv += 'FINANCIAL GOALS\n';
+    csv += 'Goal Name,Target Amount,Current Amount,Progress %\n';
+    state.goals.forEach(g => {
+        csv += `"${g.name}",${g.targetAmount},${g.currentAmount},${((g.currentAmount / g.targetAmount) * 100).toFixed(1)}\n`;
+    });
+
+    if (state.education.children.length > 0) {
+        csv += '\nCHILDREN EDUCATION\n';
+        csv += 'Child Name,Age,Education Level,Base Cost,Inflation Adjusted Cost,Projected Savings\n';
+        state.education.children.forEach(c => {
+            csv += `"${c.name}",${c.age},"${c.educationLevel}",${c.baseCost || 0},${c.inflationAdjustedCost || 0},${c.projectedSavings || 0}\n`;
+        });
+    }
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `jipange-export-${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    showNotification('✅ CSV file exported successfully!');
 }
 
 function importFullPlan() {
