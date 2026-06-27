@@ -1276,10 +1276,10 @@
                     <label for="county">County</label>
                     <select id="county">
                         <option>Baringo</option><option>Bomet</option><option>Bungoma</option><option>Busia</option>
-                        <option>Calibre</option><option>Embu</option><option>Garissa</option><option>Homa Bay</option>
+                        <option>Embu</option><option>Garissa</option><option>Homa Bay</option>
                         <option>Isiolo</option><option>Kajiado</option><option>Kakamega</option><option>Kericho</option>
                         <option>Kiambu</option><option>Kilifi</option><option>Kirinyaga</option><option>Kisii</option>
-                        <option>Kisumu</option><option>Kitui</option><option>Koinangia</option><option>Kwale</option>
+                        <option>Kisumu</option><option>Kitui</option><option>Kwale</option>
                         <option>Laikipia</option><option>Lamu</option><option>Machakos</option><option>Makueni</option>
                         <option>Mandera</option><option>Marsabit</option><option>Meru</option><option>Migori</option>
                         <option>Mombasa</option><option selected>Nairobi</option><option>Nakuru</option><option>Nandi</option>
@@ -1842,6 +1842,9 @@
 
         <div id="recommendationsContainer"></div>
 
+        <!-- What-If Scenario Generator (P2) -->
+        <div id="optimizerScenariosContainer" style="margin-top: 3rem;"></div>
+
         <!-- SACCO Integration Section -->
         <div style="margin-top: 3rem; padding: 2rem; background: linear-gradient(135deg, #E8F5F0 0%, #D5EFE8 100%); border-radius: 16px; border-left: 6px solid var(--success);">
             <h3 style="color: var(--primary); font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.8rem;">
@@ -1949,6 +1952,13 @@
                     </div>
                 </div>
             </div>
+        </div>
+
+        <!-- Multi-Chama Management (P2) -->
+        <div style="margin-top: 3rem; border-top: 2px solid var(--border); padding-top: 2rem;">
+            <h2 style="color: var(--primary); font-size: 1.2rem; margin-bottom: 1.5rem;">👥 Chama & SACCO Groups</h2>
+            <div id="multiChamaContainer"></div>
+            <button class="primary" style="margin-top: 1rem;" onclick="addChama('New Chama Group', 20000, 15, 8); renderMultiChamaUI(); recalculateAll();">+ Add Chama Group</button>
         </div>
 
         <div id="householdDisabled" style="text-align: center; padding: 3rem;">
@@ -2071,14 +2081,14 @@
 
         <div class="button-group">
             <button onclick="showScreen('screen-7')">← Household</button>
-            <button class="primary" onclick="showScreen('screen-9')">Learn & Grow →</button>
+            <button class="primary" onclick="showScreen('screen-10')">Reports →</button>
         </div>
     </section>
 
-    <!-- Screen 9: Financial Literacy Hub (NEW) -->
-    <section id="screen-9">
-        <h1 class="section-title">📚 Financial Literacy Hub</h1>
-        <p class="section-subtitle">Master financial concepts through bite-sized lessons. Take quizzes and earn certificates.</p>
+    <!-- Screen 9: Kenya Financial Literacy 101 (NEW) -->
+    <section id="screen-9" style="display: none;">
+        <h1 class="section-title">📚 Kenya Financial Literacy 101</h1>
+        <p class="section-subtitle">Master financial concepts through bite-sized lessons. Tailored for Kenya's economy & context.</p>
 
         <div id="lessonsContainer"></div>
 
@@ -2180,7 +2190,7 @@
         </div>
 
         <div class="button-group">
-            <button onclick="showScreen('screen-9')">← Learning</button>
+            <button onclick="showScreen('screen-8')">← Goals</button>
             <button class="primary" onclick="showScreen('screen-1')">Start Over</button>
         </div>
     </section>
@@ -2207,8 +2217,8 @@
         <span id="notification-message"></span>
     </div>
 
-    <!-- Screen 11: How Long to Save Calculator (NEW) -->
-    <section id="screen-11">
+    <!-- Screen 11: How Long to Save Calculator (NEW) - Hidden/Not in main nav -->
+    <section id="screen-99" style="display: none;">
         <h1 class="section-title">⏱️ How Long to Save?</h1>
         <p class="section-subtitle">Calculate when you'll reach any financial goal with compound interest</p>
 
@@ -2301,8 +2311,8 @@
         </div>
     </section>
 
-    <!-- Screen 12: M-Pesa Savings Tracker -->
-    <section id="screen-12">
+    <!-- Screen 11: M-Pesa Savings Tracker -->
+    <section id="screen-11">
         <h1 class="section-title">📱 M-Pesa Savings Tracker</h1>
         <p class="section-subtitle">Track your mobile money savings alongside traditional accounts. Perfect for Kenya's digital-first economy.</p>
 
@@ -2353,8 +2363,8 @@
         </div>
     </section>
 
-    <!-- Screen 13: Investment Portfolio (NEW) -->
-    <section id="screen-13">
+    <!-- Screen 12: Investment Portfolio (NEW) -->
+    <section id="screen-12">
         <h1 class="section-title">📈 Investment Portfolio</h1>
         <p class="section-subtitle">Track stocks, bonds, real estate, and other investments. Build long-term wealth diversification.</p>
 
@@ -2409,6 +2419,53 @@
                     </div>
                 </div>
                 <div id="investmentsList" style="margin-top: 2rem;"></div>
+            </div>
+        </div>
+
+        <!-- Treasury Bond Ladder Strategy -->
+        <div class="card" style="margin-top: 2rem;">
+            <div onclick="toggleCollapsible(this)" class="collapsible-header" style="background: var(--surface); padding: 1rem; border-radius: 8px; cursor: pointer; font-weight: 600; color: var(--navy); margin-bottom: 1rem;">
+                🎯 Treasury Bond Ladder Strategy
+                <span style="float: right;">▼</span>
+            </div>
+            <div class="collapsible-content">
+                <p style="font-size: 0.9rem; color: var(--text-2); margin-bottom: 1.5rem;">
+                    Build a ladder of Government bonds with staggered maturity dates. Receive regular coupon payments and reinvest maturing bonds at higher rates.
+                </p>
+
+                <div class="field-group">
+                    <label for="bondLadderAmount">Amount to Allocate to Bond Ladder (KES)</label>
+                    <input type="number" id="bondLadderAmount" value="0" min="0" step="10000">
+                    <span class="input-hint">We'll show optimal allocation across 5-year ladder</span>
+                </div>
+
+                <button onclick="calculateBondLadder()" style="background: #2196F3; color: white; padding: 0.75rem 1.5rem; border-radius: 6px; border: none; cursor: pointer; width: 100%; margin-top: 1rem;">Build Ladder</button>
+
+                <div id="bondLadderResults" style="margin-top: 2rem; display: none;">
+                    <h3 style="color: var(--navy); margin-bottom: 1rem;">Your 5-Year Ladder</h3>
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 2rem;">
+                        <thead>
+                            <tr style="background: var(--surface);">
+                                <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid var(--navy);">Year</th>
+                                <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid var(--navy);">Bond Amount</th>
+                                <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid var(--navy);">Coupon Rate</th>
+                                <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid var(--navy);">Annual Income</th>
+                                <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid var(--navy);">Maturity Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bondLadderTable"></tbody>
+                    </table>
+
+                    <div style="background: #E8F5E9; padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem;">
+                        <h4 style="color: #2E7D32; margin-top: 0;">Ladder Benefits</h4>
+                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem; color: #1B5E20;">
+                            <li>Annual coupon income: <strong id="ladderAnnualIncome">KES 0</strong></li>
+                            <li>Each year a bond matures: Reinvest at new rates</li>
+                            <li>Lower reinvestment risk compared to lump-sum bonds</li>
+                            <li>Regular cash flow for living expenses or reinvestment</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -2478,7 +2535,7 @@
         </div>
 
         <div class="button-group">
-            <button onclick="showScreen('screen-12')">← Portfolio</button>
+            <button onclick="showScreen('screen-13')">← Portfolio</button>
             <button class="primary" onclick="showScreen('screen-14')">Business Income →</button>
         </div>
     </section>
@@ -3357,7 +3414,7 @@
                     </div>
                     <div>
                         <div style="color: var(--text-3); margin-bottom: 0.3rem;">Health Coverage Status</div>
-                        <div style="font-size: 1rem; font-weight: 700; color: var(--warning);" id="insHealthGap">⚠️ Needs NHIF</div>
+                        <div style="font-size: 1rem; font-weight: 700; color: var(--warning);" id="insHealthGap">⚠️ Needs SHIF Coverage</div>
                     </div>
                     <div>
                         <div style="color: var(--text-3); margin-bottom: 0.3rem;">Property Gap</div>
@@ -3380,7 +3437,7 @@
                     </div>
                     <div>
                         <div style="font-weight: 600; margin-bottom: 0.3rem;">Health Insurance</div>
-                        <div>SHIF (mandatory), NHIF, Jubilee, Britam, APA Insurance</div>
+                        <div>SHIF (mandatory), Jubilee, Britam, APA Insurance</div>
                     </div>
                     <div>
                         <div style="font-weight: 600; margin-bottom: 0.3rem;">Property Insurance</div>
@@ -3400,7 +3457,7 @@
                     <li><strong>Immediate:</strong> Ensure SHIF contribution (mandatory) - deducted from salary</li>
                     <li><strong>High Priority:</strong> Get life insurance (10x income minimum) - term life is affordable</li>
                     <li><strong>Essential:</strong> Vehicle insurance (3rd party mandatory by law)</li>
-                    <li><strong>Important:</strong> Health insurance top-up (NHIF or private NHIF alternative)</li>
+                    <li><strong>Important:</strong> Top-up coverage (private health plan on top of SHIF)</li>
                     <li><strong>Consider:</strong> Disability income insurance - protects against income loss</li>
                     <li><strong>Review:</strong> Group insurance through SACCO - often better rates</li>
                 </ul>
@@ -3626,7 +3683,7 @@ const KENYA_RATES = {
     swr: 0.04
 };
 
-const DEFAULT_STATE = {
+const DEFAULT_STATE = window.DEFAULT_STATE = {
     _meta: { version: 2, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), completedSteps: [] },
     profile: {
         name: '', age: 35, retirementAge: 60, county: 'Nairobi',
@@ -3658,7 +3715,18 @@ const DEFAULT_STATE = {
     mpesa: {
         monthlyTarget: 10000, currentSaved: 0
     },
-    investments: [],
+    savedBalances: {
+        _mPesaLock: 0,
+        _mmf: 0,
+        _fixed: 0,
+        _other: 0
+    },
+    investments: {
+        list: [],
+        bondLadder: [],
+        totalBondLadder: 0,
+        _totalPortfolio: 0
+    },
     debts: [],
     business: {
         monthlyRevenue: 0, monthlyExpenses: 0, taxRate: 30,
@@ -3703,10 +3771,12 @@ const DEFAULT_STATE = {
         saccoRate: 7, stockRate: 12, realEstateRate: 15, businessRate: 20,
         _monthlyPool: 0, _accumulated: 0, _returns: 0, _totalWealth: 0,
         _saccoTotal: 0, _stockTotal: 0, _realEstateTotal: 0, _businessTotal: 0
-    }
+    },
+    chamas: []  // For multi-chama support in P2
 };
 
 let state = loadState();
+window.state = state;  // Make state globally accessible
 loadAnalytics();
 let charts = {};
 let currentLanguage = localStorage.getItem('jipange_lang') || 'en';
@@ -3756,24 +3826,32 @@ function init() {
     renderGoalsUI();
     renderLessonsUI();
     updateHouseholdMode();
+
+    // P2 Enhancements
+    setTimeout(() => {
+        generateOptimizerScenarios();
+        renderMultiChamaUI();
+    }, 100);
 }
 
 function buildNavbar() {
     const navTabs = document.getElementById('navTabs');
     navTabs.innerHTML = '';
 
-    // Organize screens into categories
+    // Two-tier navigation: 5 Primary + Tools
     const categories = [
         {
             name: '🏠 Start',
-            screens: [{ num: 1, name: 'Profile' }]
+            screens: [{ num: 1, name: 'Profile' }],
+            primary: true
         },
         {
             name: '💰 Income & Expenses',
             screens: [
                 { num: 2, name: 'Income' },
                 { num: 3, name: 'Budget' }
-            ]
+            ],
+            primary: true
         },
         {
             name: '📈 Planning',
@@ -3783,22 +3861,17 @@ function buildNavbar() {
                 { num: 6, name: 'Optimizer' },
                 { num: 7, name: 'Household' },
                 { num: 8, name: 'Goals & FIRE' }
-            ]
-        },
-        {
-            name: '📚 Learning',
-            screens: [
-                { num: 9, name: 'Learn & Grow' },
-                { num: 10, name: 'Reports' }
-            ]
+            ],
+            primary: true
         },
         {
             name: '💳 Investments',
             screens: [
                 { num: 11, name: 'M-Pesa' },
                 { num: 12, name: 'Portfolio' },
-                { num: 13, name: 'Debts' }
-            ]
+                { num: 13, name: 'Debt Payoff' }
+            ],
+            primary: true
         },
         {
             name: '🎯 Life & Goals',
@@ -3806,28 +3879,31 @@ function buildNavbar() {
                 { num: 14, name: 'Business' },
                 { num: 15, name: 'Assets' },
                 { num: 16, name: 'Tax' },
-                { num: 17, name: 'Education Savings' },
+                { num: 17, name: 'Education' },
                 { num: 18, name: 'Retirement' }
-            ]
+            ],
+            primary: true
         },
         {
-            name: '⚡ Advanced',
+            name: '🔧 Tools',
             screens: [
+                { num: 10, name: 'Reports & Export' },
                 { num: 19, name: 'Business Scenarios' },
                 { num: 20, name: 'Insurance' },
                 { num: 21, name: 'Chama Groups' }
-            ]
-        },
-        {
-            name: '📋 Legal',
-            screens: [
-                { num: 22, name: 'Terms of Use' },
-                { num: 23, name: 'Privacy Policy' }
-            ]
+            ],
+            primary: false
         }
     ];
 
-    categories.forEach(cat => {
+    // Create primary tabs container
+    const primaryContainer = document.createElement('div');
+    primaryContainer.style.display = 'flex';
+    primaryContainer.style.gap = '0.5rem';
+    primaryContainer.style.flexWrap = 'wrap';
+
+    // Render primary tabs
+    categories.filter(c => c.primary).forEach(cat => {
         const dropdown = document.createElement('div');
         dropdown.className = 'nav-dropdown';
 
@@ -3859,8 +3935,48 @@ function buildNavbar() {
 
         dropdown.appendChild(btn);
         dropdown.appendChild(menu);
-        navTabs.appendChild(dropdown);
+        primaryContainer.appendChild(dropdown);
     });
+
+    navTabs.appendChild(primaryContainer);
+
+    // Render Tools submenu (secondary)
+    const toolsCat = categories.find(c => !c.primary);
+    if (toolsCat) {
+        const dropdown = document.createElement('div');
+        dropdown.className = 'nav-dropdown';
+
+        const btn = document.createElement('button');
+        btn.className = 'nav-dropdown-btn';
+        btn.style.background = 'var(--secondary)';
+        btn.textContent = toolsCat.name;
+        btn.onclick = (e) => {
+            e.stopPropagation();
+            dropdown.classList.toggle('open');
+            document.querySelectorAll('.nav-dropdown.open').forEach(d => {
+                if (d !== dropdown) d.classList.remove('open');
+            });
+        };
+
+        const menu = document.createElement('div');
+        menu.className = 'dropdown-menu';
+
+        toolsCat.screens.forEach(screen => {
+            const link = document.createElement('a');
+            link.className = 'dropdown-item';
+            link.textContent = `${screen.num}. ${screen.name}`;
+            link.onclick = (e) => {
+                e.preventDefault();
+                showScreen(`screen-${screen.num}`);
+                dropdown.classList.remove('open');
+            };
+            menu.appendChild(link);
+        });
+
+        dropdown.appendChild(btn);
+        dropdown.appendChild(menu);
+        navTabs.appendChild(dropdown);
+    }
 
     // Close dropdowns when clicking outside
     document.addEventListener('click', (e) => {
@@ -4280,47 +4396,237 @@ function calculateBudget() {
 function calculateFireNumber() {
     const currentAge = state.profile.age;
     const targetAge = state.fire.targetAge;
-    const monthlySpend = state.fire.monthlySpend;
-    const swr = state.fire.swr / 100;
-    const inflation = state.fire.inflation / 100;
-    const growthRate = state.fire.growthRate / 100;
+    const monthlySpend = state.fire.monthlySpend || (state.budget._totalExpenses || 0);
+    const swr = (state.fire.swr || 4) / 100;
+    const inflation = (state.fire.inflation || 6.5) / 100;
+    const growthRate = (state.fire.growthRate || 12) / 100;
 
     const yearsToFire = Math.max(targetAge - currentAge, 1);
     const months = yearsToFire * 12;
     const r = growthRate / 12;
 
+    // Calculate retirement spend adjusted for inflation
     const spendAtFire = monthlySpend * Math.pow(1 + inflation, yearsToFire);
     const fireNominal = (monthlySpend * 12) / swr;
     const fireReal = (spendAtFire * 12) / swr;
 
+    // Investment projection
     const monthlyInvest = Math.max(0, Math.round(state.budget._surplus * 0.67));
-    const currentPortfolio = 0;
+    const currentPortfolio = state.investments?._totalPortfolio || 0;  // FIX: Read from state instead of hardcoded 0
     const fvPortfolio = currentPortfolio * Math.pow(1 + r, months);
-    const fvContribs = monthlyInvest * ((Math.pow(1 + r, months) - 1) / r);
+    const fvContribs = monthlyInvest > 0 ? monthlyInvest * ((Math.pow(1 + r, months) - 1) / r) : 0;
     const projected = Math.round(fvPortfolio + fvContribs);
     const delta = projected - fireReal;
     const onTrack = delta >= 0;
 
+    // Store in state for cross-reference
     state.fire._fireNumber = Math.round(fireNominal);
     state.fire._fireReal = Math.round(fireReal);
     state.fire._onTrack = onTrack;
+    state.dashboard = state.dashboard || {};
+    state.dashboard.fireCalc = { fireNominal: Math.round(fireNominal), fireReal: Math.round(fireReal), projected, onTrack };
 
     return { fireNominal: Math.round(fireNominal), fireReal: Math.round(fireReal), projected, onTrack, delta, yearsToFire };
 }
 
 function recalculateAll() {
+    // Calculation order: dependency-driven
     calculateIncome();
     calculateBudget();
     calculateFireNumber();
     calculateBusinessScenarios();
     calculateInsuranceCoverage();
     calculateChamaProjections();
+    computeHealthScore();  // Must run after all calculations
+
+    // UI updates
     updateUI();
     updateScenarioUI();
     updateWealthDashboard();
     generateRecommendations();
     updateGoalsUI();
     saveState();
+}
+
+// ============ HEALTH SCORE ALGORITHM (6 dimensions, non-blocking) ============
+function computeHealthScore() {
+    const s = state;
+    let totalScore = 0;
+    const weights = {
+        income: 0.15,
+        budget: 0.20,
+        savings: 0.20,
+        investments: 0.20,
+        contracts: 0.10,
+        goals: 0.15
+    };
+
+    // DIMENSION 1: Income (0-100 points)
+    let scoreIncome = 0;
+    if (s.income.salary > 0 || s.income.business > 0 || s.income.passive > 0) {
+        scoreIncome += 20; // Base for having income
+        if (s.income.salary > 0) scoreIncome += 10;
+        if (s.income.business > 0) scoreIncome += 10;
+        if (s.income.passive > 0) scoreIncome += 10;
+
+        const totalIncome = s.income._grossMonthly || 1;
+        const salaryRatio = s.income.salary / totalIncome;
+        if (salaryRatio >= 0.6) scoreIncome += 20; // Stability bonus
+
+        const passiveRatio = (s.income.passive + s.income.bondCoupons) / totalIncome;
+        if (passiveRatio >= 0.2) scoreIncome += 15; // Passive income bonus
+    }
+    scoreIncome = Math.min(scoreIncome, 100);
+
+    // DIMENSION 2: Budget (0-100 points)
+    let scoreBudget = 0;
+    if (s.budget._surplus <= 0) {
+        scoreBudget = 5; // Hard floor
+    } else {
+        const savingsRate = s.budget._savingsRate || 0;
+        if (savingsRate >= 0.40) scoreBudget += 35;
+        else if (savingsRate >= 0.20) scoreBudget += 25;
+        else if (savingsRate >= 0.10) scoreBudget += 10;
+
+        const debtServiceRatio = s.budget.debt > 0 ? (s.budget.debt / s.income._netMonthly) : 0;
+        if (debtServiceRatio <= 0.15) scoreBudget += 15;
+        else if (debtServiceRatio <= 0.30) scoreBudget += 8;
+
+        if (s.budget.socialObligations > 0 && (s.budget.socialObligations / s.income._netMonthly) < 0.25) {
+            scoreBudget += 10;
+        }
+
+        if (s.profile.schoolChildren > 0 && s.budget.schoolFees > 0) {
+            scoreBudget += 10;
+        }
+    }
+    scoreBudget = Math.min(scoreBudget, 100);
+
+    // DIMENSION 3: Savings (0-100 points)
+    let scoreSavings = 0;
+    const emergencyCoverage = s.budget._totalExpenses > 0 ? (s.savedBalances._mPesaLock + s.savedBalances._mmf) / (s.budget._totalExpenses * 6) : 0;
+    if (emergencyCoverage >= 1.0) scoreSavings += 40;
+    else if (emergencyCoverage >= 0.5) scoreSavings += 25;
+    else if (emergencyCoverage >= 0.25) scoreSavings += 12;
+
+    const savingInstruments = [s.savedBalances._mPesaLock, s.savedBalances._mmf, s.savedBalances._fixed, s.savedBalances._other].filter(v => v > 0).length;
+    scoreSavings += savingInstruments * 8;
+
+    if ((s.savedBalances._mPesaLock + s.savedBalances._mmf) > 0) scoreSavings += 10;
+
+    const monthlyContribution = s.budget._surplus || 0;
+    const monthlyExpenses = s.budget._totalExpenses || 1;
+    if (monthlyContribution >= monthlyExpenses * 0.2) scoreSavings += 18;
+
+    scoreSavings = Math.min(scoreSavings, 100);
+
+    // DIMENSION 4: Investments (0-100 points)
+    let scoreInvestments = 0;
+
+    // Check for bonds (legacy structure) or bond ladder (new structure)
+    const hasBonds = (s.investments.bonds && s.investments.bonds.length >= 3) ||
+                     (s.investments.bondLadder && s.investments.bondLadder.length >= 3);
+    const hasSomeBonds = (s.investments.bonds && s.investments.bonds.length >= 1) ||
+                         (s.investments.bondLadder && s.investments.bondLadder.length >= 1);
+
+    if (hasBonds) scoreInvestments += 25;
+    else if (hasSomeBonds) scoreInvestments += 15;
+
+    if (s.investments.ifb > 0) scoreInvestments += 10;
+
+    if (s.investments.nseEquity > 0) {
+        scoreInvestments += 20;
+    }
+
+    const totalPortfolio = (s.investments._totalPortfolio || 0);
+    const annualIncome = (s.income._grossMonthly * 12) || 1;
+    const portfolioRatio = totalPortfolio / annualIncome;
+    if (portfolioRatio >= 3) scoreInvestments += 25;
+    else if (portfolioRatio >= 1.5) scoreInvestments += 18;
+    else if (portfolioRatio >= 0.5) scoreInvestments += 10;
+
+    scoreInvestments = Math.min(scoreInvestments, 100);
+
+    // DIMENSION 5: Contracts (0-100 points)
+    let scoreContracts = 0;
+    const recommendedLifeCover = (s.income._grossMonthly * 12) * 10;
+    if (s.insurance.lifeCover >= recommendedLifeCover) scoreContracts += 25;
+
+    if (s.insurance.medicalCover > 0) scoreContracts += 20;
+
+    const childrenInsured = Math.min(s.profile.schoolChildren, 3); // Max 3 education policies tracked
+    if (childrenInsured > 0) scoreContracts += 20;
+
+    if (s.income._nssfT2 > 0 || s.income._nssfT1 > 0) scoreContracts += 20;
+    if (s.income._shif > 0) scoreContracts += 15;
+
+    scoreContracts = Math.min(scoreContracts, 100);
+
+    // DIMENSION 6: Goals (0-100 points)
+    let scoreGoals = 0;
+    const activeGoals = (s.goals || []).filter(g => g.targetAmount > 0).length;
+    scoreGoals += Math.min(activeGoals * 12, 36); // Max 3 goals
+
+    const goalsWithContribution = (s.goals || []).filter(g => g.monthlyContribution > 0).length;
+    scoreGoals += Math.min(goalsWithContribution * 8, 24);
+
+    if (s.goals && s.goals.length > 0) scoreGoals += 15; // FIRE defined
+
+    const fireCalc = s.dashboard?.fireCalc || {};
+    if (fireCalc.projected >= fireCalc.fireReal) scoreGoals += 13; // On track
+
+    scoreGoals = Math.min(scoreGoals, 100);
+
+    // Composite score (weighted sum)
+    const composite = Math.round(
+        (scoreIncome * weights.income) +
+        (scoreBudget * weights.budget) +
+        (scoreSavings * weights.savings) +
+        (scoreInvestments * weights.investments) +
+        (scoreContracts * weights.contracts) +
+        (scoreGoals * weights.goals)
+    );
+
+    // Update state
+    s.dashboard = s.dashboard || {};
+    s.dashboard.healthScore = composite;
+    s.dashboard.scoreDimensions = {
+        income: scoreIncome,
+        budget: scoreBudget,
+        savings: scoreSavings,
+        investments: scoreInvestments,
+        contracts: scoreContracts,
+        goals: scoreGoals
+    };
+
+    // Determine color band
+    let scoreBand = '#64748B'; // Neutral gray
+    if (composite >= 85) scoreBand = '#FFC200'; // Gold
+    else if (composite >= 70) scoreBand = '#1B3A6B'; // Navy
+    else if (composite >= 55) scoreBand = '#276128'; // Green
+    else if (composite >= 35) scoreBand = '#B87C00'; // Amber
+    else if (composite > 0) scoreBand = '#A32D2D'; // Red
+
+    s.dashboard.scoreBand = scoreBand;
+
+    // Update navbar display
+    const healthEl = document.getElementById('healthScore');
+    if (healthEl) {
+        if (composite === 0 && s.income._grossMonthly === 0) {
+            healthEl.textContent = '—';
+            healthEl.style.color = '#64748B';
+        } else {
+            healthEl.textContent = composite;
+            healthEl.style.color = scoreBand;
+            healthEl.style.fontWeight = '700';
+        }
+    }
+
+    return {
+        score: composite,
+        band: scoreBand,
+        dimensions: s.dashboard.scoreDimensions
+    };
 }
 
 // ============ UI UPDATES ============
@@ -4441,23 +4747,44 @@ function updateScenarioUI() {
 }
 
 function updateWealthDashboard() {
-    const netWorth = 0;
-    document.getElementById('netWorthToday').textContent = 'KES ' + formatKES(netWorth);
+    // Calculate ACTUAL net worth from state
+    const s = state;
+    const netWorth = (s.assets?.propertyValue || 0) +
+                     (s.assets?.vehicleValue || 0) +
+                     (s.investments._totalPortfolio || 0) +
+                     (s.savedBalances._mPesaLock || 0) +
+                     (s.savedBalances._mmf || 0) +
+                     (s.savedBalances._fixed || 0) +
+                     (s.savedBalances._other || 0) -
+                     (s.liabilities?.mortgage || 0) -
+                     (s.liabilities?.carLoan || 0) -
+                     (s.budget?.debt || 0);
+
+    document.getElementById('netWorthToday').textContent = 'KES ' + formatKES(Math.max(0, netWorth));
 
     const fireCalc = calculateFireNumber();
     document.getElementById('netWorthRetire').textContent = 'KES ' + formatKES(fireCalc.projected);
     document.getElementById('monthlyInvestable').textContent = 'KES ' + formatKES(Math.max(0, state.budget._surplus));
     document.getElementById('fireGoal').textContent = 'KES ' + formatKES(fireCalc.fireReal);
 
-    const emergencyTarget = state.budget._totalExpenses * 6;
-    const emergencyCurrent = 0;
+    // Emergency reserve: calculate from actual savings
+    const emergencyTarget = (s.budget._totalExpenses || 0) * 6;
+    const emergencyCurrent = (s.savedBalances._mPesaLock || 0) + (s.savedBalances._mmf || 0);
     const emergencyPercent = emergencyTarget > 0 ? (emergencyCurrent / emergencyTarget * 100) : 0;
+    const emergencyMonths = emergencyCurrent > 0 ? (emergencyTarget / emergencyCurrent) : 0;
 
     document.getElementById('emergencyAmount').textContent = 'KES ' + formatKES(emergencyCurrent);
-    document.getElementById('emergencyStatus').textContent = `${emergencyPercent.toFixed(0)}% of target (${Math.round(emergencyPercent === 0 ? 0 : emergencyTarget / emergencyCurrent)} months)`;
+    document.getElementById('emergencyStatus').textContent =
+        emergencyPercent >= 100 ? `✅ Fully covered (${emergencyMonths.toFixed(1)} months)` :
+        emergencyPercent >= 50 ? `${emergencyPercent.toFixed(0)}% covered (${emergencyMonths.toFixed(1)} months)` :
+        `${emergencyPercent.toFixed(0)}% of target`;
 
-    document.getElementById('goalsAmount').textContent = 'KES 0';
-    document.getElementById('goalsStatus').textContent = 'No goals tracked yet';
+    // Goals tracking
+    const activeGoals = (s.goals || []).filter(g => g.targetAmount > 0);
+    const goalsTotal = activeGoals.reduce((sum, g) => sum + (g.currentAmount || 0), 0);
+    document.getElementById('goalsAmount').textContent = 'KES ' + formatKES(goalsTotal);
+    document.getElementById('goalsStatus').textContent = activeGoals.length > 0 ?
+        `${activeGoals.length} goal(s) tracked` : 'No goals tracked yet';
 
     document.getElementById('retirementAmount').textContent = 'KES ' + formatKES(fireCalc.projected);
     document.getElementById('retirementStatus').textContent = fireCalc.onTrack ? '✅ On track' : '⚠️ Behind target';
@@ -4523,53 +4850,143 @@ function updateHouseholdMode() {
 function generateRecommendations() {
     const container = document.getElementById('recommendationsContainer');
     const recs = [];
+    const s = state;
 
-    const savingsRate = state.budget._savingsRate;
+    // P0: Emergency Fund (Foundation)
+    const emergencyTarget = (s.budget._totalExpenses || 0) * 6;
+    const emergencyCurrent = (s.savedBalances._mPesaLock || 0) + (s.savedBalances._mmf || 0);
+    if (emergencyCurrent < emergencyTarget * 0.5) {
+        recs.push({
+            type: 'danger',
+            title: '🛡️ URGENT: Build Emergency Fund',
+            text: `You need KES ${formatKES(emergencyTarget - emergencyCurrent)} more. Target: 6 months expenses. Start with M-Pesa Lock.`,
+            cta: 'Go to Savings',
+            action: () => showScreen('screen-12')
+        });
+    }
+
+    // P1: Income Diversification
+    const incomeCount = [s.income.salary, s.income.consulting, s.income.farm, s.income.rental, s.income.business].filter(x => x > 0).length;
+    if (incomeCount < 2 && s.income._grossMonthly > 0) {
+        recs.push({
+            type: 'warning',
+            title: '💼 Diversify Your Income',
+            text: 'Single income source = high risk. Consider side income: freelance, rental property, or business.',
+            impact: 'Increase income stability & reduce layoff risk'
+        });
+    }
+
+    // P1: Health Insurance (SHIF)
+    if (s.insurance.healthCurrent === 0) {
+        recs.push({
+            type: 'danger',
+            title: '🏥 Activate SHIF Coverage',
+            text: 'Mandatory SHIF contribution (3.5% of salary). Add optional top-up for better coverage.',
+            cta: 'Go to Insurance',
+            action: () => showScreen('screen-20')
+        });
+    }
+
+    // P1: Life Insurance
+    const recommendedLifeCover = (s.income._grossMonthly * 12) * 10;
+    if (s.insurance.lifeCurrent < recommendedLifeCover * 0.5) {
+        recs.push({
+            type: 'warning',
+            title: '👨‍👩‍👧‍👦 Protect Your Family',
+            text: `Get KES ${formatKES(recommendedLifeCover)} life cover (10x annual income). Term life is affordable: ~KES 1,500/month.`,
+            cta: 'Go to Insurance',
+            action: () => showScreen('screen-20')
+        });
+    }
+
+    // P1: Savings Rate
+    const savingsRate = s.budget._savingsRate;
     if (savingsRate < 0.10) {
         recs.push({
             type: 'danger',
-            title: '🚨 Critical: Low Savings Rate',
-            text: `Your savings rate is only ${formatPercent(savingsRate)}. You need at least 20% to build wealth.`,
-            impact: 'KES ' + formatKES(state.budget._totalExpenses * 0.10)
+            title: '📉 Critical: Low Savings Rate',
+            text: `Savings rate ${formatPercent(savingsRate)} is too low. Increase to 20% to build wealth.`,
+            impact: 'Target: KES ' + formatKES(s.budget._totalExpenses * 0.20)
         });
-    }
-
-    const fireCalc = calculateFireNumber();
-    if (!fireCalc.onTrack) {
-        const needed = Math.round((fireCalc.fireReal - fireCalc.projected) / (fireCalc.yearsToFire * 12));
-        recs.push({
-            type: 'warning',
-            title: '⚠️ FIRE Behind Schedule',
-            text: `You need KES ${formatKES(needed)} more per month to hit your retirement goal.`,
-            impact: 'Delay FIRE by ' + Math.round(needed / Math.max(1, state.budget._surplus) * 5) + ' years'
-        });
-    }
-
-    if (state.budget.chama === 0 && state.profile.dependants > 0) {
-        recs.push({
-            type: 'warning',
-            title: '💪 Consider Chama for Growth',
-            text: 'Join a SACCO or Chama to tap group lending at 10-12% vs bank loans at 15-18%.',
-            impact: 'Save KES ' + formatKES(state.budget._surplus * 0.05) + '/month'
-        });
-    }
-
-    if (savingsRate > 0.40) {
+    } else if (savingsRate >= 0.40) {
         recs.push({
             type: 'success',
             title: '✅ Excellent Savings Discipline',
-            text: `Your ${formatPercent(savingsRate)} savings rate is in top 5%. Keep it up!`,
-            impact: 'Wealth builder trajectory'
+            text: `Your ${formatPercent(savingsRate)} rate is top 5%. You'll hit FIRE early!`,
+            impact: 'Wealth builder on track'
         });
     }
 
-    container.innerHTML = recs.map(r => `
-        <div class="recommendation ${r.type}">
-            <div class="rec-title">${r.title}</div>
-            <div class="rec-text">${r.text}</div>
-            <div class="rec-impact">${r.impact}</div>
-        </div>
-    `).join('');
+    // P2: Investment Ladder
+    if (savingsRate > 0.20 && (s.investments._totalPortfolio || 0) < s.income._grossMonthly * 6) {
+        recs.push({
+            type: 'info',
+            title: '📊 Build Bond Ladder',
+            text: 'Allocate surplus to Treasury bonds: staggered 1-5 year ladder for regular income.',
+            cta: 'Go to Portfolio',
+            action: () => showScreen('screen-12')
+        });
+    }
+
+    // P2: FIRE Goal
+    const fireCalc = calculateFireNumber();
+    if (!fireCalc.onTrack) {
+        const gap = fireCalc.fireReal - fireCalc.projected;
+        recs.push({
+            type: 'warning',
+            title: '🎯 FIRE Behind Schedule',
+            text: `Gap: KES ${formatKES(gap)}. Increase savings by KES ${formatKES(gap / (fireCalc.yearsToFire * 12))}/month.`,
+            cta: 'Go to Goals',
+            action: () => showScreen('screen-8')
+        });
+    } else if (fireCalc.onTrack) {
+        recs.push({
+            type: 'success',
+            title: '🎉 FIRE on Track',
+            text: `You'll reach financial independence in ${fireCalc.yearsToFire} years at ${s.fire.targetAge}!`,
+            impact: 'Keep momentum going'
+        });
+    }
+
+    // P2: Chama/Group Savings
+    if (s.budget.chama === 0 && savingsRate > 0.15) {
+        recs.push({
+            type: 'info',
+            title: '👥 Join a SACCO/Chama',
+            text: 'Access group loans at 10-12% (vs 15-18% banks). Rotate fund: everyone borrows profitably.',
+            impact: 'Unlock 3-4x leverage on savings'
+        });
+    }
+
+    container.innerHTML = '';
+    recs.forEach((r, idx) => {
+        const div = document.createElement('div');
+        div.className = `recommendation ${r.type}`;
+        div.style.marginBottom = '1rem';
+
+        const flexDiv = document.createElement('div');
+        flexDiv.style.cssText = 'display: flex; justify-content: space-between; align-items: start;';
+
+        const contentDiv = document.createElement('div');
+        contentDiv.style.flex = '1';
+        contentDiv.innerHTML = `
+            <div style="margin: 0; font-weight: 600; margin-bottom: 0.5rem;">${r.title}</div>
+            <div style="font-size: 0.9rem; margin-bottom: 0.5rem;">${r.text}</div>
+            ${r.impact ? `<div style="font-size: 0.85rem; opacity: 0.8;">${r.impact}</div>` : ''}
+        `;
+        flexDiv.appendChild(contentDiv);
+
+        if (r.cta && r.action) {
+            const btn = document.createElement('button');
+            btn.style.cssText = 'background: var(--primary); color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; white-space: nowrap; margin-left: 1rem;';
+            btn.textContent = r.cta;
+            btn.onclick = r.action;
+            flexDiv.appendChild(btn);
+        }
+
+        div.appendChild(flexDiv);
+        container.appendChild(div);
+    });
 }
 
 function calculateMonthsToGoal(goal, monthlyContribution, interestRate = 0.05, inflationRate = 0.07) {
@@ -4652,32 +5069,8 @@ function renderGoalsUI() {
 }
 
 function renderLessonsUI() {
-    const lessons = [
-        { icon: '📈', title: 'Compound Interest', duration: '5 min', preview: 'How money grows exponentially over time.' },
-        { icon: '💰', title: 'Kenya Tax System', duration: '7 min', preview: 'Understand PAYE, NSSF, SHIF, and IFB.' },
-        { icon: '🏦', title: 'SACCOs vs Banks', duration: '6 min', preview: 'When to choose group savings over bank deposits.' },
-        { icon: '🛡️', title: 'Emergency Fund', duration: '5 min', preview: 'Build 6 months of expenses as your foundation.' },
-        { icon: '📊', title: 'Investment Ladder', duration: '8 min', preview: 'Diversify across bonds, stocks, and real estate.' },
-        { icon: '🌾', title: 'M-Pesa Savings', duration: '4 min', preview: 'Practical savings hacks using M-Pesa.' },
-        { icon: '👥', title: 'Chama Strategy', duration: '6 min', preview: 'Maximize returns in group savings plans.' },
-        { icon: '🔥', title: 'FIRE Movement', duration: '10 min', preview: 'Financial Independence, Retire Early explained.' },
-        { icon: '🏠', title: 'Real Estate 101', duration: '7 min', preview: 'Investment property basics for Kenya.' },
-        { icon: '📚', title: 'Financial Literacy', duration: '9 min', preview: 'Essential money concepts every Kenyan should know.' }
-    ];
-
-    const container = document.getElementById('lessonsContainer');
-    container.innerHTML = lessons.map((lesson, idx) => `
-        <div class="lesson-card">
-            <div class="lesson-header">
-                <div class="lesson-icon">${lesson.icon}</div>
-                <div>
-                    <div class="lesson-title">${lesson.title}</div>
-                    <div class="lesson-preview">${lesson.preview}</div>
-                    <div class="lesson-duration">⏱️ ${lesson.duration}</div>
-                </div>
-            </div>
-        </div>
-    `).join('');
+    // Render Kenya Financial Literacy 101 lessons (P2 enhancement)
+    renderKenyaLessons();
 }
 
 function updateGoalsUI() {
@@ -4759,8 +5152,10 @@ function addInvestment() {
 
     if (amount <= 0) { alert('Please enter a valid investment amount'); return; }
 
-    if (!state.investments) state.investments = [];
-    state.investments.push({
+    if (!state.investments) state.investments = { list: [], bondLadder: [], totalBondLadder: 0, _totalPortfolio: 0 };
+    if (!Array.isArray(state.investments.list)) state.investments.list = [];
+
+    state.investments.list.push({
         id: Date.now(), type, amount, value, expReturn,
         gain: value - amount, gainPercent: ((value - amount) / amount * 100).toFixed(1)
     });
@@ -4775,10 +5170,15 @@ function addInvestment() {
 }
 
 function updateInvestmentUI() {
-    const invs = state.investments || [];
+    const invs = (state.investments && state.investments.list) ? state.investments.list : [];
     const totalInvested = invs.reduce((sum, inv) => sum + inv.amount, 0);
     const portfolioValue = invs.reduce((sum, inv) => sum + inv.value, 0);
     const gains = portfolioValue - totalInvested;
+
+    // Update total portfolio value including bond ladder
+    if (state.investments) {
+        state.investments._totalPortfolio = portfolioValue + (state.investments.totalBondLadder || 0);
+    }
 
     document.getElementById('totalInvested').textContent = `KES ${totalInvested.toLocaleString()}`;
     document.getElementById('portfolioValue').textContent = `KES ${portfolioValue.toLocaleString()}`;
@@ -4801,6 +5201,67 @@ function updateInvestmentUI() {
         </div>
     `).join('');
     document.getElementById('investmentsList').innerHTML = listHtml;
+}
+
+// ============ TREASURY BOND LADDER ============
+function calculateBondLadder() {
+    const totalAmount = parseInt(document.getElementById('bondLadderAmount').value) || 0;
+
+    if (totalAmount <= 0) {
+        alert('Please enter a valid amount for the bond ladder');
+        return;
+    }
+
+    // Kenya Government Bond rates (approximate current market rates)
+    const bondRates = {
+        1: { coupon: 6.5, type: '1-Year' },
+        2: { coupon: 7.0, type: '2-Year' },
+        3: { coupon: 7.5, type: '3-Year' },
+        4: { coupon: 8.0, type: '4-Year' },
+        5: { coupon: 8.5, type: '5-Year' }
+    };
+
+    const ladderAmount = totalAmount / 5;
+    const currentYear = new Date().getFullYear();
+    const ladderData = [];
+    let totalAnnualIncome = 0;
+
+    // Build 5-rung ladder
+    for (let year = 1; year <= 5; year++) {
+        const couponRate = bondRates[year].coupon;
+        const annualIncome = Math.round(ladderAmount * (couponRate / 100));
+        totalAnnualIncome += annualIncome;
+
+        ladderData.push({
+            year,
+            amount: ladderAmount,
+            coupon: couponRate,
+            income: annualIncome,
+            maturity: currentYear + year
+        });
+    }
+
+    // Store in state
+    state.investments = state.investments || {};
+    state.investments.bondLadder = ladderData;
+    state.investments.totalBondLadder = totalAmount;
+
+    // Render ladder table
+    const tableHtml = ladderData.map(bond => `
+        <tr>
+            <td style="padding: 0.75rem; border-bottom: 1px solid var(--border);">Year ${bond.year}</td>
+            <td style="padding: 0.75rem; border-bottom: 1px solid var(--border);">KES ${formatKES(bond.amount)}</td>
+            <td style="padding: 0.75rem; border-bottom: 1px solid var(--border);">${bond.coupon}%</td>
+            <td style="padding: 0.75rem; border-bottom: 1px solid var(--border);">KES ${formatKES(bond.income)}</td>
+            <td style="padding: 0.75rem; border-bottom: 1px solid var(--border);">${bond.maturity}</td>
+        </tr>
+    `).join('');
+
+    document.getElementById('bondLadderTable').innerHTML = tableHtml;
+    document.getElementById('ladderAnnualIncome').textContent = 'KES ' + formatKES(totalAnnualIncome);
+    document.getElementById('bondLadderResults').style.display = 'block';
+
+    saveState();
 }
 
 // ============ DEBTS ============
@@ -5413,7 +5874,7 @@ function calculateInsuranceCoverage() {
 
     // Calculate gaps
     const lifeGap = Math.max(0, lifeRecommended - state.insurance.lifeCurrent);
-    const healthGap = state.insurance.healthCurrent === 0 ? 'Needs NHIF or private plan' : 'Adequate';
+    const healthGap = state.insurance.healthCurrent === 0 ? 'Needs SHIF or health plan' : 'Adequate';
     const propertyGap = Math.max(0, homeRecommended - state.insurance.homeCurrent);
     const disabilityGap = state.insurance.disabilityCurrent === 0 ? 'No Coverage' : 'Has Coverage';
 
@@ -6768,6 +7229,323 @@ function exportCustomizedReport(type) {
             setButtonLoading(button, false);
         }
     }, 500);
+}
+
+// ============ P2 ENHANCEMENTS: Smart Optimizer, Multi-Chama, Kenya Financial Literacy 101 ============
+
+// Smart Optimizer: What-If Scenario Generator
+function generateOptimizerScenarios() {
+    const s = state;
+    const scenarios = {
+        conservative: {
+            savingsIncrease: 5,
+            investmentReturn: 8,
+            result: 'Focus on stability, smaller steps'
+        },
+        balanced: {
+            savingsIncrease: 15,
+            investmentReturn: 10,
+            result: 'Steady growth with moderate risk'
+        },
+        aggressive: {
+            savingsIncrease: 25,
+            investmentReturn: 12,
+            result: 'Maximize growth, accept volatility'
+        }
+    };
+
+    const container = document.getElementById('optimizerScenariosContainer');
+    if (!container) return;
+
+    let html = '<h3 style="color: var(--primary); margin-bottom: 1.5rem; font-size: 1.1rem;">🎯 What-If Scenarios</h3>';
+    html += '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">';
+
+    Object.entries(scenarios).forEach(([key, scenario]) => {
+        const newSavings = (s.budget._surplus || 0) * (1 + scenario.savingsIncrease / 100);
+        const fireYears = s.fire._fireReal > 0 ? Math.sqrt(s.fire._fireReal / Math.max(1, newSavings * 12)) : 0;
+
+        html += `
+            <div style="background: linear-gradient(135deg, ${
+                key === 'conservative' ? '#E8F5E9' : key === 'balanced' ? '#E3F2FD' : '#FFF3E0'
+            } 0%, ${
+                key === 'conservative' ? '#C8E6C9' : key === 'balanced' ? '#BBDEFB' : '#FFE0B2'
+            } 100%); padding: 1.5rem; border-radius: 12px; border-left: 6px solid ${
+                key === 'conservative' ? '#4CAF50' : key === 'balanced' ? '#2196F3' : '#FF9800'
+            };">
+                <div style="font-weight: 700; font-size: 1rem; color: var(--text-dark); margin-bottom: 0.5rem; text-transform: capitalize;">
+                    ${key === 'conservative' ? '🛡️' : key === 'balanced' ? '⚖️' : '🚀'} ${key}
+                </div>
+                <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">${scenario.result}</div>
+                <div style="display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.9rem;">
+                    <div><strong>New Monthly Savings:</strong> KES ${formatKES(newSavings)}</div>
+                    <div><strong>Expected Return:</strong> ${scenario.investmentReturn}% p.a.</div>
+                    <div><strong>FIRE Timeline:</strong> ${Math.round(fireYears)} years</div>
+                </div>
+            </div>
+        `;
+    });
+
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+// Multi-Chama Management
+function initializeMultiChama() {
+    if (!state.chamas) {
+        state.chamas = [];
+    }
+}
+
+function addChama(name, monthlyContribution, groupSize, estimatedReturn) {
+    initializeMultiChama();
+    const chama = {
+        id: 'chama_' + Date.now(),
+        name: name || 'My Chama Group',
+        monthlyContribution: monthlyContribution || 20000,
+        groupSize: groupSize || 15,
+        estimatedReturn: estimatedReturn || 8,
+        dateJoined: new Date().toISOString(),
+        _monthlyIncome: 0,
+        _annualIncome: 0
+    };
+    state.chamas.push(chama);
+    return chama;
+}
+
+function calculateMultiChamaReturns() {
+    if (!state.chamas || state.chamas.length === 0) return 0;
+
+    let totalAnnualIncome = 0;
+    state.chamas.forEach(chama => {
+        const monthlyPool = chama.monthlyContribution * chama.groupSize;
+        const monthlyReturn = (monthlyPool * chama.estimatedReturn) / 100 / 12;
+        chama._monthlyIncome = Math.round(monthlyReturn / chama.groupSize);
+        chama._annualIncome = chama._monthlyIncome * 12;
+        totalAnnualIncome += chama._annualIncome;
+    });
+
+    state.income.passive = (state.income.passive || 0) + totalAnnualIncome / 12;
+    return totalAnnualIncome / 12;
+}
+
+function renderMultiChamaUI() {
+    const container = document.getElementById('multiChamaContainer');
+    if (!container) return;
+
+    initializeMultiChama();
+
+    if (state.chamas.length === 0) {
+        container.innerHTML = `
+            <p style="color: var(--text-muted); text-align: center; padding: 2rem;">
+                No chama groups yet. Consider joining or starting a Chama/SACCO to access better savings rates and loans.
+            </p>
+        `;
+        return;
+    }
+
+    let html = '<h3 style="color: var(--primary); margin-bottom: 1.5rem;">📊 Your Chama Groups</h3>';
+    html += '<div style="display: grid; gap: 1.5rem;">';
+
+    state.chamas.forEach((chama, idx) => {
+        html += `
+            <div style="background: linear-gradient(135deg, #E8F5F0 0%, #D5EFE8 100%); padding: 1.5rem; border-radius: 12px; border-left: 6px solid var(--success);">
+                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                    <div>
+                        <div style="font-weight: 700; font-size: 1rem; color: var(--text-dark);">${chama.name}</div>
+                        <div style="font-size: 0.85rem; color: var(--text-muted);">Joined: ${new Date(chama.dateJoined).toLocaleDateString()}</div>
+                    </div>
+                    <button onclick="removeChama('${chama.id}')" style="background: #EF4444; color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem;">Remove</button>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
+                    <div>
+                        <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.25rem;">Monthly Contribution</div>
+                        <div style="font-weight: 700; font-size: 1rem; color: var(--success);">KES ${formatKES(chama.monthlyContribution)}</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.25rem;">Group Size</div>
+                        <div style="font-weight: 700; font-size: 1rem; color: var(--primary);">${chama.groupSize} members</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.25rem;">Est. Annual Return</div>
+                        <div style="font-weight: 700; font-size: 1rem; color: var(--info);">KES ${formatKES(chama._annualIncome)}</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.25rem;">Your Monthly Share</div>
+                        <div style="font-weight: 700; font-size: 1rem; color: var(--accent);">KES ${formatKES(chama._monthlyIncome)}</div>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+function removeChama(chamaId) {
+    const idx = state.chamas.findIndex(c => c.id === chamaId);
+    if (idx > -1) {
+        state.chamas.splice(idx, 1);
+        renderMultiChamaUI();
+        recalculateAll();
+    }
+}
+
+// Kenya Financial Literacy 101: Lesson System
+window.KENYA_LESSONS = [
+    {
+        id: 'lesson_1',
+        title: 'Understanding SHIF: Kenya\'s Universal Health Insurance',
+        duration: '5 min',
+        level: 'Beginner',
+        content: 'SHIF (Social Health Insurance Fund) is Kenya\'s new universal healthcare system. Learn how it works, how much it costs, and why it matters for your family.',
+        keyPoints: ['3.5% contribution on salary', 'Covers 80% of basic healthcare', 'Families get better rates together'],
+        quiz: [
+            { q: 'What % of salary is SHIF contribution?', options: ['2.5%', '3.5%', '5%'], correct: 1 },
+            { q: 'Does SHIF cover dental care?', options: ['Yes, fully', 'No', 'Limited coverage'], correct: 2 }
+        ]
+    },
+    {
+        id: 'lesson_2',
+        title: 'Treasury Bonds: Growing Wealth Safely',
+        duration: '7 min',
+        level: 'Intermediate',
+        content: 'Kenya Government Bonds are safe, high-return investments. Learn about 1-5 year bonds, coupon rates, and how to build a ladder strategy.',
+        keyPoints: ['6-8.5% annual returns', 'Government-backed safety', 'Perfect for emergency funds'],
+        quiz: [
+            { q: 'What\'s a typical 3-year bond rate in Kenya?', options: ['5%', '7.5%', '10%'], correct: 1 }
+        ]
+    },
+    {
+        id: 'lesson_3',
+        title: 'M-Pesa & Mobile Money: Beyond Payments',
+        duration: '6 min',
+        level: 'Beginner',
+        content: 'M-Pesa is more than payments. Learn about M-Pesa Lock, savings options, and how to use mobile money for wealth building.',
+        keyPoints: ['M-Pesa Lock = locked savings', 'Earns interest on idle balance', 'Accessible anytime for emergencies'],
+        quiz: []
+    },
+    {
+        id: 'lesson_4',
+        title: 'SACCO & Chama: Community Wealth Building',
+        duration: '8 min',
+        level: 'Intermediate',
+        content: 'SACCOs and Chamas are how Kenyans build wealth together. Learn the difference, benefits, and how to find a good group.',
+        keyPoints: ['1-2% monthly loans (vs 3-5% from banks)', '5-15% annual dividends', 'Community support & accountability'],
+        quiz: [
+            { q: 'Typical SACCO loan rate?', options: ['1-2% monthly', '3-5% monthly', '10-15% monthly'], correct: 0 }
+        ]
+    },
+    {
+        id: 'lesson_5',
+        title: 'FIRE in Kenya: Achieving Financial Independence',
+        duration: '10 min',
+        level: 'Advanced',
+        content: 'FIRE means Financial Independence, Retire Early. Learn how the 4% rule works, inflation impacts, and Kenya-specific strategies.',
+        keyPoints: ['Save 25-35x annual expenses', 'Invest in bonds + equities', 'Plan for inflation (6-7% in Kenya)'],
+        quiz: []
+    }
+];
+
+function renderKenyaLessons() {
+    const container = document.getElementById('lessonsContainer');
+    if (!container) return;
+
+    const lessons = window.KENYA_LESSONS || [];
+    if (lessons.length === 0) {
+        container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 2rem;">Loading lessons...</p>';
+        return;
+    }
+
+    let html = '<h3 style="color: var(--primary); margin-bottom: 1.5rem; font-size: 1.1rem;">📖 Featured Lessons</h3>';
+    html += '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">';
+
+    lessons.forEach(lesson => {
+        const levelColor = lesson.level === 'Beginner' ? '#4CAF50' : lesson.level === 'Intermediate' ? '#2196F3' : '#FF9800';
+
+        html += `
+            <div style="background: white; border: 2px solid #E8EEF5; border-radius: 12px; padding: 1.5rem; cursor: pointer; transition: all 0.3s;"
+                 onmouseover="this.style.boxShadow = '0 4px 16px rgba(0,0,0,0.1)'; this.style.transform = 'translateY(-4px)';"
+                 onmouseout="this.style.boxShadow = 'none'; this.style.transform = 'translateY(0)';"
+                 onclick="showLessonDetail('${lesson.id}')">
+                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                    <h4 style="color: var(--text-dark); margin: 0; font-size: 1rem; font-weight: 700; flex: 1;">${lesson.title}</h4>
+                    <span style="background: ${levelColor}; color: white; font-size: 0.75rem; padding: 0.35rem 0.75rem; border-radius: 20px; white-space: nowrap; margin-left: 0.5rem;">${lesson.level}</span>
+                </div>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0 0 1rem 0; line-height: 1.5;">${lesson.content}</p>
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                    ${lesson.keyPoints.map(kp => `<span style="background: #F0F4F8; color: var(--primary); font-size: 0.8rem; padding: 0.3rem 0.75rem; border-radius: 16px;">✓ ${kp}</span>`).join('')}
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #E8EEF5; padding-top: 1rem;">
+                    <span style="font-size: 0.85rem; color: var(--text-muted);">⏱️ ${lesson.duration}</span>
+                    <button style="background: var(--primary); color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-size: 0.9rem;">Start Lesson →</button>
+                </div>
+            </div>
+        `;
+    });
+
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+function showLessonDetail(lessonId) {
+    const lesson = (window.KENYA_LESSONS || []).find(l => l.id === lessonId);
+    if (!lesson) return;
+
+    const modal = document.createElement('div');
+    modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 2000; padding: 20px;';
+
+    const content = document.createElement('div');
+    content.style.cssText = 'background: white; border-radius: 12px; padding: 2rem; max-width: 600px; width: 100%; max-height: 80vh; overflow-y: auto;';
+
+    content.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1.5rem;">
+            <h2 style="margin: 0; color: var(--primary); font-size: 1.3rem;">${lesson.title}</h2>
+            <button onclick="this.parentElement.parentElement.parentElement.remove()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted);">✕</button>
+        </div>
+
+        <div style="display: flex; gap: 1rem; margin-bottom: 2rem;">
+            <span style="background: #F0F4F8; color: var(--primary); padding: 0.4rem 0.75rem; border-radius: 6px; font-size: 0.85rem;">⏱️ ${lesson.duration}</span>
+            <span style="background: #E8F5E9; color: #4CAF50; padding: 0.4rem 0.75rem; border-radius: 6px; font-size: 0.85rem;">📊 ${lesson.level}</span>
+        </div>
+
+        <div style="background: #F0F4F8; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem;">
+            <h3 style="color: var(--primary); margin-top: 0; margin-bottom: 1rem;">📌 Key Points</h3>
+            <ul style="margin: 0; padding-left: 1.5rem; color: var(--text-dark);">
+                ${lesson.keyPoints.map(kp => `<li style="margin-bottom: 0.5rem;">${kp}</li>`).join('')}
+            </ul>
+        </div>
+
+        ${lesson.quiz.length > 0 ? `
+            <div style="background: #FFF3E0; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem;">
+                <h3 style="color: var(--accent); margin-top: 0; margin-bottom: 1rem;">🎯 Quick Quiz</h3>
+                ${lesson.quiz.map((q, idx) => `
+                    <div style="margin-bottom: 1.5rem;">
+                        <div style="font-weight: 600; color: var(--text-dark); margin-bottom: 0.75rem; font-size: 0.95rem;">${idx + 1}. ${q.q}</div>
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            ${q.options.map((opt, i) => `
+                                <label style="display: flex; align-items: center; cursor: pointer; font-size: 0.9rem;">
+                                    <input type="radio" name="q${idx}" value="${i}" style="margin-right: 0.5rem; cursor: pointer;">
+                                    ${opt}
+                                </label>
+                            `).join('')}
+                        </div>
+                    </div>
+                `).join('')}
+                <button style="background: var(--accent); color: white; border: none; padding: 0.7rem 1.5rem; border-radius: 6px; cursor: pointer; font-size: 0.95rem; width: 100%;" onclick="checkQuizAnswers(${lesson.quiz.length})">Check Answers</button>
+            </div>
+        ` : ''}
+
+        <button class="primary" style="width: 100%; padding: 1rem;" onclick="this.parentElement.parentElement.remove(); showNotification('Lesson completed! Certificate earned ✓', 'success');">✓ Mark Complete & Earn Certificate</button>
+    `;
+
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+    modal.onclick = (e) => e.target === modal && modal.remove();
+}
+
+function checkQuizAnswers(count) {
+    showNotification('Quiz submitted! Check your answers in the lesson.', 'info');
 }
 
 // ============ STATE MANAGEMENT ============
