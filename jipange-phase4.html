@@ -321,41 +321,14 @@
 
         /* Footer */
         .footer {
-            position: fixed; bottom: 0; left: 0; right: 0;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: var(--white); text-align: center; padding: 1.5rem 2rem; font-size: 0.85rem; line-height: 1.6;
-            border-top: 4px solid var(--secondary); z-index: 50; box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+            position: fixed; bottom: 0; left: 0; right: 0; background: linear-gradient(135deg, var(--navy) 0%, #0f2647 100%);
+            color: var(--white); text-align: center; padding: 1.5rem 2rem; font-size: 0.85rem; line-height: 1.5;
+            border-top: 3px solid var(--amber); z-index: 50;
         }
 
         .footer-content { max-width: 1200px; margin: 0 auto; }
-        .footer-primary {
-            font-weight: 700; color: var(--secondary); margin-bottom: 0.5rem;
-            font-size: 0.95rem; letter-spacing: 0.3px;
-        }
-        .footer-secondary {
-            color: rgba(255, 255, 255, 0.95); font-size: 0.8rem; line-height: 1.5;
-            display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;
-            align-items: center;
-        }
-
-        .footer-link {
-            color: rgba(255, 255, 255, 0.95); text-decoration: none; transition: all 0.2s;
-            border-bottom: 2px solid transparent; padding-bottom: 2px;
-        }
-
-        .footer-link:hover {
-            color: var(--secondary); border-bottom-color: var(--secondary);
-        }
-
-        .footer-divider {
-            width: 1px; height: 16px; background: rgba(255, 255, 255, 0.3);
-        }
-
-        @media (max-width: 768px) {
-            .footer { padding: 1rem 1.5rem; }
-            .footer-secondary { flex-direction: column; gap: 0.5rem; }
-            .footer-divider { display: none; }
-        }
+        .footer-primary { font-weight: 600; color: var(--amber); margin-bottom: 0.25rem; }
+        .footer-secondary { color: rgba(255, 255, 255, 0.8); font-size: 0.8rem; }
 
         /* Responsive */
         @media (max-width: 768px) {
@@ -1879,35 +1852,21 @@
 
                     <div class="field-group">
                         <label for="childEducationLevel">Target Education Level</label>
-                        <select id="childEducationLevel" onchange="updateEducationDefaults()">
-                            <optgroup label="Primary">
-                                <option value="primary">Primary (6 years, KES 180,000/year)</option>
-                            </optgroup>
-                            <optgroup label="Secondary (CBC - New Structure)">
-                                <option value="secondary_jnr">Junior Secondary (3 years, KES 400,000/year)</option>
-                                <option value="secondary_snr">Senior Secondary (3 years, KES 450,000/year)</option>
-                                <option value="secondary_complete">Complete Secondary (6 years, KES 425,000/year)</option>
-                            </optgroup>
-                            <optgroup label="Tertiary">
-                                <option value="university" selected>University (4 years, KES 650,000/year)</option>
-                                <option value="university_ext">University Extended (5-6 years, KES 650,000/year)</option>
-                                <option value="vocational">TVET/Vocational (2-3 years, KES 250,000/year)</option>
-                            </optgroup>
+                        <select id="childEducationLevel">
+                            <option value="primary">Primary (KES 150,000/year)</option>
+                            <option value="secondary">Secondary (KES 350,000/year)</option>
+                            <option value="university" selected>University (KES 500,000/year)</option>
+                            <option value="vocational">Vocational (KES 200,000/year)</option>
                         </select>
                     </div>
                 </div>
 
                 <div class="field-group">
                     <label for="childRegion">Region (for cost adjustment)</label>
-                    <select id="childRegion" onchange="calculateEducationSavings()">
+                    <select id="childRegion">
                         <option value="nairobi">Nairobi (+15%)</option>
-                        <option value="coastal">Coastal - Mombasa (+10%)</option>
-                        <option value="central">Central Region (-10%)</option>
-                        <option value="rift_valley">Rift Valley (-15%)</option>
-                        <option value="western">Western Region (-20%)</option>
-                        <option value="nyanza">Nyanza Region (-20%)</option>
-                        <option value="eastern">Eastern Region (-25%)</option>
-                        <option value="upcountry" selected>Upcountry Average (Baseline)</option>
+                        <option value="upcountry" selected>Upcountry</option>
+                        <option value="coastal">Coastal (+5%)</option>
                     </select>
                 </div>
             </div>
@@ -1928,57 +1887,8 @@
                 </div>
 
                 <div style="padding: 1rem; background: var(--success-bg); border-radius: 8px; border-left: 4px solid var(--success); margin-top: 1rem;">
-                    <div style="font-size: 0.85rem; color: var(--text-3); margin-bottom: 0.5rem;">Total Tuition Cost</div>
+                    <div style="font-size: 0.85rem; color: var(--text-3); margin-bottom: 0.5rem;">Total Education Cost</div>
                     <div style="font-size: 1.8rem; font-weight: 900; color: var(--success);" id="totalEducationCost">KES 2,000,000</div>
-                </div>
-            </div>
-
-            <div class="card">
-                <h2 style="font-size: 1.1rem; color: var(--primary); margin-bottom: 1.5rem;">School Type & Additional Costs</h2>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
-                    <div class="field-group">
-                        <label for="schoolType">School Type</label>
-                        <select id="schoolType" onchange="calculateEducationSavings()">
-                            <option value="public">Public School</option>
-                            <option value="private" selected>Private School</option>
-                            <option value="mixed">Mixed (Some years public)</option>
-                        </select>
-                    </div>
-
-                    <div class="field-group">
-                        <label for="boardingType">Boarding Status</label>
-                        <select id="boardingType" onchange="calculateEducationSavings()">
-                            <option value="day" selected>Day Scholar</option>
-                            <option value="boarding">Full Boarding</option>
-                            <option value="partial">Partial Boarding</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                    <div class="field-group">
-                        <label for="uniformsBooks">Uniforms & Books (Annual, KES)</label>
-                        <input type="number" id="uniformsBooks" value="35000" min="0">
-                        <span class="input-hint">Estimated annual cost</span>
-                    </div>
-
-                    <div class="field-group">
-                        <label for="transportFees">Transport & Activities (Annual, KES)</label>
-                        <input type="number" id="transportFees" value="30000" min="0">
-                        <span class="input-hint">Transport, clubs, sports fees</span>
-                    </div>
-                </div>
-
-                <div class="field-group">
-                    <label for="scholarshipBursary">Scholarship/Bursary Amount (Annual, KES)</label>
-                    <input type="number" id="scholarshipBursary" value="0" min="0">
-                    <span class="input-hint">Will be deducted from total education cost</span>
-                </div>
-
-                <div style="padding: 1rem; background: rgba(212, 160, 23, 0.08); border-radius: 8px; border-left: 4px solid var(--secondary); margin-top: 1rem;">
-                    <div style="font-size: 0.85rem; color: var(--text-3); margin-bottom: 0.5rem;">Total Annual Cost (with additional items)</div>
-                    <div style="font-size: 1.6rem; font-weight: 900; color: var(--primary);" id="totalAnnualCost">KES 565,000</div>
                 </div>
             </div>
 
@@ -2012,214 +1922,6 @@
                 </div>
 
                 <button class="primary" onclick="calculateEducationSavings()" style="width: 100%; margin-top: 1rem;">Calculate Education Needs</button>
-            </div>
-
-            <div class="card">
-                <h2 style="font-size: 1.1rem; color: var(--primary); margin-bottom: 1.5rem;">Cost Breakdown (Itemized)</h2>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
-                    <div style="padding: 1rem; background: rgba(45, 118, 89, 0.08); border-radius: 8px; border-left: 4px solid var(--primary);">
-                        <div style="font-size: 0.75rem; color: var(--text-3); margin-bottom: 0.3rem; text-transform: uppercase; font-weight: 600;">Tuition</div>
-                        <div style="font-size: 1.2rem; font-weight: 700; color: var(--primary);" id="breakdownTuition">KES 650,000</div>
-                        <div style="font-size: 0.7rem; color: var(--text-3); margin-top: 0.3rem;">Annual cost</div>
-                    </div>
-
-                    <div style="padding: 1rem; background: rgba(212, 160, 23, 0.08); border-radius: 8px; border-left: 4px solid var(--secondary);">
-                        <div style="font-size: 0.75rem; color: var(--text-3); margin-bottom: 0.3rem; text-transform: uppercase; font-weight: 600;">Uniforms & Books</div>
-                        <div style="font-size: 1.2rem; font-weight: 700; color: var(--secondary);" id="breakdownUniforms">KES 35,000</div>
-                        <div style="font-size: 0.7rem; color: var(--text-3); margin-top: 0.3rem;">Annual cost</div>
-                    </div>
-
-                    <div style="padding: 1rem; background: rgba(230, 126, 34, 0.08); border-radius: 8px; border-left: 4px solid #E67E22;">
-                        <div style="font-size: 0.75rem; color: var(--text-3); margin-bottom: 0.3rem; text-transform: uppercase; font-weight: 600;">Transport & Activities</div>
-                        <div style="font-size: 1.2rem; font-weight: 700; color: #E67E22;" id="breakdownTransport">KES 30,000</div>
-                        <div style="font-size: 0.7rem; color: var(--text-3); margin-top: 0.3rem;">Annual cost</div>
-                    </div>
-                </div>
-
-                <div style="padding: 1rem; background: var(--offwhite); border-radius: 8px; border-left: 4px solid var(--primary); margin-bottom: 1rem;">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <div>
-                            <div style="font-size: 0.85rem; color: var(--text-3); margin-bottom: 0.3rem;">Total Annual Cost</div>
-                            <div style="font-size: 1.6rem; font-weight: 900; color: var(--primary);" id="breakdownTotal">KES 715,000</div>
-                        </div>
-                        <div style="text-align: right; font-size: 0.8rem; color: var(--text-3);">
-                            <div>× <span id="breakdownYears">4</span> years</div>
-                            <div style="margin-top: 0.3rem;"><strong id="breakdownTotalAll">KES 2,860,000</strong></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card">
-                <h2 style="font-size: 1.1rem; color: var(--primary); margin-bottom: 1.5rem;">Three-Scenario Projections</h2>
-                <p style="font-size: 0.85rem; color: var(--text-3); margin-bottom: 1.5rem;">Compare outcomes based on different inflation assumptions</p>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
-                    <!-- Conservative Scenario -->
-                    <div style="padding: 1.2rem; background: rgba(46, 204, 113, 0.06); border-radius: 8px; border: 2px solid rgba(46, 204, 113, 0.3);">
-                        <div style="font-size: 0.9rem; font-weight: 700; color: #2ECC71; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-                            ✅ Conservative
-                            <span style="font-size: 0.75rem; font-weight: 600; color: var(--text-3);">-2% inflation</span>
-                        </div>
-
-                        <div style="margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(46, 204, 113, 0.2);">
-                            <div style="font-size: 0.75rem; color: var(--text-3); margin-bottom: 0.3rem;">Total Cost Needed</div>
-                            <div style="font-size: 1.3rem; font-weight: 900; color: #2ECC71;" id="scenarioConservativeCost">KES 2,700,000</div>
-                        </div>
-
-                        <div style="margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(46, 204, 113, 0.2);">
-                            <div style="font-size: 0.75rem; color: var(--text-3); margin-bottom: 0.3rem;">Projected Savings</div>
-                            <div style="font-size: 1.3rem; font-weight: 900; color: #2ECC71;" id="scenarioConservativeSavings">KES 1,500,000</div>
-                        </div>
-
-                        <div style="padding: 0.8rem; background: rgba(46, 204, 113, 0.1); border-radius: 6px;">
-                            <div style="font-size: 0.75rem; color: var(--text-3); margin-bottom: 0.2rem; text-transform: uppercase; font-weight: 600;">Gap/Surplus</div>
-                            <div style="font-size: 1.4rem; font-weight: 900;" id="scenarioConservativeGap" style="color: #2ECC71;">KES 1,200,000</div>
-                            <div style="font-size: 0.7rem; color: var(--text-3); margin-top: 0.3rem;">Best case: Lower cost inflation</div>
-                        </div>
-                    </div>
-
-                    <!-- Realistic Scenario -->
-                    <div style="padding: 1.2rem; background: rgba(241, 196, 15, 0.06); border-radius: 8px; border: 2px solid rgba(241, 196, 15, 0.3);">
-                        <div style="font-size: 0.9rem; font-weight: 700; color: #F1C40F; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-                            ⚡ Realistic
-                            <span style="font-size: 0.75rem; font-weight: 600; color: var(--text-3);">+7% inflation</span>
-                        </div>
-
-                        <div style="margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(241, 196, 15, 0.2);">
-                            <div style="font-size: 0.75rem; color: var(--text-3); margin-bottom: 0.3rem;">Total Cost Needed</div>
-                            <div style="font-size: 1.3rem; font-weight: 900; color: #F1C40F;" id="scenarioRealisticCost">KES 3,100,000</div>
-                        </div>
-
-                        <div style="margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(241, 196, 15, 0.2);">
-                            <div style="font-size: 0.75rem; color: var(--text-3); margin-bottom: 0.3rem;">Projected Savings</div>
-                            <div style="font-size: 1.3rem; font-weight: 900; color: #F1C40F;" id="scenarioRealisticSavings">KES 1,500,000</div>
-                        </div>
-
-                        <div style="padding: 0.8rem; background: rgba(241, 196, 15, 0.1); border-radius: 6px;">
-                            <div style="font-size: 0.75rem; color: var(--text-3); margin-bottom: 0.2rem; text-transform: uppercase; font-weight: 600;">Gap/Surplus</div>
-                            <div style="font-size: 1.4rem; font-weight: 900;" id="scenarioRealisticGap">KES -1,600,000</div>
-                            <div style="font-size: 0.7rem; color: var(--text-3); margin-top: 0.3rem;">Most likely (Kenya avg)</div>
-                        </div>
-                    </div>
-
-                    <!-- Optimistic Scenario -->
-                    <div style="padding: 1.2rem; background: rgba(52, 152, 219, 0.06); border-radius: 8px; border: 2px solid rgba(52, 152, 219, 0.3);">
-                        <div style="font-size: 0.9rem; font-weight: 700; color: #3498DB; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-                            🚀 Optimistic
-                            <span style="font-size: 0.75rem; font-weight: 600; color: var(--text-3);">+5% inflation</span>
-                        </div>
-
-                        <div style="margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(52, 152, 219, 0.2);">
-                            <div style="font-size: 0.75rem; color: var(--text-3); margin-bottom: 0.3rem;">Total Cost Needed</div>
-                            <div style="font-size: 1.3rem; font-weight: 900; color: #3498DB;" id="scenarioOptimisticCost">KES 2,900,000</div>
-                        </div>
-
-                        <div style="margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(52, 152, 219, 0.2);">
-                            <div style="font-size: 0.75rem; color: var(--text-3); margin-bottom: 0.3rem;">Projected Savings</div>
-                            <div style="font-size: 1.3rem; font-weight: 900; color: #3498DB;" id="scenarioOptimisticSavings">KES 1,500,000</div>
-                        </div>
-
-                        <div style="padding: 0.8rem; background: rgba(52, 152, 219, 0.1); border-radius: 6px;">
-                            <div style="font-size: 0.75rem; color: var(--text-3); margin-bottom: 0.2rem; text-transform: uppercase; font-weight: 600;">Gap/Surplus</div>
-                            <div style="font-size: 1.4rem; font-weight: 900;" id="scenarioOptimisticGap">KES -1,400,000</div>
-                            <div style="font-size: 0.7rem; color: var(--text-3); margin-top: 0.3rem;">Good case: Lower inflation</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div style="padding: 1rem; background: var(--surface); border-radius: 8px; border-left: 4px solid var(--warning); font-size: 0.85rem; color: var(--text-2);">
-                    <strong>📊 How to use:</strong> Conservative assumes lower inflation (good planning). Realistic is based on Kenya's historical 7% education inflation. Optimistic assumes better returns on your savings.
-                </div>
-            </div>
-
-            <div class="card">
-                <h2 style="font-size: 1.1rem; color: var(--primary); margin-bottom: 1.5rem;">Education Financing Options (Loans)</h2>
-                <p style="font-size: 0.85rem; color: var(--text-3); margin-bottom: 1.5rem;">Reduce your shortfall using HELB (government) or SACCO (member) loans</p>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
-                    <!-- HELB Loan Section -->
-                    <div style="padding: 1.2rem; background: rgba(46, 204, 113, 0.06); border-radius: 8px; border-left: 4px solid #2ECC71;">
-                        <div style="font-size: 0.95rem; font-weight: 700; color: #2ECC71; margin-bottom: 1rem;">🏦 HELB Loan</div>
-
-                        <div class="field-group" style="margin-bottom: 1rem;">
-                            <label for="helbLoanAmount">Loan Amount (KES 0 - 300,000)</label>
-                            <input type="range" id="helbLoanAmount" min="0" max="300000" step="10000" value="0"
-                                   onchange="updateLoanImpact()" style="width: 100%; cursor: pointer;">
-                            <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-3); margin-top: 0.3rem;">
-                                <span>KES 0</span>
-                                <span id="helbDisplayAmount" style="font-weight: 700; color: #2ECC71;">KES 0</span>
-                                <span>KES 300,000</span>
-                            </div>
-                        </div>
-
-                        <div style="padding: 0.8rem; background: rgba(46, 204, 113, 0.1); border-radius: 6px; font-size: 0.85rem; color: var(--text-2);">
-                            <div style="margin-bottom: 0.3rem;"><strong>Interest-free during studies</strong></div>
-                            <div style="font-size: 0.75rem;">Repayment begins after graduation (income-based)</div>
-                        </div>
-                    </div>
-
-                    <!-- SACCO Loan Section -->
-                    <div style="padding: 1.2rem; background: rgba(52, 152, 219, 0.06); border-radius: 8px; border-left: 4px solid #3498DB;">
-                        <div style="font-size: 0.95rem; font-weight: 700; color: #3498DB; margin-bottom: 1rem;">💰 SACCO Member Loan</div>
-
-                        <div class="field-group" style="margin-bottom: 0.8rem;">
-                            <label for="saccoLoanAmount">Loan Amount (KES)</label>
-                            <input type="number" id="saccoLoanAmount" min="0" max="500000" step="10000" value="0"
-                                   placeholder="Enter amount (max 500,000)" onchange="updateLoanImpact()">
-                        </div>
-
-                        <div class="field-group" style="margin-bottom: 0.8rem;">
-                            <label for="saccoInterestRate">Interest Rate (%)</label>
-                            <input type="range" id="saccoInterestRate" min="10" max="15" step="0.5" value="12"
-                                   onchange="updateLoanImpact()" style="width: 100%; cursor: pointer;">
-                            <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-3); margin-top: 0.3rem;">
-                                <span>10%</span>
-                                <span id="saccoDisplayRate" style="font-weight: 700; color: #3498DB;">12%</span>
-                                <span>15%</span>
-                            </div>
-                        </div>
-
-                        <div class="field-group">
-                            <label for="saccoRepaymentPeriod">Repayment Period</label>
-                            <select id="saccoRepaymentPeriod" onchange="updateLoanImpact()" style="width: 100%;">
-                                <option value="12">12 months (1 year)</option>
-                                <option value="24" selected>24 months (2 years)</option>
-                                <option value="36">36 months (3 years)</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
-                    <!-- HELB Impact -->
-                    <div style="padding: 1rem; background: var(--offwhite); border-radius: 8px; border-left: 4px solid #2ECC71;">
-                        <div style="font-size: 0.75rem; color: var(--text-3); margin-bottom: 0.3rem; text-transform: uppercase; font-weight: 600;">HELB Benefit</div>
-                        <div style="font-size: 1.3rem; font-weight: 900; color: #2ECC71;" id="helbBenefit">KES 0</div>
-                        <div style="font-size: 0.7rem; color: var(--text-3); margin-top: 0.3rem;">Reduces shortfall</div>
-                    </div>
-
-                    <!-- SACCO Impact -->
-                    <div style="padding: 1rem; background: var(--offwhite); border-radius: 8px; border-left: 4px solid #3498DB;">
-                        <div style="font-size: 0.75rem; color: var(--text-3); margin-bottom: 0.3rem; text-transform: uppercase; font-weight: 600;">SACCO Monthly</div>
-                        <div style="font-size: 1.3rem; font-weight: 900; color: #3498DB;" id="saccoMonthlyPayment">KES 0</div>
-                        <div style="font-size: 0.7rem; color: var(--text-3); margin-top: 0.3rem;">Payment during repayment</div>
-                    </div>
-
-                    <!-- Combined Impact -->
-                    <div style="padding: 1rem; background: var(--offwhite); border-radius: 8px; border-left: 4px solid var(--secondary);">
-                        <div style="font-size: 0.75rem; color: var(--text-3); margin-bottom: 0.3rem; text-transform: uppercase; font-weight: 600;">Total Loan Benefit</div>
-                        <div style="font-size: 1.3rem; font-weight: 900; color: var(--secondary);" id="totalLoanBenefit">KES 0</div>
-                        <div style="font-size: 0.7rem; color: var(--text-3); margin-top: 0.3rem;">HELB + SACCO combined</div>
-                    </div>
-                </div>
-
-                <div style="padding: 1rem; background: var(--success-bg); border-radius: 8px; border-left: 4px solid var(--success); margin-bottom: 1rem;">
-                    <div style="font-size: 0.9rem; font-weight: 600; color: var(--success); margin-bottom: 0.5rem;">📊 Shortfall After Loans (Realistic Scenario)</div>
-                    <div style="font-size: 1.6rem; font-weight: 900; color: var(--success);" id="shortfallAfterLoans">KES 1,600,000</div>
-                    <div style="font-size: 0.8rem; color: var(--text-2); margin-top: 0.5rem;">Remaining gap after HELB + SACCO loans</div>
-                </div>
             </div>
 
             <div class="card">
@@ -2990,209 +2692,15 @@
         </div>
     </section>
 
-    <!-- SCREEN 22: TERMS OF USE -->
-    <section id="screen-22" style="display: none;">
-        <div class="screen-header">
-            <h1>📋 Terms of Use</h1>
-            <p>Legal agreement governing your use of JiPange Financial Planning Application</p>
-        </div>
-
-        <div class="form-container">
-            <div class="card">
-                <h2 style="font-size: 1.2rem; color: var(--primary); margin-bottom: 1.5rem;">JiPange Terms of Use</h2>
-
-                <div style="font-size: 0.95rem; line-height: 1.8; color: var(--text-2);">
-                    <div style="margin-bottom: 2rem;">
-                        <h3 style="font-size: 1rem; color: var(--primary); margin-bottom: 0.8rem;">1. Acceptance of Terms</h3>
-                        <p style="margin-bottom: 0.8rem;">By accessing and using the JiPange Financial Planning Application, you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service.</p>
-                    </div>
-
-                    <div style="margin-bottom: 2rem;">
-                        <h3 style="font-size: 1rem; color: var(--primary); margin-bottom: 0.8rem;">2. Use License</h3>
-                        <p style="margin-bottom: 0.8rem;">Permission is granted to temporarily download one copy of the materials (information or software) on JiPange for personal, non-commercial transitory viewing only. This is the grant of a license, not a transfer of title, and under this license you may not:</p>
-                        <ul style="margin-left: 1.5rem; margin-bottom: 0.8rem;">
-                            <li>Modify or copy the materials</li>
-                            <li>Use the materials for any commercial purpose or for any public display</li>
-                            <li>Attempt to decompile or reverse engineer any software</li>
-                            <li>Remove any copyright or other proprietary notations from the materials</li>
-                            <li>Transfer the materials to another person or "mirror" the materials on any other server</li>
-                        </ul>
-                    </div>
-
-                    <div style="margin-bottom: 2rem;">
-                        <h3 style="font-size: 1rem; color: var(--primary); margin-bottom: 0.8rem;">3. Disclaimer</h3>
-                        <p style="margin-bottom: 0.8rem;">The materials on JiPange are provided on an "as-is" basis. JiPange makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties including, without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.</p>
-                    </div>
-
-                    <div style="margin-bottom: 2rem;">
-                        <h3 style="font-size: 1rem; color: var(--primary); margin-bottom: 0.8rem;">4. Limitations</h3>
-                        <p style="margin-bottom: 0.8rem;">In no event shall JiPange or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use the materials on JiPange, even if JiPange or an authorized representative has been notified orally or in writing of the possibility of such damage.</p>
-                    </div>
-
-                    <div style="margin-bottom: 2rem;">
-                        <h3 style="font-size: 1rem; color: var(--primary); margin-bottom: 0.8rem;">5. Accuracy of Materials</h3>
-                        <p style="margin-bottom: 0.8rem;">The materials appearing on JiPange could include technical, typographical, or photographic errors. JiPange does not warrant that any of the materials on our website are accurate, complete, or current. JiPange may make changes to the materials contained on our website at any time without notice.</p>
-                    </div>
-
-                    <div style="margin-bottom: 2rem;">
-                        <h3 style="font-size: 1rem; color: var(--primary); margin-bottom: 0.8rem;">6. Links</h3>
-                        <p style="margin-bottom: 0.8rem;">JiPange has not reviewed all of the sites linked to its website and is not responsible for the contents of any such linked site. The inclusion of any link does not imply endorsement by JiPange of the site. Use of any such linked website is at the user's own risk.</p>
-                    </div>
-
-                    <div style="margin-bottom: 2rem;">
-                        <h3 style="font-size: 1rem; color: var(--primary); margin-bottom: 0.8rem;">7. Modifications</h3>
-                        <p style="margin-bottom: 0.8rem;">JiPange may revise these terms of service for our website at any time without notice. By using this website, you are agreeing to be bound by the then current version of these terms of service.</p>
-                    </div>
-
-                    <div style="margin-bottom: 2rem;">
-                        <h3 style="font-size: 1rem; color: var(--primary); margin-bottom: 0.8rem;">8. Governing Law</h3>
-                        <p style="margin-bottom: 0.8rem;">These terms and conditions are governed by and construed in accordance with the laws of the Republic of Kenya, and you irrevocably submit to the exclusive jurisdiction of the courts in that location.</p>
-                    </div>
-
-                    <div style="padding: 1rem; background: var(--warning-bg); border-radius: 8px; border-left: 4px solid var(--warning);">
-                        <p style="font-size: 0.9rem; color: var(--warning); font-weight: 600; margin: 0;">
-                            ⚠️ <strong>Important Notice:</strong> JiPange is an educational financial planning tool. It is not professional financial advice. Always consult with a qualified financial advisor before making investment decisions.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="button-group">
-            <button onclick="showScreen('screen-21')">← Chama Planner</button>
-            <button class="primary" onclick="showScreen('screen-23')">Privacy Policy →</button>
-        </div>
-    </section>
-
-    <!-- SCREEN 23: PRIVACY POLICY -->
-    <section id="screen-23" style="display: none;">
-        <div class="screen-header">
-            <h1>🔒 Privacy Policy</h1>
-            <p>How JiPange protects your personal and financial information</p>
-        </div>
-
-        <div class="form-container">
-            <div class="card">
-                <h2 style="font-size: 1.2rem; color: var(--primary); margin-bottom: 1.5rem;">JiPange Privacy Policy</h2>
-
-                <div style="font-size: 0.95rem; line-height: 1.8; color: var(--text-2);">
-                    <div style="margin-bottom: 2rem;">
-                        <h3 style="font-size: 1rem; color: var(--primary); margin-bottom: 0.8rem;">1. Information We Collect</h3>
-                        <p style="margin-bottom: 0.8rem;">JiPange collects information you voluntarily provide when using our financial planning tools, including:</p>
-                        <ul style="margin-left: 1.5rem; margin-bottom: 0.8rem;">
-                            <li>Personal information: Name, age, contact details (optional)</li>
-                            <li>Financial information: Income, savings, investment amounts, education costs</li>
-                            <li>Usage data: Features accessed, calculations performed, time spent on application</li>
-                            <li>Device information: Browser type, IP address, device type (non-identifying)</li>
-                        </ul>
-                    </div>
-
-                    <div style="margin-bottom: 2rem;">
-                        <h3 style="font-size: 1rem; color: var(--primary); margin-bottom: 0.8rem;">2. How We Use Your Information</h3>
-                        <p style="margin-bottom: 0.8rem;">We use the information collected to:</p>
-                        <ul style="margin-left: 1.5rem; margin-bottom: 0.8rem;">
-                            <li>Provide personalized financial planning calculations and recommendations</li>
-                            <li>Improve and optimize our application features</li>
-                            <li>Analyze user behavior to enhance user experience</li>
-                            <li>Send updates about new features (with your consent)</li>
-                            <li>Comply with legal obligations</li>
-                        </ul>
-                    </div>
-
-                    <div style="margin-bottom: 2rem;">
-                        <h3 style="font-size: 1rem; color: var(--primary); margin-bottom: 0.8rem;">3. Data Storage and Security</h3>
-                        <p style="margin-bottom: 0.8rem;">All your financial planning data is stored locally in your browser using browser storage (localStorage). This means:</p>
-                        <ul style="margin-left: 1.5rem; margin-bottom: 0.8rem;">
-                            <li>Your data is NOT transmitted to our servers</li>
-                            <li>Your data is NOT shared with third parties</li>
-                            <li>Your data remains private to your device</li>
-                            <li>Clearing your browser cache will delete your stored data</li>
-                        </ul>
-                    </div>
-
-                    <div style="margin-bottom: 2rem;">
-                        <h3 style="font-size: 1rem; color: var(--primary); margin-bottom: 0.8rem;">4. Cookies and Tracking</h3>
-                        <p style="margin-bottom: 0.8rem;">JiPange may use cookies for:</p>
-                        <ul style="margin-left: 1.5rem; margin-bottom: 0.8rem;">
-                            <li>Maintaining your session while using the application</li>
-                            <li>Storing your preference settings</li>
-                            <li>Basic analytics to understand how users interact with our tools</li>
-                        </ul>
-                        <p style="margin-bottom: 0.8rem;">We do not use cookies to track you across different websites.</p>
-                    </div>
-
-                    <div style="margin-bottom: 2rem;">
-                        <h3 style="font-size: 1rem; color: var(--primary); margin-bottom: 0.8rem;">5. Third-Party Services</h3>
-                        <p style="margin-bottom: 0.8rem;">JiPange may include links to external resources and third-party services. We are not responsible for the privacy practices of these external websites. Please review their privacy policies before providing your information.</p>
-                    </div>
-
-                    <div style="margin-bottom: 2rem;">
-                        <h3 style="font-size: 1rem; color: var(--primary); margin-bottom: 0.8rem;">6. Your Rights</h3>
-                        <p style="margin-bottom: 0.8rem;">You have the right to:</p>
-                        <ul style="margin-left: 1.5rem; margin-bottom: 0.8rem;">
-                            <li>Access the personal information we hold about you</li>
-                            <li>Request deletion of your data from our systems (where applicable)</li>
-                            <li>Opt-out of marketing communications</li>
-                            <li>Request a copy of your data in a standard format</li>
-                        </ul>
-                    </div>
-
-                    <div style="margin-bottom: 2rem;">
-                        <h3 style="font-size: 1rem; color: var(--primary); margin-bottom: 0.8rem;">7. Children's Privacy</h3>
-                        <p style="margin-bottom: 0.8rem;">JiPange is not intended for children under 18 years of age. We do not knowingly collect personal information from children. If we become aware that a child has provided us with personal information, we will take steps to delete such information and terminate the child's account.</p>
-                    </div>
-
-                    <div style="margin-bottom: 2rem;">
-                        <h3 style="font-size: 1rem; color: var(--primary); margin-bottom: 0.8rem;">8. Changes to This Privacy Policy</h3>
-                        <p style="margin-bottom: 0.8rem;">We may update this privacy policy from time to time. We will notify users of any significant changes by posting the new policy on this page and updating the effective date. Your continued use of the application after such modifications constitutes your acceptance of the updated privacy policy.</p>
-                    </div>
-
-                    <div style="margin-bottom: 2rem;">
-                        <h3 style="font-size: 1rem; color: var(--primary); margin-bottom: 0.8rem;">9. Contact Us</h3>
-                        <p style="margin-bottom: 0.8rem;">If you have questions about this privacy policy or our privacy practices, please contact us at:</p>
-                        <div style="padding: 1rem; background: var(--offwhite); border-radius: 8px; margin-top: 0.8rem;">
-                            <p style="margin: 0.3rem 0;"><strong>JiPange Privacy Team</strong></p>
-                            <p style="margin: 0.3rem 0; color: var(--text-3);">Email: privacy@jipange.ke</p>
-                            <p style="margin: 0.3rem 0; color: var(--text-3);">Location: Nairobi, Kenya</p>
-                        </div>
-                    </div>
-
-                    <div style="padding: 1rem; background: var(--success-bg); border-radius: 8px; border-left: 4px solid var(--success);">
-                        <p style="font-size: 0.9rem; color: var(--success); font-weight: 600; margin: 0;">
-                            ✅ <strong>Your Data Privacy:</strong> All your financial planning data is stored locally on your device. We take your privacy seriously and do not collect or share your information with third parties.
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card" style="margin-top: 2rem; padding: 1rem; background: var(--surface);">
-                <p style="font-size: 0.85rem; color: var(--text-3); margin: 0;">
-                    <strong>Last Updated:</strong> June 2026<br>
-                    <strong>Effective Date:</strong> June 1, 2026
-                </p>
-            </div>
-        </div>
-
-        <div class="button-group">
-            <button onclick="showScreen('screen-22')">← Terms of Use</button>
-            <button class="primary" onclick="showScreen('screen-1')">Back to Home</button>
-        </div>
-    </section>
-
 </div>
 
 <!-- Footer -->
 <footer class="footer">
     <div class="footer-content">
-        <div class="footer-primary">🇰🇪 JiPange — Kenya's Financial Operating System (v3.0)</div>
+        <div class="footer-primary">JiPange — Kenya's Financial Operating System · v2.0</div>
         <div class="footer-secondary">
-            <span class="footer-link">📧 hello@dnconsultancy.co.ke</span>
-            <span class="footer-divider"></span>
-            <span class="footer-link">🌐 dnconsultancy.co.ke</span>
-            <span class="footer-divider"></span>
-            <span style="color: rgba(255, 255, 255, 0.9); font-size: 0.75rem;">
-                ⓘ For planning purposes only. Not professional financial advice. Always consult a qualified advisor.
-            </span>
+            📧 hello@dnconsultancy.co.ke · 🌐 dnconsultancy.co.ke<br>
+            <em>For financial planning purposes only. Not professional financial advice.</em>
         </div>
     </div>
 </footer>
@@ -4555,364 +4063,107 @@ function calculateTaxOptimization() {
 }
 
 // ============ EDUCATION SAVINGS PLANNER ============
-function updateEducationDefaults() {
-    const level = document.getElementById('childEducationLevel').value;
-    const costDefaults = {
-        'primary': { years: 6, baseCost: 180000 },
-        'secondary_jnr': { years: 3, baseCost: 400000 },
-        'secondary_snr': { years: 3, baseCost: 450000 },
-        'secondary_complete': { years: 6, baseCost: 425000 },
-        'university': { years: 4, baseCost: 650000 },
-        'university_ext': { years: 5, baseCost: 650000 },
-        'vocational': { years: 3, baseCost: 250000 }
-    };
+function calculateEducationSavings() {
+    const financials = calculateChildEducation();
 
-    if (costDefaults[level]) {
-        const defaults = costDefaults[level];
-        document.getElementById('annualEducationCost').value = defaults.baseCost;
-        document.getElementById('educationYears').value = defaults.years;
+    // Update UI
+    document.getElementById('totalEducationCost').textContent = `KES ${financials.baseCost.toLocaleString()}`;
+    document.getElementById('inflationAdjustedCost').textContent = `KES ${financials.inflationAdjustedCost.toLocaleString()}`;
+    document.getElementById('projectedEducationSavings').textContent = `KES ${financials.projectedSavings.toLocaleString()}`;
+
+    const shortfall = financials.shortfall;
+    const shortfallEl = document.getElementById('educationShortfall');
+    const noteEl = document.getElementById('educationShortfallNote');
+    shortfallEl.textContent = `KES ${shortfall.toLocaleString()}`;
+
+    if (shortfall > 0) {
+        shortfallEl.style.color = 'var(--danger)';
+        noteEl.textContent = `Shortfall of KES ${shortfall.toLocaleString()} - increase contributions or explore education loans`;
+    } else {
+        shortfallEl.style.color = 'var(--success)';
+        noteEl.textContent = `Surplus of KES ${Math.abs(shortfall).toLocaleString()} - on track to fund education!`;
     }
 
-    calculateEducationSavings();
+    const monthsUntilEducation = parseInt(document.getElementById('childAge').value) > 0 ? (18 - parseInt(document.getElementById('childAge').value)) * 12 : 1;
+    let requiredMonthly = financials.monthlyContribution;
+    if (monthsUntilEducation > 0 && shortfall > 0) {
+        requiredMonthly = financials.monthlyContribution + (shortfall / monthsUntilEducation) * 0.1;
+    }
+
+    document.getElementById('requiredMonthlyPayment').textContent = `KES ${Math.round(requiredMonthly).toLocaleString()}/month`;
+    document.getElementById('requiredLumpSum').textContent = `${Math.round(shortfall / 1000)}k`;
+
+    saveState();
 }
 
-function calculateEducationSavings() {
+function calculateChildEducation() {
     const childAge = parseInt(document.getElementById('childAge').value) || 0;
     const educationLevel = document.getElementById('childEducationLevel').value;
     const region = document.getElementById('childRegion').value;
-    const schoolType = document.getElementById('schoolType')?.value || 'private';
-    const boardingType = document.getElementById('boardingType')?.value || 'day';
-
     let annualCost = parseInt(document.getElementById('annualEducationCost').value) || 500000;
-    let educationYears = parseInt(document.getElementById('educationYears').value) || 4;
-
-    const uniformsBooks = parseInt(document.getElementById('uniformsBooks')?.value) || 0;
-    const transportFees = parseInt(document.getElementById('transportFees')?.value) || 0;
-    const scholarship = parseInt(document.getElementById('scholarshipBursary')?.value) || 0;
-
+    const educationYears = parseInt(document.getElementById('educationYears').value) || 4;
     const currentSavings = parseInt(document.getElementById('currentEducationSavings').value) || 0;
     const monthlyContribution = parseInt(document.getElementById('monthlyEducationContribution').value) || 20000;
     const returnRate = parseFloat(document.getElementById('educationReturnRate').value) || 8;
     const inflation = parseFloat(document.getElementById('educationInflation').value) || 7;
 
-    // Adjust cost by education level
-    const costByLevel = {
-        'primary': 180000,
-        'secondary_jnr': 400000,
-        'secondary_snr': 450000,
-        'secondary_complete': 425000,
-        'university': 650000,
-        'university_ext': 650000,
-        'vocational': 250000
-    };
+    const costByLevel = { primary: 150000, secondary: 350000, university: 500000, vocational: 200000 };
     if (costByLevel[educationLevel]) annualCost = costByLevel[educationLevel];
 
-    // Adjust for boarding type
-    if (boardingType === 'boarding') annualCost *= 1.5;
-    else if (boardingType === 'partial') annualCost *= 1.25;
+    let regionMultiplier = 1.0;
+    if (region === 'nairobi') regionMultiplier = 1.15;
+    else if (region === 'coastal') regionMultiplier = 1.05;
+    annualCost = Math.round(annualCost * regionMultiplier);
 
-    // Adjust for region
-    const regionMultipliers = {
-        'nairobi': 1.15,
-        'coastal': 1.1,
-        'upcountry': 1.0,
-        'rift_valley': 0.85,
-        'western': 0.8,
-        'nyanza': 0.8,
-        'central': 0.9,
-        'eastern': 0.75
-    };
-    const multiplier = regionMultipliers[region] || 1.0;
-    annualCost = Math.round(annualCost * multiplier);
-
-    // Calculate years until education starts
     let yearsUntilEducation = 0;
-    const ageByLevel = {
-        'primary': 6,
-        'secondary_jnr': 13,
-        'secondary_snr': 15,
-        'secondary_complete': 13,
-        'university': 18,
-        'university_ext': 18,
-        'vocational': 16
-    };
+    const ageByLevel = { primary: 6, secondary: 13, university: 18, vocational: 16 };
     if (ageByLevel[educationLevel]) {
-        yearsUntilEducation = Math.max(0, ageByLevel[educationLevel] - childAge);
+        yearsUntilEducation = ageByLevel[educationLevel] - childAge;
+        if (yearsUntilEducation < 0) yearsUntilEducation = 0;
     }
 
-    // Calculate total annual cost including extras
-    const annualAdditional = uniformsBooks + transportFees;
-    const totalAnnualCost = annualCost + annualAdditional;
-
-    // UPDATE ITEMIZED BREAKDOWN DISPLAY
-    if (document.getElementById('breakdownTuition')) {
-        document.getElementById('breakdownTuition').textContent = `KES ${annualCost.toLocaleString()}`;
-    }
-    if (document.getElementById('breakdownUniforms')) {
-        document.getElementById('breakdownUniforms').textContent = `KES ${uniformsBooks.toLocaleString()}`;
-    }
-    if (document.getElementById('breakdownTransport')) {
-        document.getElementById('breakdownTransport').textContent = `KES ${transportFees.toLocaleString()}`;
-    }
-    if (document.getElementById('breakdownTotal')) {
-        document.getElementById('breakdownTotal').textContent = `KES ${totalAnnualCost.toLocaleString()}`;
-    }
-    if (document.getElementById('breakdownYears')) {
-        document.getElementById('breakdownYears').textContent = educationYears;
-    }
-    if (document.getElementById('breakdownTotalAll')) {
-        document.getElementById('breakdownTotalAll').textContent = `KES ${(totalAnnualCost * educationYears).toLocaleString()}`;
+    const baseCost = annualCost * educationYears;
+    let inflationAdjustedCost = baseCost;
+    for (let i = 0; i < yearsUntilEducation; i++) {
+        inflationAdjustedCost = baseCost * Math.pow(1 + inflation / 100, i);
     }
 
-    // Inflation-adjust the total cost
-    let inflationAdjustedCost = totalAnnualCost * educationYears;
-    inflationAdjustedCost *= Math.pow(1 + inflation / 100, yearsUntilEducation / 2);
-
-    // Apply scholarship/bursary reduction
-    const totalCostAfterScholarship = Math.max(0, inflationAdjustedCost - (scholarship * educationYears));
-
-    // Project savings with compound interest
     let projectedSavings = currentSavings;
     const monthlyRate = returnRate / 100 / 12;
     const monthsUntilEducation = Math.max(0, yearsUntilEducation * 12);
 
-    // Future value of current savings
     projectedSavings *= Math.pow(1 + monthlyRate, monthsUntilEducation);
 
-    // Future value of monthly contributions
-    if (monthsUntilEducation > 0 && monthlyRate > 0) {
+    if (monthsUntilEducation > 0) {
         const fvAnnuity = monthlyContribution * (Math.pow(1 + monthlyRate, monthsUntilEducation) - 1) / monthlyRate;
         projectedSavings += fvAnnuity;
-    } else if (monthsUntilEducation > 0) {
-        projectedSavings += monthlyContribution * monthsUntilEducation;
     }
 
-    const shortfall = Math.max(0, totalCostAfterScholarship - projectedSavings);
-    const surplus = projectedSavings > totalCostAfterScholarship ? projectedSavings - totalCostAfterScholarship : 0;
+    const shortfall = inflationAdjustedCost - projectedSavings;
 
-    // Calculate required monthly payment to cover gap
-    let requiredMonthly = monthlyContribution;
-    if (monthsUntilEducation > 0 && shortfall > 0) {
-        const monthlyShortfall = (shortfall / educationYears) / 12;
-        requiredMonthly = monthlyContribution + monthlyShortfall;
-    }
-
-    // Update UI
-    if (document.getElementById('totalEducationCost')) {
-        document.getElementById('totalEducationCost').textContent = `KES ${(annualCost * educationYears).toLocaleString()}`;
-    }
-    if (document.getElementById('totalAnnualCost')) {
-        document.getElementById('totalAnnualCost').textContent = `KES ${totalAnnualCost.toLocaleString()}`;
-    }
-    if (document.getElementById('inflationAdjustedCost')) {
-        document.getElementById('inflationAdjustedCost').textContent = `KES ${Math.round(totalCostAfterScholarship).toLocaleString()}`;
-    }
-    if (document.getElementById('projectedEducationSavings')) {
-        document.getElementById('projectedEducationSavings').textContent = `KES ${Math.round(projectedSavings).toLocaleString()}`;
-    }
-
-    const shortfallEl = document.getElementById('educationShortfall');
-    const noteEl = document.getElementById('educationShortfallNote');
-
-    if (shortfallEl) {
-        const displayAmount = shortfall > 0 ? shortfall : surplus;
-        shortfallEl.textContent = `KES ${Math.round(displayAmount).toLocaleString()}`;
-
-        if (shortfall > 0) {
-            shortfallEl.style.color = 'var(--danger)';
-            if (noteEl) noteEl.textContent = `Shortfall of KES ${Math.round(shortfall).toLocaleString()} - increase contributions or explore education loans`;
-        } else {
-            shortfallEl.style.color = 'var(--success)';
-            if (noteEl) noteEl.textContent = `Surplus of KES ${Math.round(surplus).toLocaleString()} - on track to fund education!`;
-        }
-    }
-
-    if (document.getElementById('requiredMonthlyPayment')) {
-        document.getElementById('requiredMonthlyPayment').textContent = `KES ${Math.round(requiredMonthly).toLocaleString()}/month`;
-    }
-    if (document.getElementById('requiredLumpSum')) {
-        document.getElementById('requiredLumpSum').textContent = `${Math.round(shortfall / 1000)}k`;
-    }
-
-    // CALCULATE THREE SCENARIOS
-    calculateEducationScenarios({
-        annualCost,
-        uniformsBooks,
-        transportFees,
-        educationYears,
-        yearsUntilEducation,
-        scholarship,
-        currentSavings,
-        monthlyContribution,
-        returnRate
-    });
-
-    // Update loan impact display
-    updateLoanImpact();
-
-    saveState();
-}
-
-function updateLoanImpact() {
-    // Get HELB loan amount
-    const helbAmount = parseInt(document.getElementById('helbLoanAmount')?.value || 0);
-
-    // Get SACCO loan parameters
-    const saccoAmount = parseInt(document.getElementById('saccoLoanAmount')?.value || 0);
-    const saccoRate = parseFloat(document.getElementById('saccoInterestRate')?.value || 12) / 100;
-    const saccoPeriod = parseInt(document.getElementById('saccoRepaymentPeriod')?.value || 24);
-
-    // Calculate SACCO monthly payment and total interest
-    const saccoMonthlyRate = saccoRate / 12;
-    let saccoMonthlyPayment = 0;
-    let saccoTotalInterest = 0;
-
-    if (saccoAmount > 0 && saccoPeriod > 0) {
-        if (saccoMonthlyRate > 0) {
-            // Standard loan amortization formula: M = P * [r(1+r)^n] / [(1+r)^n - 1]
-            const monthlyFactor = Math.pow(1 + saccoMonthlyRate, saccoPeriod);
-            saccoMonthlyPayment = saccoAmount * (saccoMonthlyRate * monthlyFactor) / (monthlyFactor - 1);
-            saccoTotalInterest = (saccoMonthlyPayment * saccoPeriod) - saccoAmount;
-        } else {
-            // If 0% interest (unlikely but handle it)
-            saccoMonthlyPayment = saccoAmount / saccoPeriod;
-        }
-    }
-
-    // Update HELB display
-    const helbDisplayEl = document.getElementById('helbDisplayAmount');
-    if (helbDisplayEl) {
-        helbDisplayEl.textContent = `KES ${helbAmount.toLocaleString()}`;
-    }
-
-    const helbBenefitEl = document.getElementById('helbBenefit');
-    if (helbBenefitEl) {
-        helbBenefitEl.textContent = `KES ${helbAmount.toLocaleString()}`;
-    }
-
-    // Update SACCO display
-    const saccoRateDisplay = document.getElementById('saccoDisplayRate');
-    if (saccoRateDisplay) {
-        saccoRateDisplay.textContent = `${(saccoRate * 100).toFixed(1)}%`;
-    }
-
-    const saccoPaymentEl = document.getElementById('saccoMonthlyPayment');
-    if (saccoPaymentEl) {
-        saccoPaymentEl.textContent = `KES ${Math.round(saccoMonthlyPayment).toLocaleString()}`;
-    }
-
-    // Total loan benefit
-    const totalLoanBenefit = helbAmount + saccoAmount;
-    const totalLoanEl = document.getElementById('totalLoanBenefit');
-    if (totalLoanEl) {
-        totalLoanEl.textContent = `KES ${totalLoanBenefit.toLocaleString()}`;
-    }
-
-    // Update shortfall after loans (using realistic scenario)
-    const realisticGapText = document.getElementById('scenarioRealisticGap')?.textContent || 'KES 0';
-    const realisticGapValue = parseInt(realisticGapText.replace(/[^\d]/g, '')) || 0;
-
-    // Determine if gap is positive (surplus) or negative (shortfall)
-    const isShortfall = realisticGapText.includes('-');
-    const shortfallAmount = isShortfall ? Math.abs(realisticGapValue) : 0;
-    const surplusAmount = !isShortfall ? realisticGapValue : 0;
-
-    // Calculate remaining shortfall after loans
-    let remainingShortfall = 0;
-    if (shortfallAmount > 0) {
-        remainingShortfall = Math.max(0, shortfallAmount - totalLoanBenefit);
-    }
-
-    const shortfallEl = document.getElementById('shortfallAfterLoans');
-    if (shortfallEl) {
-        if (remainingShortfall > 0) {
-            shortfallEl.textContent = `KES ${Math.round(remainingShortfall).toLocaleString()}`;
-            shortfallEl.style.color = 'var(--danger)';
-        } else {
-            const finalSurplus = totalLoanBenefit - shortfallAmount;
-            shortfallEl.textContent = `KES ${Math.round(finalSurplus).toLocaleString()} Surplus`;
-            shortfallEl.style.color = 'var(--success)';
-        }
-    }
-
-    saveState();
-}
-
-function calculateEducationScenarios(baseData) {
-    const { annualCost, uniformsBooks, transportFees, educationYears, yearsUntilEducation, scholarship, currentSavings, monthlyContribution, returnRate } = baseData;
-
-    const totalAnnualCost = annualCost + uniformsBooks + transportFees;
-    const monthlyRate = returnRate / 100 / 12;
-    const monthsUntilEducation = Math.max(0, yearsUntilEducation * 12);
-
-    // Calculate projected savings (same for all scenarios)
-    let projSavings = currentSavings * Math.pow(1 + monthlyRate, monthsUntilEducation);
-    if (monthsUntilEducation > 0 && monthlyRate > 0) {
-        const fvAnnuity = monthlyContribution * (Math.pow(1 + monthlyRate, monthsUntilEducation) - 1) / monthlyRate;
-        projSavings += fvAnnuity;
-    } else if (monthsUntilEducation > 0) {
-        projSavings += monthlyContribution * monthsUntilEducation;
-    }
-
-    // THREE SCENARIOS with different inflation rates
-    const scenarios = {
-        conservative: { inflation: -0.02 },  // -2% (best case, lower inflation)
-        realistic: { inflation: 0.07 },       // +7% (Kenya avg education inflation)
-        optimistic: { inflation: 0.05 }       // +5% (good case)
+    return {
+        baseCost: Math.round(baseCost),
+        inflationAdjustedCost: Math.round(inflationAdjustedCost),
+        projectedSavings: Math.round(projectedSavings),
+        shortfall: Math.round(shortfall),
+        monthlyContribution: monthlyContribution,
+        currentSavings: currentSavings
     };
-
-    Object.entries(scenarios).forEach(([key, scenario]) => {
-        // Apply inflation to the base cost before education period
-        const inflationFactor = Math.pow(1 + scenario.inflation, yearsUntilEducation / 2);
-
-        // Total cost over education years with inflation adjustment
-        let totalCost = 0;
-        for (let year = 0; year < educationYears; year++) {
-            const costInYear = totalAnnualCost * Math.pow(1 + scenario.inflation, year + yearsUntilEducation / 2);
-            totalCost += costInYear;
-        }
-
-        // Apply scholarship/bursary deduction
-        const scholarshipTotal = scholarship * educationYears;
-        const costAfterScholarship = Math.max(0, totalCost - scholarshipTotal);
-
-        // Calculate gap (negative = shortfall, positive = surplus)
-        const gap = projSavings - costAfterScholarship;
-        const gapDisplay = gap >= 0 ? `KES ${Math.round(gap).toLocaleString()}` : `KES -${Math.round(Math.abs(gap)).toLocaleString()}`;
-        const gapColor = gap >= 0 ? 'var(--success)' : 'var(--danger)';
-
-        // Update scenario displays
-        const capital = key.charAt(0).toUpperCase() + key.slice(1);
-        const costId = `scenario${capital}Cost`;
-        const savingsId = `scenario${capital}Savings`;
-        const gapId = `scenario${capital}Gap`;
-
-        if (document.getElementById(costId)) {
-            document.getElementById(costId).textContent = `KES ${Math.round(costAfterScholarship).toLocaleString()}`;
-        }
-        if (document.getElementById(savingsId)) {
-            document.getElementById(savingsId).textContent = `KES ${Math.round(projSavings).toLocaleString()}`;
-        }
-        if (document.getElementById(gapId)) {
-            const el = document.getElementById(gapId);
-            el.textContent = gapDisplay;
-            el.style.color = gapColor;
-        }
-    });
 }
 
 function addEducationChild() {
     const childName = document.getElementById('childName').value || 'Child';
     const childAge = parseInt(document.getElementById('childAge').value) || 0;
     const educationLevel = document.getElementById('childEducationLevel').value || 'university';
-    const currentSavings = parseInt(document.getElementById('currentEducationSavings').value) || 0;
+
+    const financials = calculateChildEducation();
 
     const newChild = {
         id: Date.now(),
         name: childName,
         age: childAge,
         educationLevel: educationLevel,
-        currentSavings: currentSavings
+        ...financials
     };
 
     if (!state.education) state.education = { children: [] };
@@ -4933,19 +4184,61 @@ function viewEducationSummary() {
     const listEl = document.getElementById('educationChildrenList');
     if (!listEl) return;
 
-    const html = state.education.children.map(child => `
+    const children = state.education.children;
+
+    // Calculate cumulative totals
+    const totalCost = children.reduce((sum, c) => sum + c.inflationAdjustedCost, 0);
+    const totalSavings = children.reduce((sum, c) => sum + c.projectedSavings, 0);
+    const totalShortfall = children.reduce((sum, c) => sum + Math.max(0, c.shortfall), 0);
+    const totalSurplus = children.reduce((sum, c) => sum + Math.max(0, -c.shortfall), 0);
+    const combinedShortfall = totalCost - totalSavings;
+
+    const childrenHtml = children.map(child => `
         <div style="padding: 1rem; background: var(--surface); border-radius: 8px; border-left: 4px solid var(--secondary); margin-bottom: 0.5rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
                 <div>
                     <strong style="font-size: 1.1rem;">${child.name}</strong>
-                    <div style="color: var(--text-3); font-size: 0.85rem;">Age ${child.age} · ${child.educationLevel} · Saved: KES ${child.currentSavings.toLocaleString()}</div>
+                    <div style="color: var(--text-3); font-size: 0.85rem;">Age ${child.age} · ${child.educationLevel}</div>
                 </div>
-                <button onclick="removeEducationChild(${child.id})" style="background: var(--danger); color: white; border: none; padding: 0.3rem 0.8rem; border-radius: 4px; cursor: pointer;">Remove</button>
+                <button onclick="removeEducationChild(${child.id})" style="background: var(--danger); color: white; border: none; padding: 0.3rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">Remove</button>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; font-size: 0.85rem;">
+                <div><span style="color: var(--text-3);">Cost:</span> <strong>KES ${child.inflationAdjustedCost.toLocaleString()}</strong></div>
+                <div><span style="color: var(--text-3);">Savings:</span> <strong>KES ${child.projectedSavings.toLocaleString()}</strong></div>
+                <div style="grid-column: 1/-1;"><span style="color: var(--text-3);">Gap:</span> <strong style="color: ${child.shortfall > 0 ? 'var(--danger)' : 'var(--success)'};">KES ${Math.abs(child.shortfall).toLocaleString()}</strong></div>
             </div>
         </div>
     `).join('');
 
-    listEl.innerHTML = html ? `<div style="margin-top: 1rem;"><h3 style="color: var(--text-1); margin-bottom: 1rem;">📚 Tracked Children</h3>${html}</div>` : '';
+    const cumulativeHtml = `
+        <div style="padding: 1.5rem; background: var(--primary-bg); border-radius: 8px; border-left: 4px solid var(--primary); margin-bottom: 1rem;">
+            <h3 style="color: var(--primary); margin-bottom: 1rem; font-size: 1rem;">📊 Cumulative Summary (All Children)</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                <div style="padding: 0.75rem; background: white; border-radius: 4px;">
+                    <div style="font-size: 0.8rem; color: var(--text-3); margin-bottom: 0.25rem;">Total Education Cost</div>
+                    <div style="font-size: 1.2rem; font-weight: 700; color: var(--primary);">KES ${totalCost.toLocaleString()}</div>
+                </div>
+                <div style="padding: 0.75rem; background: white; border-radius: 4px;">
+                    <div style="font-size: 0.8rem; color: var(--text-3); margin-bottom: 0.25rem;">Total Projected Savings</div>
+                    <div style="font-size: 1.2rem; font-weight: 700; color: var(--success);">KES ${totalSavings.toLocaleString()}</div>
+                </div>
+            </div>
+            <div style="padding: 1rem; background: white; border-radius: 4px; border-left: 4px solid ${combinedShortfall > 0 ? 'var(--danger)' : 'var(--success)'};">
+                <div style="font-size: 0.85rem; color: var(--text-3); margin-bottom: 0.5rem; text-transform: uppercase; font-weight: 600;">Combined Shortfall / Surplus</div>
+                <div style="font-size: 1.8rem; font-weight: 900; color: ${combinedShortfall > 0 ? 'var(--danger)' : 'var(--success)'};">
+                    ${combinedShortfall > 0 ? '-' : '+'}KES ${Math.abs(combinedShortfall).toLocaleString()}
+                </div>
+            </div>
+        </div>
+    `;
+
+    listEl.innerHTML = children.length > 0 ? `
+        <div style="margin-top: 1rem;">
+            <h3 style="color: var(--text-1); margin-bottom: 1rem;">📚 Tracked Children</h3>
+            ${childrenHtml}
+            ${children.length > 1 ? cumulativeHtml : ''}
+        </div>
+    ` : '';
 }
 
 function removeEducationChild(id) {
