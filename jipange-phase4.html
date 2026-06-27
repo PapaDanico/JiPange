@@ -1451,8 +1451,102 @@
         <span id="notification-message"></span>
     </div>
 
-    <!-- Screen 11: M-Pesa Savings Tracker (NEW) -->
+    <!-- Screen 11: How Long to Save Calculator (NEW) -->
     <section id="screen-11">
+        <h1 class="section-title">⏱️ How Long to Save?</h1>
+        <p class="section-subtitle">Calculate when you'll reach any financial goal with compound interest</p>
+
+        <!-- Quick Calculator -->
+        <div class="card">
+            <h2 style="font-size: 1.1rem; color: var(--primary); margin-bottom: 1rem;">Quick Calculator</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+                <div class="field-group" style="margin-bottom: 0;">
+                    <label>Goal Amount (KES)</label>
+                    <input type="number" id="quickTarget" placeholder="500000" value="500000">
+                </div>
+                <div class="field-group" style="margin-bottom: 0;">
+                    <label>Current Savings (KES)</label>
+                    <input type="number" id="quickCurrent" placeholder="50000" value="50000">
+                </div>
+                <div class="field-group" style="margin-bottom: 0;">
+                    <label>Monthly Contribution (KES)</label>
+                    <input type="number" id="quickMonthly" placeholder="10000" value="10000">
+                </div>
+                <div class="field-group" style="margin-bottom: 0;">
+                    <label>Annual Interest Rate (%)</label>
+                    <input type="number" id="quickRate" placeholder="5" value="5" step="0.1" min="0" max="20">
+                </div>
+            </div>
+            <button class="primary" style="width: 100%;" onclick="calculateTimeToSave()">Calculate Time to Goal</button>
+
+            <div id="quickResult" style="margin-top: 1.5rem; padding: 1.5rem; background: var(--success-bg); border-radius: 8px; display: none;">
+                <h3 id="resultTime" style="font-size: 1.8rem; color: var(--success); margin: 0 0 0.5rem 0;"></h3>
+                <p id="resultDate" style="color: var(--text-1); margin: 0.5rem 0; font-weight: 500;"></p>
+                <p id="resultTotal" style="color: var(--text-2); margin: 0;"></p>
+                <p id="resultInterest" style="color: var(--text-2); margin: 0;"></p>
+            </div>
+        </div>
+
+        <!-- Advanced Calculator -->
+        <div class="card">
+            <h2 style="font-size: 1.1rem; color: var(--primary); margin-bottom: 1rem;">Advanced Calculator (With Inflation)</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+                <div class="field-group" style="margin-bottom: 0;">
+                    <label>Goal Amount</label>
+                    <input type="number" id="advTarget" placeholder="800000" value="800000">
+                </div>
+                <div class="field-group" style="margin-bottom: 0;">
+                    <label>Current Savings</label>
+                    <input type="number" id="advCurrent" placeholder="100000" value="100000">
+                </div>
+                <div class="field-group" style="margin-bottom: 0;">
+                    <label>Monthly Contribution</label>
+                    <input type="number" id="advMonthly" placeholder="15000" value="15000">
+                </div>
+                <div class="field-group" style="margin-bottom: 0;">
+                    <label>Annual Return (%)</label>
+                    <input type="number" id="advReturn" placeholder="5" value="5" step="0.1">
+                </div>
+                <div class="field-group" style="margin-bottom: 0;">
+                    <label>Inflation Rate (%)</label>
+                    <input type="number" id="advInflation" placeholder="7" value="7" step="0.1">
+                </div>
+                <div class="field-group" style="margin-bottom: 0;">
+                    <label>Max Timeline (years)</label>
+                    <input type="number" id="advYears" placeholder="30" value="30" min="1" max="50">
+                </div>
+            </div>
+            <button class="primary" style="width: 100%;" onclick="calculateAdvancedTimeline()">Calculate Timeline</button>
+
+            <div id="advResult" style="margin-top: 1.5rem; display: none;">
+                <div class="chart-container">
+                    <canvas id="timelineChart"></canvas>
+                </div>
+                <div id="advResultText" style="margin-top: 1rem;"></div>
+            </div>
+        </div>
+
+        <!-- Scenario Presets -->
+        <div class="card">
+            <h2 style="font-size: 1.1rem; color: var(--primary); margin-bottom: 1rem;">Kenya Common Goals</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem;">
+                <button style="background: #4CAF50; color: white;" onclick="loadScenario('houseDP')">🏠 House Down Payment</button>
+                <button style="background: #FF9800; color: white;" onclick="loadScenario('car')">🚗 Car Purchase</button>
+                <button style="background: #2196F3; color: white;" onclick="loadScenario('business')">💼 Business Investment</button>
+                <button style="background: #9C27B0; color: white;" onclick="loadScenario('education')">🎓 Education Savings</button>
+                <button style="background: #F44336; color: white;" onclick="loadScenario('emergency')">🚨 Emergency Fund</button>
+                <button style="background: #00BCD4; color: white;" onclick="loadScenario('holiday')">✈️ Holiday Fund</button>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button onclick="showScreen('screen-10')">← Reports</button>
+            <button class="primary" onclick="showScreen('screen-12')">M-Pesa Tracker →</button>
+        </div>
+    </section>
+
+    <!-- Screen 12: M-Pesa Savings Tracker -->
+    <section id="screen-12">
         <h1 class="section-title">📱 M-Pesa Savings Tracker</h1>
         <p class="section-subtitle">Track your mobile money savings alongside traditional accounts. Perfect for Kenya's digital-first economy.</p>
 
@@ -3721,6 +3815,22 @@ function generateRecommendations() {
     `).join('');
 }
 
+function calculateMonthsToGoal(goal, monthlyContribution, interestRate = 0.05, inflationRate = 0.07) {
+    const monthlyRate = interestRate / 12;
+    const monthlyInflation = inflationRate / 12;
+    let balance = goal.current;
+    let target = goal.target;
+    let months = 0;
+
+    while (balance < target && months < 600) {
+        balance = balance * (1 + monthlyRate) + monthlyContribution;
+        target = target * (1 + monthlyInflation);
+        months++;
+    }
+
+    return months < 600 ? months : null;
+}
+
 function renderGoalsUI() {
     const container = document.getElementById('goalsContainer');
     if (!state.goals || state.goals.length === 0) {
@@ -3730,36 +3840,57 @@ function renderGoalsUI() {
         return;
     }
 
-    container.innerHTML = state.goals.map((goal, idx) => `
-        <div class="goal-card">
-            <div class="goal-header">
-                <div class="goal-name">${goal.name}</div>
-                <div class="goal-deadline">Target: ${goal.deadline}</div>
-            </div>
-            <div class="progress-bar">
-                <div class="progress-fill" style="width: ${(goal.current / goal.target * 100).toFixed(0)}%; background: linear-gradient(90deg, #52C41A, #2D5016);">
-                    ${(goal.current / goal.target * 100).toFixed(0)}%
+    const monthlyFromSurplus = state.budget._surplus / 12;
+    const interestRate = state.assumptions?.interestRate || 0.05;
+    const inflationRate = state.assumptions?.inflationRate || 0.07;
+
+    container.innerHTML = state.goals.map((goal, idx) => {
+        const monthsToGoal = calculateMonthsToGoal(goal, monthlyFromSurplus, interestRate, inflationRate);
+        const yearsToGoal = monthsToGoal ? (monthsToGoal / 12).toFixed(1) : '∞';
+        const isAchievable = monthsToGoal !== null;
+
+        return `
+            <div class="goal-card">
+                <div class="goal-header">
+                    <div class="goal-name">${goal.name}</div>
+                    <div class="goal-deadline">Target: ${goal.deadline}</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: ${(goal.current / goal.target * 100).toFixed(0)}%; background: linear-gradient(90deg, #52C41A, #2D5016);">
+                        ${(goal.current / goal.target * 100).toFixed(0)}%
+                    </div>
+                </div>
+                <div class="goal-stats">
+                    <div class="stat">
+                        <div class="stat-label">KES Current</div>
+                        <div class="stat-value">${formatKES(goal.current)}</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">KES Target</div>
+                        <div class="stat-value">${formatKES(goal.target)}</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">KES Remaining</div>
+                        <div class="stat-value">${formatKES(goal.target - goal.current)}</div>
+                    </div>
+                </div>
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); font-size: 0.85rem;">
+                    <div style="color: ${isAchievable ? 'var(--success)' : 'var(--danger)'}; font-weight: 600;">
+                        ${isAchievable ? `⏱️ ${yearsToGoal} years to achieve` : '❌ Cannot reach with current savings'}
+                    </div>
+                    <div style="color: var(--text-3); font-size: 0.8rem; margin-top: 0.3rem;">
+                        Monthly needed: KES ${formatNumber(Math.ceil(monthlyFromSurplus))}
+                    </div>
                 </div>
             </div>
-            <div class="goal-stats">
-                <div class="stat">
-                    <div class="stat-label">KES Current</div>
-                    <div class="stat-value">${formatKES(goal.current)}</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-label">KES Target</div>
-                    <div class="stat-value">${formatKES(goal.target)}</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-label">KES Remaining</div>
-                    <div class="stat-value">${formatKES(goal.target - goal.current)}</div>
-                </div>
-            </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 
     document.getElementById('goalsCount').textContent = state.goals.length;
-    const onTrack = state.goals.filter(g => (g.target - g.current) <= state.budget._surplus * (new Date().getFullYear() - 2025)).length;
+    const onTrack = state.goals.filter(g => {
+        const months = calculateMonthsToGoal(g, monthlyFromSurplus, interestRate, inflationRate);
+        return months !== null;
+    }).length;
     document.getElementById('goalsOnTrack').textContent = onTrack;
 }
 
@@ -4679,6 +4810,219 @@ function calculateChamaProjections() {
     }
 
     saveState();
+}
+
+// ============ HOW LONG TO SAVE CALCULATOR ============
+function calculateTimeToSave() {
+    const target = parseInt(document.getElementById('quickTarget').value) || 0;
+    const current = parseInt(document.getElementById('quickCurrent').value) || 0;
+    const monthly = parseInt(document.getElementById('quickMonthly').value) || 0;
+    const rate = parseFloat(document.getElementById('quickRate').value) || 0;
+
+    if (target <= current) {
+        showNotification('✅ You already have this amount!', 'success');
+        return;
+    }
+
+    if (monthly <= 0) {
+        showNotification('⚠️ Monthly contribution must be greater than 0', 'warning');
+        return;
+    }
+
+    const monthlyRate = rate / 100 / 12;
+    let balance = current;
+    let months = 0;
+    const maxMonths = 600;
+
+    while (balance < target && months < maxMonths) {
+        balance = balance * (1 + monthlyRate) + monthly;
+        months++;
+    }
+
+    if (months >= maxMonths) {
+        showNotification('⚠️ Goal not achievable with current settings', 'warning');
+        return;
+    }
+
+    const years = (months / 12).toFixed(1);
+    const futureDate = new Date();
+    futureDate.setMonth(futureDate.getMonth() + months);
+
+    const resultDiv = document.getElementById('quickResult');
+    const totalContributed = monthly * months;
+    const totalInterestEarned = balance - current - totalContributed;
+
+    document.getElementById('resultTime').textContent = `${years} years`;
+    document.getElementById('resultDate').textContent = `📅 Target date: ${futureDate.toLocaleDateString('en-KE', {year: 'numeric', month: 'long', day: 'numeric'})}`;
+    document.getElementById('resultTotal').textContent = `💰 Total contributed: KES ${formatNumber(totalContributed)}`;
+    document.getElementById('resultInterest').textContent = `📈 Interest earned: KES ${formatNumber(Math.round(totalInterestEarned))}`;
+    resultDiv.style.display = 'block';
+
+    showNotification(`✅ You'll reach this goal in ${years} years!`, 'success');
+}
+
+function calculateAdvancedTimeline() {
+    const target = parseInt(document.getElementById('advTarget').value) || 0;
+    const current = parseInt(document.getElementById('advCurrent').value) || 0;
+    const monthly = parseInt(document.getElementById('advMonthly').value) || 0;
+    const returnRate = parseFloat(document.getElementById('advReturn').value) || 0;
+    const inflationRate = parseFloat(document.getElementById('advInflation').value) || 0;
+    const maxYears = parseInt(document.getElementById('advYears').value) || 30;
+
+    const monthlyReturn = returnRate / 100 / 12;
+    const monthlyInflation = inflationRate / 100 / 12;
+
+    let balance = current;
+    let adjustedTarget = target;
+    let months = 0;
+    const data = [];
+
+    // Year by year calculation
+    while (months < maxYears * 12) {
+        balance = balance * (1 + monthlyReturn) + monthly;
+        adjustedTarget *= (1 + monthlyInflation);
+        months++;
+
+        // Store every 12 months for chart
+        if (months % 12 === 0) {
+            data.push({
+                year: months / 12,
+                balance: Math.round(balance),
+                target: Math.round(adjustedTarget),
+                gap: Math.max(0, Math.round(adjustedTarget - balance))
+            });
+        }
+
+        if (balance >= adjustedTarget) break;
+    }
+
+    const resultDiv = document.getElementById('advResult');
+    const textDiv = document.getElementById('advResultText');
+
+    if (balance >= adjustedTarget && months < maxYears * 12) {
+        const years = (months / 12).toFixed(1);
+        const inflationImpact = ((adjustedTarget - target) / target * 100).toFixed(1);
+        textDiv.innerHTML = `
+            <div style="padding: 1.5rem; background: var(--success-bg); border-radius: 8px;">
+                <p><strong style="color: var(--success); font-size: 1.1rem;">✅ Achievable in ${years} years</strong></p>
+                <p style="margin: 0.5rem 0; color: var(--text-1);">Your savings: KES ${formatNumber(Math.round(balance))}</p>
+                <p style="margin: 0.5rem 0; color: var(--text-1);">Target amount: KES ${formatNumber(Math.round(adjustedTarget))}</p>
+                <p style="margin: 0.5rem 0; color: var(--text-2); font-size: 0.9rem;">Inflation impact: +${inflationImpact}%</p>
+            </div>
+        `;
+        showNotification(`✅ Goal achievable in ${years} years!`, 'success');
+    } else {
+        const inflationImpact = ((adjustedTarget - target) / target * 100).toFixed(1);
+        textDiv.innerHTML = `
+            <div style="padding: 1.5rem; background: var(--danger-bg); border-radius: 8px;">
+                <p><strong style="color: var(--danger); font-size: 1.1rem;">⚠️ Not achievable in ${maxYears} years</strong></p>
+                <p style="margin: 0.5rem 0; color: var(--text-1);">Your savings after ${maxYears} years: KES ${formatNumber(Math.round(balance))}</p>
+                <p style="margin: 0.5rem 0; color: var(--text-1);">Target amount: KES ${formatNumber(Math.round(adjustedTarget))}</p>
+                <p style="margin: 0.5rem 0; color: var(--text-2);">Shortfall: KES ${formatNumber(Math.round(adjustedTarget - balance))}</p>
+                <p style="margin: 0.5rem 0; color: var(--text-2); font-size: 0.9rem;">Inflation impact: +${inflationImpact}%</p>
+                <p style="margin-top: 1rem; color: var(--text-2); font-size: 0.85rem;">💡 Try: increasing monthly contribution or return rate</p>
+            </div>
+        `;
+        showNotification('⚠️ Goal not achievable with current settings', 'warning');
+    }
+
+    // Draw chart
+    drawTimelineChart(data);
+    resultDiv.style.display = 'block';
+}
+
+function drawTimelineChart(data) {
+    const canvas = document.getElementById('timelineChart');
+    if (!canvas || typeof Chart === 'undefined') return;
+
+    const ctx = canvas.getContext('2d');
+
+    // Destroy existing chart if any
+    if (window.timelineChartInstance) {
+        window.timelineChartInstance.destroy();
+    }
+
+    window.timelineChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: data.map(d => `Year ${d.year}`),
+            datasets: [
+                {
+                    label: 'Your Savings Balance',
+                    data: data.map(d => d.balance),
+                    borderColor: '#2D7659',
+                    backgroundColor: 'rgba(45, 118, 89, 0.1)',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    fill: true
+                },
+                {
+                    label: 'Target (Inflation-Adjusted)',
+                    data: data.map(d => d.target),
+                    borderColor: '#D4A017',
+                    backgroundColor: 'rgba(212, 160, 23, 0.1)',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    fill: true
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                },
+                title: {
+                    display: true,
+                    text: 'How Long to Save - Timeline Projection'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return 'KES ' + value.toLocaleString();
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Amount (KES)'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Years'
+                    }
+                }
+            }
+        }
+    });
+}
+
+function loadScenario(scenario) {
+    const scenarios = {
+        houseDP: { target: 2000000, current: 200000, monthly: 50000, rate: 5, name: '🏠 House Down Payment' },
+        car: { target: 800000, current: 50000, monthly: 15000, rate: 4, name: '🚗 Car Purchase' },
+        business: { target: 500000, current: 100000, monthly: 20000, rate: 8, name: '💼 Business Investment' },
+        education: { target: 1500000, current: 300000, monthly: 20000, rate: 6, name: '🎓 Education Savings' },
+        emergency: { target: 300000, current: 50000, monthly: 10000, rate: 3, name: '🚨 Emergency Fund' },
+        holiday: { target: 200000, current: 20000, monthly: 5000, rate: 4, name: '✈️ Holiday Fund' }
+    };
+
+    const s = scenarios[scenario];
+    if (s) {
+        document.getElementById('quickTarget').value = s.target;
+        document.getElementById('quickCurrent').value = s.current;
+        document.getElementById('quickMonthly').value = s.monthly;
+        document.getElementById('quickRate').value = s.rate;
+        showNotification(`📋 Loaded scenario: ${s.name}`, 'success');
+        setTimeout(() => calculateTimeToSave(), 500);
+    }
 }
 
 // ============ NOTIFICATIONS ============
