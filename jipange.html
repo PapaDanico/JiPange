@@ -1182,10 +1182,11 @@
 
     function attachEventListeners() {
         // Profile
+        const stringFields = ['name', 'county'];
         ['name', 'age', 'retirementAge', 'county', 'dependants', 'upcountryDep', 'schoolChildren'].forEach(id => {
             const el = document.getElementById(id);
             if (el) el.addEventListener('change', (e) => {
-                state.profile[id] = isNaN(e.target.value) ? e.target.value : parseInt(e.target.value);
+                state.profile[id] = stringFields.includes(id) ? e.target.value : (parseInt(e.target.value) || 0);
                 saveState();
                 recalculateAll();
             });
@@ -1229,13 +1230,10 @@
 
     function loadFormValues() {
         // Profile
-        document.getElementById('name').value = state.profile.name;
-        document.getElementById('age').value = state.profile.age;
-        document.getElementById('retirementAge').value = state.profile.retirementAge;
-        document.getElementById('county').value = state.profile.county;
-        document.getElementById('dependants').value = state.profile.dependants;
-        document.getElementById('upcountryDep').value = state.profile.upcountryDep;
-        document.getElementById('schoolChildren').value = state.profile.schoolChildren;
+        ['name', 'age', 'retirementAge', 'county', 'dependants', 'upcountryDep', 'schoolChildren'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.value = state.profile[id];
+        });
 
         // Income types
         document.querySelectorAll('#incomeTypes .pill').forEach(pill => {
@@ -1246,18 +1244,16 @@
         });
 
         // Income
-        document.getElementById('salary').value = state.income.salary;
-        document.getElementById('consulting').value = state.income.consulting;
-        document.getElementById('farm').value = state.income.farm;
-        document.getElementById('rental').value = state.income.rental;
-        document.getElementById('remittance').value = state.income.remittance;
-        document.getElementById('business').value = state.income.business;
-        document.getElementById('other').value = state.income.other;
+        ['salary', 'consulting', 'farm', 'rental', 'remittance', 'business', 'other'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.value = state.income[id];
+        });
 
         // Budget
         const budgetFields = ['schoolFees', 'rent', 'carLoan', 'insurance', 'otherFixed', 'tithe', 'upcountrySupport', 'harambee', 'chama', 'churchOther', 'food', 'utilities', 'transport', 'airtime', 'houseHelp', 'dining', 'personal', 'misc'];
         budgetFields.forEach(id => {
-            document.getElementById(id).value = state.budget[id];
+            const el = document.getElementById(id);
+            if (el) el.value = state.budget[id];
         });
     }
 
@@ -1357,7 +1353,7 @@
         // Surplus bar color
         const savingsRatePercent = state.budget._savingsRate;
         const surplusBarFill = document.getElementById('surplusBarFill');
-        const barWidth = Math.min(100, savingsRatePercent * 100);
+        const barWidth = Math.max(0, Math.min(100, savingsRatePercent * 100));
         surplusBarFill.style.width = barWidth + '%';
         surplusBarFill.textContent = formatPercent(savingsRatePercent);
 
