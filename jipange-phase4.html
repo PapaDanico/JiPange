@@ -3408,18 +3408,20 @@ function buildNavbar() {
     const navTabs = document.getElementById('navTabs');
     navTabs.innerHTML = '';
 
-    // Organize screens into categories
+    // Two-tier navigation: 5 Primary + Tools
     const categories = [
         {
             name: '🏠 Start',
-            screens: [{ num: 1, name: 'Profile' }]
+            screens: [{ num: 1, name: 'Profile' }],
+            primary: true
         },
         {
             name: '💰 Income & Expenses',
             screens: [
                 { num: 2, name: 'Income' },
                 { num: 3, name: 'Budget' }
-            ]
+            ],
+            primary: true
         },
         {
             name: '📈 Planning',
@@ -3429,21 +3431,17 @@ function buildNavbar() {
                 { num: 6, name: 'Optimizer' },
                 { num: 7, name: 'Household' },
                 { num: 8, name: 'Goals & FIRE' }
-            ]
-        },
-        {
-            name: '📚 Reports',
-            screens: [
-                { num: 10, name: 'Reports & Export' }
-            ]
+            ],
+            primary: true
         },
         {
             name: '💳 Investments',
             screens: [
                 { num: 11, name: 'M-Pesa' },
                 { num: 12, name: 'Portfolio' },
-                { num: 13, name: 'Debts' }
-            ]
+                { num: 13, name: 'Debt Payoff' }
+            ],
+            primary: true
         },
         {
             name: '🎯 Life & Goals',
@@ -3451,28 +3449,31 @@ function buildNavbar() {
                 { num: 14, name: 'Business' },
                 { num: 15, name: 'Assets' },
                 { num: 16, name: 'Tax' },
-                { num: 17, name: 'Education Savings' },
+                { num: 17, name: 'Education' },
                 { num: 18, name: 'Retirement' }
-            ]
+            ],
+            primary: true
         },
         {
-            name: '⚡ Advanced',
+            name: '🔧 Tools',
             screens: [
+                { num: 10, name: 'Reports & Export' },
                 { num: 19, name: 'Business Scenarios' },
                 { num: 20, name: 'Insurance' },
                 { num: 21, name: 'Chama Groups' }
-            ]
-        },
-        {
-            name: '📋 Legal',
-            screens: [
-                { num: 22, name: 'Terms of Use' },
-                { num: 23, name: 'Privacy Policy' }
-            ]
+            ],
+            primary: false
         }
     ];
 
-    categories.forEach(cat => {
+    // Create primary tabs container
+    const primaryContainer = document.createElement('div');
+    primaryContainer.style.display = 'flex';
+    primaryContainer.style.gap = '0.5rem';
+    primaryContainer.style.flexWrap = 'wrap';
+
+    // Render primary tabs
+    categories.filter(c => c.primary).forEach(cat => {
         const dropdown = document.createElement('div');
         dropdown.className = 'nav-dropdown';
 
@@ -3504,8 +3505,48 @@ function buildNavbar() {
 
         dropdown.appendChild(btn);
         dropdown.appendChild(menu);
-        navTabs.appendChild(dropdown);
+        primaryContainer.appendChild(dropdown);
     });
+
+    navTabs.appendChild(primaryContainer);
+
+    // Render Tools submenu (secondary)
+    const toolsCat = categories.find(c => !c.primary);
+    if (toolsCat) {
+        const dropdown = document.createElement('div');
+        dropdown.className = 'nav-dropdown';
+
+        const btn = document.createElement('button');
+        btn.className = 'nav-dropdown-btn';
+        btn.style.background = 'var(--secondary)';
+        btn.textContent = toolsCat.name;
+        btn.onclick = (e) => {
+            e.stopPropagation();
+            dropdown.classList.toggle('open');
+            document.querySelectorAll('.nav-dropdown.open').forEach(d => {
+                if (d !== dropdown) d.classList.remove('open');
+            });
+        };
+
+        const menu = document.createElement('div');
+        menu.className = 'dropdown-menu';
+
+        toolsCat.screens.forEach(screen => {
+            const link = document.createElement('a');
+            link.className = 'dropdown-item';
+            link.textContent = `${screen.num}. ${screen.name}`;
+            link.onclick = (e) => {
+                e.preventDefault();
+                showScreen(`screen-${screen.num}`);
+                dropdown.classList.remove('open');
+            };
+            menu.appendChild(link);
+        });
+
+        dropdown.appendChild(btn);
+        dropdown.appendChild(menu);
+        navTabs.appendChild(dropdown);
+    }
 
     // Close dropdowns when clicking outside
     document.addEventListener('click', (e) => {
