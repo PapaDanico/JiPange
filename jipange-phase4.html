@@ -2006,6 +2006,53 @@
             </div>
         </div>
 
+        <!-- Treasury Bond Ladder Strategy -->
+        <div class="card" style="margin-top: 2rem;">
+            <div onclick="toggleCollapsible(this)" class="collapsible-header" style="background: var(--surface); padding: 1rem; border-radius: 8px; cursor: pointer; font-weight: 600; color: var(--navy); margin-bottom: 1rem;">
+                🎯 Treasury Bond Ladder Strategy
+                <span style="float: right;">▼</span>
+            </div>
+            <div class="collapsible-content">
+                <p style="font-size: 0.9rem; color: var(--text-2); margin-bottom: 1.5rem;">
+                    Build a ladder of Government bonds with staggered maturity dates. Receive regular coupon payments and reinvest maturing bonds at higher rates.
+                </p>
+
+                <div class="field-group">
+                    <label for="bondLadderAmount">Amount to Allocate to Bond Ladder (KES)</label>
+                    <input type="number" id="bondLadderAmount" value="0" min="0" step="10000">
+                    <span class="input-hint">We'll show optimal allocation across 5-year ladder</span>
+                </div>
+
+                <button onclick="calculateBondLadder()" style="background: #2196F3; color: white; padding: 0.75rem 1.5rem; border-radius: 6px; border: none; cursor: pointer; width: 100%; margin-top: 1rem;">Build Ladder</button>
+
+                <div id="bondLadderResults" style="margin-top: 2rem; display: none;">
+                    <h3 style="color: var(--navy); margin-bottom: 1rem;">Your 5-Year Ladder</h3>
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 2rem;">
+                        <thead>
+                            <tr style="background: var(--surface);">
+                                <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid var(--navy);">Year</th>
+                                <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid var(--navy);">Bond Amount</th>
+                                <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid var(--navy);">Coupon Rate</th>
+                                <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid var(--navy);">Annual Income</th>
+                                <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid var(--navy);">Maturity Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bondLadderTable"></tbody>
+                    </table>
+
+                    <div style="background: #E8F5E9; padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem;">
+                        <h4 style="color: #2E7D32; margin-top: 0;">Ladder Benefits</h4>
+                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem; color: #1B5E20;">
+                            <li>Annual coupon income: <strong id="ladderAnnualIncome">KES 0</strong></li>
+                            <li>Each year a bond matures: Reinvest at new rates</li>
+                            <li>Lower reinvestment risk compared to lump-sum bonds</li>
+                            <li>Regular cash flow for living expenses or reinvestment</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="button-group">
             <button onclick="showScreen('screen-11')">← M-Pesa</button>
             <button class="primary" onclick="showScreen('screen-13')">Debt Planner →</button>
@@ -3252,7 +3299,12 @@ const DEFAULT_STATE = {
     mpesa: {
         monthlyTarget: 10000, currentSaved: 0
     },
-    investments: [],
+    investments: {
+        list: [],
+        bondLadder: [],
+        totalBondLadder: 0,
+        _totalPortfolio: 0
+    },
     debts: [],
     business: {
         monthlyRevenue: 0, monthlyExpenses: 0, taxRate: 30,
@@ -3999,8 +4051,15 @@ function computeHealthScore() {
 
     // DIMENSION 4: Investments (0-100 points)
     let scoreInvestments = 0;
-    if (s.investments.bonds && s.investments.bonds.length >= 3) scoreInvestments += 25;
-    else if (s.investments.bonds && s.investments.bonds.length >= 1) scoreInvestments += 15;
+
+    // Check for bonds (legacy structure) or bond ladder (new structure)
+    const hasBonds = (s.investments.bonds && s.investments.bonds.length >= 3) ||
+                     (s.investments.bondLadder && s.investments.bondLadder.length >= 3);
+    const hasSomeBonds = (s.investments.bonds && s.investments.bonds.length >= 1) ||
+                         (s.investments.bondLadder && s.investments.bondLadder.length >= 1);
+
+    if (hasBonds) scoreInvestments += 25;
+    else if (hasSomeBonds) scoreInvestments += 15;
 
     if (s.investments.ifb > 0) scoreInvestments += 10;
 
@@ -4554,8 +4613,10 @@ function addInvestment() {
 
     if (amount <= 0) { alert('Please enter a valid investment amount'); return; }
 
-    if (!state.investments) state.investments = [];
-    state.investments.push({
+    if (!state.investments) state.investments = { list: [], bondLadder: [], totalBondLadder: 0, _totalPortfolio: 0 };
+    if (!Array.isArray(state.investments.list)) state.investments.list = [];
+
+    state.investments.list.push({
         id: Date.now(), type, amount, value, expReturn,
         gain: value - amount, gainPercent: ((value - amount) / amount * 100).toFixed(1)
     });
@@ -4570,10 +4631,15 @@ function addInvestment() {
 }
 
 function updateInvestmentUI() {
-    const invs = state.investments || [];
+    const invs = (state.investments && state.investments.list) ? state.investments.list : [];
     const totalInvested = invs.reduce((sum, inv) => sum + inv.amount, 0);
     const portfolioValue = invs.reduce((sum, inv) => sum + inv.value, 0);
     const gains = portfolioValue - totalInvested;
+
+    // Update total portfolio value including bond ladder
+    if (state.investments) {
+        state.investments._totalPortfolio = portfolioValue + (state.investments.totalBondLadder || 0);
+    }
 
     document.getElementById('totalInvested').textContent = `KES ${totalInvested.toLocaleString()}`;
     document.getElementById('portfolioValue').textContent = `KES ${portfolioValue.toLocaleString()}`;
@@ -4596,6 +4662,67 @@ function updateInvestmentUI() {
         </div>
     `).join('');
     document.getElementById('investmentsList').innerHTML = listHtml;
+}
+
+// ============ TREASURY BOND LADDER ============
+function calculateBondLadder() {
+    const totalAmount = parseInt(document.getElementById('bondLadderAmount').value) || 0;
+
+    if (totalAmount <= 0) {
+        alert('Please enter a valid amount for the bond ladder');
+        return;
+    }
+
+    // Kenya Government Bond rates (approximate current market rates)
+    const bondRates = {
+        1: { coupon: 6.5, type: '1-Year' },
+        2: { coupon: 7.0, type: '2-Year' },
+        3: { coupon: 7.5, type: '3-Year' },
+        4: { coupon: 8.0, type: '4-Year' },
+        5: { coupon: 8.5, type: '5-Year' }
+    };
+
+    const ladderAmount = totalAmount / 5;
+    const currentYear = new Date().getFullYear();
+    const ladderData = [];
+    let totalAnnualIncome = 0;
+
+    // Build 5-rung ladder
+    for (let year = 1; year <= 5; year++) {
+        const couponRate = bondRates[year].coupon;
+        const annualIncome = Math.round(ladderAmount * (couponRate / 100));
+        totalAnnualIncome += annualIncome;
+
+        ladderData.push({
+            year,
+            amount: ladderAmount,
+            coupon: couponRate,
+            income: annualIncome,
+            maturity: currentYear + year
+        });
+    }
+
+    // Store in state
+    state.investments = state.investments || {};
+    state.investments.bondLadder = ladderData;
+    state.investments.totalBondLadder = totalAmount;
+
+    // Render ladder table
+    const tableHtml = ladderData.map(bond => `
+        <tr>
+            <td style="padding: 0.75rem; border-bottom: 1px solid var(--border);">Year ${bond.year}</td>
+            <td style="padding: 0.75rem; border-bottom: 1px solid var(--border);">KES ${formatKES(bond.amount)}</td>
+            <td style="padding: 0.75rem; border-bottom: 1px solid var(--border);">${bond.coupon}%</td>
+            <td style="padding: 0.75rem; border-bottom: 1px solid var(--border);">KES ${formatKES(bond.income)}</td>
+            <td style="padding: 0.75rem; border-bottom: 1px solid var(--border);">${bond.maturity}</td>
+        </tr>
+    `).join('');
+
+    document.getElementById('bondLadderTable').innerHTML = tableHtml;
+    document.getElementById('ladderAnnualIncome').textContent = 'KES ' + formatKES(totalAnnualIncome);
+    document.getElementById('bondLadderResults').style.display = 'block';
+
+    saveState();
 }
 
 // ============ DEBTS ============
