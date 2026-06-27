@@ -1726,6 +1726,18 @@
             </div>
         </div>
 
+        <!-- Report Customization & QR Codes (Phase 4B) -->
+        <div class="card">
+            <h2 style="font-size: 1.1rem; color: var(--primary); margin-bottom: 1rem;">⚙️ Customization & Advanced Sharing</h2>
+            <p style="font-size: 0.9rem; color: var(--text-2); margin-bottom: 1.5rem;">Customize which sections to include in reports, generate QR codes, and choose email templates.</p>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                <button class="primary" style="background: #2196F3;" onclick="showReportCustomization()">⚙️ Customize Sections</button>
+                <button style="background: #9C27B0; color: white;" onclick="generateShareablePlanWithQR()">📱 Generate QR Code</button>
+                <button style="background: #4CAF50; color: white;" onclick="shareEmailWithTemplate()">📧 Email with Template</button>
+            </div>
+        </div>
+
         <!-- Data Management -->
         <div class="card">
             <h2 style="font-size: 1.1rem; color: var(--navy); margin-bottom: 1rem;">Data Management</h2>
@@ -1908,12 +1920,12 @@
 
         <div class="button-group">
             <button onclick="showScreen('screen-10')">← Reports</button>
-            <button class="primary" onclick="showScreen('screen-12')">Investment Portfolio →</button>
+            <button class="primary" onclick="showScreen('screen-13')">Investment Portfolio →</button>
         </div>
     </section>
 
-    <!-- Screen 12: Investment Portfolio (NEW) -->
-    <section id="screen-12">
+    <!-- Screen 13: Investment Portfolio (NEW) -->
+    <section id="screen-13">
         <h1 class="section-title">📈 Investment Portfolio</h1>
         <p class="section-subtitle">Track stocks, bonds, real estate, and other investments. Build long-term wealth diversification.</p>
 
@@ -5669,6 +5681,216 @@ function clearAllData() {
         recalculateAll();
         alert('✅ Data cleared. Starting fresh.');
     }
+}
+
+// ============ PHASE 4B: REPORT CUSTOMIZATION & QR CODES ============
+
+// Report customization state
+const reportCustomization = {
+    sections: {
+        income: true,
+        expenses: true,
+        goals: true,
+        savings: true,
+        education: true,
+        retirement: true,
+        investments: true,
+        scenarios: true
+    },
+    emailTemplate: 'professional',
+    includeQRCode: true,
+    includeRecommendations: true
+};
+
+// Generate QR code for shareable plan link
+function generateQRCode(text, containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    container.innerHTML = '';
+    new QRCode(container, {
+        text: text,
+        width: 200,
+        height: 200,
+        colorDark: '#1B4B8C',
+        colorLight: '#FFFFFF',
+        correctLevel: QRCode.CorrectLevel.H
+    });
+}
+
+// Show report customization modal
+function showReportCustomization() {
+    const modal = document.createElement('div');
+    modal.id = 'customization-modal';
+    modal.style.cssText = `
+        position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.5); display: flex; align-items: center;
+        justify-content: center; z-index: 2000;
+    `;
+
+    const content = document.createElement('div');
+    content.style.cssText = `
+        background: white; border-radius: 12px; padding: 2rem;
+        max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    `;
+
+    content.innerHTML = `
+        <h2 style="margin-top: 0; color: var(--primary); margin-bottom: 1.5rem;">Customize Your Report</h2>
+
+        <div style="margin-bottom: 2rem;">
+            <h3 style="font-size: 1rem; color: var(--text-dark); margin-bottom: 1rem;">Report Sections</h3>
+            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                ${Object.keys(reportCustomization.sections).map(section => `
+                    <label style="display: flex; align-items: center; cursor: pointer; gap: 0.5rem;">
+                        <input type="checkbox" id="section-${section}"
+                            ${reportCustomization.sections[section] ? 'checked' : ''}
+                            onchange="reportCustomization.sections.${section} = this.checked"
+                            style="width: 18px; height: 18px; cursor: pointer;">
+                        <span style="text-transform: capitalize; color: var(--text-dark);">${section}</span>
+                    </label>
+                `).join('')}
+            </div>
+        </div>
+
+        <div style="margin-bottom: 2rem;">
+            <h3 style="font-size: 1rem; color: var(--text-dark); margin-bottom: 1rem;">Email Template</h3>
+            <select id="emailTemplate" onchange="reportCustomization.emailTemplate = this.value"
+                    style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 8px;">
+                <option value="professional">Professional (For Advisors)</option>
+                <option value="personal">Personal (For Family)</option>
+                <option value="summary">Summary Only (Quick Overview)</option>
+                <option value="detailed">Detailed (Complete Information)</option>
+            </select>
+        </div>
+
+        <div style="margin-bottom: 2rem; display: flex; gap: 1rem;">
+            <label style="display: flex; align-items: center; cursor: pointer; gap: 0.5rem;">
+                <input type="checkbox" id="includeQR"
+                    ${reportCustomization.includeQRCode ? 'checked' : ''}
+                    onchange="reportCustomization.includeQRCode = this.checked"
+                    style="width: 18px; height: 18px; cursor: pointer;">
+                <span style="color: var(--text-dark);">Include QR Code for Sharing</span>
+            </label>
+            <label style="display: flex; align-items: center; cursor: pointer; gap: 0.5rem; margin-left: auto;">
+                <input type="checkbox" id="includeRecommendations"
+                    ${reportCustomization.includeRecommendations ? 'checked' : ''}
+                    onchange="reportCustomization.includeRecommendations = this.checked"
+                    style="width: 18px; height: 18px; cursor: pointer;">
+                <span style="color: var(--text-dark);">Include Recommendations</span>
+            </label>
+        </div>
+
+        <div style="display: flex; gap: 1rem;">
+            <button class="primary" style="flex: 1;" onclick="document.getElementById('customization-modal').remove(); showReportCustomization();">Save & Close</button>
+            <button style="flex: 1; background: var(--surface); color: var(--text-dark);" onclick="document.getElementById('customization-modal').remove();">Cancel</button>
+        </div>
+    `;
+
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+    modal.onclick = (e) => e.target === modal && modal.remove();
+}
+
+// Enhanced email sharing with template selection
+function shareEmailWithTemplate() {
+    const emailTemplate = reportCustomization.emailTemplate;
+
+    const templates = {
+        professional: `Dear Financial Advisor,\n\nPlease find my complete financial plan attached. I would appreciate your review and recommendations.\n\nBest regards`,
+        personal: `Hi everyone,\n\nI wanted to share my financial plan with you. Let me know your thoughts!\n\nThanks`,
+        summary: `Here's my financial overview:\n\nIncome: KES ${formatKES(state.income.monthlyIncome)}\nMonthly Savings: KES ${formatKES(state.budget._surplus)}\nGoals: ${state.goals.length} active goals\n\nWould love your feedback!`,
+        detailed: `Here's my complete financial plan including income, expenses, goals, and retirement projections. Please review and suggest improvements.\n\nThank you!`
+    };
+
+    const subject = `My Financial Plan - ${new Date().toLocaleDateString()}`;
+    const body = templates[emailTemplate] || templates.professional;
+
+    const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.location.href = mailtoLink;
+    showNotification('Opening email client...', 'success');
+}
+
+// Generate shareable plan with QR code
+function generateShareablePlanWithQR() {
+    const planData = {
+        name: state.user?.name || 'Financial Plan',
+        income: state.income.monthlyIncome,
+        surplus: state.budget._surplus,
+        goals: state.goals.length,
+        updatedAt: new Date().toISOString()
+    };
+
+    // Generate URL-safe encoding of plan data
+    const planUrl = `${window.location.origin}?plan=${encodeURIComponent(JSON.stringify(planData))}`;
+
+    // Create modal with QR code
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.5); display: flex; align-items: center;
+        justify-content: center; z-index: 2000;
+    `;
+
+    const content = document.createElement('div');
+    content.style.cssText = `
+        background: white; border-radius: 12px; padding: 2rem;
+        max-width: 400px; text-align: center;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    `;
+
+    content.innerHTML = `
+        <h2 style="color: var(--primary); margin-bottom: 1.5rem;">Share Your Plan</h2>
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Scan this code to view your financial plan</p>
+        <div id="qrCodeContainer" style="margin-bottom: 1.5rem; display: flex; justify-content: center;"></div>
+        <p style="font-size: 0.85rem; color: var(--text-light); margin-bottom: 1rem; word-break: break-all;">${planUrl}</p>
+        <div style="display: flex; gap: 1rem;">
+            <button class="primary" style="flex: 1;" onclick="
+                const text = document.querySelector('#qrCodeContainer img').src;
+                navigator.clipboard.writeText('${planUrl}');
+                showNotification('Link copied!', 'success');
+            ">Copy Link</button>
+            <button style="flex: 1; background: var(--surface);" onclick="this.parentElement.parentElement.parentElement.remove();">Close</button>
+        </div>
+    `;
+
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+
+    // Generate QR code in the modal
+    generateQRCode(planUrl, 'qrCodeContainer');
+    modal.onclick = (e) => e.target === modal && modal.remove();
+}
+
+// Button loading state
+function setButtonLoading(buttonElement, isLoading) {
+    if (isLoading) {
+        buttonElement.disabled = true;
+        buttonElement.dataset.originalText = buttonElement.textContent;
+        buttonElement.innerHTML = '⏳ Processing...';
+        buttonElement.style.opacity = '0.7';
+    } else {
+        buttonElement.disabled = false;
+        buttonElement.textContent = buttonElement.dataset.originalText || 'Export';
+        buttonElement.style.opacity = '1';
+    }
+}
+
+// Enhanced export with customization
+function exportCustomizedReport(type) {
+    const button = event.target.closest('button');
+    setButtonLoading(button, true);
+
+    setTimeout(() => {
+        try {
+            if (type === 'monthly') exportMonthlyReport();
+            else if (type === 'annual') exportAnnualReview();
+            else if (type === 'scenario') exportScenarioComparison();
+            else if (type === 'shareable') exportShareablePlan();
+        } finally {
+            setButtonLoading(button, false);
+        }
+    }, 500);
 }
 
 // ============ STATE MANAGEMENT ============
