@@ -18,6 +18,7 @@
             --accent-light: #FBBF24;
             --danger: #EF4444;
             --danger-light: #FCA5A5;
+            --navy: #0F1419;
 
             /* Neutrals */
             --white: #FFFFFF;
@@ -696,11 +697,13 @@
 
         .nav-section-title {
             padding: 0.75rem 1rem;
-            font-weight: 700;
-            color: var(--navy);
-            border-bottom: 2px solid var(--border);
-            background: var(--light-bg);
+            font-weight: 800;
+            color: #0F1419;
+            border-bottom: 2px solid #D1FAE5;
+            background: #F0FDF4;
             margin: 0;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
         }
 
         .nav-section-title:first-child {
@@ -709,42 +712,49 @@
 
         .nav-screen-item {
             padding: 0.8rem 1rem;
-            color: var(--navy);
+            color: #0F1419;
             cursor: pointer;
             border-left: 3px solid transparent;
             transition: all 0.2s ease;
             border-bottom: 1px solid #E2E8F0;
+            font-weight: 500;
         }
 
         .nav-screen-item:hover {
-            background: var(--light-bg);
+            background: #E8F4F8;
             border-left-color: var(--secondary);
             padding-left: 1.2rem;
+            color: #0F2647;
+            font-weight: 600;
         }
 
         .nav-screen-item.active {
-            background: #E0F2FE;
-            border-left-color: var(--primary);
-            color: var(--primary);
-            font-weight: 600;
+            background: #D1FAE5;
+            border-left-color: var(--secondary);
+            color: #047857;
+            font-weight: 700;
         }
 
         .nav-action-btn {
             padding: 0.8rem 1rem;
             background: none;
             border: none;
-            color: var(--navy);
+            color: #0F1419;
             cursor: pointer;
             text-align: left;
             transition: all 0.2s ease;
             border-left: 3px solid transparent;
             border-bottom: 1px solid #E2E8F0;
+            font-weight: 500;
+            font-size: 0.95rem;
         }
 
         .nav-action-btn:hover {
-            background: var(--light-bg);
-            border-left-color: var(--secondary);
+            background: #FEF3C7;
+            border-left-color: var(--accent);
             padding-left: 1.2rem;
+            color: #92400E;
+            font-weight: 600;
         }
 
         /* Step Counter */
@@ -866,8 +876,8 @@
         }
 
         .footer-content { max-width: 1200px; margin: 0 auto; }
-        .footer-primary { font-weight: 600; color: var(--amber); margin-bottom: 0.25rem; }
-        .footer-secondary { color: #FFFFFF; font-size: 0.8rem; font-weight: 500; }
+        .footer-primary { font-weight: 700; color: #FFD700; margin-bottom: 0.25rem; font-size: 0.9rem; }
+        .footer-secondary { color: #FFFFFF; font-size: 0.9rem; font-weight: 600; letter-spacing: 0.5px; }
 
         /* Responsive */
         @media (max-width: 768px) {
