@@ -2578,7 +2578,7 @@ function calculateBudget() {
     document.getElementById('fireMonthlyInvest').value = Math.max(0, Math.round(surplus * 0.67));
 }
 
-function calculateFireProjections() {
+function calculateFireNumber() {
     const currentAge = state.profile.age;
     const targetAge = state.fire.targetAge;
     const monthlySpend = state.fire.monthlySpend;
@@ -2612,7 +2612,7 @@ function calculateFireProjections() {
 function recalculateAll() {
     calculateIncome();
     calculateBudget();
-    calculateFireProjections();
+    calculateFireNumber();
     updateUI();
     updateScenarioUI();
     updateWealthDashboard();
@@ -2659,7 +2659,7 @@ function updateUI() {
 
     document.getElementById('surplusPercent').textContent = formatPercent(savingsRatePercent);
 
-    const fireCalcs = calculateFireProjections();
+    const fireCalcs = calculateFireNumber();
     document.getElementById('fireNumberNominal').textContent = 'KES ' + formatKES(fireCalcs.fireNominal);
     document.getElementById('fireNumberReal').textContent = 'KES ' + formatKES(fireCalcs.fireReal);
     document.getElementById('fireProjected').textContent = 'KES ' + formatKES(fireCalcs.projected);
@@ -2688,7 +2688,7 @@ function updateScenarioUI() {
         const r = (scenConfig.investmentReturn / 100) / 12;
         const fv = monthlySave * ((Math.pow(1 + r, months) - 1) / r);
 
-        const fireCalc = calculateFireProjections();
+        const fireCalc = calculateFireNumber();
         const yearsToFire = monthlySave > 0 ? Math.round(fireCalc.fireReal / (monthlySave * 12)) : 999;
 
         document.getElementById(`${scenario}Wealth`).textContent = 'KES ' + formatKES(fv);
@@ -2742,7 +2742,7 @@ function updateWealthDashboard() {
     const netWorth = 0;
     document.getElementById('netWorthToday').textContent = 'KES ' + formatKES(netWorth);
 
-    const fireCalc = calculateFireProjections();
+    const fireCalc = calculateFireNumber();
     document.getElementById('netWorthRetire').textContent = 'KES ' + formatKES(fireCalc.projected);
     document.getElementById('monthlyInvestable').textContent = 'KES ' + formatKES(Math.max(0, state.budget._surplus));
     document.getElementById('fireGoal').textContent = 'KES ' + formatKES(fireCalc.fireReal);
@@ -2832,7 +2832,7 @@ function generateRecommendations() {
         });
     }
 
-    const fireCalc = calculateFireProjections();
+    const fireCalc = calculateFireNumber();
     if (!fireCalc.onTrack) {
         const needed = Math.round((fireCalc.fireReal - fireCalc.projected) / (fireCalc.yearsToFire * 12));
         recs.push({
@@ -2942,7 +2942,7 @@ function renderLessonsUI() {
 }
 
 function updateGoalsUI() {
-    const fireCalc = calculateFireProjections();
+    const fireCalc = calculateFireNumber();
     const firePercent = Math.min(100, Math.round((state.budget._surplus / 1000) * 100));
     document.getElementById('fireProgress').textContent = firePercent + '%';
 }
