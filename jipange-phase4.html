@@ -1760,7 +1760,160 @@
 
         <div class="button-group">
             <button onclick="showScreen('screen-15')">← Assets</button>
-            <button class="primary" onclick="markStepComplete(16); showScreen('screen-1')">Finish Planning</button>
+            <button class="primary" onclick="markStepComplete(16); showScreen('screen-17')">Education Savings →</button>
+        </div>
+    </section>
+
+    <!-- SCREEN 17: EDUCATION SAVINGS PLANNER -->
+    <section id="screen-17">
+        <div class="screen-header">
+            <h1>📚 Education Savings Planner</h1>
+            <p>Plan and track education funding for your children's future</p>
+        </div>
+
+        <div class="form-container">
+            <div class="card">
+                <h2 style="font-size: 1.1rem; color: var(--primary); margin-bottom: 1.5rem;">Child Information</h2>
+
+                <div class="field-group">
+                    <label for="childName">Child's Name</label>
+                    <input type="text" id="childName" placeholder="e.g., Kamau">
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                    <div class="field-group">
+                        <label for="childAge">Current Age</label>
+                        <input type="number" id="childAge" min="0" max="25" value="8">
+                    </div>
+
+                    <div class="field-group">
+                        <label for="childEducationLevel">Target Education Level</label>
+                        <select id="childEducationLevel">
+                            <option value="primary">Primary (KES 150,000/year)</option>
+                            <option value="secondary">Secondary (KES 350,000/year)</option>
+                            <option value="university" selected>University (KES 500,000/year)</option>
+                            <option value="vocational">Vocational (KES 200,000/year)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="field-group">
+                    <label for="childRegion">Region (for cost adjustment)</label>
+                    <select id="childRegion">
+                        <option value="nairobi">Nairobi (+15%)</option>
+                        <option value="upcountry" selected>Upcountry</option>
+                        <option value="coastal">Coastal (+5%)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 style="font-size: 1.1rem; color: var(--primary); margin-bottom: 1.5rem;">Education Costs</h2>
+
+                <div class="field-group">
+                    <label for="annualEducationCost">Estimated Annual Cost (KES)</label>
+                    <input type="number" id="annualEducationCost" value="500000" min="0">
+                    <span class="input-hint">Auto-adjusted by education level and region</span>
+                </div>
+
+                <div class="field-group">
+                    <label for="educationYears">Years of Education</label>
+                    <input type="number" id="educationYears" value="4" min="1" max="6">
+                    <span class="input-hint">Primary: 6 years, Secondary: 4 years, University: 4-6 years</span>
+                </div>
+
+                <div style="padding: 1rem; background: var(--success-bg); border-radius: 8px; border-left: 4px solid var(--success); margin-top: 1rem;">
+                    <div style="font-size: 0.85rem; color: var(--text-3); margin-bottom: 0.5rem;">Total Education Cost</div>
+                    <div style="font-size: 1.8rem; font-weight: 900; color: var(--success);" id="totalEducationCost">KES 2,000,000</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 style="font-size: 1.1rem; color: var(--primary); margin-bottom: 1.5rem;">Current Savings & Contributions</h2>
+
+                <div class="field-group">
+                    <label for="currentEducationSavings">Current Education Savings (KES)</label>
+                    <input type="number" id="currentEducationSavings" value="0" min="0">
+                </div>
+
+                <div class="field-group">
+                    <label for="monthlyEducationContribution">Monthly Contribution (KES)</label>
+                    <input type="number" id="monthlyEducationContribution" value="20000" min="0">
+                </div>
+
+                <div class="field-group">
+                    <label for="educationReturnRate">Expected Annual Return Rate (%)</label>
+                    <input type="number" id="educationReturnRate" value="8" min="0" max="20" step="0.5">
+                    <span class="input-hint">Typical: 6-10% for conservative, 8-12% for moderate</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 style="font-size: 1.1rem; color: var(--primary); margin-bottom: 1.5rem;">Inflation Adjustment</h2>
+
+                <div class="field-group">
+                    <label for="educationInflation">Education Inflation Rate (%) per year</label>
+                    <input type="number" id="educationInflation" value="7" min="0" max="15" step="0.5">
+                    <span class="input-hint">Kenya education costs inflate ~6-8% annually</span>
+                </div>
+
+                <button class="primary" onclick="calculateEducationSavings()" style="width: 100%; margin-top: 1rem;">Calculate Education Needs</button>
+            </div>
+
+            <div class="card">
+                <h2 style="font-size: 1.1rem; color: var(--primary); margin-bottom: 1.5rem;">Projection Results</h2>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                    <div style="padding: 1rem; background: var(--offwhite); border-radius: 8px; border-left: 4px solid var(--warning);">
+                        <div style="font-size: 0.85rem; color: var(--text-3); margin-bottom: 0.5rem;">Inflation-Adjusted Cost</div>
+                        <div style="font-size: 1.4rem; font-weight: 700; color: var(--primary);" id="inflationAdjustedCost">KES 2,500,000</div>
+                    </div>
+
+                    <div style="padding: 1rem; background: var(--offwhite); border-radius: 8px; border-left: 4px solid var(--success);">
+                        <div style="font-size: 0.85rem; color: var(--text-3); margin-bottom: 0.5rem;">Projected Savings</div>
+                        <div style="font-size: 1.4rem; font-weight: 700; color: var(--success);" id="projectedEducationSavings">KES 1,500,000</div>
+                    </div>
+                </div>
+
+                <div style="padding: 1.2rem; background: var(--surface); border-radius: 8px; border: 2px solid var(--border);">
+                    <div style="font-size: 0.85rem; color: var(--text-3); text-transform: uppercase; font-weight: 600; margin-bottom: 0.5rem;">Shortfall / Surplus</div>
+                    <div style="font-size: 2rem; font-weight: 900;" id="educationShortfall">KES -1,000,000</div>
+                    <div style="font-size: 0.9rem; color: var(--text-2); margin-top: 0.5rem;" id="educationShortfallNote">Need to increase monthly contributions or find additional funding</div>
+                </div>
+
+                <div style="margin-top: 2rem; padding: 1rem; background: var(--success-bg); border-radius: 8px; border-left: 4px solid var(--success);">
+                    <div style="font-size: 0.9rem; font-weight: 600; color: var(--success); margin-bottom: 0.5rem;">💡 Kenya Education Funding Options</div>
+                    <ul style="font-size: 0.85rem; color: var(--text-2); margin-left: 1.2rem; line-height: 1.8;">
+                        <li><strong>HELB Loans</strong> — Up to KES 300,000 for university (interest-free during studies)</li>
+                        <li><strong>Scholarships</strong> — Merit/need-based from schools and NGOs (save 20-100%)</li>
+                        <li><strong>CDF Education Grants</strong> — District/Constituency Development Fund programs</li>
+                        <li><strong>Insurance Plans</strong> — Education endowment policies with guaranteed returns 5-7%</li>
+                        <li><strong>SACCO Education Loans</strong> — Member loans at 10-15% (faster than bank)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 style="font-size: 1.1rem; color: var(--primary); margin-bottom: 1.5rem;">Monthly Payment Adjustment</h2>
+
+                <div style="padding: 1rem; background: var(--warning-bg); border-radius: 8px; border-left: 4px solid var(--warning); margin-bottom: 1.5rem;">
+                    <div style="font-size: 0.85rem; color: var(--text-3); margin-bottom: 0.5rem;">To close the gap, you would need:</div>
+                    <div style="font-size: 1.6rem; font-weight: 900; color: var(--warning);" id="requiredMonthlyPayment">KES 25,000/month</div>
+                    <div style="font-size: 0.85rem; color: var(--text-2); margin-top: 0.5rem;">Or KES <span id="requiredLumpSum">500,000</span> lump sum today</div>
+                </div>
+
+                <button class="primary" onclick="addEducationChild()" style="width: 100%; margin-bottom: 0.5rem;">➕ Add Another Child</button>
+                <button onclick="viewEducationSummary()" style="width: 100%;">📊 View All Children Summary</button>
+            </div>
+
+            <div id="educationChildrenList" style="margin-top: 2rem;">
+                <!-- Children list rendered here -->
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button onclick="showScreen('screen-16')">← Tax Optimizer</button>
+            <button class="primary" onclick="markStepComplete(17); showScreen('screen-1')">Complete Planning</button>
         </div>
     </section>
 
@@ -1838,6 +1991,10 @@ const DEFAULT_STATE = {
     tax: {
         grossIncome: 0, totalDeductions: 0,
         _taxWithout: 0, _taxWith: 0, _taxSavings: 0
+    },
+    education: {
+        children: [],
+        _totalNeeded: 0, _totalProjected: 0, _totalShortfall: 0
     }
 };
 
@@ -1894,7 +2051,7 @@ function init() {
 
 function buildNavbar() {
     const navTabs = document.getElementById('navTabs');
-    const screens = ['Profile', 'Income', 'Budget', 'Scenarios', 'Wealth', 'Optimizer', 'Household', 'Goals', 'Learning', 'Reports', 'M-Pesa', 'Portfolio', 'Debts', 'Business', 'Assets', 'Tax'];
+    const screens = ['Profile', 'Income', 'Budget', 'Scenarios', 'Wealth', 'Optimizer', 'Household', 'Goals', 'Learning', 'Reports', 'M-Pesa', 'Portfolio', 'Debts', 'Business', 'Assets', 'Tax', 'Education'];
     navTabs.innerHTML = '';
     screens.forEach((name, i) => {
         const num = i + 1;
@@ -2012,6 +2169,13 @@ function attachEventListeners() {
         });
     });
 
+    // Education savings listeners
+    const educationFields = ['childAge', 'childEducationLevel', 'childRegion', 'annualEducationCost', 'educationYears', 'currentEducationSavings', 'monthlyEducationContribution', 'educationReturnRate', 'educationInflation'];
+    educationFields.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('input', calculateEducationSavings);
+    });
+
     // Initial load of investment and debt UIs
     if (state.investments && state.investments.length > 0) updateInvestmentUI();
     if (state.debts && state.debts.length > 0) updateDebtUI();
@@ -2096,10 +2260,21 @@ function loadFormValues() {
     if (document.getElementById('taxGrossIncome')) document.getElementById('taxGrossIncome').value = state.tax.grossIncome;
     if (document.getElementById('taxDeductions')) document.getElementById('taxDeductions').value = state.tax.totalDeductions;
 
+    // Education fields (currently showing empty - will load from state)
+    if (document.getElementById('childAge')) document.getElementById('childAge').value = 8;
+    if (document.getElementById('childEducationLevel')) document.getElementById('childEducationLevel').value = 'university';
+    if (document.getElementById('annualEducationCost')) document.getElementById('annualEducationCost').value = 500000;
+    if (document.getElementById('educationYears')) document.getElementById('educationYears').value = 4;
+    if (document.getElementById('currentEducationSavings')) document.getElementById('currentEducationSavings').value = 0;
+    if (document.getElementById('monthlyEducationContribution')) document.getElementById('monthlyEducationContribution').value = 20000;
+    if (document.getElementById('educationReturnRate')) document.getElementById('educationReturnRate').value = 8;
+    if (document.getElementById('educationInflation')) document.getElementById('educationInflation').value = 7;
+
     // Update display values
     updateMpesaUI();
     calculateBusinessTax();
     if (state.assets && state.assets.length > 0) updateAssetUI();
+    if (state.education && state.education.children.length > 0) viewEducationSummary();
 }
 
 // ============ CALCULATIONS ============
@@ -2840,6 +3015,142 @@ function calculateTaxOptimization() {
     document.getElementById('taxSavings').textContent = `KES ${Math.round(savings).toLocaleString()}`;
 
     saveState();
+}
+
+// ============ EDUCATION SAVINGS PLANNER ============
+function calculateEducationSavings() {
+    const childAge = parseInt(document.getElementById('childAge').value) || 0;
+    const educationLevel = document.getElementById('childEducationLevel').value;
+    const region = document.getElementById('childRegion').value;
+    let annualCost = parseInt(document.getElementById('annualEducationCost').value) || 500000;
+    const educationYears = parseInt(document.getElementById('educationYears').value) || 4;
+    const currentSavings = parseInt(document.getElementById('currentEducationSavings').value) || 0;
+    const monthlyContribution = parseInt(document.getElementById('monthlyEducationContribution').value) || 20000;
+    const returnRate = parseFloat(document.getElementById('educationReturnRate').value) || 8;
+    const inflation = parseFloat(document.getElementById('educationInflation').value) || 7;
+
+    // Adjust cost by education level if needed
+    const costByLevel = { primary: 150000, secondary: 350000, university: 500000, vocational: 200000 };
+    if (costByLevel[educationLevel]) annualCost = costByLevel[educationLevel];
+
+    // Adjust for region
+    let regionMultiplier = 1.0;
+    if (region === 'nairobi') regionMultiplier = 1.15;
+    else if (region === 'coastal') regionMultiplier = 1.05;
+    annualCost = Math.round(annualCost * regionMultiplier);
+
+    // Calculate years until education starts
+    let yearsUntilEducation = 0;
+    const ageByLevel = { primary: 6, secondary: 13, university: 18, vocational: 16 };
+    if (ageByLevel[educationLevel]) {
+        yearsUntilEducation = ageByLevel[educationLevel] - childAge;
+        if (yearsUntilEducation < 0) yearsUntilEducation = 0;
+    }
+
+    // Inflation-adjust the total cost
+    const baseCost = annualCost * educationYears;
+    let inflationAdjustedCost = baseCost;
+    for (let i = 0; i < yearsUntilEducation; i++) {
+        inflationAdjustedCost = baseCost * Math.pow(1 + inflation / 100, i);
+    }
+
+    // Project savings with compound interest
+    let projectedSavings = currentSavings;
+    const monthlyRate = returnRate / 100 / 12;
+    const monthsUntilEducation = Math.max(0, yearsUntilEducation * 12);
+
+    // Future value of current savings
+    projectedSavings *= Math.pow(1 + monthlyRate, monthsUntilEducation);
+
+    // Future value of monthly contributions
+    if (monthsUntilEducation > 0) {
+        const fvAnnuity = monthlyContribution * (Math.pow(1 + monthlyRate, monthsUntilEducation) - 1) / monthlyRate;
+        projectedSavings += fvAnnuity;
+    }
+
+    const shortfall = inflationAdjustedCost - projectedSavings;
+
+    // Calculate required monthly payment to cover gap
+    let requiredMonthly = monthlyContribution;
+    if (monthsUntilEducation > 0 && shortfall > 0) {
+        requiredMonthly = monthlyContribution + (shortfall / monthsUntilEducation) * 0.1; // Rough estimate
+    }
+
+    // Update UI
+    document.getElementById('totalEducationCost').textContent = `KES ${baseCost.toLocaleString()}`;
+    document.getElementById('inflationAdjustedCost').textContent = `KES ${Math.round(inflationAdjustedCost).toLocaleString()}`;
+    document.getElementById('projectedEducationSavings').textContent = `KES ${Math.round(projectedSavings).toLocaleString()}`;
+
+    const shortfallEl = document.getElementById('educationShortfall');
+    const noteEl = document.getElementById('educationShortfallNote');
+    shortfallEl.textContent = `KES ${Math.round(shortfall).toLocaleString()}`;
+
+    if (shortfall > 0) {
+        shortfallEl.style.color = 'var(--danger)';
+        noteEl.textContent = `Shortfall of KES ${Math.round(shortfall).toLocaleString()} - increase contributions or explore education loans`;
+    } else {
+        shortfallEl.style.color = 'var(--success)';
+        noteEl.textContent = `Surplus of KES ${Math.round(Math.abs(shortfall)).toLocaleString()} - on track to fund education!`;
+    }
+
+    document.getElementById('requiredMonthlyPayment').textContent = `KES ${Math.round(requiredMonthly).toLocaleString()}/month`;
+    document.getElementById('requiredLumpSum').textContent = `${Math.round(shortfall / 1000)}k`;
+
+    saveState();
+}
+
+function addEducationChild() {
+    const childName = document.getElementById('childName').value || 'Child';
+    const childAge = parseInt(document.getElementById('childAge').value) || 0;
+    const educationLevel = document.getElementById('childEducationLevel').value || 'university';
+    const currentSavings = parseInt(document.getElementById('currentEducationSavings').value) || 0;
+
+    const newChild = {
+        id: Date.now(),
+        name: childName,
+        age: childAge,
+        educationLevel: educationLevel,
+        currentSavings: currentSavings
+    };
+
+    if (!state.education) state.education = { children: [] };
+    state.education.children.push(newChild);
+    saveState();
+    viewEducationSummary();
+
+    // Reset form
+    document.getElementById('childName').value = '';
+    document.getElementById('childAge').value = 8;
+    document.getElementById('annualEducationCost').value = 500000;
+    document.getElementById('currentEducationSavings').value = 0;
+}
+
+function viewEducationSummary() {
+    if (!state.education || !state.education.children) return;
+
+    const listEl = document.getElementById('educationChildrenList');
+    if (!listEl) return;
+
+    const html = state.education.children.map(child => `
+        <div style="padding: 1rem; background: var(--surface); border-radius: 8px; border-left: 4px solid var(--secondary); margin-bottom: 0.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <strong style="font-size: 1.1rem;">${child.name}</strong>
+                    <div style="color: var(--text-3); font-size: 0.85rem;">Age ${child.age} · ${child.educationLevel} · Saved: KES ${child.currentSavings.toLocaleString()}</div>
+                </div>
+                <button onclick="removeEducationChild(${child.id})" style="background: var(--danger); color: white; border: none; padding: 0.3rem 0.8rem; border-radius: 4px; cursor: pointer;">Remove</button>
+            </div>
+        </div>
+    `).join('');
+
+    listEl.innerHTML = html ? `<div style="margin-top: 1rem;"><h3 style="color: var(--text-1); margin-bottom: 1rem;">📚 Tracked Children</h3>${html}</div>` : '';
+}
+
+function removeEducationChild(id) {
+    if (!state.education) return;
+    state.education.children = state.education.children.filter(c => c.id !== id);
+    saveState();
+    viewEducationSummary();
 }
 
 // ============ EXPORT & REPORTING ============
