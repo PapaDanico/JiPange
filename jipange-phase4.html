@@ -625,14 +625,126 @@
             padding: 0.75rem 1rem;
             font-size: 0.9rem;
             background: none;
-            color: var(--text-dark);
+            color: var(--navy);
             border: 1px solid var(--border);
             text-align: left;
+            font-weight: 500;
         }
 
         .fab-submenu button:hover {
             background: var(--light-bg);
             color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Main Navigation Dropdown */
+        .nav-main-dropdown {
+            position: relative;
+            margin-right: auto;
+        }
+
+        .nav-main-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 0.75rem 1.2rem;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .nav-main-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .nav-main-btn::after {
+            content: '▼';
+            font-size: 0.7rem;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-main-dropdown.open .nav-main-btn::after {
+            transform: rotate(180deg);
+        }
+
+        .nav-main-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            min-width: 320px;
+            max-height: 70vh;
+            overflow-y: auto;
+            display: none;
+            flex-direction: column;
+            margin-top: 0.5rem;
+            z-index: 1000;
+        }
+
+        .nav-main-dropdown.open .nav-main-menu {
+            display: flex;
+        }
+
+        .nav-section-title {
+            padding: 0.75rem 1rem;
+            font-weight: 700;
+            color: var(--navy);
+            border-bottom: 2px solid var(--border);
+            background: var(--light-bg);
+            margin: 0;
+        }
+
+        .nav-section-title:first-child {
+            border-radius: 8px 8px 0 0;
+        }
+
+        .nav-screen-item {
+            padding: 0.8rem 1rem;
+            color: var(--navy);
+            cursor: pointer;
+            border-left: 3px solid transparent;
+            transition: all 0.2s ease;
+            border-bottom: 1px solid #E2E8F0;
+        }
+
+        .nav-screen-item:hover {
+            background: var(--light-bg);
+            border-left-color: var(--secondary);
+            padding-left: 1.2rem;
+        }
+
+        .nav-screen-item.active {
+            background: #E0F2FE;
+            border-left-color: var(--primary);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .nav-action-btn {
+            padding: 0.8rem 1rem;
+            background: none;
+            border: none;
+            color: var(--navy);
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+            border-bottom: 1px solid #E2E8F0;
+        }
+
+        .nav-action-btn:hover {
+            background: var(--light-bg);
+            border-left-color: var(--secondary);
+            padding-left: 1.2rem;
         }
 
         /* Step Counter */
@@ -755,7 +867,7 @@
 
         .footer-content { max-width: 1200px; margin: 0 auto; }
         .footer-primary { font-weight: 600; color: var(--amber); margin-bottom: 0.25rem; }
-        .footer-secondary { color: rgba(255, 255, 255, 0.8); font-size: 0.8rem; }
+        .footer-secondary { color: #FFFFFF; font-size: 0.8rem; font-weight: 500; }
 
         /* Responsive */
         @media (max-width: 768px) {
@@ -764,6 +876,9 @@
             .nav-dropdown-btn { font-size: 0.7rem; padding: 0.5rem 0.8rem; white-space: nowrap; }
             .dropdown-menu { position: fixed; min-width: 180px; max-width: 90vw; }
             .nav-tab { padding: 0.4rem 0.6rem; font-size: 0.7rem; }
+            .nav-main-btn { font-size: 0.85rem; padding: 0.6rem 1rem; }
+            .nav-main-menu { min-width: 280px; max-width: 90vw; }
+            .nav-right { display: flex; gap: 0.75rem; align-items: center; }
             .main-container { padding: 1rem; padding-bottom: 180px; }
             .section-title { font-size: 1.4rem; }
             .card-grid { grid-template-columns: 1fr; }
@@ -969,6 +1084,11 @@
     <div class="logo">Ji<span class="accent">Pange</span></div>
     <div class="nav-center" id="navTabs"></div>
     <div class="nav-right">
+        <!-- Main Navigation Dropdown -->
+        <div class="nav-main-dropdown" id="navMainDropdown">
+            <button class="nav-main-btn" onclick="toggleNavMainMenu()">🧭 Navigate</button>
+            <div class="nav-main-menu" id="navMainMenu"></div>
+        </div>
         <button id="langToggle" class="lang-toggle" title="Toggle English/Swahili">EN</button>
         <div class="health-badge">Plan Health: <span id="healthScore">—</span>/100</div>
     </div>
@@ -4428,6 +4548,7 @@ function showScreen(screenId) {
     window.scrollTo(0, 0);
     updateProgressBar();
     updateStepCounter();
+    initializeNavMainMenu(); // Refresh nav menu to show active screen
     trackEvent('screen', screenId, `Visited ${screenId}`);
 
     // Update analytics stats if on Screen 10
@@ -6516,7 +6637,87 @@ init();
 // Initialize UI/UX enhancements
 setTimeout(() => {
     updateStepCounter();
+    initializeNavMainMenu();
 }, 100);
+
+// ============ MAIN NAVIGATION DROPDOWN ============
+
+function toggleNavMainMenu() {
+    const dropdown = document.getElementById('navMainDropdown');
+    dropdown.classList.toggle('open');
+}
+
+function initializeNavMainMenu() {
+    const menu = document.getElementById('navMainMenu');
+    if (!menu) return;
+
+    const activeScreen = document.querySelector('section.active');
+    const activeScreenId = activeScreen?.id || 'screen-1';
+
+    const screens = [
+        { num: 1, title: '📋 About You', id: 'screen-1' },
+        { num: 2, title: '💰 Income', id: 'screen-2' },
+        { num: 3, title: '📊 Budget', id: 'screen-3' },
+        { num: 4, title: '📈 Scenarios', id: 'screen-4' },
+        { num: 5, title: '💎 Wealth Dashboard', id: 'screen-5' },
+        { num: 6, title: '🎯 Optimizer', id: 'screen-6' },
+        { num: 7, title: '👨‍👩‍👧‍👦 Household', id: 'screen-7' },
+        { num: 8, title: '🔥 Goals & FIRE', id: 'screen-8' },
+        { num: 9, title: '📚 Learn & Grow', id: 'screen-9' },
+        { num: 10, title: '📄 Reports', id: 'screen-10' },
+        { num: 11, title: '⏱️ How Long to Save?', id: 'screen-11' },
+        { num: 12, title: '📱 M-Pesa Tracker', id: 'screen-12' },
+        { num: 13, title: '💼 Investment Portfolio', id: 'screen-13' },
+        { num: 14, title: '📊 Debt Planner', id: 'screen-14' },
+        { num: 15, title: '💼 Business Income', id: 'screen-15' },
+        { num: 16, title: '🏠 Assets', id: 'screen-16' },
+        { num: 17, title: '🎓 Tax Optimizer', id: 'screen-17' },
+        { num: 18, title: '👶 Education Savings', id: 'screen-18' },
+        { num: 19, title: '🏖️ Retirement Income', id: 'screen-19' },
+        { num: 20, title: '🤝 Business Scenarios', id: 'screen-20' },
+        { num: 21, title: '🛡️ Insurance Planning', id: 'screen-21' },
+        { num: 22, title: '💃 Chama Groups', id: 'screen-22' }
+    ];
+
+    menu.innerHTML = `
+        <div class="nav-section-title">📍 FINANCIAL SCREENS</div>
+        ${screens.map(s => `
+            <div class="nav-screen-item ${s.id === activeScreenId ? 'active' : ''}" onclick="showScreen('${s.id}'); closeNavMainMenu();">
+                ${s.title}
+            </div>
+        `).join('')}
+
+        <div class="nav-section-title" style="margin-top: 1rem;">⚡ QUICK ACTIONS</div>
+        <button class="nav-action-btn" onclick="exportMonthlyReport(); closeNavMainMenu();" title="Ctrl+E">
+            📥 Export Monthly Report
+        </button>
+        <button class="nav-action-btn" onclick="printPlan(); closeNavMainMenu();" title="Ctrl+P">
+            🖨️ Print Plan
+        </button>
+        <button class="nav-action-btn" onclick="shareWhatsApp(); closeNavMainMenu();" title="Ctrl+S">
+            💬 Share via WhatsApp
+        </button>
+        <button class="nav-action-btn" onclick="showAnalyticsDashboard(); closeNavMainMenu();" title="Ctrl+K">
+            📊 View Analytics
+        </button>
+        <button class="nav-action-btn" onclick="showReportCustomization(); closeNavMainMenu();">
+            ⚙️ Customize Report
+        </button>
+    `;
+}
+
+function closeNavMainMenu() {
+    const dropdown = document.getElementById('navMainDropdown');
+    dropdown.classList.remove('open');
+}
+
+// Close menu when clicking outside
+document.addEventListener('click', (e) => {
+    const dropdown = document.getElementById('navMainDropdown');
+    if (dropdown && !e.target.closest('.nav-main-dropdown')) {
+        closeNavMainMenu();
+    }
+});
 </script>
 
 <!-- Floating Action Menu (Quick Wins) -->
