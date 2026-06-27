@@ -524,6 +524,136 @@
             transform: none !important;
         }
 
+        /* Enhanced Loading States */
+        button.loading {
+            pointer-events: none;
+            position: relative;
+            opacity: 0.8;
+        }
+
+        button.loading::after {
+            content: '';
+            position: absolute;
+            width: 14px;
+            height: 14px;
+            top: 50%;
+            right: 12px;
+            margin-top: -7px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Form Validation States */
+        input.valid {
+            border-color: var(--success) !important;
+            background: var(--success-bg) !important;
+        }
+
+        input.invalid {
+            border-color: var(--danger) !important;
+            background: var(--danger-bg) !important;
+        }
+
+        .input-error {
+            color: var(--danger);
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+
+        .input-error.show {
+            display: block;
+        }
+
+        .input-hint {
+            color: var(--text-light);
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+        }
+
+        /* Floating Action Menu */
+        .fab-menu {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 999;
+        }
+
+        .fab-primary {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            padding: 0;
+            box-shadow: 0 4px 12px rgba(27, 75, 140, 0.3);
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .fab-menu.expanded .fab-primary {
+            background: var(--danger) !important;
+        }
+
+        .fab-submenu {
+            position: absolute;
+            bottom: 70px;
+            right: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            padding: 0.75rem;
+            min-width: 180px;
+            display: none;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .fab-menu.expanded .fab-submenu {
+            display: flex;
+        }
+
+        .fab-submenu button {
+            width: 100%;
+            justify-content: flex-start;
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+            background: none;
+            color: var(--text-dark);
+            border: 1px solid var(--border);
+            text-align: left;
+        }
+
+        .fab-submenu button:hover {
+            background: var(--light-bg);
+            color: var(--primary);
+        }
+
+        /* Step Counter */
+        .step-counter {
+            position: sticky;
+            top: 70px;
+            background: white;
+            padding: 0.75rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-align: center;
+            z-index: 50;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .step-counter strong {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
         .button-group {
             display: flex;
             gap: 1rem;
@@ -4297,6 +4427,7 @@ function showScreen(screenId) {
     document.getElementById(screenId).classList.add('active');
     window.scrollTo(0, 0);
     updateProgressBar();
+    updateStepCounter();
     trackEvent('screen', screenId, `Visited ${screenId}`);
 
     // Update analytics stats if on Screen 10
@@ -5725,6 +5856,164 @@ function clearAllData() {
     }
 }
 
+// ============ QUICK WINS: ENHANCED UI/UX ============
+
+// Enhanced button loading state
+function setButtonLoading(button, isLoading, text = '⏳ Processing...') {
+    if (isLoading) {
+        button.disabled = true;
+        button.classList.add('loading');
+        button.dataset.originalText = button.textContent;
+        button.textContent = text;
+    } else {
+        button.disabled = false;
+        button.classList.remove('loading');
+        button.textContent = button.dataset.originalText || 'Export';
+    }
+}
+
+// Form input validation
+function validateInput(input, rules = {}) {
+    const value = input.value.trim();
+    let isValid = true;
+    let errorMsg = '';
+
+    if (rules.required && !value) {
+        isValid = false;
+        errorMsg = 'This field is required';
+    }
+
+    if (rules.minLength && value && value.length < rules.minLength) {
+        isValid = false;
+        errorMsg = `Minimum ${rules.minLength} characters required`;
+    }
+
+    if (rules.maxLength && value && value.length > rules.maxLength) {
+        isValid = false;
+        errorMsg = `Maximum ${rules.maxLength} characters allowed`;
+    }
+
+    if (rules.pattern && value && !rules.pattern.test(value)) {
+        isValid = false;
+        errorMsg = rules.patternError || 'Invalid format';
+    }
+
+    if (rules.min && value && parseFloat(value) < rules.min) {
+        isValid = false;
+        errorMsg = `Minimum value is ${rules.min}`;
+    }
+
+    if (rules.max && value && parseFloat(value) > rules.max) {
+        isValid = false;
+        errorMsg = `Maximum value is ${rules.max}`;
+    }
+
+    // Update UI
+    input.classList.toggle('valid', isValid && value);
+    input.classList.toggle('invalid', !isValid && value);
+
+    const errorEl = input.parentElement?.querySelector('.input-error');
+    if (errorEl) {
+        errorEl.textContent = errorMsg;
+        errorEl.classList.toggle('show', !isValid);
+    }
+
+    return isValid;
+}
+
+// Toggle floating action menu
+let fabMenuOpen = false;
+function toggleFABMenu() {
+    const fabMenu = document.getElementById('fab-menu');
+    if (fabMenu) {
+        fabMenuOpen = !fabMenuOpen;
+        fabMenu.classList.toggle('expanded', fabMenuOpen);
+    }
+}
+
+// Close FAB menu when clicking elsewhere
+document.addEventListener('click', (e) => {
+    if (fabMenuOpen && !e.target.closest('.fab-menu')) {
+        fabMenuOpen = false;
+        document.getElementById('fab-menu')?.classList.remove('expanded');
+    }
+});
+
+// Update step counter
+function updateStepCounter() {
+    const activeScreen = document.querySelector('section.active');
+    if (!activeScreen) return;
+
+    const screenId = activeScreen.id;
+    const screenNum = parseInt(screenId.replace('screen-', '')) + 1;
+    const totalScreens = document.querySelectorAll('section').length;
+
+    let counter = document.getElementById('step-counter');
+    if (!counter) {
+        counter = document.createElement('div');
+        counter.id = 'step-counter';
+        counter.className = 'step-counter';
+        document.querySelector('.navbar').insertAdjacentElement('afterend', counter);
+    }
+
+    counter.innerHTML = `Step <strong>${screenNum}</strong> of <strong>${totalScreens}</strong>`;
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey || e.metaKey) {
+        switch(e.key.toLowerCase()) {
+            case 'e':
+                e.preventDefault();
+                document.querySelector('[onclick*="exportMonthlyReport"]')?.click();
+                break;
+            case 'p':
+                e.preventDefault();
+                document.querySelector('[onclick*="printPlan"]')?.click();
+                break;
+            case 's':
+                e.preventDefault();
+                document.querySelector('[onclick*="shareWhatsApp"]')?.click();
+                break;
+            case 'k':
+                e.preventDefault();
+                showAnalyticsDashboard();
+                break;
+        }
+    }
+
+    // Arrow keys for navigation
+    if (e.key === 'ArrowRight') {
+        const nextBtn = document.querySelector('.button-group .primary');
+        nextBtn?.click();
+    } else if (e.key === 'ArrowLeft') {
+        const prevBtn = document.querySelector('.button-group button:not(.primary)');
+        prevBtn?.click();
+    }
+});
+
+// Character counter for text inputs
+function addCharacterCounter(input, maxLength) {
+    const wrapper = input.parentElement;
+    let counter = wrapper.querySelector('.char-counter');
+
+    if (!counter) {
+        counter = document.createElement('div');
+        counter.className = 'char-counter';
+        counter.style.cssText = 'font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;';
+        wrapper.appendChild(counter);
+    }
+
+    const updateCounter = () => {
+        const current = input.value.length;
+        counter.textContent = `${current}/${maxLength} characters`;
+        counter.style.color = current > maxLength * 0.8 ? 'var(--warning)' : 'var(--text-muted)';
+    };
+
+    input.addEventListener('input', updateCounter);
+    updateCounter();
+}
+
 // ============ PHASE 4C: ADOPTION METRICS & ANALYTICS ============
 
 // Analytics tracking system
@@ -6223,7 +6512,23 @@ function loadState() {
 
 // Initialize
 init();
+
+// Initialize UI/UX enhancements
+setTimeout(() => {
+    updateStepCounter();
+}, 100);
 </script>
+
+<!-- Floating Action Menu (Quick Wins) -->
+<div id="fab-menu" class="fab-menu">
+    <button class="fab-primary" onclick="toggleFABMenu()" title="Quick Actions (Ctrl+Shift+M)">📊</button>
+    <div class="fab-submenu">
+        <button onclick="exportMonthlyReport(); toggleFABMenu();" title="Ctrl+E">📅 Monthly Report</button>
+        <button onclick="printPlan(); toggleFABMenu();" title="Ctrl+P">🖨️ Print</button>
+        <button onclick="shareWhatsApp(); toggleFABMenu();" title="Ctrl+S">💬 Share WhatsApp</button>
+        <button onclick="showAnalyticsDashboard(); toggleFABMenu();" title="Ctrl+K">📊 Analytics</button>
+    </div>
+</div>
 
 </body>
 </html>
