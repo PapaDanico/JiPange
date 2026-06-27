@@ -2443,7 +2443,188 @@
 
         <div class="button-group">
             <button onclick="showScreen('screen-19')">← Business Scenarios</button>
-            <button class="primary" onclick="markStepComplete(20); showScreen('screen-1')">Complete Planning</button>
+            <button class="primary" onclick="markStepComplete(20); showScreen('screen-21')">Chama Groups →</button>
+        </div>
+    </section>
+
+    <!-- Screen 21: Chama Group Planner (NEW) -->
+    <section id="screen-21" style="display: none;">
+        <h1 class="section-title">💰 Chama Group Planner</h1>
+
+        <div class="card">
+            <h2 style="font-size: 1.1rem; color: var(--navy); margin-bottom: 1.5rem;">Chama Savings Group Optimization</h2>
+
+            <!-- Group Configuration -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 1rem; margin-bottom: 2rem;">
+                <div>
+                    <label>Group Size (members)</label>
+                    <input type="number" id="chamaGroupSize" min="1" max="100" value="15" placeholder="15">
+                </div>
+                <div>
+                    <label>Monthly Contribution (KES)</label>
+                    <input type="number" id="chamaMonthlyContribution" min="1000" step="1000" value="20000" placeholder="20000">
+                </div>
+                <div>
+                    <label>Months Active</label>
+                    <input type="number" id="chamaMonthsActive" min="1" max="60" value="12" placeholder="12">
+                </div>
+                <div>
+                    <label>Annual Return Rate (%)</label>
+                    <input type="number" id="chamaReturnRate" min="0" max="50" step="0.5" value="8" placeholder="8">
+                </div>
+            </div>
+
+            <!-- Group Metrics -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 1rem; margin-bottom: 2rem;">
+                <div style="padding: 1rem; background: var(--surface); border-radius: 8px; border-left: 4px solid var(--primary);">
+                    <div style="font-size: 0.85rem; color: var(--text-3); margin-bottom: 0.5rem;">Monthly Pool</div>
+                    <div style="font-size: 1.4rem; font-weight: 700; color: var(--primary);" id="chamaMonthlyPool">KES 300,000</div>
+                </div>
+
+                <div style="padding: 1rem; background: var(--surface); border-radius: 8px; border-left: 4px solid var(--success);">
+                    <div style="font-size: 0.85rem; color: var(--text-3); margin-bottom: 0.5rem;">Total Accumulated</div>
+                    <div style="font-size: 1.4rem; font-weight: 700; color: var(--success);" id="chamaAccumulated">KES 3,600,000</div>
+                </div>
+
+                <div style="padding: 1rem; background: var(--surface); border-radius: 8px; border-left: 4px solid var(--warning);">
+                    <div style="font-size: 0.85rem; color: var(--text-3); margin-bottom: 0.5rem;">Investment Returns</div>
+                    <div style="font-size: 1.4rem; font-weight: 700; color: var(--warning);" id="chamaReturns">KES 240,000</div>
+                </div>
+
+                <div style="padding: 1rem; background: var(--surface); border-radius: 8px; border-left: 4px solid #FF6B6B;">
+                    <div style="font-size: 0.85rem; color: var(--text-3); margin-bottom: 0.5rem;">Total Group Wealth</div>
+                    <div style="font-size: 1.4rem; font-weight: 700; color: #FF6B6B;" id="chamaTotalWealth">KES 3,840,000</div>
+                </div>
+            </div>
+
+            <!-- Projection Options -->
+            <div style="margin-bottom: 2rem;">
+                <div style="font-size: 0.95rem; font-weight: 600; color: var(--navy); margin-bottom: 1.2rem;">Investment Scenarios</div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <!-- SACCO Investment -->
+                    <div style="padding: 1.2rem; background: var(--surface); border-radius: 8px; border: 2px solid var(--primary);">
+                        <div style="font-size: 0.9rem; font-weight: 600; color: var(--primary); margin-bottom: 1rem;">🏦 SACCO Savings (Conservative)</div>
+                        <div style="display: grid; gap: 0.8rem; margin-bottom: 1rem;">
+                            <div>
+                                <label style="font-size: 0.8rem;">Annual Interest Rate (%)</label>
+                                <input type="number" id="chamaSaccoRate" min="0" max="15" step="0.5" value="7" placeholder="7" style="width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px;">
+                            </div>
+                        </div>
+                        <div style="padding: 0.8rem; background: #E6F7FF; border-radius: 6px; font-size: 0.85rem;">
+                            <div style="color: var(--text-3); margin-bottom: 0.3rem;">5-Year Total</div>
+                            <div style="font-size: 1.1rem; font-weight: 700; color: var(--primary);" id="chamaSaccoTotal">KES 8,200,000</div>
+                        </div>
+                    </div>
+
+                    <!-- Stock/Mutual Fund Investment -->
+                    <div style="padding: 1.2rem; background: var(--surface); border-radius: 8px; border: 2px solid var(--success);">
+                        <div style="font-size: 0.9rem; font-weight: 600; color: var(--success); margin-bottom: 1rem;">📈 Stock/Mutual Fund (Balanced)</div>
+                        <div style="display: grid; gap: 0.8rem; margin-bottom: 1rem;">
+                            <div>
+                                <label style="font-size: 0.8rem;">Annual Return Rate (%)</label>
+                                <input type="number" id="chamaStockRate" min="0" max="30" step="0.5" value="12" placeholder="12" style="width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px;">
+                            </div>
+                        </div>
+                        <div style="padding: 0.8rem; background: var(--success-bg); border-radius: 6px; font-size: 0.85rem;">
+                            <div style="color: var(--text-3); margin-bottom: 0.3rem;">5-Year Total</div>
+                            <div style="font-size: 1.1rem; font-weight: 700; color: var(--success);" id="chamaStockTotal">KES 12,500,000</div>
+                        </div>
+                    </div>
+
+                    <!-- Real Estate Investment -->
+                    <div style="padding: 1.2rem; background: var(--surface); border-radius: 8px; border: 2px solid var(--warning);">
+                        <div style="font-size: 0.9rem; font-weight: 600; color: var(--warning); margin-bottom: 1rem;">🏠 Real Estate (Growth)</div>
+                        <div style="display: grid; gap: 0.8rem; margin-bottom: 1rem;">
+                            <div>
+                                <label style="font-size: 0.8rem;">Annual Appreciation (%)</label>
+                                <input type="number" id="chamaRealEstateRate" min="0" max="30" step="0.5" value="15" placeholder="15" style="width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px;">
+                            </div>
+                        </div>
+                        <div style="padding: 0.8rem; background: var(--warning-bg); border-radius: 6px; font-size: 0.85rem;">
+                            <div style="color: var(--text-3); margin-bottom: 0.3rem;">5-Year Total</div>
+                            <div style="font-size: 1.1rem; font-weight: 700; color: var(--warning);" id="chamaRealEstateTotal">KES 14,200,000</div>
+                        </div>
+                    </div>
+
+                    <!-- Business/Enterprise Investment -->
+                    <div style="padding: 1.2rem; background: var(--surface); border-radius: 8px; border: 2px solid #FF6B6B;">
+                        <div style="font-size: 0.9rem; font-weight: 600; color: #FF6B6B; margin-bottom: 1rem;">💼 Business Venture (High-Risk)</div>
+                        <div style="display: grid; gap: 0.8rem; margin-bottom: 1rem;">
+                            <div>
+                                <label style="font-size: 0.8rem;">Annual Growth Rate (%)</label>
+                                <input type="number" id="chamaBusinessRate" min="0" max="50" step="1" value="20" placeholder="20" style="width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px;">
+                            </div>
+                        </div>
+                        <div style="padding: 0.8rem; background: #FFE5E5; border-radius: 6px; font-size: 0.85rem;">
+                            <div style="color: var(--text-3); margin-bottom: 0.3rem;">5-Year Total</div>
+                            <div style="font-size: 1.1rem; font-weight: 700; color: #FF6B6B;" id="chamaBusinessTotal">KES 18,500,000</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Member Payout Analysis -->
+            <div style="padding: 1.2rem; background: var(--offwhite); border-radius: 8px; border: 2px solid var(--border); margin-bottom: 1.5rem;">
+                <div style="font-size: 0.9rem; font-weight: 600; color: var(--navy); margin-bottom: 1rem;">💸 Individual Member Payout</div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; font-size: 0.85rem;">
+                    <div>
+                        <div style="color: var(--text-3); margin-bottom: 0.3rem;">Per Member (SACCO)</div>
+                        <div style="font-size: 1.1rem; font-weight: 700; color: var(--primary);" id="chamaMemberSacco">KES 546,667</div>
+                    </div>
+                    <div>
+                        <div style="color: var(--text-3); margin-bottom: 0.3rem;">Per Member (Stock)</div>
+                        <div style="font-size: 1.1rem; font-weight: 700; color: var(--success);" id="chamaMemberStock">KES 833,333</div>
+                    </div>
+                    <div>
+                        <div style="color: var(--text-3); margin-bottom: 0.3rem;">Per Member (Real Estate)</div>
+                        <div style="font-size: 1.1rem; font-weight: 700; color: var(--warning);" id="chamaMemberRealEstate">KES 946,667</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chama Management Best Practices -->
+            <div style="padding: 1.2rem; background: var(--success-bg); border-radius: 8px; border-left: 4px solid var(--success); margin-bottom: 1.5rem;">
+                <div style="font-size: 0.9rem; font-weight: 600; color: var(--success); margin-bottom: 0.8rem;">✅ Chama Best Practices (Kenya)</div>
+                <ul style="font-size: 0.85rem; color: var(--text-2); margin-left: 1.2rem; line-height: 1.8;">
+                    <li><strong>Registration:</strong> Register with CBoK or Ministry of Interior for legal recognition</li>
+                    <li><strong>Bylaws:</strong> Establish clear bylaws on contributions, withdrawals, and disputes</li>
+                    <li><strong>Record Keeping:</strong> Maintain accurate financial records and meeting minutes</li>
+                    <li><strong>SACCO Preference:</strong> SACCO accounts are safer and offer better rates than personal accounts</li>
+                    <li><strong>Transparency:</strong> Regular audits and member communication on investments</li>
+                    <li><strong>Dispute Resolution:</strong> Establish clear mediation process for conflicts</li>
+                    <li><strong>Merry-Go-Round Limits:</strong> Cap loan cycle to ensure all members get turn within reasonable time</li>
+                    <li><strong>Insurance:</strong> Consider group life insurance for member security</li>
+                </ul>
+            </div>
+
+            <!-- Risk Assessment -->
+            <div style="padding: 1.2rem; background: var(--warning-bg); border-radius: 8px; border-left: 4px solid var(--warning);">
+                <div style="font-size: 0.9rem; font-weight: 600; color: var(--warning); margin-bottom: 0.8rem;">⚠️ Risk Management</div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-size: 0.85rem; color: var(--text-2);">
+                    <div>
+                        <div style="font-weight: 600; margin-bottom: 0.3rem;">Default Risk</div>
+                        <div>Mitigate: Guarantees, penalties, insurance requirements</div>
+                    </div>
+                    <div>
+                        <div style="font-weight: 600; margin-bottom: 0.3rem;">Market Risk</div>
+                        <div>Diversify: Split between SACCO, stocks, real estate</div>
+                    </div>
+                    <div>
+                        <div style="font-weight: 600; margin-bottom: 0.3rem;">Operational Risk</div>
+                        <div>Manage: Transparent leadership, regular meetings, audits</div>
+                    </div>
+                    <div>
+                        <div style="font-weight: 600; margin-bottom: 0.3rem;">Liquidity Risk</div>
+                        <div>Monitor: Keep 3 months emergency buffer in accessible accounts</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button onclick="showScreen('screen-20')">← Insurance</button>
+            <button class="primary" onclick="markStepComplete(21); showScreen('screen-1')">Complete Full Plan</button>
         </div>
     </section>
 
@@ -2550,6 +2731,12 @@ const DEFAULT_STATE = {
         disabilityCurrent: 0, disabilityPremium: 6000,
         _lifeGap: 0, _healthGap: 0, _propertyGap: 0, _disabilityGap: 0,
         _totalPremium: 0, _totalCoverage: 0, _premiumPercent: 0
+    },
+    chama: {
+        groupSize: 15, monthlyContribution: 20000, monthsActive: 12, returnRate: 8,
+        saccoRate: 7, stockRate: 12, realEstateRate: 15, businessRate: 20,
+        _monthlyPool: 0, _accumulated: 0, _returns: 0, _totalWealth: 0,
+        _saccoTotal: 0, _stockTotal: 0, _realEstateTotal: 0, _businessTotal: 0
     }
 };
 
@@ -2606,7 +2793,7 @@ function init() {
 
 function buildNavbar() {
     const navTabs = document.getElementById('navTabs');
-    const screens = ['Profile', 'Income', 'Budget', 'Scenarios', 'Wealth', 'Optimizer', 'Household', 'Goals', 'Learning', 'Reports', 'M-Pesa', 'Portfolio', 'Debts', 'Business', 'Assets', 'Tax', 'Education', 'Retirement', 'Business Scenarios', 'Insurance'];
+    const screens = ['Profile', 'Income', 'Budget', 'Scenarios', 'Wealth', 'Optimizer', 'Household', 'Goals', 'Learning', 'Reports', 'M-Pesa', 'Portfolio', 'Debts', 'Business', 'Assets', 'Tax', 'Education', 'Retirement', 'Business Scenarios', 'Insurance', 'Chama Groups'];
     navTabs.innerHTML = '';
     screens.forEach((name, i) => {
         const num = i + 1;
@@ -2798,6 +2985,25 @@ function attachEventListeners() {
         });
     });
 
+    const chamaFields = ['chamaGroupSize', 'chamaMonthlyContribution', 'chamaMonthsActive', 'chamaReturnRate', 'chamaSaccoRate', 'chamaStockRate', 'chamaRealEstateRate', 'chamaBusinessRate'];
+    chamaFields.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('input', (e) => {
+            const key = id.replace('chama', '').toLowerCase();
+            const value = parseInt(e.target.value) || parseFloat(e.target.value) || 0;
+            if (key === 'groupsize') state.chama.groupSize = value;
+            if (key === 'monthlycontribution') state.chama.monthlyContribution = value;
+            if (key === 'monthsactive') state.chama.monthsActive = value;
+            if (key === 'returnrate') state.chama.returnRate = value;
+            if (key === 'saccorate') state.chama.saccoRate = value;
+            if (key === 'stockrate') state.chama.stockRate = value;
+            if (key === 'realestaterate') state.chama.realEstateRate = value;
+            if (key === 'businessrate') state.chama.businessRate = value;
+            saveState();
+            recalculateAll();
+        });
+    });
+
     // Initial load of investment and debt UIs
     if (state.investments && state.investments.length > 0) updateInvestmentUI();
     if (state.debts && state.debts.length > 0) updateDebtUI();
@@ -2932,6 +3138,16 @@ function loadFormValues() {
     if (document.getElementById('insDisabilityCurrent')) document.getElementById('insDisabilityCurrent').value = state.insurance.disabilityCurrent;
     if (document.getElementById('insDisabilityPremium')) document.getElementById('insDisabilityPremium').value = state.insurance.disabilityPremium;
 
+    // Chama fields
+    if (document.getElementById('chamaGroupSize')) document.getElementById('chamaGroupSize').value = state.chama.groupSize;
+    if (document.getElementById('chamaMonthlyContribution')) document.getElementById('chamaMonthlyContribution').value = state.chama.monthlyContribution;
+    if (document.getElementById('chamaMonthsActive')) document.getElementById('chamaMonthsActive').value = state.chama.monthsActive;
+    if (document.getElementById('chamaReturnRate')) document.getElementById('chamaReturnRate').value = state.chama.returnRate;
+    if (document.getElementById('chamaSaccoRate')) document.getElementById('chamaSaccoRate').value = state.chama.saccoRate;
+    if (document.getElementById('chamaStockRate')) document.getElementById('chamaStockRate').value = state.chama.stockRate;
+    if (document.getElementById('chamaRealEstateRate')) document.getElementById('chamaRealEstateRate').value = state.chama.realEstateRate;
+    if (document.getElementById('chamaBusinessRate')) document.getElementById('chamaBusinessRate').value = state.chama.businessRate;
+
     // Update display values
     updateMpesaUI();
     calculateBusinessTax();
@@ -2940,6 +3156,7 @@ function loadFormValues() {
     calculateRetirementIncome();
     calculateBusinessScenarios();
     calculateInsuranceCoverage();
+    calculateChamaProjections();
 }
 
 // ============ CALCULATIONS ============
@@ -3034,6 +3251,7 @@ function recalculateAll() {
     calculateFireNumber();
     calculateBusinessScenarios();
     calculateInsuranceCoverage();
+    calculateChamaProjections();
     updateUI();
     updateScenarioUI();
     updateWealthDashboard();
@@ -4105,6 +4323,96 @@ function calculateInsuranceCoverage() {
     }
     if (document.getElementById('insTotalCoverage')) {
         document.getElementById('insTotalCoverage').textContent = 'KES ' + formatKES(totalCoverage);
+    }
+
+    saveState();
+}
+
+function calculateChamaProjections() {
+    const groupSize = state.chama.groupSize;
+    const monthlyContribution = state.chama.monthlyContribution;
+    const monthsActive = state.chama.monthsActive;
+    const baseReturnRate = state.chama.returnRate / 100;
+
+    // Calculate monthly pool and accumulated savings
+    const monthlyPool = groupSize * monthlyContribution;
+    const accumulated = monthlyPool * monthsActive;
+
+    // Calculate returns based on base rate
+    const monthlyReturn = accumulated * baseReturnRate / 12;
+    const returns = monthlyReturn * monthsActive;
+    const totalWealth = accumulated + returns;
+
+    // Calculate 5-year projections for different scenarios
+    const months5Year = 60;
+    const saccoRate = state.chama.saccoRate / 100 / 12;
+    const stockRate = state.chama.stockRate / 100 / 12;
+    const realEstateRate = state.chama.realEstateRate / 100 / 12;
+    const businessRate = state.chama.businessRate / 100 / 12;
+
+    // Calculate future value for each scenario over 5 years
+    const calculateFV = (monthlyPayment, monthlyRate, periods) => {
+        return monthlyPayment * (Math.pow(1 + monthlyRate, periods) - 1) / monthlyRate;
+    };
+
+    const saccoTotal = Math.round(calculateFV(monthlyPool, saccoRate, months5Year));
+    const stockTotal = Math.round(calculateFV(monthlyPool, stockRate, months5Year));
+    const realEstateTotal = Math.round(calculateFV(monthlyPool, realEstateRate, months5Year));
+    const businessTotal = Math.round(calculateFV(monthlyPool, businessRate, months5Year));
+
+    // Calculate per-member payouts
+    const memberSacco = Math.round(saccoTotal / groupSize);
+    const memberStock = Math.round(stockTotal / groupSize);
+    const memberRealEstate = Math.round(realEstateTotal / groupSize);
+    const memberBusiness = Math.round(businessTotal / groupSize);
+
+    // Store in state
+    state.chama._monthlyPool = monthlyPool;
+    state.chama._accumulated = accumulated;
+    state.chama._returns = returns;
+    state.chama._totalWealth = totalWealth;
+    state.chama._saccoTotal = saccoTotal;
+    state.chama._stockTotal = stockTotal;
+    state.chama._realEstateTotal = realEstateTotal;
+    state.chama._businessTotal = businessTotal;
+
+    // Update UI
+    if (document.getElementById('chamaMonthlyPool')) {
+        document.getElementById('chamaMonthlyPool').textContent = 'KES ' + formatKES(monthlyPool);
+    }
+    if (document.getElementById('chamaAccumulated')) {
+        document.getElementById('chamaAccumulated').textContent = 'KES ' + formatKES(accumulated);
+    }
+    if (document.getElementById('chamaReturns')) {
+        document.getElementById('chamaReturns').textContent = 'KES ' + formatKES(returns);
+    }
+    if (document.getElementById('chamaTotalWealth')) {
+        document.getElementById('chamaTotalWealth').textContent = 'KES ' + formatKES(totalWealth);
+    }
+
+    // Update scenario projections
+    if (document.getElementById('chamaSaccoTotal')) {
+        document.getElementById('chamaSaccoTotal').textContent = 'KES ' + formatKES(saccoTotal);
+    }
+    if (document.getElementById('chamaStockTotal')) {
+        document.getElementById('chamaStockTotal').textContent = 'KES ' + formatKES(stockTotal);
+    }
+    if (document.getElementById('chamaRealEstateTotal')) {
+        document.getElementById('chamaRealEstateTotal').textContent = 'KES ' + formatKES(realEstateTotal);
+    }
+    if (document.getElementById('chamaBusinessTotal')) {
+        document.getElementById('chamaBusinessTotal').textContent = 'KES ' + formatKES(businessTotal);
+    }
+
+    // Update member payouts
+    if (document.getElementById('chamaMemberSacco')) {
+        document.getElementById('chamaMemberSacco').textContent = 'KES ' + formatKES(memberSacco);
+    }
+    if (document.getElementById('chamaMemberStock')) {
+        document.getElementById('chamaMemberStock').textContent = 'KES ' + formatKES(memberStock);
+    }
+    if (document.getElementById('chamaMemberRealEstate')) {
+        document.getElementById('chamaMemberRealEstate').textContent = 'KES ' + formatKES(memberRealEstate);
     }
 
     saveState();
