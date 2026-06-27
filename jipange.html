@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JiPange — Your Financial Plan</title>
+    <style>
+        :root {
+            --navy: #1B3A6B;
+            --amber: #FFC200;
+            --terracotta: #C84D0B;
+            --forest: #2D5016;
+            --ochre: #D4A574;
+            --white: #FFFFFF;
+            --offwhite: #FAFAF7;
+            --surface: #F5F4F0;
+            --border: #D0CFC8;
+            --text-1: #1A1A18;
+            --text-2: #5F5E5A;
+            --text-3: #888780;
+            --success: #276128;
+            --warning: #8A5C00;
+            --danger: #A32D2D;
+            --success-bg: #E4F3E5;
+            --warning-bg: #FEF3D8;
+            --danger-bg: #FDEAEA;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Calibri, 'Trebuchet MS', Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--text-1);
+            background-color: var(--offwhite);
+        }
+
+        /* Navigation bar */
+        .navbar {
+            background: linear-gradient(135deg, var(--navy) 0%, #0f2647 100%);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(27, 58, 107, 0.15);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 3px solid var(--amber);
+        }
+
+        .logo {
+            font-weight: 800;
+            font-size: 1.5rem;
+            letter-spacing: -0.01em;
+            color: var(--white);
+        }
+
+        .logo .accent {
+            color: var(--amber);
+        }
+
+        .nav-center {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            flex: 1;
+            margin: 0 1rem;
+        }
+
+        .nav-tab {
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: rgba(255, 255, 255, 0.7);
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .nav-tab:hover {
+            border-color: var(--amber);
+            color: var(--amber);
+        }
+
+        .nav-tab.active {
+            background: var(--amber);
+            color: var(--navy);
+            border-color: var(--amber);
+            font-weight: 600;
+        }
+
+        .nav-tab.inactive {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .health-badge {
+            background: rgba(255, 194, 0, 0.2);
+            color: var(--amber);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        /* Main content area */
+        .main-container {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-bottom: 150px;
+        }
+
+        /* Section styling */
+        section {
+            display: none;
+        }
+
+        section.active {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--navy);
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--amber), var(--terracotta));
+            border-radius: 2px;
+        }
+
+        .section-subtitle {
+            font-size: 1rem;
+            color: var(--text-2);
+            margin-bottom: 1.5rem;
+            font-style: italic;
+        }
+
+        /* Card grid */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 12px rgba(27, 58, 107, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .card-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 0.5rem;
+        }
+
+        .card-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-2);
+        }
+
+        /* Metric cards (summary row) */
+        .metric-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid var(--surface);
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, var(--white) 0%, #fafaf7 100%);
+            border-left: 4px solid var(--amber);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .metric-card.warning {
+            border-left-color: var(--warning);
+        }
+
+        .metric-card.success {
+            border-left-color: var(--success);
+        }
+
+        .metric-card.danger {
+            border-left-color: var(--danger);
+        }
+
+        /* Form fields */
+        .field-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-1);
+            margin-bottom: 0.5rem;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            color: var(--text-1);
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--amber);
+            box-shadow: 0 0 0 3px rgba(255, 194, 0, 0.1);
+        }
+
+        input[type="number"] {
+            text-align: right;
+        }
+
+        .input-hint {
+            font-size: 0.8rem;
+            color: var(--text-3);
+            margin-top: 0.3rem;
+            display: block;
+        }
+
+        .input-value {
+            font-size: 0.9rem;
+            color: var(--navy);
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        /* Multi-select pills */
+        .pill-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 0.75rem;
+        }
+
+        .pill {
+            padding: 0.6rem 1.2rem;
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            background: var(--white);
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: var(--text-2);
+            transition: all 0.2s;
+        }
+
+        .pill:hover {
+            border-color: var(--amber);
+            background: rgba(255, 194, 0, 0.05);
+        }
+
+        .pill.selected {
+            background: var(--navy);
+            border-color: var(--navy);
+            color: var(--white);
+        }
+
+        /* Buttons */
+        button {
+            background: var(--navy);
+            color: var(--white);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            background: #0f2647;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(27, 58, 107, 0.2);
+        }
+
+        button.primary {
+            background: linear-gradient(135deg, var(--amber) 0%, #e6b000 100%);
+            color: var(--navy);
+        }
+
+        button.primary:hover {
+            background: linear-gradient(135deg, #e6b000 0%, #cc9900 100%);
+        }
+
+        button.secondary {
+            background: transparent;
+            border: 2px solid var(--navy);
+            color: var(--navy);
+        }
+
+        button.secondary:hover {
+            background: var(--navy);
+            color: var(--white);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            justify-content: flex-end;
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-block;
+            background: var(--forest);
+            color: var(--white);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge.warning {
+            background: var(--warning);
+        }
+
+        .badge.success {
+            background: var(--success);
+        }
+
+        /* Surplus bar */
+        .surplus-bar {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--surface);
+            border-radius: 8px;
+        }
+
+        .bar-label {
+            font-size: 0.85rem;
+            color: var(--text-2);
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .bar {
+            height: 24px;
+            background: #e0e0e0;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success), var(--forest));
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 0.5rem;
+            color: var(--white);
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .bar-fill.warning {
+            background: linear-gradient(90deg, var(--warning), #cc8800);
+        }
+
+        .bar-fill.danger {
+            background: linear-gradient(90deg, var(--danger), #8a2424);
+        }
+
+        /* Collapsible */
+        .collapsible-header {
+            background: var(--surface);
+            padding: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            color: var(--navy);
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .collapsible-header:hover {
+            background: #ebe9e3;
+        }
+
+        .collapsible-header.open {
+            background: var(--navy);
+            color: var(--white);
+        }
+
+        .collapsible-content {
+            display: none;
+            padding: 1rem 0;
+        }
+
+        .collapsible-content.open {
+            display: block;
+        }
+
+        .collapsible-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            font-size: 0.9rem;
+            color: var(--text-2);
+            border-bottom: 1px solid var(--surface);
+        }
+
+        .collapsible-row:last-child {
+            border-bottom: none;
+        }
+
+        /* Footer */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, var(--navy) 0%, #0f2647 100%);
+            color: var(--white);
+            text-align: center;
+            padding: 1.5rem 2rem;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            border-top: 3px solid var(--amber);
+            z-index: 50;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-primary {
+            font-weight: 600;
+            color: var(--amber);
+            margin-bottom: 0.25rem;
+        }
+
+        .footer-secondary {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.8rem;
+        }
+
+        /* CTA Box */
+        .cta-box {
+            background: linear-gradient(135deg, var(--navy) 0%, #0f2647 100%);
+            border: 2px solid var(--amber);
+            border-radius: 12px;
+            padding: 2rem;
+            color: var(--white);
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .cta-box-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .cta-box-text {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 1.5rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-center {
+                order: 3;
+                width: 100%;
+            }
+
+            .nav-tab {
+                padding: 0.4rem 0.6rem;
+                font-size: 0.75rem;
+            }
+
+            .main-container {
+                padding: 1rem;
+                padding-bottom: 180px;
+            }
+
+            .section-title {
+                font-size: 1.4rem;
+            }
+
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .metric-row {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                flex-direction: column-reverse;
+            }
+
+            button {
+                width: 100%;
+            }
+
+            .footer {
+                padding: 1rem;
+                font-size: 0.75rem;
+            }
+        }
+
+        @media print {
+            .navbar, .footer, .button-group, .cta-box {
+                display: none;
+            }
+
+            section {
+                display: block !important;
+                page-break-inside: avoid;
+            }
+
+            .card, .metric-card {
+                page-break-inside: avoid;
+                border: 1px solid #999;
+            }
+
+            body {
+                padding: 2rem;
+            }
+
+            .main-container {
+                max-width: 100%;
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navigation bar -->
+<nav class="navbar">
+    <div class="logo">
+        Ji<span class="accent">Pange</span>
+    </div>
+    <div class="nav-center" id="navTabs"></div>
+    <div class="nav-right">
+        <div class="health-badge">Health: <span id="healthScore">—</span>/100</div>
+    </div>
+</nav>
+
+<!-- Main content -->
+<div class="main-container">
+
+    <!-- Screen 1: Profile -->
+    <section id="screen-1" class="active">
+        <h1 class="section-title">📋 About You</h1>
+
+        <div class="card-grid">
+            <!-- Personal details card -->
+            <div class="card">
+                <h2 style="font-size: 1.1rem; color: var(--navy); margin-bottom: 1rem;">Personal Details</h2>
+
+                <div class="field-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" placeholder="Your name">
+                </div>
+
+                <div class="field-group">
+                    <label for="age">Current Age</label>
+                    <input type="number" id="age" min="18" max="100" value="35">
+                </div>
+
+                <div class="field-group">
+                    <label for="retirementAge">Target Retirement Age</label>
+                    <input type="number" id="retirementAge" min="40" max="100" value="60">
+                    <span class="input-hint">Years until retirement: <span id="yearsToRetire">25</span></span>
+                </div>
+
+                <div class="field-group">
+                    <label for="county">County</label>
+                    <select id="county">
+                        <option>Baringo</option>
+                        <option>Bomet</option>
+                        <option>Bungoma</option>
+                        <option>Busia</option>
+                        <option>Calibre</option>
+                        <option>Embu</option>
+                        <option>Garissa</option>
+                        <option>Homa Bay</option>
+                        <option>Isiolo</option>
+                        <option>Kajiado</option>
+                        <option>Kakamega</option>
+                        <option>Kericho</option>
+                        <option>Kiambu</option>
+                        <option>Kilifi</option>
+                        <option>Kirinyaga</option>
+                        <option>Kisii</option>
+                        <option>Kisumu</option>
+                        <option>Kitui</option>
+                        <option>Koinangia</option>
+                        <option>Kwale</option>
+                        <option>Laikipia</option>
+                        <option>Lamu</option>
+                        <option>Machakos</option>
+                        <option>Makueni</option>
+                        <option>Mandera</option>
+                        <option>Marsabit</option>
+                        <option>Meru</option>
+                        <option>Migori</option>
+                        <option>Mombasa</option>
+                        <option selected>Nairobi</option>
+                        <option>Nakuru</option>
+                        <option>Nandi</option>
+                        <option>Narok</option>
+                        <option>Nyamira</option>
+                        <option>Nyandarua</option>
+                        <option>Nyeri</option>
+                        <option>Samburu</option>
+                        <option>Siaya</option>
+                        <option>Taita-Taveta</option>
+                        <option>Tana River</option>
+                        <option>Tharaka-Nithi</option>
+                        <option>Trans Nzoia</option>
+                        <option>Turkana</option>
+                        <option>Uasin Gishu</option>
+                        <option>Vihiga</option>
+                        <option>Wajir</option>
+                        <option>West Pokot</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Household card -->
+            <div class="card">
+                <h2 style="font-size: 1.1rem; color: var(--navy); margin-bottom: 1rem;">Household</h2>
+
+                <div class="field-group">
+                    <label for="dependants">Number of Dependants</label>
+                    <input type="number" id="dependants" min="0" max="20" value="0">
+                    <span class="input-hint">People depending on your income</span>
+                </div>
+
+                <div class="field-group">
+                    <label for="upcountryDep">Upcountry Dependants</label>
+                    <input type="number" id="upcountryDep" min="0" max="20" value="0">
+                    <span class="input-hint">Family members outside urban center</span>
+                </div>
+
+                <div class="field-group">
+                    <label for="schoolChildren">School-Going Children</label>
+                    <input type="number" id="schoolChildren" min="0" max="20" value="0">
+                    <span class="input-hint">Children needing education funding</span>
+                </div>
+            </div>
+
+            <!-- Income types card -->
+            <div class="card">
+                <h2 style="font-size: 1.1rem; color: var(--navy); margin-bottom: 1rem;">Income Types <span class="badge">Select All</span></h2>
+                <p style="font-size: 0.85rem; color: var(--text-2); margin-bottom: 1rem;">Choose all that apply. This shapes your income tracking in Step 2.</p>
+
+                <div class="pill-group" id="incomeTypes">
+                    <div class="pill" data-type="salaried">💼 Salaried</div>
+                    <div class="pill" data-type="consultant">🎯 Consultant</div>
+                    <div class="pill" data-type="business">🏢 Business</div>
+                    <div class="pill" data-type="passive">🌱 Passive</div>
+                    <div class="pill" data-type="remittance">🤝 Remittance</div>
+                    <div class="pill" data-type="gig">🚗 Gig/Casual</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button class="primary" onclick="markStepComplete(1); showScreen('screen-2')">Income →</button>
+        </div>
+    </section>
+
+    <!-- Screen 2: Income -->
+    <section id="screen-2">
+        <h1 class="section-title">💰 Income Profiler</h1>
+
+        <div class="metric-row">
+            <div class="metric-card">
+                <div class="card-title">Gross Monthly</div>
+                <div class="card-value" id="grossMonthly">KES 0</div>
+            </div>
+            <div class="metric-card">
+                <div class="card-title">Net (After Deductions)</div>
+                <div class="card-value" id="netMonthly">KES 0</div>
+            </div>
+            <div class="metric-card">
+                <div class="card-title">Income Stability</div>
+                <div class="card-value" id="incomeStability" style="font-size: 1.2rem;">—</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 style="font-size: 1.1rem; color: var(--navy); margin-bottom: 1rem;">Regular Income</h2>
+
+            <div class="field-group">
+                <label for="salary">Gross Monthly Salary</label>
+                <input type="number" id="salary" min="0" step="1000" placeholder="0">
+                <span class="input-value" id="salaryDisplay">KES 0</span>
+                <span class="input-hint">Your monthly gross before deductions</span>
+            </div>
+
+            <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                📋 Deductions Breakdown
+                <span>▼</span>
+            </div>
+            <div class="collapsible-content">
+                <div class="collapsible-row">
+                    <span>PAYE Tax</span>
+                    <span id="payeDisplay">KES 0</span>
+                </div>
+                <div class="collapsible-row">
+                    <span>NSSF Tier 1 (Employee)</span>
+                    <span id="nssfT1Display">KES 200</span>
+                </div>
+                <div class="collapsible-row">
+                    <span>NSSF Tier 2</span>
+                    <span id="nssfT2Display">KES 0</span>
+                </div>
+                <div class="collapsible-row">
+                    <span>SHIF (Healthcare)</span>
+                    <span id="shifDisplay">KES 0</span>
+                </div>
+                <div class="collapsible-row" style="font-weight: 600; padding-top: 1rem; border-top: 2px solid var(--border); margin-top: 0.5rem;">
+                    <span>Total Deductions</span>
+                    <span id="totalDeductionsDisplay">KES 200</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" style="margin-top: 1.5rem;">
+            <h2 style="font-size: 1.1rem; color: var(--navy); margin-bottom: 1rem;">Variable Income</h2>
+            <p style="font-size: 0.85rem; color: var(--text-2); margin-bottom: 1rem;">Average monthly amounts over last 3 months. Leave blank if not applicable.</p>
+
+            <div class="field-group">
+                <label for="consulting">Consulting / Freelance Monthly</label>
+                <input type="number" id="consulting" min="0" step="1000" placeholder="0">
+            </div>
+
+            <div class="field-group">
+                <label for="bonds">Bond Coupons / Investment Income</label>
+                <input type="number" id="bonds" min="0" step="1000" placeholder="0" readonly>
+                <span class="input-hint">Auto-synced from Screen 5 investments</span>
+            </div>
+
+            <div class="field-group">
+                <label for="farm">Farm / Agricultural Income</label>
+                <input type="number" id="farm" min="0" step="1000" placeholder="0">
+            </div>
+
+            <div class="field-group">
+                <label for="rental">Rental Income</label>
+                <input type="number" id="rental" min="0" step="1000" placeholder="0">
+            </div>
+
+            <div class="field-group">
+                <label for="remittance">Remittance Received</label>
+                <input type="number" id="remittance" min="0" step="1000" placeholder="0">
+            </div>
+
+            <div class="field-group">
+                <label for="business">Business Drawings</label>
+                <input type="number" id="business" min="0" step="1000" placeholder="0">
+            </div>
+
+            <div class="field-group">
+                <label for="other">Other Income</label>
+                <input type="number" id="other" min="0" step="1000" placeholder="0">
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button onclick="showScreen('screen-1')">← Profile</button>
+            <button class="primary" onclick="markStepComplete(2); showScreen('screen-3')">Budget →</button>
+        </div>
+    </section>
+
+    <!-- Screen 3: Budget -->
+    <section id="screen-3">
+        <h1 class="section-title">📊 Budget Engine</h1>
+
+        <div class="metric-row">
+            <div class="metric-card">
+                <div class="card-title">Total Monthly Expenses</div>
+                <div class="card-value" id="totalExpenses">KES 0</div>
+            </div>
+            <div class="metric-card">
+                <div class="card-title">Monthly Surplus</div>
+                <div class="card-value" id="surplus">KES 0</div>
+            </div>
+            <div class="metric-card" id="savingsRateCard">
+                <div class="card-title">Savings Rate</div>
+                <div class="card-value" id="savingsRate">0%</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 style="font-size: 1.1rem; color: var(--navy); margin-bottom: 1rem;">Fixed Obligations</h2>
+
+            <div class="field-group">
+                <label for="schoolFees">School Fees</label>
+                <input type="number" id="schoolFees" min="0" step="1000" placeholder="0">
+            </div>
+
+            <div class="field-group">
+                <label for="rent">Rent / Mortgage</label>
+                <input type="number" id="rent" min="0" step="1000" placeholder="0">
+            </div>
+
+            <div class="field-group">
+                <label for="carLoan">Car Loan / Transport</label>
+                <input type="number" id="carLoan" min="0" step="1000" placeholder="0">
+            </div>
+
+            <div class="field-group">
+                <label for="insurance">Insurance (All Types)</label>
+                <input type="number" id="insurance" min="0" step="1000" placeholder="0">
+            </div>
+
+            <div class="field-group">
+                <label for="otherFixed">Other Fixed Expenses</label>
+                <input type="number" id="otherFixed" min="0" step="1000" placeholder="0">
+            </div>
+        </div>
+
+        <div class="card" style="margin-top: 1.5rem;">
+            <h2 style="font-size: 1.1rem; color: var(--navy); margin-bottom: 1rem;">Kenya Social Obligations <span class="badge success">Kenya-Specific</span></h2>
+            <p style="font-size: 0.85rem; color: var(--text-2); margin-bottom: 1rem;">These are real expenses — cultural and social commitments in the Kenyan context.</p>
+
+            <div class="field-group">
+                <label for="tithe">Tithe / Church</label>
+                <input type="number" id="tithe" min="0" step="1000" placeholder="0">
+            </div>
+
+            <div class="field-group">
+                <label for="upcountrySupport">Upcountry Family Support</label>
+                <input type="number" id="upcountrySupport" min="0" step="1000" placeholder="0">
+            </div>
+
+            <div class="field-group">
+                <label for="harambee">Harambee / Fundraisers</label>
+                <input type="number" id="harambee" min="0" step="1000" placeholder="0">
+            </div>
+
+            <div class="field-group">
+                <label for="chama">Chama / Group Contributions</label>
+                <input type="number" id="chama" min="0" step="1000" placeholder="0">
+            </div>
+
+            <div class="field-group">
+                <label for="churchOther">Church / Ministry Other</label>
+                <input type="number" id="churchOther" min="0" step="1000" placeholder="0">
+            </div>
+        </div>
+
+        <div class="card" style="margin-top: 1.5rem;">
+            <h2 style="font-size: 1.1rem; color: var(--navy); margin-bottom: 1rem;">Household Operations</h2>
+
+            <div class="field-group">
+                <label for="food">Food & Groceries</label>
+                <input type="number" id="food" min="0" step="1000" placeholder="0">
+            </div>
+
+            <div class="field-group">
+                <label for="utilities">Utilities (Water, Power, Internet)</label>
+                <input type="number" id="utilities" min="0" step="1000" placeholder="0">
+            </div>
+
+            <div class="field-group">
+                <label for="transport">Transport / Fuel</label>
+                <input type="number" id="transport" min="0" step="1000" placeholder="0">
+            </div>
+
+            <div class="field-group">
+                <label for="airtime">Airtime / Phone Bills</label>
+                <input type="number" id="airtime" min="0" step="1000" placeholder="0">
+            </div>
+
+            <div class="field-group">
+                <label for="houseHelp">House Help / Domestic Staff</label>
+                <input type="number" id="houseHelp" min="0" step="1000" placeholder="0">
+            </div>
+        </div>
+
+        <div class="card" style="margin-top: 1.5rem;">
+            <h2 style="font-size: 1.1rem; color: var(--navy); margin-bottom: 1rem;">Discretionary Spending</h2>
+
+            <div class="field-group">
+                <label for="dining">Dining / Entertainment</label>
+                <input type="number" id="dining" min="0" step="1000" placeholder="0">
+            </div>
+
+            <div class="field-group">
+                <label for="personal">Personal Care / Grooming</label>
+                <input type="number" id="personal" min="0" step="1000" placeholder="0">
+            </div>
+
+            <div class="field-group">
+                <label for="misc">Miscellaneous</label>
+                <input type="number" id="misc" min="0" step="1000" placeholder="0">
+            </div>
+        </div>
+
+        <div class="card" style="margin-top: 1.5rem;">
+            <div class="surplus-bar">
+                <div class="bar-label">
+                    <span>Your Savings Capacity</span>
+                    <span id="surplusPercent">0%</span>
+                </div>
+                <div class="bar">
+                    <div class="bar-fill" id="surplusBarFill" style="width: 0%;">0%</div>
+                </div>
+                <p style="font-size: 0.8rem; color: var(--text-3); margin-top: 0.5rem; text-align: center;">
+                    <strong>Green (>20%)</strong> = Excellent | <strong>Amber (10–20%)</strong> = Good | <strong>Red (<10%)</strong> = At risk
+                </p>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button onclick="showScreen('screen-2')">← Income</button>
+            <button class="primary" onclick="markStepComplete(3); showScreen('screen-8')">Dashboard →</button>
+        </div>
+    </section>
+
+    <!-- Screen 8: Dashboard -->
+    <section id="screen-8">
+        <h1 class="section-title">📈 Your Financial Health</h1>
+        <p class="section-subtitle" id="dashboardDate"></p>
+
+        <div class="metric-row">
+            <div class="metric-card">
+                <div class="card-title">Net Monthly Income</div>
+                <div class="card-value" id="dashNetIncome">KES 0</div>
+            </div>
+            <div class="metric-card">
+                <div class="card-title">Monthly Surplus</div>
+                <div class="card-value" id="dashSurplus">KES 0</div>
+            </div>
+            <div class="metric-card">
+                <div class="card-title">Total Monthly Expenses</div>
+                <div class="card-value" id="dashExpenses">KES 0</div>
+            </div>
+            <div class="metric-card">
+                <div class="card-title">Savings Rate</div>
+                <div class="card-value" id="dashSavingsRate">0%</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 style="font-size: 1.1rem; color: var(--navy); margin-bottom: 1rem;">Financial Health Score</h2>
+            <p style="font-size: 0.85rem; color: var(--text-2); margin-bottom: 2rem;">Complete all steps (Savings, Investments, Goals) to calculate your full health score.</p>
+
+            <div style="text-align: center; padding: 2rem;">
+                <div style="font-size: 4rem; color: var(--navy); font-weight: 700;">—</div>
+                <p style="color: var(--text-2); margin-top: 0.5rem;">Health Score (0–100)</p>
+            </div>
+        </div>
+
+        <div class="cta-box">
+            <div class="cta-box-title">🎯 Next Steps</div>
+            <div class="cta-box-text">
+                You've completed the foundation of your financial plan! Your surplus and savings rate show your financial capacity. In future updates, track your savings, investments, and progress toward your goals.
+            </div>
+            <div class="cta-buttons">
+                <button class="primary" onclick="window.open('https://wa.me/254707000123', '_blank')">📲 Book DN Consultancy Session</button>
+                <button class="secondary" onclick="exportPlan()">💾 Download Your Plan</button>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 2rem;">
+            <button onclick="showScreen('screen-3')">← Budget</button>
+        </div>
+    </section>
+
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="footer-content">
+        <div class="footer-primary">JiPange by DN Consultancy · Nairobi</div>
+        <div class="footer-secondary">
+            📧 hello@dnconsultancy.co.ke · 🌐 dnconsultancy.co.ke<br>
+            <em>For financial planning purposes only. Not professional financial advice.</em>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Constants
+    const KENYA_RATES = {
+        paye_bands: [
+            { min: 0, max: 24000, rate: 0.10 },
+            { min: 24001, max: 32333, rate: 0.25 },
+            { min: 32334, max: 500000, rate: 0.30 },
+            { min: 500001, max: 800000, rate: 0.325 },
+            { min: 800001, max: Infinity, rate: 0.35 }
+        ],
+        paye_relief: 2400,
+        nssf_t1: 200,
+        nssf_t2_rate: 0.06,
+        nssf_t2_threshold: 6000,
+        shif_rate: 0.0275
+    };
+
+    const DEFAULT_STATE = {
+        _meta: {
+            version: 1,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            completedSteps: []
+        },
+        profile: {
+            name: '',
+            age: 35,
+            retirementAge: 60,
+            county: 'Nairobi',
+            dependants: 0,
+            upcountryDep: 0,
+            schoolChildren: 0,
+            incomeTypes: { salaried: true, consultant: false, business: false, passive: false, remittance: false, gig: false }
+        },
+        income: {
+            salary: 0,
+            consulting: 0,
+            bonds: 0,
+            farm: 0,
+            rental: 0,
+            remittance: 0,
+            business: 0,
+            other: 0,
+            _paye: 0,
+            _nssfT1: 0,
+            _nssfT2: 0,
+            _shif: 0,
+            _totalDeductions: 0,
+            _grossMonthly: 0,
+            _netMonthly: 0,
+            _stabilityBand: 'unknown'
+        },
+        budget: {
+            schoolFees: 0,
+            rent: 0,
+            carLoan: 0,
+            insurance: 0,
+            otherFixed: 0,
+            tithe: 0,
+            upcountrySupport: 0,
+            harambee: 0,
+            chama: 0,
+            churchOther: 0,
+            food: 0,
+            utilities: 0,
+            transport: 0,
+            airtime: 0,
+            houseHelp: 0,
+            dining: 0,
+            personal: 0,
+            misc: 0,
+            _totalExpenses: 0,
+            _surplus: 0,
+            _savingsRate: 0
+        }
+    };
+
+    let state = loadState();
+
+    // Initialize app
+    function init() {
+        buildNavbar();
+        attachEventListeners();
+        recalculateAll();
+        setDashboardDate();
+    }
+
+    // Build navbar dynamically
+    function buildNavbar() {
+        const navTabs = document.getElementById('navTabs');
+        const screens = ['Profile', 'Income', 'Budget', 'Savings', 'Investments', 'Obligations', 'Goals', 'Dashboard'];
+
+        navTabs.innerHTML = '';
+        screens.forEach((name, i) => {
+            const num = i + 1;
+            const isCompleted = state._meta.completedSteps.includes(num);
+            const isActive = num === 1 || state._meta.completedSteps.includes(num - 1);
+
+            const btn = document.createElement('button');
+            btn.className = `nav-tab ${isActive ? 'active' : 'inactive'} ${isCompleted ? 'active' : ''}`;
+            btn.textContent = `${num}. ${name}`;
+            btn.onclick = () => isActive && showScreen(`screen-${num}`);
+            navTabs.appendChild(btn);
+        });
+    }
+
+    function attachEventListeners() {
+        // Profile
+        ['name', 'age', 'retirementAge', 'county', 'dependants', 'upcountryDep', 'schoolChildren'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.addEventListener('change', (e) => {
+                state.profile[id] = isNaN(e.target.value) ? e.target.value : parseInt(e.target.value);
+                saveState();
+                recalculateAll();
+            });
+        });
+
+        // Income types pills
+        document.querySelectorAll('#incomeTypes .pill').forEach(pill => {
+            pill.addEventListener('click', function() {
+                const type = this.dataset.type;
+                state.profile.incomeTypes[type] = !state.profile.incomeTypes[type];
+                this.classList.toggle('selected');
+                saveState();
+                recalculateAll();
+            });
+        });
+
+        // Income fields
+        ['salary', 'consulting', 'farm', 'rental', 'remittance', 'business', 'other'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.addEventListener('input', (e) => {
+                state.income[id] = parseInt(e.target.value) || 0;
+                saveState();
+                recalculateAll();
+            });
+        });
+
+        // Budget fields
+        const budgetFields = ['schoolFees', 'rent', 'carLoan', 'insurance', 'otherFixed', 'tithe', 'upcountrySupport', 'harambee', 'chama', 'churchOther', 'food', 'utilities', 'transport', 'airtime', 'houseHelp', 'dining', 'personal', 'misc'];
+        budgetFields.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.addEventListener('input', (e) => {
+                state.budget[id] = parseInt(e.target.value) || 0;
+                saveState();
+                recalculateAll();
+            });
+        });
+
+        // Load saved values
+        loadFormValues();
+    }
+
+    function loadFormValues() {
+        // Profile
+        document.getElementById('name').value = state.profile.name;
+        document.getElementById('age').value = state.profile.age;
+        document.getElementById('retirementAge').value = state.profile.retirementAge;
+        document.getElementById('county').value = state.profile.county;
+        document.getElementById('dependants').value = state.profile.dependants;
+        document.getElementById('upcountryDep').value = state.profile.upcountryDep;
+        document.getElementById('schoolChildren').value = state.profile.schoolChildren;
+
+        // Income types
+        document.querySelectorAll('#incomeTypes .pill').forEach(pill => {
+            const type = pill.dataset.type;
+            if (state.profile.incomeTypes[type]) {
+                pill.classList.add('selected');
+            }
+        });
+
+        // Income
+        document.getElementById('salary').value = state.income.salary;
+        document.getElementById('consulting').value = state.income.consulting;
+        document.getElementById('farm').value = state.income.farm;
+        document.getElementById('rental').value = state.income.rental;
+        document.getElementById('remittance').value = state.income.remittance;
+        document.getElementById('business').value = state.income.business;
+        document.getElementById('other').value = state.income.other;
+
+        // Budget
+        const budgetFields = ['schoolFees', 'rent', 'carLoan', 'insurance', 'otherFixed', 'tithe', 'upcountrySupport', 'harambee', 'chama', 'churchOther', 'food', 'utilities', 'transport', 'airtime', 'houseHelp', 'dining', 'personal', 'misc'];
+        budgetFields.forEach(id => {
+            document.getElementById(id).value = state.budget[id];
+        });
+    }
+
+    // Calculations
+    function calculateIncome() {
+        const salary = state.income.salary;
+
+        // PAYE calculation
+        let paye = 0;
+        for (let band of KENYA_RATES.paye_bands) {
+            if (salary > band.min) {
+                const taxable = Math.min(salary, band.max) - band.min;
+                paye += taxable * band.rate;
+            }
+        }
+        paye -= KENYA_RATES.paye_relief;
+        paye = Math.max(paye, 0);
+
+        // NSSF Tier 1
+        const nssfT1 = KENYA_RATES.nssf_t1;
+
+        // NSSF Tier 2
+        const nssfT2 = Math.max(salary - KENYA_RATES.nssf_t2_threshold, 0) * KENYA_RATES.nssf_t2_rate;
+
+        // SHIF
+        const shif = salary * KENYA_RATES.shif_rate;
+
+        // Totals
+        const totalDeductions = Math.round(paye + nssfT1 + nssfT2 + shif);
+        const grossMonthly = salary;
+        const netMonthly = grossMonthly - totalDeductions;
+
+        // Stability band
+        let count = 0;
+        for (let type in state.profile.incomeTypes) {
+            if (state.profile.incomeTypes[type]) count++;
+        }
+        let stabilityBand = 'High variability';
+        if (count >= 4) stabilityBand = 'Stable';
+        else if (count >= 2) stabilityBand = 'Moderate';
+
+        state.income._paye = Math.round(paye);
+        state.income._nssfT1 = nssfT1;
+        state.income._nssfT2 = Math.round(nssfT2);
+        state.income._shif = Math.round(shif);
+        state.income._totalDeductions = totalDeductions;
+        state.income._grossMonthly = grossMonthly;
+        state.income._netMonthly = Math.max(0, netMonthly);
+        state.income._stabilityBand = stabilityBand;
+    }
+
+    function calculateBudget() {
+        const categories = ['schoolFees', 'rent', 'carLoan', 'insurance', 'otherFixed', 'tithe', 'upcountrySupport', 'harambee', 'chama', 'churchOther', 'food', 'utilities', 'transport', 'airtime', 'houseHelp', 'dining', 'personal', 'misc'];
+
+        let total = 0;
+        categories.forEach(cat => {
+            total += state.budget[cat];
+        });
+
+        const netIncome = state.income._netMonthly;
+        const surplus = netIncome - total;
+        const savingsRate = netIncome > 0 ? (surplus / netIncome) : 0;
+
+        state.budget._totalExpenses = total;
+        state.budget._surplus = Math.max(0, surplus);
+        state.budget._savingsRate = savingsRate;
+    }
+
+    function recalculateAll() {
+        calculateIncome();
+        calculateBudget();
+        updateUI();
+        saveState();
+    }
+
+    function updateUI() {
+        // Profile screen
+        document.getElementById('yearsToRetire').textContent = Math.max(0, state.profile.retirementAge - state.profile.age);
+
+        // Income screen
+        document.getElementById('grossMonthly').textContent = 'KES ' + formatKES(state.income._grossMonthly);
+        document.getElementById('netMonthly').textContent = 'KES ' + formatKES(state.income._netMonthly);
+        document.getElementById('incomeStability').textContent = state.income._stabilityBand;
+
+        document.getElementById('salaryDisplay').textContent = 'KES ' + formatKES(state.income.salary);
+        document.getElementById('payeDisplay').textContent = 'KES ' + formatKES(state.income._paye);
+        document.getElementById('nssfT1Display').textContent = 'KES ' + formatKES(state.income._nssfT1);
+        document.getElementById('nssfT2Display').textContent = 'KES ' + formatKES(state.income._nssfT2);
+        document.getElementById('shifDisplay').textContent = 'KES ' + formatKES(state.income._shif);
+        document.getElementById('totalDeductionsDisplay').textContent = 'KES ' + formatKES(state.income._totalDeductions);
+
+        // Budget screen
+        document.getElementById('totalExpenses').textContent = 'KES ' + formatKES(state.budget._totalExpenses);
+        document.getElementById('surplus').textContent = 'KES ' + formatKES(state.budget._surplus);
+        document.getElementById('savingsRate').textContent = formatPercent(state.budget._savingsRate);
+
+        // Surplus bar color
+        const savingsRatePercent = state.budget._savingsRate;
+        const surplusBarFill = document.getElementById('surplusBarFill');
+        const barWidth = Math.min(100, savingsRatePercent * 100);
+        surplusBarFill.style.width = barWidth + '%';
+        surplusBarFill.textContent = formatPercent(savingsRatePercent);
+
+        if (savingsRatePercent < 0.10) {
+            surplusBarFill.className = 'bar-fill danger';
+            document.getElementById('savingsRateCard').classList.add('danger');
+            document.getElementById('savingsRateCard').classList.remove('warning', 'success');
+        } else if (savingsRatePercent < 0.20) {
+            surplusBarFill.className = 'bar-fill warning';
+            document.getElementById('savingsRateCard').classList.add('warning');
+            document.getElementById('savingsRateCard').classList.remove('danger', 'success');
+        } else {
+            surplusBarFill.className = 'bar-fill';
+            document.getElementById('savingsRateCard').classList.remove('warning', 'danger');
+        }
+
+        document.getElementById('surplusPercent').textContent = formatPercent(savingsRatePercent);
+
+        // Dashboard
+        document.getElementById('dashNetIncome').textContent = 'KES ' + formatKES(state.income._netMonthly);
+        document.getElementById('dashSurplus').textContent = 'KES ' + formatKES(state.budget._surplus);
+        document.getElementById('dashExpenses').textContent = 'KES ' + formatKES(state.budget._totalExpenses);
+        document.getElementById('dashSavingsRate').textContent = formatPercent(state.budget._savingsRate);
+    }
+
+    function setDashboardDate() {
+        const today = new Date().toLocaleDateString('en-KE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        document.getElementById('dashboardDate').textContent = `Generated: ${today}`;
+    }
+
+    // Helper functions
+    function formatKES(num) {
+        return Math.round(num).toLocaleString('en-KE');
+    }
+
+    function formatPercent(num) {
+        return (num * 100).toFixed(1) + '%';
+    }
+
+    function showScreen(screenId) {
+        document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+        document.getElementById(screenId).classList.add('active');
+        window.scrollTo(0, 0);
+    }
+
+    function markStepComplete(stepNum) {
+        if (!state._meta.completedSteps.includes(stepNum)) {
+            state._meta.completedSteps.push(stepNum);
+            state._meta.updatedAt = new Date().toISOString();
+        }
+        buildNavbar();
+        saveState();
+    }
+
+    function toggleCollapsible(header) {
+        header.classList.toggle('open');
+        header.nextElementSibling.classList.toggle('open');
+    }
+
+    function exportPlan() {
+        const filename = `jipange-plan-${new Date().toISOString().split('T')[0]}.json`;
+        const dataStr = JSON.stringify(state, null, 2);
+        const blob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+    }
+
+    // State management
+    function saveState() {
+        state._meta.updatedAt = new Date().toISOString();
+        localStorage.setItem('jipange_v1', JSON.stringify(state));
+    }
+
+    function loadState() {
+        const saved = localStorage.getItem('jipange_v1');
+        return saved ? JSON.parse(saved) : DEFAULT_STATE;
+    }
+
+    // Start app
+    init();
+</script>
+
+</body>
+</html>
