@@ -3,6 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="JiPange: Comprehensive financial planning for Kenyan households and businesses. Create budgets, set goals, track investments, and plan your financial future.">
+    <meta name="theme-color" content="#1B4B8C">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="JiPange">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%231B4B8C' width='100' height='100'/><text x='50' y='50' font-size='50' font-weight='bold' fill='%2334D399' text-anchor='middle' dominant-baseline='central'>J</text></svg>">
     <title>JiPange — Kenya's Financial Operating System</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -28,6 +35,144 @@
             --text-dark: #1E293B;
             --text-muted: #64748B;
             --text-light: #94A3B8;
+        }
+
+        /* Dark Mode */
+        @media (prefers-color-scheme: dark) {
+            :root.dark-mode {
+                --primary: #3B82F6;
+                --primary-light: #60A5FA;
+                --secondary: #34D399;
+                --secondary-light: #6EE7B7;
+                --accent: #FCD34D;
+                --accent-light: #FBBF24;
+                --navy: #E0E7FF;
+
+                --white: #0F1419;
+                --light-bg: #1E293B;
+                --surface: #334155;
+                --border: #475569;
+                --text-dark: #F1F5F9;
+                --text-muted: #CBD5E1;
+                --text-light: #94A3B8;
+            }
+        }
+
+        body.dark-mode {
+            background: linear-gradient(135deg, #1E293B 0%, #0F1419 100%);
+            color: #F1F5F9;
+        }
+
+        body.dark-mode .card,
+        body.dark-mode .nav-main-menu {
+            background: #1E293B;
+            border-color: #475569;
+        }
+
+        body.dark-mode input,
+        body.dark-mode select,
+        body.dark-mode textarea {
+            background: #334155;
+            color: #F1F5F9;
+            border-color: #475569;
+        }
+
+        body.dark-mode .navbar {
+            background: linear-gradient(135deg, #1E293B 0%, #0F1419 100%);
+        }
+
+        body.dark-mode .footer {
+            background: linear-gradient(135deg, #0F1419 0%, #000000 100%);
+        }
+
+        /* Dark mode toggle button */
+        .dark-mode-toggle {
+            background: none;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .dark-mode-toggle:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Enhanced input states */
+        input.valid,
+        input.valid:focus {
+            border-color: #10B981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        input.invalid,
+        input.invalid:focus {
+            border-color: #EF4444;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+            animation: shake 0.3s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .input-error {
+            display: none;
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+            font-weight: 600;
+        }
+
+        .input-error.show {
+            display: block;
+        }
+
+        /* Accessibility improvements */
+        input[aria-invalid="true"] {
+            border-color: #EF4444;
+        }
+
+        button:focus-visible,
+        input:focus-visible,
+        select:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        /* Toast notification enhancement */
+        @keyframes slideIn {
+            from {
+                transform: translateY(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .notification {
+            animation: slideIn 0.3s ease forwards;
+        }
+
+        /* Loading state animation */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .loading {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
 
             /* Status Colors */
             --success: #10B981;
@@ -1099,6 +1244,7 @@
             <button class="nav-main-btn" onclick="toggleNavMainMenu()">🧭 Navigate</button>
             <div class="nav-main-menu" id="navMainMenu"></div>
         </div>
+        <button id="darkModeToggle" class="dark-mode-toggle" onclick="toggleDarkMode()" title="Toggle Dark Mode">🌙</button>
         <button id="langToggle" class="lang-toggle" title="Toggle English/Swahili">EN</button>
         <div class="health-badge">Plan Health: <span id="healthScore">—</span>/100</div>
     </div>
@@ -6003,50 +6149,62 @@ function setButtonLoading(button, isLoading, text = '⏳ Processing...') {
     }
 }
 
-// Form input validation
+// Enhanced form input validation with visual feedback
 function validateInput(input, rules = {}) {
     const value = input.value.trim();
     let isValid = true;
     let errorMsg = '';
+    let successMsg = '';
 
     if (rules.required && !value) {
         isValid = false;
-        errorMsg = 'This field is required';
+        errorMsg = '⚠️ This field is required';
+    } else if (value) {
+        successMsg = '✓';
     }
 
     if (rules.minLength && value && value.length < rules.minLength) {
         isValid = false;
-        errorMsg = `Minimum ${rules.minLength} characters required`;
+        errorMsg = `⚠️ Minimum ${rules.minLength} characters required`;
     }
 
     if (rules.maxLength && value && value.length > rules.maxLength) {
         isValid = false;
-        errorMsg = `Maximum ${rules.maxLength} characters allowed`;
+        errorMsg = `⚠️ Maximum ${rules.maxLength} characters allowed`;
     }
 
     if (rules.pattern && value && !rules.pattern.test(value)) {
         isValid = false;
-        errorMsg = rules.patternError || 'Invalid format';
+        errorMsg = rules.patternError || '⚠️ Invalid format';
     }
 
     if (rules.min && value && parseFloat(value) < rules.min) {
         isValid = false;
-        errorMsg = `Minimum value is ${rules.min}`;
+        errorMsg = `⚠️ Minimum value is ${rules.min}`;
     }
 
     if (rules.max && value && parseFloat(value) > rules.max) {
         isValid = false;
-        errorMsg = `Maximum value is ${rules.max}`;
+        errorMsg = `⚠️ Maximum value is ${rules.max}`;
     }
 
-    // Update UI
+    // Add visual feedback
     input.classList.toggle('valid', isValid && value);
     input.classList.toggle('invalid', !isValid && value);
+    input.setAttribute('aria-invalid', !isValid && value ? 'true' : 'false');
 
-    const errorEl = input.parentElement?.querySelector('.input-error');
+    // Update or create error message
+    let errorEl = input.parentElement?.querySelector('.input-error');
+    if (!errorEl && (errorMsg || successMsg)) {
+        errorEl = document.createElement('span');
+        errorEl.className = 'input-error';
+        input.parentElement?.appendChild(errorEl);
+    }
+
     if (errorEl) {
-        errorEl.textContent = errorMsg;
-        errorEl.classList.toggle('show', !isValid);
+        errorEl.textContent = errorMsg || successMsg;
+        errorEl.classList.toggle('show', !isValid || (isValid && successMsg));
+        errorEl.style.color = isValid ? '#10B981' : '#EF4444';
     }
 
     return isValid;
@@ -6648,7 +6806,50 @@ init();
 setTimeout(() => {
     updateStepCounter();
     initializeNavMainMenu();
+    initializeDarkMode();
 }, 100);
+
+// ============ ERROR HANDLING ============
+
+window.addEventListener('error', (event) => {
+    console.error('Global Error:', event.error);
+    showNotification('⚠️ An error occurred. Your data has been saved.', 'error');
+});
+
+window.addEventListener('unhandledrejection', (event) => {
+    console.error('Unhandled Promise Rejection:', event.reason);
+    showNotification('⚠️ Something went wrong. Please refresh the page.', 'error');
+});
+
+// ============ DARK MODE SUPPORT ============
+
+function initializeDarkMode() {
+    const saved = localStorage.getItem('jipange_darkMode');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const shouldBeDark = saved !== null ? saved === 'true' : prefersDark;
+
+    if (shouldBeDark) {
+        document.body.classList.add('dark-mode');
+        document.documentElement.classList.add('dark-mode');
+        updateDarkModeButton();
+    }
+}
+
+function toggleDarkMode() {
+    const isDark = document.body.classList.toggle('dark-mode');
+    document.documentElement.classList.toggle('dark-mode');
+    localStorage.setItem('jipange_darkMode', isDark);
+    updateDarkModeButton();
+}
+
+function updateDarkModeButton() {
+    const btn = document.getElementById('darkModeToggle');
+    if (btn) {
+        const isDark = document.body.classList.contains('dark-mode');
+        btn.textContent = isDark ? '☀️' : '🌙';
+        btn.title = isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode';
+    }
+}
 
 // ============ MAIN NAVIGATION DROPDOWN ============
 
@@ -6744,6 +6945,17 @@ document.addEventListener('click', (e) => {
         <button onclick="showAnalyticsDashboard(); toggleFABMenu();" title="Ctrl+K">📊 Analytics</button>
     </div>
 </div>
+
+<script>
+// Register service worker for PWA/offline support
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+            .then(reg => console.log('✓ Service Worker registered'))
+            .catch(err => console.log('Service Worker registration failed:', err));
+    });
+}
+</script>
 
 </body>
 </html>

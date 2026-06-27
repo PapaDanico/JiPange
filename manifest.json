@@ -1,0 +1,75 @@
+{
+  "name": "JiPange - Kenya's Financial Operating System",
+  "short_name": "JiPange",
+  "description": "Comprehensive financial planning tool for Kenyan households and businesses",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#ffffff",
+  "theme_color": "#1B4B8C",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%231B4B8C' width='192' height='192'/><text x='50%' y='50%' font-size='80' font-weight='bold' fill='%2334D399' text-anchor='middle' dominant-baseline='central'>Ji</text><text x='50%' y='60%' font-size='80' font-weight='bold' fill='%23F59E0B' text-anchor='middle'>Pange</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect fill='%231B4B8C' width='512' height='512'/><text x='50%' y='50%' font-size='200' font-weight='bold' fill='%2334D399' text-anchor='middle' dominant-baseline='central'>Ji</text><text x='50%' y='60%' font-size='200' font-weight='bold' fill='%23F59E0B' text-anchor='middle'>Pange</text></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["finance", "productivity"],
+  "screenshots": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 540 720'><rect fill='%23F8FAFC' width='540' height='720'/><rect fill='%231B4B8C' width='540' height='100'/><text x='270' y='60' font-size='32' font-weight='bold' fill='white' text-anchor='middle'>JiPange</text></svg>",
+      "sizes": "540x720",
+      "type": "image/svg+xml",
+      "form_factor": "narrow"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Financial Dashboard",
+      "short_name": "Dashboard",
+      "description": "View your financial overview",
+      "url": "/?screen=screen-5",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'><rect fill='%231B4B8C' width='96' height='96'/><text x='48' y='48' font-size='48' text-anchor='middle' dominant-baseline='central'>💎</text></svg>",
+          "sizes": "96x96",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Budget Planner",
+      "short_name": "Budget",
+      "description": "Plan your monthly budget",
+      "url": "/?screen=screen-3",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'><rect fill='%231B4B8C' width='96' height='96'/><text x='48' y='48' font-size='48' text-anchor='middle' dominant-baseline='central'>📊</text></svg>",
+          "sizes": "96x96",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Goals Tracker",
+      "short_name": "Goals",
+      "description": "Track your financial goals",
+      "url": "/?screen=screen-8",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'><rect fill='%231B4B8C' width='96' height='96'/><text x='48' y='48' font-size='48' text-anchor='middle' dominant-baseline='central'>🎯</text></svg>",
+          "sizes": "96x96",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
+  ]
+}
