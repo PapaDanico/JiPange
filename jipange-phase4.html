@@ -870,10 +870,10 @@
                     <label for="county">County</label>
                     <select id="county">
                         <option>Baringo</option><option>Bomet</option><option>Bungoma</option><option>Busia</option>
-                        <option>Calibre</option><option>Embu</option><option>Garissa</option><option>Homa Bay</option>
+                        <option>Embu</option><option>Garissa</option><option>Homa Bay</option>
                         <option>Isiolo</option><option>Kajiado</option><option>Kakamega</option><option>Kericho</option>
                         <option>Kiambu</option><option>Kilifi</option><option>Kirinyaga</option><option>Kisii</option>
-                        <option>Kisumu</option><option>Kitui</option><option>Koinangia</option><option>Kwale</option>
+                        <option>Kisumu</option><option>Kitui</option><option>Kwale</option>
                         <option>Laikipia</option><option>Lamu</option><option>Machakos</option><option>Makueni</option>
                         <option>Mandera</option><option>Marsabit</option><option>Meru</option><option>Migori</option>
                         <option>Mombasa</option><option selected>Nairobi</option><option>Nakuru</option><option>Nandi</option>
@@ -1665,12 +1665,12 @@
 
         <div class="button-group">
             <button onclick="showScreen('screen-7')">← Household</button>
-            <button class="primary" onclick="showScreen('screen-9')">Learn & Grow →</button>
+            <button class="primary" onclick="showScreen('screen-10')">Reports →</button>
         </div>
     </section>
 
     <!-- Screen 9: Financial Literacy Hub (NEW) -->
-    <section id="screen-9">
+    <section id="screen-9" style="display: none;">
         <h1 class="section-title">📚 Financial Literacy Hub</h1>
         <p class="section-subtitle">Master financial concepts through bite-sized lessons. Take quizzes and earn certificates.</p>
 
@@ -1774,7 +1774,7 @@
         </div>
 
         <div class="button-group">
-            <button onclick="showScreen('screen-9')">← Learning</button>
+            <button onclick="showScreen('screen-8')">← Goals</button>
             <button class="primary" onclick="showScreen('screen-1')">Start Over</button>
         </div>
     </section>
@@ -2951,7 +2951,7 @@
                     </div>
                     <div>
                         <div style="color: var(--text-3); margin-bottom: 0.3rem;">Health Coverage Status</div>
-                        <div style="font-size: 1rem; font-weight: 700; color: var(--warning);" id="insHealthGap">⚠️ Needs NHIF</div>
+                        <div style="font-size: 1rem; font-weight: 700; color: var(--warning);" id="insHealthGap">⚠️ Needs SHIF Coverage</div>
                     </div>
                     <div>
                         <div style="color: var(--text-3); margin-bottom: 0.3rem;">Property Gap</div>
@@ -2974,7 +2974,7 @@
                     </div>
                     <div>
                         <div style="font-weight: 600; margin-bottom: 0.3rem;">Health Insurance</div>
-                        <div>SHIF (mandatory), NHIF, Jubilee, Britam, APA Insurance</div>
+                        <div>SHIF (mandatory), Jubilee, Britam, APA Insurance</div>
                     </div>
                     <div>
                         <div style="font-weight: 600; margin-bottom: 0.3rem;">Property Insurance</div>
@@ -2994,7 +2994,7 @@
                     <li><strong>Immediate:</strong> Ensure SHIF contribution (mandatory) - deducted from salary</li>
                     <li><strong>High Priority:</strong> Get life insurance (10x income minimum) - term life is affordable</li>
                     <li><strong>Essential:</strong> Vehicle insurance (3rd party mandatory by law)</li>
-                    <li><strong>Important:</strong> Health insurance top-up (NHIF or private NHIF alternative)</li>
+                    <li><strong>Important:</strong> Top-up coverage (private health plan on top of SHIF)</li>
                     <li><strong>Consider:</strong> Disability income insurance - protects against income loss</li>
                     <li><strong>Review:</strong> Group insurance through SACCO - often better rates</li>
                 </ul>
@@ -3380,10 +3380,9 @@ function buildNavbar() {
             ]
         },
         {
-            name: '📚 Learning',
+            name: '📚 Reports',
             screens: [
-                { num: 9, name: 'Learn & Grow' },
-                { num: 10, name: 'Reports' }
+                { num: 10, name: 'Reports & Export' }
             ]
         },
         {
@@ -3874,47 +3873,230 @@ function calculateBudget() {
 function calculateFireNumber() {
     const currentAge = state.profile.age;
     const targetAge = state.fire.targetAge;
-    const monthlySpend = state.fire.monthlySpend;
-    const swr = state.fire.swr / 100;
-    const inflation = state.fire.inflation / 100;
-    const growthRate = state.fire.growthRate / 100;
+    const monthlySpend = state.fire.monthlySpend || (state.budget._totalExpenses || 0);
+    const swr = (state.fire.swr || 4) / 100;
+    const inflation = (state.fire.inflation || 6.5) / 100;
+    const growthRate = (state.fire.growthRate || 12) / 100;
 
     const yearsToFire = Math.max(targetAge - currentAge, 1);
     const months = yearsToFire * 12;
     const r = growthRate / 12;
 
+    // Calculate retirement spend adjusted for inflation
     const spendAtFire = monthlySpend * Math.pow(1 + inflation, yearsToFire);
     const fireNominal = (monthlySpend * 12) / swr;
     const fireReal = (spendAtFire * 12) / swr;
 
+    // Investment projection
     const monthlyInvest = Math.max(0, Math.round(state.budget._surplus * 0.67));
-    const currentPortfolio = 0;
+    const currentPortfolio = state.investments?._totalPortfolio || 0;  // FIX: Read from state instead of hardcoded 0
     const fvPortfolio = currentPortfolio * Math.pow(1 + r, months);
-    const fvContribs = monthlyInvest * ((Math.pow(1 + r, months) - 1) / r);
+    const fvContribs = monthlyInvest > 0 ? monthlyInvest * ((Math.pow(1 + r, months) - 1) / r) : 0;
     const projected = Math.round(fvPortfolio + fvContribs);
     const delta = projected - fireReal;
     const onTrack = delta >= 0;
 
+    // Store in state for cross-reference
     state.fire._fireNumber = Math.round(fireNominal);
     state.fire._fireReal = Math.round(fireReal);
     state.fire._onTrack = onTrack;
+    state.dashboard = state.dashboard || {};
+    state.dashboard.fireCalc = { fireNominal: Math.round(fireNominal), fireReal: Math.round(fireReal), projected, onTrack };
 
     return { fireNominal: Math.round(fireNominal), fireReal: Math.round(fireReal), projected, onTrack, delta, yearsToFire };
 }
 
 function recalculateAll() {
+    // Calculation order: dependency-driven
     calculateIncome();
     calculateBudget();
     calculateFireNumber();
     calculateBusinessScenarios();
     calculateInsuranceCoverage();
     calculateChamaProjections();
+    computeHealthScore();  // Must run after all calculations
+
+    // UI updates
     updateUI();
     updateScenarioUI();
     updateWealthDashboard();
     generateRecommendations();
     updateGoalsUI();
     saveState();
+}
+
+// ============ HEALTH SCORE ALGORITHM (6 dimensions, non-blocking) ============
+function computeHealthScore() {
+    const s = state;
+    let totalScore = 0;
+    const weights = {
+        income: 0.15,
+        budget: 0.20,
+        savings: 0.20,
+        investments: 0.20,
+        contracts: 0.10,
+        goals: 0.15
+    };
+
+    // DIMENSION 1: Income (0-100 points)
+    let scoreIncome = 0;
+    if (s.income.salary > 0 || s.income.business > 0 || s.income.passive > 0) {
+        scoreIncome += 20; // Base for having income
+        if (s.income.salary > 0) scoreIncome += 10;
+        if (s.income.business > 0) scoreIncome += 10;
+        if (s.income.passive > 0) scoreIncome += 10;
+
+        const totalIncome = s.income._grossMonthly || 1;
+        const salaryRatio = s.income.salary / totalIncome;
+        if (salaryRatio >= 0.6) scoreIncome += 20; // Stability bonus
+
+        const passiveRatio = (s.income.passive + s.income.bondCoupons) / totalIncome;
+        if (passiveRatio >= 0.2) scoreIncome += 15; // Passive income bonus
+    }
+    scoreIncome = Math.min(scoreIncome, 100);
+
+    // DIMENSION 2: Budget (0-100 points)
+    let scoreBudget = 0;
+    if (s.budget._surplus <= 0) {
+        scoreBudget = 5; // Hard floor
+    } else {
+        const savingsRate = s.budget._savingsRate || 0;
+        if (savingsRate >= 0.40) scoreBudget += 35;
+        else if (savingsRate >= 0.20) scoreBudget += 25;
+        else if (savingsRate >= 0.10) scoreBudget += 10;
+
+        const debtServiceRatio = s.budget.debt > 0 ? (s.budget.debt / s.income._netMonthly) : 0;
+        if (debtServiceRatio <= 0.15) scoreBudget += 15;
+        else if (debtServiceRatio <= 0.30) scoreBudget += 8;
+
+        if (s.budget.socialObligations > 0 && (s.budget.socialObligations / s.income._netMonthly) < 0.25) {
+            scoreBudget += 10;
+        }
+
+        if (s.profile.schoolChildren > 0 && s.budget.schoolFees > 0) {
+            scoreBudget += 10;
+        }
+    }
+    scoreBudget = Math.min(scoreBudget, 100);
+
+    // DIMENSION 3: Savings (0-100 points)
+    let scoreSavings = 0;
+    const emergencyCoverage = s.budget._totalExpenses > 0 ? (s.savedBalances._mPesaLock + s.savedBalances._mmf) / (s.budget._totalExpenses * 6) : 0;
+    if (emergencyCoverage >= 1.0) scoreSavings += 40;
+    else if (emergencyCoverage >= 0.5) scoreSavings += 25;
+    else if (emergencyCoverage >= 0.25) scoreSavings += 12;
+
+    const savingInstruments = [s.savedBalances._mPesaLock, s.savedBalances._mmf, s.savedBalances._fixed, s.savedBalances._other].filter(v => v > 0).length;
+    scoreSavings += savingInstruments * 8;
+
+    if ((s.savedBalances._mPesaLock + s.savedBalances._mmf) > 0) scoreSavings += 10;
+
+    const monthlyContribution = s.budget._surplus || 0;
+    const monthlyExpenses = s.budget._totalExpenses || 1;
+    if (monthlyContribution >= monthlyExpenses * 0.2) scoreSavings += 18;
+
+    scoreSavings = Math.min(scoreSavings, 100);
+
+    // DIMENSION 4: Investments (0-100 points)
+    let scoreInvestments = 0;
+    if (s.investments.bonds && s.investments.bonds.length >= 3) scoreInvestments += 25;
+    else if (s.investments.bonds && s.investments.bonds.length >= 1) scoreInvestments += 15;
+
+    if (s.investments.ifb > 0) scoreInvestments += 10;
+
+    if (s.investments.nseEquity > 0) {
+        scoreInvestments += 20;
+    }
+
+    const totalPortfolio = (s.investments._totalPortfolio || 0);
+    const annualIncome = (s.income._grossMonthly * 12) || 1;
+    const portfolioRatio = totalPortfolio / annualIncome;
+    if (portfolioRatio >= 3) scoreInvestments += 25;
+    else if (portfolioRatio >= 1.5) scoreInvestments += 18;
+    else if (portfolioRatio >= 0.5) scoreInvestments += 10;
+
+    scoreInvestments = Math.min(scoreInvestments, 100);
+
+    // DIMENSION 5: Contracts (0-100 points)
+    let scoreContracts = 0;
+    const recommendedLifeCover = (s.income._grossMonthly * 12) * 10;
+    if (s.insurance.lifeCover >= recommendedLifeCover) scoreContracts += 25;
+
+    if (s.insurance.medicalCover > 0) scoreContracts += 20;
+
+    const childrenInsured = Math.min(s.profile.schoolChildren, 3); // Max 3 education policies tracked
+    if (childrenInsured > 0) scoreContracts += 20;
+
+    if (s.income._nssfT2 > 0 || s.income._nssfT1 > 0) scoreContracts += 20;
+    if (s.income._shif > 0) scoreContracts += 15;
+
+    scoreContracts = Math.min(scoreContracts, 100);
+
+    // DIMENSION 6: Goals (0-100 points)
+    let scoreGoals = 0;
+    const activeGoals = (s.goals || []).filter(g => g.targetAmount > 0).length;
+    scoreGoals += Math.min(activeGoals * 12, 36); // Max 3 goals
+
+    const goalsWithContribution = (s.goals || []).filter(g => g.monthlyContribution > 0).length;
+    scoreGoals += Math.min(goalsWithContribution * 8, 24);
+
+    if (s.goals && s.goals.length > 0) scoreGoals += 15; // FIRE defined
+
+    const fireCalc = s.dashboard?.fireCalc || {};
+    if (fireCalc.projected >= fireCalc.fireReal) scoreGoals += 13; // On track
+
+    scoreGoals = Math.min(scoreGoals, 100);
+
+    // Composite score (weighted sum)
+    const composite = Math.round(
+        (scoreIncome * weights.income) +
+        (scoreBudget * weights.budget) +
+        (scoreSavings * weights.savings) +
+        (scoreInvestments * weights.investments) +
+        (scoreContracts * weights.contracts) +
+        (scoreGoals * weights.goals)
+    );
+
+    // Update state
+    s.dashboard = s.dashboard || {};
+    s.dashboard.healthScore = composite;
+    s.dashboard.scoreDimensions = {
+        income: scoreIncome,
+        budget: scoreBudget,
+        savings: scoreSavings,
+        investments: scoreInvestments,
+        contracts: scoreContracts,
+        goals: scoreGoals
+    };
+
+    // Determine color band
+    let scoreBand = '#64748B'; // Neutral gray
+    if (composite >= 85) scoreBand = '#FFC200'; // Gold
+    else if (composite >= 70) scoreBand = '#1B3A6B'; // Navy
+    else if (composite >= 55) scoreBand = '#276128'; // Green
+    else if (composite >= 35) scoreBand = '#B87C00'; // Amber
+    else if (composite > 0) scoreBand = '#A32D2D'; // Red
+
+    s.dashboard.scoreBand = scoreBand;
+
+    // Update navbar display
+    const healthEl = document.getElementById('healthScore');
+    if (healthEl) {
+        if (composite === 0 && s.income._grossMonthly === 0) {
+            healthEl.textContent = '—';
+            healthEl.style.color = '#64748B';
+        } else {
+            healthEl.textContent = composite;
+            healthEl.style.color = scoreBand;
+            healthEl.style.fontWeight = '700';
+        }
+    }
+
+    return {
+        score: composite,
+        band: scoreBand,
+        dimensions: s.dashboard.scoreDimensions
+    };
 }
 
 // ============ UI UPDATES ============
@@ -4035,23 +4217,44 @@ function updateScenarioUI() {
 }
 
 function updateWealthDashboard() {
-    const netWorth = 0;
-    document.getElementById('netWorthToday').textContent = 'KES ' + formatKES(netWorth);
+    // Calculate ACTUAL net worth from state
+    const s = state;
+    const netWorth = (s.assets?.propertyValue || 0) +
+                     (s.assets?.vehicleValue || 0) +
+                     (s.investments._totalPortfolio || 0) +
+                     (s.savedBalances._mPesaLock || 0) +
+                     (s.savedBalances._mmf || 0) +
+                     (s.savedBalances._fixed || 0) +
+                     (s.savedBalances._other || 0) -
+                     (s.liabilities?.mortgage || 0) -
+                     (s.liabilities?.carLoan || 0) -
+                     (s.budget?.debt || 0);
+
+    document.getElementById('netWorthToday').textContent = 'KES ' + formatKES(Math.max(0, netWorth));
 
     const fireCalc = calculateFireNumber();
     document.getElementById('netWorthRetire').textContent = 'KES ' + formatKES(fireCalc.projected);
     document.getElementById('monthlyInvestable').textContent = 'KES ' + formatKES(Math.max(0, state.budget._surplus));
     document.getElementById('fireGoal').textContent = 'KES ' + formatKES(fireCalc.fireReal);
 
-    const emergencyTarget = state.budget._totalExpenses * 6;
-    const emergencyCurrent = 0;
+    // Emergency reserve: calculate from actual savings
+    const emergencyTarget = (s.budget._totalExpenses || 0) * 6;
+    const emergencyCurrent = (s.savedBalances._mPesaLock || 0) + (s.savedBalances._mmf || 0);
     const emergencyPercent = emergencyTarget > 0 ? (emergencyCurrent / emergencyTarget * 100) : 0;
+    const emergencyMonths = emergencyCurrent > 0 ? (emergencyTarget / emergencyCurrent) : 0;
 
     document.getElementById('emergencyAmount').textContent = 'KES ' + formatKES(emergencyCurrent);
-    document.getElementById('emergencyStatus').textContent = `${emergencyPercent.toFixed(0)}% of target (${Math.round(emergencyPercent === 0 ? 0 : emergencyTarget / emergencyCurrent)} months)`;
+    document.getElementById('emergencyStatus').textContent =
+        emergencyPercent >= 100 ? `✅ Fully covered (${emergencyMonths.toFixed(1)} months)` :
+        emergencyPercent >= 50 ? `${emergencyPercent.toFixed(0)}% covered (${emergencyMonths.toFixed(1)} months)` :
+        `${emergencyPercent.toFixed(0)}% of target`;
 
-    document.getElementById('goalsAmount').textContent = 'KES 0';
-    document.getElementById('goalsStatus').textContent = 'No goals tracked yet';
+    // Goals tracking
+    const activeGoals = (s.goals || []).filter(g => g.targetAmount > 0);
+    const goalsTotal = activeGoals.reduce((sum, g) => sum + (g.currentAmount || 0), 0);
+    document.getElementById('goalsAmount').textContent = 'KES ' + formatKES(goalsTotal);
+    document.getElementById('goalsStatus').textContent = activeGoals.length > 0 ?
+        `${activeGoals.length} goal(s) tracked` : 'No goals tracked yet';
 
     document.getElementById('retirementAmount').textContent = 'KES ' + formatKES(fireCalc.projected);
     document.getElementById('retirementStatus').textContent = fireCalc.onTrack ? '✅ On track' : '⚠️ Behind target';
@@ -5005,7 +5208,7 @@ function calculateInsuranceCoverage() {
 
     // Calculate gaps
     const lifeGap = Math.max(0, lifeRecommended - state.insurance.lifeCurrent);
-    const healthGap = state.insurance.healthCurrent === 0 ? 'Needs NHIF or private plan' : 'Adequate';
+    const healthGap = state.insurance.healthCurrent === 0 ? 'Needs SHIF or health plan' : 'Adequate';
     const propertyGap = Math.max(0, homeRecommended - state.insurance.homeCurrent);
     const disabilityGap = state.insurance.disabilityCurrent === 0 ? 'No Coverage' : 'Has Coverage';
 
