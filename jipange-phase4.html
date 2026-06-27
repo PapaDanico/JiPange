@@ -4064,6 +4064,39 @@ function calculateTaxOptimization() {
 
 // ============ EDUCATION SAVINGS PLANNER ============
 function calculateEducationSavings() {
+    const financials = calculateChildEducation();
+
+    // Update UI
+    document.getElementById('totalEducationCost').textContent = `KES ${financials.baseCost.toLocaleString()}`;
+    document.getElementById('inflationAdjustedCost').textContent = `KES ${financials.inflationAdjustedCost.toLocaleString()}`;
+    document.getElementById('projectedEducationSavings').textContent = `KES ${financials.projectedSavings.toLocaleString()}`;
+
+    const shortfall = financials.shortfall;
+    const shortfallEl = document.getElementById('educationShortfall');
+    const noteEl = document.getElementById('educationShortfallNote');
+    shortfallEl.textContent = `KES ${shortfall.toLocaleString()}`;
+
+    if (shortfall > 0) {
+        shortfallEl.style.color = 'var(--danger)';
+        noteEl.textContent = `Shortfall of KES ${shortfall.toLocaleString()} - increase contributions or explore education loans`;
+    } else {
+        shortfallEl.style.color = 'var(--success)';
+        noteEl.textContent = `Surplus of KES ${Math.abs(shortfall).toLocaleString()} - on track to fund education!`;
+    }
+
+    const monthsUntilEducation = parseInt(document.getElementById('childAge').value) > 0 ? (18 - parseInt(document.getElementById('childAge').value)) * 12 : 1;
+    let requiredMonthly = financials.monthlyContribution;
+    if (monthsUntilEducation > 0 && shortfall > 0) {
+        requiredMonthly = financials.monthlyContribution + (shortfall / monthsUntilEducation) * 0.1;
+    }
+
+    document.getElementById('requiredMonthlyPayment').textContent = `KES ${Math.round(requiredMonthly).toLocaleString()}/month`;
+    document.getElementById('requiredLumpSum').textContent = `${Math.round(shortfall / 1000)}k`;
+
+    saveState();
+}
+
+function calculateChildEducation() {
     const childAge = parseInt(document.getElementById('childAge').value) || 0;
     const educationLevel = document.getElementById('childEducationLevel').value;
     const region = document.getElementById('childRegion').value;
@@ -4074,17 +4107,14 @@ function calculateEducationSavings() {
     const returnRate = parseFloat(document.getElementById('educationReturnRate').value) || 8;
     const inflation = parseFloat(document.getElementById('educationInflation').value) || 7;
 
-    // Adjust cost by education level if needed
     const costByLevel = { primary: 150000, secondary: 350000, university: 500000, vocational: 200000 };
     if (costByLevel[educationLevel]) annualCost = costByLevel[educationLevel];
 
-    // Adjust for region
     let regionMultiplier = 1.0;
     if (region === 'nairobi') regionMultiplier = 1.15;
     else if (region === 'coastal') regionMultiplier = 1.05;
     annualCost = Math.round(annualCost * regionMultiplier);
 
-    // Calculate years until education starts
     let yearsUntilEducation = 0;
     const ageByLevel = { primary: 6, secondary: 13, university: 18, vocational: 16 };
     if (ageByLevel[educationLevel]) {
@@ -4092,22 +4122,18 @@ function calculateEducationSavings() {
         if (yearsUntilEducation < 0) yearsUntilEducation = 0;
     }
 
-    // Inflation-adjust the total cost
     const baseCost = annualCost * educationYears;
     let inflationAdjustedCost = baseCost;
     for (let i = 0; i < yearsUntilEducation; i++) {
         inflationAdjustedCost = baseCost * Math.pow(1 + inflation / 100, i);
     }
 
-    // Project savings with compound interest
     let projectedSavings = currentSavings;
     const monthlyRate = returnRate / 100 / 12;
     const monthsUntilEducation = Math.max(0, yearsUntilEducation * 12);
 
-    // Future value of current savings
     projectedSavings *= Math.pow(1 + monthlyRate, monthsUntilEducation);
 
-    // Future value of monthly contributions
     if (monthsUntilEducation > 0) {
         const fvAnnuity = monthlyContribution * (Math.pow(1 + monthlyRate, monthsUntilEducation) - 1) / monthlyRate;
         projectedSavings += fvAnnuity;
@@ -4115,47 +4141,29 @@ function calculateEducationSavings() {
 
     const shortfall = inflationAdjustedCost - projectedSavings;
 
-    // Calculate required monthly payment to cover gap
-    let requiredMonthly = monthlyContribution;
-    if (monthsUntilEducation > 0 && shortfall > 0) {
-        requiredMonthly = monthlyContribution + (shortfall / monthsUntilEducation) * 0.1; // Rough estimate
-    }
-
-    // Update UI
-    document.getElementById('totalEducationCost').textContent = `KES ${baseCost.toLocaleString()}`;
-    document.getElementById('inflationAdjustedCost').textContent = `KES ${Math.round(inflationAdjustedCost).toLocaleString()}`;
-    document.getElementById('projectedEducationSavings').textContent = `KES ${Math.round(projectedSavings).toLocaleString()}`;
-
-    const shortfallEl = document.getElementById('educationShortfall');
-    const noteEl = document.getElementById('educationShortfallNote');
-    shortfallEl.textContent = `KES ${Math.round(shortfall).toLocaleString()}`;
-
-    if (shortfall > 0) {
-        shortfallEl.style.color = 'var(--danger)';
-        noteEl.textContent = `Shortfall of KES ${Math.round(shortfall).toLocaleString()} - increase contributions or explore education loans`;
-    } else {
-        shortfallEl.style.color = 'var(--success)';
-        noteEl.textContent = `Surplus of KES ${Math.round(Math.abs(shortfall)).toLocaleString()} - on track to fund education!`;
-    }
-
-    document.getElementById('requiredMonthlyPayment').textContent = `KES ${Math.round(requiredMonthly).toLocaleString()}/month`;
-    document.getElementById('requiredLumpSum').textContent = `${Math.round(shortfall / 1000)}k`;
-
-    saveState();
+    return {
+        baseCost: Math.round(baseCost),
+        inflationAdjustedCost: Math.round(inflationAdjustedCost),
+        projectedSavings: Math.round(projectedSavings),
+        shortfall: Math.round(shortfall),
+        monthlyContribution: monthlyContribution,
+        currentSavings: currentSavings
+    };
 }
 
 function addEducationChild() {
     const childName = document.getElementById('childName').value || 'Child';
     const childAge = parseInt(document.getElementById('childAge').value) || 0;
     const educationLevel = document.getElementById('childEducationLevel').value || 'university';
-    const currentSavings = parseInt(document.getElementById('currentEducationSavings').value) || 0;
+
+    const financials = calculateChildEducation();
 
     const newChild = {
         id: Date.now(),
         name: childName,
         age: childAge,
         educationLevel: educationLevel,
-        currentSavings: currentSavings
+        ...financials
     };
 
     if (!state.education) state.education = { children: [] };
@@ -4176,19 +4184,61 @@ function viewEducationSummary() {
     const listEl = document.getElementById('educationChildrenList');
     if (!listEl) return;
 
-    const html = state.education.children.map(child => `
+    const children = state.education.children;
+
+    // Calculate cumulative totals
+    const totalCost = children.reduce((sum, c) => sum + c.inflationAdjustedCost, 0);
+    const totalSavings = children.reduce((sum, c) => sum + c.projectedSavings, 0);
+    const totalShortfall = children.reduce((sum, c) => sum + Math.max(0, c.shortfall), 0);
+    const totalSurplus = children.reduce((sum, c) => sum + Math.max(0, -c.shortfall), 0);
+    const combinedShortfall = totalCost - totalSavings;
+
+    const childrenHtml = children.map(child => `
         <div style="padding: 1rem; background: var(--surface); border-radius: 8px; border-left: 4px solid var(--secondary); margin-bottom: 0.5rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
                 <div>
                     <strong style="font-size: 1.1rem;">${child.name}</strong>
-                    <div style="color: var(--text-3); font-size: 0.85rem;">Age ${child.age} · ${child.educationLevel} · Saved: KES ${child.currentSavings.toLocaleString()}</div>
+                    <div style="color: var(--text-3); font-size: 0.85rem;">Age ${child.age} · ${child.educationLevel}</div>
                 </div>
-                <button onclick="removeEducationChild(${child.id})" style="background: var(--danger); color: white; border: none; padding: 0.3rem 0.8rem; border-radius: 4px; cursor: pointer;">Remove</button>
+                <button onclick="removeEducationChild(${child.id})" style="background: var(--danger); color: white; border: none; padding: 0.3rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">Remove</button>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; font-size: 0.85rem;">
+                <div><span style="color: var(--text-3);">Cost:</span> <strong>KES ${child.inflationAdjustedCost.toLocaleString()}</strong></div>
+                <div><span style="color: var(--text-3);">Savings:</span> <strong>KES ${child.projectedSavings.toLocaleString()}</strong></div>
+                <div style="grid-column: 1/-1;"><span style="color: var(--text-3);">Gap:</span> <strong style="color: ${child.shortfall > 0 ? 'var(--danger)' : 'var(--success)'};">KES ${Math.abs(child.shortfall).toLocaleString()}</strong></div>
             </div>
         </div>
     `).join('');
 
-    listEl.innerHTML = html ? `<div style="margin-top: 1rem;"><h3 style="color: var(--text-1); margin-bottom: 1rem;">📚 Tracked Children</h3>${html}</div>` : '';
+    const cumulativeHtml = `
+        <div style="padding: 1.5rem; background: var(--primary-bg); border-radius: 8px; border-left: 4px solid var(--primary); margin-bottom: 1rem;">
+            <h3 style="color: var(--primary); margin-bottom: 1rem; font-size: 1rem;">📊 Cumulative Summary (All Children)</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                <div style="padding: 0.75rem; background: white; border-radius: 4px;">
+                    <div style="font-size: 0.8rem; color: var(--text-3); margin-bottom: 0.25rem;">Total Education Cost</div>
+                    <div style="font-size: 1.2rem; font-weight: 700; color: var(--primary);">KES ${totalCost.toLocaleString()}</div>
+                </div>
+                <div style="padding: 0.75rem; background: white; border-radius: 4px;">
+                    <div style="font-size: 0.8rem; color: var(--text-3); margin-bottom: 0.25rem;">Total Projected Savings</div>
+                    <div style="font-size: 1.2rem; font-weight: 700; color: var(--success);">KES ${totalSavings.toLocaleString()}</div>
+                </div>
+            </div>
+            <div style="padding: 1rem; background: white; border-radius: 4px; border-left: 4px solid ${combinedShortfall > 0 ? 'var(--danger)' : 'var(--success)'};">
+                <div style="font-size: 0.85rem; color: var(--text-3); margin-bottom: 0.5rem; text-transform: uppercase; font-weight: 600;">Combined Shortfall / Surplus</div>
+                <div style="font-size: 1.8rem; font-weight: 900; color: ${combinedShortfall > 0 ? 'var(--danger)' : 'var(--success)'};">
+                    ${combinedShortfall > 0 ? '-' : '+'}KES ${Math.abs(combinedShortfall).toLocaleString()}
+                </div>
+            </div>
+        </div>
+    `;
+
+    listEl.innerHTML = children.length > 0 ? `
+        <div style="margin-top: 1rem;">
+            <h3 style="color: var(--text-1); margin-bottom: 1rem;">📚 Tracked Children</h3>
+            ${childrenHtml}
+            ${children.length > 1 ? cumulativeHtml : ''}
+        </div>
+    ` : '';
 }
 
 function removeEducationChild(id) {
