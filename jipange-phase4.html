@@ -14,6 +14,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <!-- Supabase for Cloud Sync & Collaboration (Phase 4C) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             /* Modern Vibrant Palette - Kenya Inspired */
@@ -3832,11 +3834,26 @@ function init() {
         generateOptimizerScenarios();
         renderMultiChamaUI();
     }, 100);
+
+    // Phase 4C: Cloud Sync Initialization
+    setTimeout(() => {
+        initSupabase();
+    }, 500);
 }
 
 function buildNavbar() {
     const navTabs = document.getElementById('navTabs');
     navTabs.innerHTML = '';
+
+    // Add cloud sync button
+    const cloudButton = document.createElement('button');
+    cloudButton.id = 'cloudSyncButton';
+    cloudButton.style.cssText = 'position: absolute; top: 15px; right: 20px; padding: 0.6rem 1.2rem; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: all 0.3s;';
+    cloudButton.innerHTML = '☁️ Sign In for Cloud Sync';
+    cloudButton.style.background = 'var(--surface)';
+    cloudButton.style.color = 'var(--text-dark)';
+    cloudButton.onclick = showCloudAuthModal;
+    navTabs.parentElement.appendChild(cloudButton);
 
     // Two-tier navigation: 5 Primary + Tools
     const categories = [
@@ -7548,10 +7565,395 @@ function checkQuizAnswers(count) {
     showNotification('Quiz submitted! Check your answers in the lesson.', 'info');
 }
 
+// ============ PHASE 4C: CLOUD SYNC & COLLABORATIVE PLANNING ============
+
+// Supabase Configuration (Phase 4C)
+const SUPABASE_URL = 'https://xrllmxqjlvexqepxvawz.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhybGxteHFqbHZleHFlcHh2YXd6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk1NTEyMDAsImV4cCI6MTc1NzMxNzIwMH0.LqV0aDj0YM1L4VqQkZQYVrh3Q0jZrQe0lQ4HqrZq0g8';
+
+let supabase = null;
+let currentUser = null;
+let cloudSyncEnabled = false;
+
+// Initialize Supabase
+function initSupabase() {
+    try {
+        if (window.supabase && window.supabase.createClient) {
+            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            console.log('✅ Supabase initialized for cloud sync');
+            checkAuthStatus();
+        }
+    } catch (e) {
+        console.log('ℹ️ Cloud sync not available (running offline)');
+    }
+}
+
+// Check if user is already authenticated
+async function checkAuthStatus() {
+    if (!supabase) return;
+    try {
+        const { data, error } = await supabase.auth.getSession();
+        if (data.session) {
+            currentUser = data.session.user;
+            cloudSyncEnabled = true;
+            updateCloudSyncUI();
+            loadCloudPlan();
+        }
+    } catch (e) {
+        console.log('Auth check failed:', e.message);
+    }
+}
+
+// Cloud Auth: Sign Up
+async function cloudSignUp(email, password) {
+    if (!supabase) {
+        showNotification('Cloud sync not available', 'error');
+        return false;
+    }
+
+    try {
+        const { data, error } = await supabase.auth.signUp({
+            email,
+            password
+        });
+
+        if (error) throw error;
+
+        currentUser = data.user;
+        cloudSyncEnabled = true;
+        showNotification('Account created! Ready to sync plans.', 'success');
+        updateCloudSyncUI();
+        return true;
+    } catch (error) {
+        showNotification('Sign up failed: ' + error.message, 'error');
+        return false;
+    }
+}
+
+// Cloud Auth: Sign In
+async function cloudSignIn(email, password) {
+    if (!supabase) {
+        showNotification('Cloud sync not available', 'error');
+        return false;
+    }
+
+    try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email,
+            password
+        });
+
+        if (error) throw error;
+
+        currentUser = data.user;
+        cloudSyncEnabled = true;
+        showNotification('Signed in! Loading your plans...', 'success');
+        updateCloudSyncUI();
+        await loadCloudPlan();
+        return true;
+    } catch (error) {
+        showNotification('Sign in failed: ' + error.message, 'error');
+        return false;
+    }
+}
+
+// Cloud Auth: Sign Out
+async function cloudSignOut() {
+    if (!supabase) return;
+
+    try {
+        await supabase.auth.signOut();
+        currentUser = null;
+        cloudSyncEnabled = false;
+        updateCloudSyncUI();
+        showNotification('Signed out', 'info');
+    } catch (error) {
+        showNotification('Sign out failed: ' + error.message, 'error');
+    }
+}
+
+// Save plan to cloud
+async function saveCloudPlan() {
+    if (!currentUser || !supabase) return false;
+
+    try {
+        const planData = {
+            user_id: currentUser.id,
+            plan_data: JSON.stringify(state),
+            saved_at: new Date().toISOString(),
+            plan_name: `${state.profile.name || 'My Plan'} - ${new Date().toLocaleDateString()}`
+        };
+
+        // Try to update existing plan first
+        const { data: existing } = await supabase
+            .from('plans')
+            .select('id')
+            .eq('user_id', currentUser.id)
+            .limit(1);
+
+        if (existing && existing.length > 0) {
+            await supabase
+                .from('plans')
+                .update(planData)
+                .eq('id', existing[0].id);
+        } else {
+            await supabase
+                .from('plans')
+                .insert([planData]);
+        }
+
+        showNotification('✅ Plan saved to cloud', 'success');
+        return true;
+    } catch (error) {
+        console.log('Cloud save error:', error);
+        return false;
+    }
+}
+
+// Load plan from cloud
+async function loadCloudPlan() {
+    if (!currentUser || !supabase) return false;
+
+    try {
+        const { data, error } = await supabase
+            .from('plans')
+            .select('plan_data')
+            .eq('user_id', currentUser.id)
+            .order('saved_at', { ascending: false })
+            .limit(1);
+
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+            const loadedState = JSON.parse(data[0].plan_data);
+            Object.assign(state, loadedState);
+            window.state = state;
+            recalculateAll();
+            showNotification('✅ Plan loaded from cloud', 'success');
+            return true;
+        }
+    } catch (error) {
+        console.log('Cloud load error:', error);
+    }
+    return false;
+}
+
+// Household Collaboration: Add spouse/partner
+async function addHouseholdMember(partnerEmail, accessLevel = 'edit') {
+    if (!currentUser || !supabase) {
+        showNotification('Sign in to share plans', 'error');
+        return false;
+    }
+
+    try {
+        const { data, error } = await supabase
+            .from('household_shares')
+            .insert([{
+                owner_id: currentUser.id,
+                shared_with_email: partnerEmail,
+                access_level: accessLevel,
+                shared_at: new Date().toISOString()
+            }]);
+
+        if (error) throw error;
+
+        showNotification(`Plan shared with ${partnerEmail}`, 'success');
+        return true;
+    } catch (error) {
+        showNotification('Share failed: ' + error.message, 'error');
+        return false;
+    }
+}
+
+// Get household members
+async function getHouseholdMembers() {
+    if (!currentUser || !supabase) return [];
+
+    try {
+        const { data, error } = await supabase
+            .from('household_shares')
+            .select('shared_with_email, access_level, shared_at')
+            .eq('owner_id', currentUser.id);
+
+        if (error) throw error;
+        return data || [];
+    } catch (error) {
+        console.log('Get household members error:', error);
+        return [];
+    }
+}
+
+// Real-time sync listener
+function subscribeToCloudUpdates() {
+    if (!currentUser || !supabase) return;
+
+    try {
+        const subscription = supabase
+            .from(`plans:user_id=eq.${currentUser.id}`)
+            .on('*', payload => {
+                if (payload.eventType === 'UPDATE') {
+                    const updatedState = JSON.parse(payload.new.plan_data);
+                    Object.assign(state, updatedState);
+                    window.state = state;
+                    recalculateAll();
+                    showNotification('📱 Plan updated from another device', 'info');
+                }
+            })
+            .subscribe();
+
+        return subscription;
+    } catch (e) {
+        console.log('Real-time sync not available:', e.message);
+    }
+}
+
+// Update UI based on cloud sync status
+function updateCloudSyncUI() {
+    const cloudButton = document.getElementById('cloudSyncButton');
+    const authModal = document.getElementById('cloudAuthModal');
+
+    if (!cloudButton) return;
+
+    if (cloudSyncEnabled && currentUser) {
+        cloudButton.innerHTML = `☁️ Synced (${currentUser.email.split('@')[0]})`;
+        cloudButton.style.background = '#10B981';
+        cloudButton.style.color = 'white';
+        cloudButton.onclick = showCloudMenu;
+    } else {
+        cloudButton.innerHTML = '☁️ Sign In for Cloud Sync';
+        cloudButton.style.background = 'var(--surface)';
+        cloudButton.style.color = 'var(--text-dark)';
+        cloudButton.onclick = showCloudAuthModal;
+    }
+}
+
+// Show cloud auth modal
+function showCloudAuthModal() {
+    const modal = document.createElement('div');
+    modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 2000; padding: 20px;';
+
+    const content = document.createElement('div');
+    content.style.cssText = 'background: white; border-radius: 12px; padding: 2rem; max-width: 500px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.3);';
+
+    content.innerHTML = `
+        <h2 style="margin-top: 0; color: var(--primary); margin-bottom: 1.5rem;">☁️ Cloud Sync Setup</h2>
+
+        <div style="margin-bottom: 1.5rem;">
+            <label style="display: block; color: var(--text-dark); font-weight: 600; margin-bottom: 0.5rem;">Email</label>
+            <input type="email" id="cloudEmail" placeholder="your@email.com" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 6px; font-size: 0.95rem;">
+        </div>
+
+        <div style="margin-bottom: 2rem;">
+            <label style="display: block; color: var(--text-dark); font-weight: 600; margin-bottom: 0.5rem;">Password</label>
+            <input type="password" id="cloudPassword" placeholder="••••••••" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 6px; font-size: 0.95rem;">
+        </div>
+
+        <div style="display: flex; gap: 1rem;">
+            <button class="primary" style="flex: 1;" onclick="
+                const email = document.getElementById('cloudEmail').value;
+                const password = document.getElementById('cloudPassword').value;
+                if (email && password.length >= 6) {
+                    cloudSignIn(email, password).then(ok => {
+                        if (ok) document.querySelector('[style*=\"position: fixed\"]').remove();
+                    });
+                } else {
+                    showNotification('Email and 6+ char password required', 'error');
+                }
+            ">Sign In</button>
+            <button style="flex: 1; background: var(--surface); border: none; padding: 0.75rem; border-radius: 6px; cursor: pointer;" onclick="
+                const email = document.getElementById('cloudEmail').value;
+                const password = document.getElementById('cloudPassword').value;
+                if (email && password.length >= 6) {
+                    cloudSignUp(email, password).then(ok => {
+                        if (ok) document.querySelector('[style*=\"position: fixed\"]').remove();
+                    });
+                } else {
+                    showNotification('Email and 6+ char password required', 'error');
+                }
+            ">Create Account</button>
+        </div>
+
+        <button style="width: 100%; margin-top: 1rem; background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 0.5rem;" onclick="this.parentElement.parentElement.remove();">Cancel</button>
+    `;
+
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+    modal.onclick = (e) => e.target === modal && modal.remove();
+}
+
+// Show cloud menu
+function showCloudMenu() {
+    const modal = document.createElement('div');
+    modal.style.cssText = 'position: fixed; top: 80px; right: 20px; background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 10px 30px rgba(0,0,0,0.2); z-index: 2000; min-width: 250px;';
+
+    modal.innerHTML = `
+        <div style="margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--text-muted);">Logged in as: <strong>${currentUser.email}</strong></div>
+        <hr style="margin: 1rem 0; border: none; border-top: 1px solid var(--border);">
+        <button style="width: 100%; text-align: left; background: none; border: none; padding: 0.75rem 0; cursor: pointer; color: var(--text-dark); font-weight: 500;" onclick="
+            saveCloudPlan();
+            this.parentElement.parentElement.remove();
+        ">💾 Save Plan Now</button>
+        <button style="width: 100%; text-align: left; background: none; border: none; padding: 0.75rem 0; cursor: pointer; color: var(--text-dark); font-weight: 500;" onclick="
+            showShareWithSpouseModal();
+            this.parentElement.parentElement.remove();
+        ">👥 Share with Spouse</button>
+        <button style="width: 100%; text-align: left; background: none; border: none; padding: 0.75rem 0; cursor: pointer; color: var(--text-dark); font-weight: 500;" onclick="
+            cloudSignOut();
+            this.parentElement.parentElement.remove();
+        ">🚪 Sign Out</button>
+    `;
+
+    document.body.appendChild(modal);
+    document.addEventListener('click', function closeMenu(e) {
+        if (e.target !== modal && !modal.contains(e.target)) {
+            modal.remove();
+            document.removeEventListener('click', closeMenu);
+        }
+    });
+}
+
+// Show share with spouse modal
+function showShareWithSpouseModal() {
+    const modal = document.createElement('div');
+    modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 2000; padding: 20px;';
+
+    const content = document.createElement('div');
+    content.style.cssText = 'background: white; border-radius: 12px; padding: 2rem; max-width: 400px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.3);';
+
+    content.innerHTML = `
+        <h2 style="margin-top: 0; color: var(--primary); margin-bottom: 1rem;">👥 Share Plan with Spouse</h2>
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Your spouse can view and edit the plan in real-time.</p>
+
+        <div style="margin-bottom: 1.5rem;">
+            <label style="display: block; color: var(--text-dark); font-weight: 600; margin-bottom: 0.5rem;">Spouse's Email</label>
+            <input type="email" id="spouseEmail" placeholder="spouse@email.com" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 6px; font-size: 0.95rem;">
+        </div>
+
+        <button class="primary" style="width: 100%; margin-bottom: 0.5rem;" onclick="
+            const email = document.getElementById('spouseEmail').value;
+            if (email) {
+                addHouseholdMember(email, 'edit').then(ok => {
+                    if (ok) document.querySelector('[style*=\"position: fixed\"]').remove();
+                });
+            }
+        ">Share Plan</button>
+        <button style="width: 100%; background: var(--surface); border: none; padding: 0.75rem; border-radius: 6px; cursor: pointer;" onclick="this.parentElement.parentElement.remove();">Cancel</button>
+    `;
+
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+    modal.onclick = (e) => e.target === modal && modal.remove();
+}
+
 // ============ STATE MANAGEMENT ============
 function saveState() {
     state._meta.updatedAt = new Date().toISOString();
     localStorage.setItem('jipange_v1', JSON.stringify(state));
+
+    // Auto-save to cloud if user is logged in (Phase 4C)
+    if (cloudSyncEnabled && currentUser) {
+        saveCloudPlan().catch(e => console.log('Cloud auto-save failed:', e));
+    }
 }
 
 function loadState() {
