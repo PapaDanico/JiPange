@@ -3267,7 +3267,7 @@ const KENYA_RATES = {
     swr: 0.04
 };
 
-const DEFAULT_STATE = {
+const DEFAULT_STATE = window.DEFAULT_STATE = {
     _meta: { version: 2, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), completedSteps: [] },
     profile: {
         name: '', age: 35, retirementAge: 60, county: 'Nairobi',
@@ -3298,6 +3298,12 @@ const DEFAULT_STATE = {
     },
     mpesa: {
         monthlyTarget: 10000, currentSaved: 0
+    },
+    savedBalances: {
+        _mPesaLock: 0,
+        _mmf: 0,
+        _fixed: 0,
+        _other: 0
     },
     investments: {
         list: [],
@@ -3353,6 +3359,7 @@ const DEFAULT_STATE = {
 };
 
 let state = loadState();
+window.state = state;  // Make state globally accessible
 loadAnalytics();
 let charts = {};
 let currentLanguage = localStorage.getItem('jipange_lang') || 'en';
@@ -4420,53 +4427,143 @@ function updateHouseholdMode() {
 function generateRecommendations() {
     const container = document.getElementById('recommendationsContainer');
     const recs = [];
+    const s = state;
 
-    const savingsRate = state.budget._savingsRate;
+    // P0: Emergency Fund (Foundation)
+    const emergencyTarget = (s.budget._totalExpenses || 0) * 6;
+    const emergencyCurrent = (s.savedBalances._mPesaLock || 0) + (s.savedBalances._mmf || 0);
+    if (emergencyCurrent < emergencyTarget * 0.5) {
+        recs.push({
+            type: 'danger',
+            title: '🛡️ URGENT: Build Emergency Fund',
+            text: `You need KES ${formatKES(emergencyTarget - emergencyCurrent)} more. Target: 6 months expenses. Start with M-Pesa Lock.`,
+            cta: 'Go to Savings',
+            action: () => showScreen('screen-12')
+        });
+    }
+
+    // P1: Income Diversification
+    const incomeCount = [s.income.salary, s.income.consulting, s.income.farm, s.income.rental, s.income.business].filter(x => x > 0).length;
+    if (incomeCount < 2 && s.income._grossMonthly > 0) {
+        recs.push({
+            type: 'warning',
+            title: '💼 Diversify Your Income',
+            text: 'Single income source = high risk. Consider side income: freelance, rental property, or business.',
+            impact: 'Increase income stability & reduce layoff risk'
+        });
+    }
+
+    // P1: Health Insurance (SHIF)
+    if (s.insurance.healthCurrent === 0) {
+        recs.push({
+            type: 'danger',
+            title: '🏥 Activate SHIF Coverage',
+            text: 'Mandatory SHIF contribution (3.5% of salary). Add optional top-up for better coverage.',
+            cta: 'Go to Insurance',
+            action: () => showScreen('screen-20')
+        });
+    }
+
+    // P1: Life Insurance
+    const recommendedLifeCover = (s.income._grossMonthly * 12) * 10;
+    if (s.insurance.lifeCurrent < recommendedLifeCover * 0.5) {
+        recs.push({
+            type: 'warning',
+            title: '👨‍👩‍👧‍👦 Protect Your Family',
+            text: `Get KES ${formatKES(recommendedLifeCover)} life cover (10x annual income). Term life is affordable: ~KES 1,500/month.`,
+            cta: 'Go to Insurance',
+            action: () => showScreen('screen-20')
+        });
+    }
+
+    // P1: Savings Rate
+    const savingsRate = s.budget._savingsRate;
     if (savingsRate < 0.10) {
         recs.push({
             type: 'danger',
-            title: '🚨 Critical: Low Savings Rate',
-            text: `Your savings rate is only ${formatPercent(savingsRate)}. You need at least 20% to build wealth.`,
-            impact: 'KES ' + formatKES(state.budget._totalExpenses * 0.10)
+            title: '📉 Critical: Low Savings Rate',
+            text: `Savings rate ${formatPercent(savingsRate)} is too low. Increase to 20% to build wealth.`,
+            impact: 'Target: KES ' + formatKES(s.budget._totalExpenses * 0.20)
         });
-    }
-
-    const fireCalc = calculateFireNumber();
-    if (!fireCalc.onTrack) {
-        const needed = Math.round((fireCalc.fireReal - fireCalc.projected) / (fireCalc.yearsToFire * 12));
-        recs.push({
-            type: 'warning',
-            title: '⚠️ FIRE Behind Schedule',
-            text: `You need KES ${formatKES(needed)} more per month to hit your retirement goal.`,
-            impact: 'Delay FIRE by ' + Math.round(needed / Math.max(1, state.budget._surplus) * 5) + ' years'
-        });
-    }
-
-    if (state.budget.chama === 0 && state.profile.dependants > 0) {
-        recs.push({
-            type: 'warning',
-            title: '💪 Consider Chama for Growth',
-            text: 'Join a SACCO or Chama to tap group lending at 10-12% vs bank loans at 15-18%.',
-            impact: 'Save KES ' + formatKES(state.budget._surplus * 0.05) + '/month'
-        });
-    }
-
-    if (savingsRate > 0.40) {
+    } else if (savingsRate >= 0.40) {
         recs.push({
             type: 'success',
             title: '✅ Excellent Savings Discipline',
-            text: `Your ${formatPercent(savingsRate)} savings rate is in top 5%. Keep it up!`,
-            impact: 'Wealth builder trajectory'
+            text: `Your ${formatPercent(savingsRate)} rate is top 5%. You'll hit FIRE early!`,
+            impact: 'Wealth builder on track'
         });
     }
 
-    container.innerHTML = recs.map(r => `
-        <div class="recommendation ${r.type}">
-            <div class="rec-title">${r.title}</div>
-            <div class="rec-text">${r.text}</div>
-            <div class="rec-impact">${r.impact}</div>
-        </div>
-    `).join('');
+    // P2: Investment Ladder
+    if (savingsRate > 0.20 && (s.investments._totalPortfolio || 0) < s.income._grossMonthly * 6) {
+        recs.push({
+            type: 'info',
+            title: '📊 Build Bond Ladder',
+            text: 'Allocate surplus to Treasury bonds: staggered 1-5 year ladder for regular income.',
+            cta: 'Go to Portfolio',
+            action: () => showScreen('screen-12')
+        });
+    }
+
+    // P2: FIRE Goal
+    const fireCalc = calculateFireNumber();
+    if (!fireCalc.onTrack) {
+        const gap = fireCalc.fireReal - fireCalc.projected;
+        recs.push({
+            type: 'warning',
+            title: '🎯 FIRE Behind Schedule',
+            text: `Gap: KES ${formatKES(gap)}. Increase savings by KES ${formatKES(gap / (fireCalc.yearsToFire * 12))}/month.`,
+            cta: 'Go to Goals',
+            action: () => showScreen('screen-8')
+        });
+    } else if (fireCalc.onTrack) {
+        recs.push({
+            type: 'success',
+            title: '🎉 FIRE on Track',
+            text: `You'll reach financial independence in ${fireCalc.yearsToFire} years at ${s.fire.targetAge}!`,
+            impact: 'Keep momentum going'
+        });
+    }
+
+    // P2: Chama/Group Savings
+    if (s.budget.chama === 0 && savingsRate > 0.15) {
+        recs.push({
+            type: 'info',
+            title: '👥 Join a SACCO/Chama',
+            text: 'Access group loans at 10-12% (vs 15-18% banks). Rotate fund: everyone borrows profitably.',
+            impact: 'Unlock 3-4x leverage on savings'
+        });
+    }
+
+    container.innerHTML = '';
+    recs.forEach((r, idx) => {
+        const div = document.createElement('div');
+        div.className = `recommendation ${r.type}`;
+        div.style.marginBottom = '1rem';
+
+        const flexDiv = document.createElement('div');
+        flexDiv.style.cssText = 'display: flex; justify-content: space-between; align-items: start;';
+
+        const contentDiv = document.createElement('div');
+        contentDiv.style.flex = '1';
+        contentDiv.innerHTML = `
+            <div style="margin: 0; font-weight: 600; margin-bottom: 0.5rem;">${r.title}</div>
+            <div style="font-size: 0.9rem; margin-bottom: 0.5rem;">${r.text}</div>
+            ${r.impact ? `<div style="font-size: 0.85rem; opacity: 0.8;">${r.impact}</div>` : ''}
+        `;
+        flexDiv.appendChild(contentDiv);
+
+        if (r.cta && r.action) {
+            const btn = document.createElement('button');
+            btn.style.cssText = 'background: var(--primary); color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; white-space: nowrap; margin-left: 1rem;';
+            btn.textContent = r.cta;
+            btn.onclick = r.action;
+            flexDiv.appendChild(btn);
+        }
+
+        div.appendChild(flexDiv);
+        container.appendChild(div);
+    });
 }
 
 function calculateMonthsToGoal(goal, monthlyContribution, interestRate = 0.05, inflationRate = 0.07) {
