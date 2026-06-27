@@ -51,50 +51,112 @@
 
         /* Navigation */
         .navbar {
-            background: var(--white);
+            background: var(--primary);
             padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); position: sticky; top: 0; z-index: 100;
-            border-bottom: 1px solid var(--gray-200);
+            box-shadow: 0 2px 8px rgba(15, 52, 96, 0.15); position: sticky; top: 0; z-index: 100;
+            border-bottom: 3px solid var(--accent);
         }
 
         .logo {
-            font-weight: 700; font-size: 1.3rem; letter-spacing: -0.5px; color: var(--primary);
+            font-weight: 700; font-size: 1.5rem; letter-spacing: -0.5px; color: var(--white);
         }
-        .logo .accent { color: var(--accent); }
+        .logo .accent { color: var(--accent); text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
 
         .nav-center {
-            display: flex; gap: 0.3rem; flex-wrap: wrap; justify-content: center; flex: 1; margin: 0 1rem;
+            display: flex; gap: 0; flex-wrap: wrap; justify-content: center; flex: 1; margin: 0 2rem;
+            align-items: stretch;
+        }
+
+        /* Dropdown Menu */
+        .nav-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .nav-dropdown-btn {
+            background: transparent; border: none; color: var(--white); cursor: pointer;
+            padding: 1rem 1.2rem; font-size: 0.9rem; font-weight: 600; transition: all 0.2s;
+            border-radius: 0; display: flex; align-items: center; gap: 0.5rem;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .nav-dropdown-btn::after {
+            content: '▼'; font-size: 0.7rem; transition: transform 0.2s;
+        }
+
+        .nav-dropdown-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .nav-dropdown-btn.active {
+            background: var(--accent); color: var(--primary); text-shadow: none;
+        }
+
+        .nav-dropdown-btn.active::after {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-content {
+            position: absolute; top: 100%; left: 0; background: var(--white); min-width: 220px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15); border-radius: 0 0 8px 8px;
+            display: none; flex-direction: column; z-index: 200;
+            border-left: 4px solid var(--accent);
+        }
+
+        .nav-dropdown:hover .dropdown-content,
+        .nav-dropdown.open .dropdown-content {
+            display: flex;
+        }
+
+        .dropdown-item {
+            background: transparent; border: none; color: var(--gray-900); cursor: pointer;
+            padding: 0.9rem 1.5rem; font-size: 0.9rem; font-weight: 500;
+            transition: all 0.2s; text-align: left; width: 100%;
+            border-left: 3px solid transparent;
+        }
+
+        .dropdown-item:hover {
+            background: var(--gray-50); border-left-color: var(--accent); color: var(--primary);
+        }
+
+        .dropdown-item.disabled {
+            opacity: 0.4; cursor: not-allowed;
+        }
+
+        .dropdown-divider {
+            height: 1px; background: var(--gray-200); margin: 0.5rem 0;
         }
 
         .nav-tab {
-            background: transparent; border: none; color: var(--gray-600); cursor: pointer;
-            padding: 0.6rem 1.2rem; font-size: 0.85rem; font-weight: 500; transition: all 0.2s;
-            border-radius: 6px;
+            background: transparent; border: none; color: var(--white); cursor: pointer;
+            padding: 1rem 1.2rem; font-size: 0.9rem; font-weight: 600; transition: all 0.2s;
+            border-radius: 0; text-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
 
         .nav-tab:hover {
-            background: var(--gray-100); color: var(--primary);
+            background: rgba(255, 255, 255, 0.15); color: var(--white);
         }
         .nav-tab.active {
-            background: var(--accent); color: var(--white);
-            font-weight: 600;
+            background: var(--accent); color: var(--primary); text-shadow: none; font-weight: 700;
         }
         .nav-tab.inactive { opacity: 0.4; cursor: not-allowed; }
 
         .nav-right { display: flex; align-items: center; gap: 1.5rem; }
         .health-badge {
-            background: var(--success-bg); color: var(--success); padding: 0.6rem 1rem;
-            border-radius: 6px; font-weight: 600; font-size: 0.8rem; border: 1px solid var(--success);
+            background: rgba(255, 255, 255, 0.2); color: var(--white); padding: 0.6rem 1rem;
+            border-radius: 6px; font-weight: 600; font-size: 0.85rem; border: 2px solid var(--white);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
         }
 
         .lang-toggle {
-            background: var(--gray-100); color: var(--gray-700); border: 1px solid var(--gray-200);
-            padding: 0.5rem 0.9rem; border-radius: 6px; font-weight: 600; font-size: 0.8rem;
-            transition: all 0.2s;
+            background: rgba(255, 255, 255, 0.2); color: var(--white); border: 2px solid var(--white);
+            padding: 0.5rem 0.9rem; border-radius: 6px; font-weight: 700; font-size: 0.85rem;
+            transition: all 0.2s; cursor: pointer;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
         }
 
         .lang-toggle:hover {
-            background: var(--gray-200); border-color: var(--gray-300);
+            background: rgba(255, 255, 255, 0.3); border-color: var(--accent);
         }
 
         /* Main */
@@ -115,7 +177,7 @@
             background: var(--accent); border-radius: 2px;
         }
 
-        .section-subtitle { font-size: 1rem; color: var(--gray-500); margin-bottom: 2rem; font-weight: 400; }
+        .section-subtitle { font-size: 1rem; color: var(--gray-700); margin-bottom: 2rem; font-weight: 500; }
 
         .card-grid {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem;
@@ -161,14 +223,14 @@
         .metric-card.danger { border-left-color: var(--danger); }
         .metric-card.danger:hover { box-shadow: 0 4px 12px rgba(239, 68, 68, 0.12); }
 
-        .card-title { font-size: 0.75rem; font-weight: 600; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem; }
+        .card-title { font-size: 0.75rem; font-weight: 700; color: var(--gray-700); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem; }
         .card-value { font-size: 1.8rem; font-weight: 700; color: var(--primary); margin-bottom: 0.5rem; }
-        .card-subtitle { font-size: 0.85rem; color: var(--gray-500); }
+        .card-subtitle { font-size: 0.85rem; color: var(--gray-700); font-weight: 500; }
 
         /* Forms */
         .field-group { margin-bottom: 1.8rem; }
         label {
-            display: block; font-size: 0.85rem; font-weight: 600; color: var(--gray-700); margin-bottom: 0.6rem;
+            display: block; font-size: 0.85rem; font-weight: 700; color: var(--gray-900); margin-bottom: 0.6rem;
         }
 
         input[type="text"], input[type="number"], select, textarea {
@@ -182,8 +244,8 @@
             box-shadow: 0 0 0 3px rgba(0, 168, 232, 0.1);
         }
 
-        .input-hint { font-size: 0.8rem; color: var(--gray-500); margin-top: 0.3rem; display: block; }
-        .input-value { font-size: 0.9rem; color: var(--primary); font-weight: 600; margin-top: 0.5rem; }
+        .input-hint { font-size: 0.8rem; color: var(--gray-700); margin-top: 0.3rem; display: block; font-weight: 500; }
+        .input-value { font-size: 0.9rem; color: var(--primary); font-weight: 700; margin-top: 0.5rem; }
 
         /* Buttons */
         button {
@@ -229,7 +291,7 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15); border: none;
         }
 
-        .slider-label { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-weight: 600; color: var(--gray-700); }
+        .slider-label { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-weight: 700; color: var(--gray-900); }
 
         /* Comparison Cards */
         .scenario-card {
@@ -243,8 +305,8 @@
         .scenario-title { font-size: 1.1rem; font-weight: 600; color: var(--primary); margin-bottom: 1rem; }
         .scenario-stat { display: flex; justify-content: space-between; padding: 0.6rem 0; border-bottom: 1px solid var(--gray-200); }
         .scenario-stat:last-child { border-bottom: none; }
-        .scenario-label { color: var(--gray-600); }
-        .scenario-value { font-weight: 600; color: var(--primary); }
+        .scenario-label { color: var(--gray-800); font-weight: 500; }
+        .scenario-value { font-weight: 700; color: var(--primary); }
 
         /* Footer */
         .footer {
@@ -254,16 +316,23 @@
         }
 
         .footer-content { max-width: 1200px; margin: 0 auto; }
-        .footer-primary { font-weight: 600; color: var(--accent); margin-bottom: 0.25rem; }
-        .footer-secondary { color: rgba(255, 255, 255, 0.7); font-size: 0.8rem; }
+        .footer-primary { font-weight: 700; color: var(--accent-light); margin-bottom: 0.25rem; font-size: 0.95rem; }
+        .footer-secondary { color: rgba(255, 255, 255, 0.9); font-size: 0.85rem; font-weight: 500; }
 
         /* Responsive */
+        @media (max-width: 1024px) {
+            .nav-dropdown-btn { padding: 1rem 0.9rem; font-size: 0.85rem; }
+        }
+
         @media (max-width: 768px) {
-            .navbar { flex-direction: column; gap: 1rem; padding: 1rem; }
+            .navbar { flex-direction: row; gap: 0.5rem; padding: 0.8rem 1rem; justify-content: space-between; }
             .logo { font-size: 1.1rem; }
-            .nav-center { order: 3; width: 100%; margin: 0; }
-            .nav-tab { padding: 0.5rem 0.8rem; font-size: 0.8rem; }
-            .nav-right { flex-direction: column; gap: 1rem; width: 100%; }
+            .nav-center { order: 3; width: 100%; margin: 0; flex-wrap: wrap; gap: 0; }
+            .nav-dropdown-btn { padding: 0.8rem 0.7rem; font-size: 0.8rem; }
+            .dropdown-content { position: fixed; top: 100%; left: 0; right: 0; width: 100vw; border-radius: 0; margin-left: -1rem; max-width: none; }
+            .nav-right { flex-direction: row; gap: 0.8rem; width: auto; }
+            .health-badge { padding: 0.5rem 0.8rem; font-size: 0.7rem; }
+            .lang-toggle { padding: 0.4rem 0.7rem; font-size: 0.7rem; }
             .main-container { padding: 1.5rem; padding-bottom: 180px; }
             .section-title { font-size: 1.5rem; margin-bottom: 1rem; }
             .card-grid { grid-template-columns: 1fr; }
@@ -314,7 +383,7 @@
         .recommendation.danger:hover { box-shadow: 0 4px 12px rgba(239, 68, 68, 0.12); }
 
         .rec-title { font-weight: 700; color: var(--gray-900); margin-bottom: 0.5rem; display: flex; gap: 0.7rem; align-items: center; font-size: 0.95rem; }
-        .rec-text { font-size: 0.9rem; color: var(--gray-700); line-height: 1.5; }
+        .rec-text { font-size: 0.9rem; color: var(--gray-800); line-height: 1.6; font-weight: 500; }
         .rec-impact { font-weight: 600; color: var(--success); margin-top: 0.5rem; }
 
         /* Goal Cards */
@@ -2901,17 +2970,96 @@ function init() {
 
 function buildNavbar() {
     const navTabs = document.getElementById('navTabs');
-    const screens = ['Profile', 'Income', 'Budget', 'Scenarios', 'Wealth', 'Optimizer', 'Household', 'Goals', 'Learning', 'Reports', 'M-Pesa', 'Portfolio', 'Debts', 'Business', 'Assets', 'Tax', 'Education', 'Retirement', 'Business Scenarios', 'Insurance', 'Chama Groups', 'Terms', 'Privacy'];
+
+    const screenGroups = {
+        'Start': [
+            { num: 1, name: 'Profile' }
+        ],
+        'Income & Expenses': [
+            { num: 2, name: 'Income' },
+            { num: 3, name: 'Budget' }
+        ],
+        'Planning': [
+            { num: 4, name: 'Scenarios' },
+            { num: 5, name: 'Wealth' },
+            { num: 6, name: 'Optimizer' },
+            { num: 7, name: 'Household' },
+            { num: 8, name: 'Goals' }
+        ],
+        'Education': [
+            { num: 9, name: 'Learning' },
+            { num: 10, name: 'Reports' }
+        ],
+        'Investments': [
+            { num: 11, name: 'M-Pesa' },
+            { num: 12, name: 'Portfolio' },
+            { num: 13, name: 'Debts' }
+        ],
+        'Life & Goals': [
+            { num: 14, name: 'Business' },
+            { num: 15, name: 'Assets' },
+            { num: 16, name: 'Tax' },
+            { num: 17, name: 'Education' },
+            { num: 18, name: 'Retirement' }
+        ],
+        'Advanced': [
+            { num: 19, name: 'Business Scenarios' },
+            { num: 20, name: 'Insurance' },
+            { num: 21, name: 'Chama Groups' }
+        ],
+        'Legal': [
+            { num: 22, name: 'Terms of Use' },
+            { num: 23, name: 'Privacy Policy' }
+        ]
+    };
+
     navTabs.innerHTML = '';
-    screens.forEach((name, i) => {
-        const num = i + 1;
-        const isCompleted = state._meta.completedSteps.includes(num);
-        const isActive = num === 1 || state._meta.completedSteps.includes(num - 1);
+
+    Object.entries(screenGroups).forEach(([groupName, screens]) => {
+        const dropdown = document.createElement('div');
+        dropdown.className = 'nav-dropdown';
+
         const btn = document.createElement('button');
-        btn.className = `nav-tab ${isActive ? 'active' : 'inactive'} ${isCompleted ? 'active' : ''}`;
-        btn.textContent = `${num}. ${name}`;
-        btn.onclick = () => isActive && showScreen(`screen-${num}`);
-        navTabs.appendChild(btn);
+        btn.className = 'nav-dropdown-btn';
+        btn.textContent = groupName;
+        btn.type = 'button';
+
+        const menu = document.createElement('div');
+        menu.className = 'dropdown-content';
+
+        screens.forEach((screen, idx) => {
+            const item = document.createElement('button');
+            item.className = 'dropdown-item';
+            item.type = 'button';
+
+            const isCompleted = state._meta.completedSteps.includes(screen.num);
+            const isActive = screen.num === 1 || state._meta.completedSteps.includes(screen.num - 1);
+
+            if (!isActive) {
+                item.classList.add('disabled');
+            }
+
+            item.textContent = `${screen.num}. ${screen.name}`;
+            item.onclick = (e) => {
+                e.preventDefault();
+                if (isActive) {
+                    showScreen(`screen-${screen.num}`);
+                    dropdown.classList.remove('open');
+                }
+            };
+
+            menu.appendChild(item);
+
+            if (idx < screens.length - 1) {
+                const divider = document.createElement('div');
+                divider.className = 'dropdown-divider';
+                menu.appendChild(divider);
+            }
+        });
+
+        dropdown.appendChild(btn);
+        dropdown.appendChild(menu);
+        navTabs.appendChild(dropdown);
     });
 }
 
