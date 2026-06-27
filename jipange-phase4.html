@@ -2104,7 +2104,158 @@
 
         <div class="button-group">
             <button onclick="showScreen('screen-17')">← Education</button>
-            <button class="primary" onclick="markStepComplete(18); showScreen('screen-1')">Complete Full Plan</button>
+            <button class="primary" onclick="markStepComplete(18); showScreen('screen-19')">Business Scenarios →</button>
+        </div>
+    </section>
+
+    <!-- Screen 19: Business Scenario Modeling (NEW) -->
+    <section id="screen-19" style="display: none;">
+        <h1 class="section-title">🚀 Business Scenario Modeling</h1>
+
+        <div class="card">
+            <h2 style="font-size: 1.1rem; color: var(--navy); margin-bottom: 1.5rem;">Business Growth Projections</h2>
+
+            <!-- Input Fields -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem;">
+                <div>
+                    <label>Current Annual Revenue (KES)</label>
+                    <input type="number" id="bizCurrentRevenue" min="0" step="100000" value="1000000" placeholder="1000000">
+                </div>
+                <div>
+                    <label>COGS/Operating Expenses (%)</label>
+                    <input type="number" id="bizCurrentCogs" min="0" max="100" step="1" value="60" placeholder="60">
+                </div>
+                <div>
+                    <label>Current Net Margin (%)</label>
+                    <input type="number" id="bizCurrentNetMargin" min="0" max="100" step="1" value="30" placeholder="30">
+                </div>
+                <div>
+                    <label>Projection Period (years)</label>
+                    <input type="number" id="bizProjectionYears" min="1" max="20" value="5" placeholder="5">
+                </div>
+            </div>
+
+            <!-- Scenario Comparison -->
+            <div style="margin-bottom: 2rem;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.2rem;">
+                    <!-- Conservative Scenario -->
+                    <div style="padding: 1.2rem; background: var(--surface); border-radius: 8px; border: 2px solid #D9D9D9;">
+                        <div style="font-size: 0.9rem; font-weight: 600; color: var(--navy); margin-bottom: 1rem;">📊 Conservative Scenario</div>
+                        <div style="font-size: 0.85rem; color: var(--text-2); margin-bottom: 0.5rem;">Steady, predictable growth</div>
+                        <div style="display: grid; gap: 0.8rem; margin-bottom: 1rem;">
+                            <div>
+                                <label style="font-size: 0.8rem;">Annual Revenue Growth (%)</label>
+                                <input type="number" id="bizConservativeGrowth" min="0" max="50" step="1" value="6" placeholder="6" style="width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px;">
+                            </div>
+                            <div>
+                                <label style="font-size: 0.8rem;">Expense Ratio (%)</label>
+                                <input type="number" id="bizConservativeExpense" min="0" max="100" step="1" value="99" placeholder="99" style="width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px;">
+                            </div>
+                        </div>
+                        <div style="padding: 0.8rem; background: var(--offwhite); border-radius: 6px; font-size: 0.85rem;">
+                            <div style="color: var(--text-3); margin-bottom: 0.3rem;">5-Year Revenue</div>
+                            <div style="font-size: 1.1rem; font-weight: 700; color: var(--navy);" id="bizConservativeRevenue">KES 1,338,000</div>
+                        </div>
+                    </div>
+
+                    <!-- Balanced Scenario -->
+                    <div style="padding: 1.2rem; background: var(--surface); border-radius: 8px; border: 3px solid var(--primary);">
+                        <div style="font-size: 0.9rem; font-weight: 600; color: var(--primary); margin-bottom: 1rem;">⭐ Balanced Scenario (Recommended)</div>
+                        <div style="font-size: 0.85rem; color: var(--text-2); margin-bottom: 0.5rem;">Realistic growth expectations</div>
+                        <div style="display: grid; gap: 0.8rem; margin-bottom: 1rem;">
+                            <div>
+                                <label style="font-size: 0.8rem;">Annual Revenue Growth (%)</label>
+                                <input type="number" id="bizBalancedGrowth" min="0" max="50" step="1" value="12" placeholder="12" style="width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px;">
+                            </div>
+                            <div>
+                                <label style="font-size: 0.8rem;">Expense Ratio (%)</label>
+                                <input type="number" id="bizBalancedExpense" min="0" max="100" step="1" value="96" placeholder="96" style="width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px;">
+                            </div>
+                        </div>
+                        <div style="padding: 0.8rem; background: #E6F7FF; border-radius: 6px; font-size: 0.85rem;">
+                            <div style="color: var(--text-3); margin-bottom: 0.3rem;">5-Year Revenue</div>
+                            <div style="font-size: 1.1rem; font-weight: 700; color: var(--primary);" id="bizBalancedRevenue">KES 1,762,000</div>
+                        </div>
+                    </div>
+
+                    <!-- Aggressive Scenario -->
+                    <div style="padding: 1.2rem; background: var(--surface); border-radius: 8px; border: 2px solid var(--success);">
+                        <div style="font-size: 0.9rem; font-weight: 600; color: var(--success); margin-bottom: 1rem;">🔥 Aggressive Scenario</div>
+                        <div style="font-size: 0.85rem; color: var(--text-2); margin-bottom: 0.5rem;">High-growth, higher risk</div>
+                        <div style="display: grid; gap: 0.8rem; margin-bottom: 1rem;">
+                            <div>
+                                <label style="font-size: 0.8rem;">Annual Revenue Growth (%)</label>
+                                <input type="number" id="bizAggressiveGrowth" min="0" max="50" step="1" value="25" placeholder="25" style="width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px;">
+                            </div>
+                            <div>
+                                <label style="font-size: 0.8rem;">Expense Ratio (%)</label>
+                                <input type="number" id="bizAggressiveExpense" min="0" max="100" step="1" value="91" placeholder="91" style="width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px;">
+                            </div>
+                        </div>
+                        <div style="padding: 0.8rem; background: var(--success-bg); border-radius: 6px; font-size: 0.85rem;">
+                            <div style="color: var(--text-3); margin-bottom: 0.3rem;">5-Year Revenue</div>
+                            <div style="font-size: 1.1rem; font-weight: 700; color: var(--success);" id="bizAggressiveRevenue">KES 3,204,000</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary Table -->
+            <div style="overflow-x: auto; margin-bottom: 2rem;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
+                    <thead>
+                        <tr style="background: var(--navy); color: white;">
+                            <th style="padding: 0.8rem; text-align: left;">Year</th>
+                            <th style="padding: 0.8rem; text-align: right;">Conservative</th>
+                            <th style="padding: 0.8rem; text-align: right;">Balanced</th>
+                            <th style="padding: 0.8rem; text-align: right;">Aggressive</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bizScenarioTable">
+                        <!-- Populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Key Insights -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div style="padding: 1rem; background: var(--success-bg); border-radius: 8px; border-left: 4px solid var(--success);">
+                    <div style="font-size: 0.85rem; color: var(--text-3); margin-bottom: 0.5rem;">Profit Multiplier (5 Years)</div>
+                    <div style="font-size: 1.4rem; font-weight: 700; color: var(--success);" id="bizProfitMultiplier">+245%</div>
+                </div>
+                <div style="padding: 1rem; background: var(--warning-bg); border-radius: 8px; border-left: 4px solid var(--warning);">
+                    <div style="font-size: 0.85rem; color: var(--text-3); margin-bottom: 0.5rem;">Capital Requirement</div>
+                    <div style="font-size: 1.4rem; font-weight: 700; color: var(--warning);" id="bizCapitalNeeded">KES 2.5M</div>
+                </div>
+            </div>
+
+            <!-- Kenya Business Considerations -->
+            <div style="padding: 1.2rem; background: var(--offwhite); border-radius: 8px; border-left: 4px solid var(--primary); margin-top: 2rem;">
+                <div style="font-size: 0.9rem; font-weight: 600; color: var(--navy); margin-bottom: 0.8rem;">🇰🇪 Kenya Tax & Compliance</div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-size: 0.85rem; color: var(--text-2);">
+                    <div>
+                        <div style="font-weight: 600; margin-bottom: 0.3rem;">💰 Corporate Tax</div>
+                        <div>30% on profits above KES 12M threshold</div>
+                    </div>
+                    <div>
+                        <div style="font-weight: 600; margin-bottom: 0.3rem;">📋 VAT Compliance</div>
+                        <div>16% on taxable supplies, quarterly returns</div>
+                    </div>
+                    <div>
+                        <div style="font-weight: 600; margin-bottom: 0.3rem;">💼 SACCO Loans</div>
+                        <div>Available for working capital, equipment</div>
+                    </div>
+                    <div>
+                        <div style="font-weight: 600; margin-bottom: 0.3rem;">📊 NSE Investment</div>
+                        <div>Allocate 10-20% of profits to growth</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button onclick="showScreen('screen-18')">← Retirement</button>
+            <button class="primary" onclick="markStepComplete(19); showScreen('screen-1')">Continue Planning →</button>
         </div>
     </section>
 
@@ -2195,6 +2346,13 @@ const DEFAULT_STATE = {
         annualSpending: 3000000, healthcareAnnual: 400000, withdrawalRate: 4,
         _nestEggAtRetirement: 0, _safeWithdrawal: 0, _totalRetirementIncome: 0, _monthlyIncome: 0,
         _yearsInRetirement: 0, _isSustainable: false
+    },
+    businessScenario: {
+        currentRevenue: 1000000, currentCogs: 60, currentNetMargin: 30, projectionYears: 5,
+        conservativeGrowth: 6, conservativeExpense: 99,
+        balancedGrowth: 12, balancedExpense: 96,
+        aggressiveGrowth: 25, aggressiveExpense: 91,
+        _scenarios: {}, _selectedScenario: 'balanced'
     }
 };
 
@@ -2251,7 +2409,7 @@ function init() {
 
 function buildNavbar() {
     const navTabs = document.getElementById('navTabs');
-    const screens = ['Profile', 'Income', 'Budget', 'Scenarios', 'Wealth', 'Optimizer', 'Household', 'Goals', 'Learning', 'Reports', 'M-Pesa', 'Portfolio', 'Debts', 'Business', 'Assets', 'Tax', 'Education', 'Retirement'];
+    const screens = ['Profile', 'Income', 'Budget', 'Scenarios', 'Wealth', 'Optimizer', 'Household', 'Goals', 'Learning', 'Reports', 'M-Pesa', 'Portfolio', 'Debts', 'Business', 'Assets', 'Tax', 'Education', 'Retirement', 'Business Scenarios'];
     navTabs.innerHTML = '';
     screens.forEach((name, i) => {
         const num = i + 1;
@@ -2403,6 +2561,27 @@ function attachEventListeners() {
         });
     });
 
+    const bizScenarioFields = ['bizCurrentRevenue', 'bizCurrentCogs', 'bizCurrentNetMargin', 'bizProjectionYears', 'bizConservativeGrowth', 'bizConservativeExpense', 'bizBalancedGrowth', 'bizBalancedExpense', 'bizAggressiveGrowth', 'bizAggressiveExpense'];
+    bizScenarioFields.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('input', (e) => {
+            const key = id.replace('biz', '').toLowerCase();
+            const value = parseInt(e.target.value) || parseFloat(e.target.value) || 0;
+            if (key === 'currentrevenue') state.businessScenario.currentRevenue = value;
+            if (key === 'currentcogs') state.businessScenario.currentCogs = value;
+            if (key === 'currentnetmargin') state.businessScenario.currentNetMargin = value;
+            if (key === 'projectionyears') state.businessScenario.projectionYears = value;
+            if (key === 'conservativegrowth') state.businessScenario.conservativeGrowth = value;
+            if (key === 'conservativeexpense') state.businessScenario.conservativeExpense = value;
+            if (key === 'balancedgrowth') state.businessScenario.balancedGrowth = value;
+            if (key === 'balancedexpense') state.businessScenario.balancedExpense = value;
+            if (key === 'aggressivegrowth') state.businessScenario.aggressiveGrowth = value;
+            if (key === 'aggressiveexpense') state.businessScenario.aggressiveExpense = value;
+            saveState();
+            recalculateAll();
+        });
+    });
+
     // Initial load of investment and debt UIs
     if (state.investments && state.investments.length > 0) updateInvestmentUI();
     if (state.debts && state.debts.length > 0) updateDebtUI();
@@ -2515,12 +2694,25 @@ function loadFormValues() {
     if (document.getElementById('retireHealthcareAnnual')) document.getElementById('retireHealthcareAnnual').value = state.retirement.healthcareAnnual;
     if (document.getElementById('retireWithdrawalRate')) document.getElementById('retireWithdrawalRate').value = state.retirement.withdrawalRate;
 
+    // Business Scenario fields
+    if (document.getElementById('bizCurrentRevenue')) document.getElementById('bizCurrentRevenue').value = state.businessScenario.currentRevenue;
+    if (document.getElementById('bizCurrentCogs')) document.getElementById('bizCurrentCogs').value = state.businessScenario.currentCogs;
+    if (document.getElementById('bizCurrentNetMargin')) document.getElementById('bizCurrentNetMargin').value = state.businessScenario.currentNetMargin;
+    if (document.getElementById('bizProjectionYears')) document.getElementById('bizProjectionYears').value = state.businessScenario.projectionYears;
+    if (document.getElementById('bizConservativeGrowth')) document.getElementById('bizConservativeGrowth').value = state.businessScenario.conservativeGrowth;
+    if (document.getElementById('bizConservativeExpense')) document.getElementById('bizConservativeExpense').value = state.businessScenario.conservativeExpense;
+    if (document.getElementById('bizBalancedGrowth')) document.getElementById('bizBalancedGrowth').value = state.businessScenario.balancedGrowth;
+    if (document.getElementById('bizBalancedExpense')) document.getElementById('bizBalancedExpense').value = state.businessScenario.balancedExpense;
+    if (document.getElementById('bizAggressiveGrowth')) document.getElementById('bizAggressiveGrowth').value = state.businessScenario.aggressiveGrowth;
+    if (document.getElementById('bizAggressiveExpense')) document.getElementById('bizAggressiveExpense').value = state.businessScenario.aggressiveExpense;
+
     // Update display values
     updateMpesaUI();
     calculateBusinessTax();
     if (state.assets && state.assets.length > 0) updateAssetUI();
     if (state.education && state.education.children.length > 0) viewEducationSummary();
     calculateRetirementIncome();
+    calculateBusinessScenarios();
 }
 
 // ============ CALCULATIONS ============
@@ -2613,6 +2805,7 @@ function recalculateAll() {
     calculateIncome();
     calculateBudget();
     calculateFireNumber();
+    calculateBusinessScenarios();
     updateUI();
     updateScenarioUI();
     updateWealthDashboard();
@@ -3484,6 +3677,119 @@ function calculateRetirementIncome() {
     saveState();
 }
 
+function calculateBusinessScenarios() {
+    const revenue = state.businessScenario.currentRevenue;
+    const cogs = state.businessScenario.currentCogs / 100;
+    const projYears = state.businessScenario.projectionYears;
+
+    const scenarios = {
+        conservative: {
+            growth: state.businessScenario.conservativeGrowth / 100,
+            expenseRatio: state.businessScenario.conservativeExpense / 100,
+            projections: []
+        },
+        balanced: {
+            growth: state.businessScenario.balancedGrowth / 100,
+            expenseRatio: state.businessScenario.balancedExpense / 100,
+            projections: []
+        },
+        aggressive: {
+            growth: state.businessScenario.aggressiveGrowth / 100,
+            expenseRatio: state.businessScenario.aggressiveExpense / 100,
+            projections: []
+        }
+    };
+
+    // Generate projections for each scenario
+    Object.keys(scenarios).forEach(scenario => {
+        let projRevenue = revenue;
+        let projExpenses = revenue * cogs;
+        const growth = scenarios[scenario].growth;
+        const expenseRatio = scenarios[scenario].expenseRatio;
+
+        for (let year = 0; year <= projYears; year++) {
+            const expenses = projRevenue * expenseRatio;
+            const profit = projRevenue - expenses;
+            scenarios[scenario].projections.push({
+                year,
+                revenue: Math.round(projRevenue),
+                expenses: Math.round(expenses),
+                profit: Math.round(profit)
+            });
+
+            if (year < projYears) {
+                projRevenue *= (1 + growth);
+            }
+        }
+    });
+
+    state.businessScenario._scenarios = scenarios;
+
+    // Update UI with results
+    const conservProj = scenarios.conservative.projections;
+    const balancedProj = scenarios.balanced.projections;
+    const aggProj = scenarios.aggressive.projections;
+
+    const conservRevenue = conservProj[projYears]?.revenue || 0;
+    const balancedRevenue = balancedProj[projYears]?.revenue || 0;
+    const aggRevenue = aggProj[projYears]?.revenue || 0;
+
+    document.getElementById('bizConservativeRevenue').textContent = 'KES ' + formatKES(conservRevenue);
+    document.getElementById('bizBalancedRevenue').textContent = 'KES ' + formatKES(balancedRevenue);
+    document.getElementById('bizAggressiveRevenue').textContent = 'KES ' + formatKES(aggRevenue);
+
+    // Update scenario table
+    const tableBody = document.getElementById('bizScenarioTable');
+    if (tableBody) {
+        tableBody.innerHTML = '';
+        for (let year = 0; year <= projYears; year++) {
+            const row = document.createElement('tr');
+            row.style.borderBottom = '1px solid var(--border)';
+            if (year % 2 === 0) row.style.backgroundColor = 'var(--offwhite)';
+
+            const yearCell = document.createElement('td');
+            yearCell.textContent = `Year ${year}`;
+            yearCell.style.padding = '0.8rem';
+            row.appendChild(yearCell);
+
+            const conservCell = document.createElement('td');
+            conservCell.textContent = 'KES ' + formatKES(conservProj[year]?.revenue || 0);
+            conservCell.style.padding = '0.8rem';
+            conservCell.style.textAlign = 'right';
+            row.appendChild(conservCell);
+
+            const balancedCell = document.createElement('td');
+            balancedCell.textContent = 'KES ' + formatKES(balancedProj[year]?.revenue || 0);
+            balancedCell.style.padding = '0.8rem';
+            balancedCell.style.textAlign = 'right';
+            balancedCell.style.fontWeight = '600';
+            balancedCell.style.color = 'var(--primary)';
+            row.appendChild(balancedCell);
+
+            const aggCell = document.createElement('td');
+            aggCell.textContent = 'KES ' + formatKES(aggProj[year]?.revenue || 0);
+            aggCell.style.padding = '0.8rem';
+            aggCell.style.textAlign = 'right';
+            row.appendChild(aggCell);
+
+            tableBody.appendChild(row);
+        }
+    }
+
+    // Calculate profit multiplier (balanced scenario)
+    const initialProfit = balancedProj[0]?.profit || revenue * (1 - state.businessScenario.balancedExpense / 100);
+    const finalProfit = balancedProj[projYears]?.profit || 0;
+    const multiplier = initialProfit > 0 ? ((finalProfit / initialProfit - 1) * 100) : 0;
+
+    document.getElementById('bizProfitMultiplier').textContent = `+${Math.round(multiplier)}%`;
+
+    // Calculate capital needed (30% of final revenue for operations and growth)
+    const capitalNeeded = Math.round(balancedRevenue * 0.3);
+    document.getElementById('bizCapitalNeeded').textContent = 'KES ' + formatKES(capitalNeeded);
+
+    saveState();
+}
+
 // ============ EXPORT & REPORTING ============
 function exportMonthlyReport() {
     alert('📊 Monthly Report: Feature coming in final build');
@@ -3550,7 +3856,25 @@ function saveState() {
 
 function loadState() {
     const saved = localStorage.getItem('jipange_v1');
-    return saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(DEFAULT_STATE));
+    const loadedState = saved ? JSON.parse(saved) : {};
+    const merged = JSON.parse(JSON.stringify(DEFAULT_STATE));
+
+    // Deep merge saved state with defaults
+    const mergeObjects = (target, source) => {
+        for (let key in source) {
+            if (source.hasOwnProperty(key)) {
+                if (typeof source[key] === 'object' && !Array.isArray(source[key]) && source[key] !== null) {
+                    if (typeof target[key] !== 'object') target[key] = {};
+                    mergeObjects(target[key], source[key]);
+                } else {
+                    target[key] = source[key];
+                }
+            }
+        }
+        return target;
+    };
+
+    return mergeObjects(merged, loadedState);
 }
 
 // Initialize
