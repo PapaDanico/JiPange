@@ -7568,6 +7568,7 @@ function checkQuizAnswers(count) {
 // ============ PHASE 4C: CLOUD SYNC & COLLABORATIVE PLANNING ============
 
 // Supabase Configuration (Phase 4C)
+// TODO: Move to environment variables (process.env.SUPABASE_URL, process.env.SUPABASE_KEY) in production for security
 const SUPABASE_URL = 'https://nbhhkwdnbavctzkffoeo.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5iaGhrd2RuYmF2Y3R6a2Zmb2VvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1OTczNDcsImV4cCI6MjA5ODE3MzM0N30.ftKoib2ZpUysKgBFifYoP929pKBre8DS26PFhYfM_lM';
 
@@ -7597,7 +7598,8 @@ async function checkAuthStatus() {
             currentUser = data.session.user;
             cloudSyncEnabled = true;
             updateCloudSyncUI();
-            loadCloudPlan();
+            await loadCloudPlan();
+            subscribeToCloudUpdates();
         }
     } catch (e) {
         console.log('Auth check failed:', e.message);
@@ -7681,25 +7683,29 @@ async function saveCloudPlan() {
             user_id: currentUser.id,
             plan_data: JSON.stringify(state),
             saved_at: new Date().toISOString(),
-            plan_name: `${state.profile.name || 'My Plan'} - ${new Date().toLocaleDateString()}`
+            plan_name: `${(state.profile && state.profile.name) || 'My Plan'} - ${new Date().toLocaleDateString()}`
         };
 
         // Try to update existing plan first
-        const { data: existing } = await supabase
+        const { data: existing, error: selectError } = await supabase
             .from('plans')
             .select('id')
             .eq('user_id', currentUser.id)
             .limit(1);
 
+        if (selectError) throw selectError;
+
         if (existing && existing.length > 0) {
-            await supabase
+            const { error: updateError } = await supabase
                 .from('plans')
                 .update(planData)
                 .eq('id', existing[0].id);
+            if (updateError) throw updateError;
         } else {
-            await supabase
+            const { error: insertError } = await supabase
                 .from('plans')
                 .insert([planData]);
+            if (insertError) throw insertError;
         }
 
         showNotification('✅ Plan saved to cloud', 'success');
@@ -7788,20 +7794,29 @@ function subscribeToCloudUpdates() {
     if (!currentUser || !supabase) return;
 
     try {
-        const subscription = supabase
-            .from(`plans:user_id=eq.${currentUser.id}`)
-            .on('*', payload => {
-                if (payload.eventType === 'UPDATE') {
-                    const updatedState = JSON.parse(payload.new.plan_data);
-                    Object.assign(state, updatedState);
-                    window.state = state;
-                    recalculateAll();
-                    showNotification('📱 Plan updated from another device', 'info');
+        const channel = supabase
+            .channel(`public:plans:user_id=eq.${currentUser.id}`)
+            .on('postgres_changes',
+                { event: 'UPDATE', schema: 'public', table: 'plans' },
+                payload => {
+                    try {
+                        const updatedState = JSON.parse(payload.new.plan_data);
+                        Object.assign(state, updatedState);
+                        window.state = state;
+                        recalculateAll();
+                        showNotification('📱 Plan updated from another device', 'info');
+                    } catch (parseError) {
+                        console.log('Failed to parse cloud update:', parseError.message);
+                    }
                 }
-            })
-            .subscribe();
+            )
+            .subscribe((status) => {
+                if (status === 'SUBSCRIBED') {
+                    console.log('Real-time sync subscribed');
+                }
+            });
 
-        return subscription;
+        return channel;
     } catch (e) {
         console.log('Real-time sync not available:', e.message);
     }
@@ -7810,7 +7825,6 @@ function subscribeToCloudUpdates() {
 // Update UI based on cloud sync status
 function updateCloudSyncUI() {
     const cloudButton = document.getElementById('cloudSyncButton');
-    const authModal = document.getElementById('cloudAuthModal');
 
     if (!cloudButton) return;
 
@@ -7830,6 +7844,8 @@ function updateCloudSyncUI() {
 // Show cloud auth modal
 function showCloudAuthModal() {
     const modal = document.createElement('div');
+    modal.id = 'cloudAuthModal_' + Date.now();
+    modal.setAttribute('data-modal', 'auth');
     modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 2000; padding: 20px;';
 
     const content = document.createElement('div');
@@ -7854,7 +7870,7 @@ function showCloudAuthModal() {
                 const password = document.getElementById('cloudPassword').value;
                 if (email && password.length >= 6) {
                     cloudSignIn(email, password).then(ok => {
-                        if (ok) document.querySelector('[style*=\"position: fixed\"]').remove();
+                        if (ok) { const m = document.querySelector('[data-modal=\"auth\"]'); if (m) m.remove(); }
                     });
                 } else {
                     showNotification('Email and 6+ char password required', 'error');
@@ -7865,7 +7881,7 @@ function showCloudAuthModal() {
                 const password = document.getElementById('cloudPassword').value;
                 if (email && password.length >= 6) {
                     cloudSignUp(email, password).then(ok => {
-                        if (ok) document.querySelector('[style*=\"position: fixed\"]').remove();
+                        if (ok) { const m = document.querySelector('[data-modal=\"auth\"]'); if (m) m.remove(); }
                     });
                 } else {
                     showNotification('Email and 6+ char password required', 'error');
