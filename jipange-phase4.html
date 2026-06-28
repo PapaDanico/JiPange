@@ -4884,14 +4884,24 @@ function calculateIncome() {
     state.income._grossMonthly = grossMonthly;
     state.income._netMonthly = Math.max(0, netMonthly);
     state.income._stabilityBand = stabilityBand;
+
+    return {
+        grossMonthly: grossMonthly,
+        netMonthly: Math.max(0, netMonthly),
+        paye: Math.round(paye),
+        nssf: nssfT1 + Math.round(nssfT2),
+        shif: Math.round(shif),
+        totalDeductions: totalDeductions,
+        stabilityBand: stabilityBand
+    };
 }
 
 function calculateBudget() {
     const categories = ['schoolFees', 'rent', 'carLoan', 'insurance', 'otherFixed', 'tithe', 'upcountrySupport', 'harambee', 'chama', 'churchOther', 'food', 'utilities', 'transport', 'airtime', 'houseHelp', 'dining', 'personal', 'misc'];
     let total = 0;
-    categories.forEach(cat => total += state.budget[cat]);
+    categories.forEach(cat => total += state.budget[cat] || 0);
 
-    const netIncome = state.income._netMonthly;
+    const netIncome = state.income._netMonthly || 0;
     const surplus = netIncome - total;
     const savingsRate = netIncome > 0 ? (surplus / netIncome) : 0;
 
@@ -4899,7 +4909,17 @@ function calculateBudget() {
     state.budget._surplus = surplus;
     state.budget._savingsRate = savingsRate;
 
-    document.getElementById('fireMonthlyInvest').value = Math.max(0, Math.round(surplus * 0.67));
+    const fireMonthlyInvest = document.getElementById('fireMonthlyInvest');
+    if (fireMonthlyInvest) {
+        fireMonthlyInvest.value = Math.max(0, Math.round(surplus * 0.67));
+    }
+
+    return {
+        totalExpenses: total,
+        surplus: surplus,
+        savingsRate: savingsRate,
+        investmentAllocation: Math.max(0, Math.round(surplus * 0.67))
+    };
 }
 
 function calculateFireNumber() {
@@ -5073,10 +5093,14 @@ function computeHealthScore() {
 
     // DIMENSION 6: Goals (0-100 points)
     let scoreGoals = 0;
-    const activeGoals = (s.goals || []).filter(g => g.targetAmount > 0).length;
+    // Ensure goals is an array, not an object
+    const goalsArray = Array.isArray(s.goals) ? s.goals :
+                      (s.goals && typeof s.goals === 'object' ? Object.values(s.goals) : []);
+
+    const activeGoals = goalsArray.filter(g => g.targetAmount > 0).length;
     scoreGoals += Math.min(activeGoals * 12, 36); // Max 3 goals
 
-    const goalsWithContribution = (s.goals || []).filter(g => g.monthlyContribution > 0).length;
+    const goalsWithContribution = goalsArray.filter(g => g.monthlyContribution > 0).length;
     scoreGoals += Math.min(goalsWithContribution * 8, 24);
 
     if (s.goals && s.goals.length > 0) scoreGoals += 15; // FIRE defined
@@ -8586,6 +8610,12 @@ function loadState() {
     const mergeObjects = (target, source, deep = true) => {
         for (let key in source) {
             if (source.hasOwnProperty(key)) {
+                // If target has an array and source has an object, enforce array type
+                if (Array.isArray(target[key]) && source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+                    // Don't try to merge object into array - reset to empty array
+                    source[key] = [];
+                }
+
                 if (deep && typeof source[key] === 'object' && !Array.isArray(source[key]) && source[key] !== null) {
                     if (typeof target[key] !== 'object' || target[key] === null) {
                         target[key] = {};
