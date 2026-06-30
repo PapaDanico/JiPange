@@ -3,13 +3,15 @@
  * Modular version: loads state, calculators, and UI initialization
  */
 
-import { loadState } from './state.js';
+import { loadState, saveState as saveStateFn } from './state.js';
 import { recalculateAll } from './calculators.js';
 import { formatKES, formatPercent, logger } from './utils.js';
+import { initMVPScreens } from './screens-mvp.js';
 
 // Initialize global state
 window.state = loadState();
 window.recalculateAll = recalculateAll;
+window.saveState = () => saveStateFn(window.state);
 
 // Make utils globally available for legacy code
 window.formatKES = formatKES;
@@ -26,6 +28,9 @@ function initApp() {
 
     // Set up navigation event listeners
     setupNavigation();
+
+    // Wire MVP screens (Profile, Income, Budget, Savings, Goals, Dashboard)
+    initMVPScreens(window.state, window.saveState);
 
     // Load initial screen
     showScreen('screen-0');
