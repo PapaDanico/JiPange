@@ -26,7 +26,7 @@
             --gradient-accent: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             --gradient-success: linear-gradient(135deg, #10b981 0%, #3b82f6 100%);
 
-            /* Neutrals */
+            /* Neutrals - Light Mode */
             --white: #FFFFFF;
             --light-bg: #F8FAFC;
             --surface: #F1F5F9;
@@ -44,6 +44,21 @@
             --danger-bg: #FEF2F2;
             --info: #3B82F6;
             --info-bg: #EFF6FF;
+        }
+
+        /* Dark Mode Variables */
+        [data-theme="dark"] {
+            --white: #0F172A;
+            --light-bg: #0F172A;
+            --surface: #1E293B;
+            --border: #334155;
+            --text-dark: #F1F5F9;
+            --text-muted: #94A3B8;
+            --text-light: #64748B;
+            --success-bg: #064E3B;
+            --warning-bg: #54340F;
+            --danger-bg: #500724;
+            --info-bg: #082F49;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -456,6 +471,92 @@
             0% { transform: scale(1); }
             50% { transform: scale(1.05); }
             100% { transform: scale(1.02); }
+        }
+
+        /* Dark Mode Toggle */
+        .theme-toggle {
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: var(--white);
+            padding: 0.5rem 0.7rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: rotate(20deg);
+        }
+
+        /* Accessibility Improvements */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* Focus Visible for Keyboard Navigation */
+        *:focus-visible {
+            outline: 3px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        button:focus-visible {
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.5);
+        }
+
+        input:focus-visible,
+        select:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        /* High Contrast Mode Support */
+        @media (prefers-contrast: more) {
+            :root {
+                --border: #000;
+            }
+
+            [data-theme="dark"] {
+                --border: #FFF;
+            }
+
+            .status-badge {
+                border: 2px solid currentColor;
+            }
+        }
+
+        /* Skip to Main Content Link (Accessibility) */
+        .skip-to-main {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--primary);
+            color: white;
+            padding: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            z-index: 1000;
+        }
+
+        .skip-to-main:focus {
+            top: 0;
+        }
+
+        /* Reduced Opacity for Disabled States */
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        input:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         /* Navigation */
@@ -1277,8 +1378,9 @@
     </div>
     <div class="nav-center" id="navTabs"></div>
     <div class="nav-right">
+        <button id="themeToggle" class="theme-toggle" title="Toggle Dark Mode" aria-label="Toggle dark mode">🌙</button>
         <button id="langToggle" class="lang-toggle" title="Toggle English/Swahili">EN</button>
-        <div class="health-badge">Plan Health: <span id="healthScore">—</span>/100</div>
+        <div class="health-badge" role="status" aria-live="polite">Plan Health: <span id="healthScore" aria-label="Plan health score">—</span>/100</div>
     </div>
 </nav>
     <div id="app-container">
@@ -4919,6 +5021,108 @@
       });
     };
   }
+
+  // ============ PHASE 4: DARK MODE + ACCESSIBILITY ============
+
+  // Dark Mode Implementation
+  window.initDarkMode = function() {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const saved = localStorage.getItem('jipange-theme');
+    const theme = saved || (prefersDark ? 'dark' : 'light');
+
+    document.documentElement.setAttribute('data-theme', theme);
+    updateThemeToggleButton(theme);
+
+    // Listen for system preference changes
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+      const newTheme = e.matches ? 'dark' : 'light';
+      setTheme(newTheme);
+    });
+
+    // Theme toggle button
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+      themeToggle.addEventListener('click', () => {
+        const current = document.documentElement.getAttribute('data-theme') || 'light';
+        const newTheme = current === 'dark' ? 'light' : 'dark';
+        setTheme(newTheme);
+      });
+    }
+  };
+
+  window.setTheme = function(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('jipange-theme', theme);
+    updateThemeToggleButton(theme);
+    showToast(`Switched to ${theme === 'dark' ? '🌙 Dark' : '☀️ Light'} mode`, 'info', 1500);
+  };
+
+  window.updateThemeToggleButton = function(theme) {
+    const btn = document.getElementById('themeToggle');
+    if (btn) {
+      btn.textContent = theme === 'dark' ? '☀️' : '🌙';
+      btn.title = `Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`;
+    }
+  };
+
+  // Accessibility Enhancements
+  window.enhanceAccessibility = function() {
+    // Add ARIA labels to sections
+    document.querySelectorAll('section[id^="screen"]').forEach((section, idx) => {
+      if (!section.getAttribute('role')) {
+        section.setAttribute('role', 'main');
+        section.setAttribute('aria-label', `Screen ${idx}: ${section.querySelector('h1, h2')?.textContent || 'Content'}`);
+      }
+    });
+
+    // Add ARIA labels to inputs
+    document.querySelectorAll('input[type="number"], input[type="text"], select').forEach(input => {
+      const label = input.parentElement?.querySelector('label');
+      if (!input.getAttribute('aria-label') && label) {
+        input.setAttribute('aria-label', label.textContent);
+      }
+    });
+
+    // Add ARIA labels to metric displays
+    document.querySelectorAll('.metric-card').forEach(card => {
+      const title = card.querySelector('.card-title')?.textContent;
+      const value = card.querySelector('.card-value')?.textContent;
+      if (title && !card.getAttribute('aria-label')) {
+        card.setAttribute('aria-label', `${title}: ${value}`);
+      }
+    });
+
+    // Keyboard navigation for cards
+    document.querySelectorAll('.metric-card, .card').forEach(card => {
+      if (!card.hasAttribute('tabindex')) {
+        card.setAttribute('tabindex', '0');
+      }
+    });
+
+    // Add aria-live regions for dynamic updates
+    const liveRegion = document.createElement('div');
+    liveRegion.id = 'live-updates';
+    liveRegion.setAttribute('aria-live', 'polite');
+    liveRegion.setAttribute('aria-atomic', 'true');
+    liveRegion.style.position = 'absolute';
+    liveRegion.style.left = '-10000px';
+    document.body.appendChild(liveRegion);
+  };
+
+  // Initialize dark mode on load
+  const originalInit = window.initApp;
+  window.initApp = function() {
+    initDarkMode();
+    enhanceAccessibility();
+    originalInit.call(this);
+  };
+
+  // Add skip-to-main link
+  const skipLink = document.createElement('a');
+  skipLink.className = 'skip-to-main';
+  skipLink.href = '#app-container';
+  skipLink.textContent = 'Skip to main content';
+  document.body.insertAdjacentElement('afterbegin', skipLink);
 })();
 
     </script>
