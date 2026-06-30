@@ -335,6 +335,129 @@
             background: rgba(255, 255, 255, 0.35);
         }
 
+        /* Animated Counters */
+        .metric-value-animated {
+            font-variant-numeric: tabular-nums;
+            transition: all 0.4s ease;
+        }
+
+        .metric-value-animated.highlight {
+            animation: metricPulse 0.6s ease-out;
+        }
+
+        @keyframes metricPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Status Badge Colors */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            animation: slideInDown 0.4s ease-out;
+        }
+
+        .status-badge.excellent {
+            background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+            color: white;
+        }
+
+        .status-badge.good {
+            background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+            color: white;
+        }
+
+        .status-badge.fair {
+            background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+            color: white;
+        }
+
+        .status-badge.poor {
+            background: linear-gradient(135deg, #ef4444 0%, #fca5a5 100%);
+            color: white;
+        }
+
+        .status-badge.on-track {
+            background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+            color: white;
+        }
+
+        .status-badge.behind {
+            background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+            color: white;
+        }
+
+        @keyframes slideInDown {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Calculation Loading State */
+        .calculating-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .calculating-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .calculating-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Smooth Screen Transitions */
+        section {
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Metric Card Emphasis */
+        .metric-card.emphasized {
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+            transform: scale(1.02);
+            animation: cardBounce 0.5s ease-out;
+        }
+
+        @keyframes cardBounce {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1.02); }
+        }
+
         /* Navigation */
         .navbar {
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
@@ -4652,6 +4775,150 @@
     originalRecalc(state);
     updateProgressWizard();
   };
+
+  // ============ PHASE 3: VISUAL INDICATORS & MICRO-INTERACTIONS ============
+
+  // Animated counter for numbers
+  window.animateCounter = function(elementId, startValue, endValue, duration = 800) {
+    const element = document.getElementById(elementId);
+    if (!element) return;
+
+    const startNum = parseInt(startValue) || 0;
+    const endNum = parseInt(endValue) || 0;
+    const isNegative = endNum < 0;
+    const absoluteDiff = Math.abs(endNum - startNum);
+    const startTime = Date.now();
+
+    element.classList.add('metric-value-animated', 'highlight');
+
+    const updateCounter = () => {
+      const elapsed = Date.now() - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const easeOutQuad = 1 - Math.pow(1 - progress, 2);
+      const currentValue = startNum + (endNum - startNum) * easeOutQuad;
+
+      if (elementId.includes('Rate') || elementId.includes('percentage')) {
+        element.textContent = `${currentValue.toFixed(1)}%`;
+      } else if (elementId.includes('Score')) {
+        element.textContent = Math.round(currentValue);
+      } else {
+        element.textContent = `KES ${Math.round(currentValue).toLocaleString('en-KE')}`;
+      }
+
+      if (progress < 1) {
+        requestAnimationFrame(updateCounter);
+      } else {
+        setTimeout(() => element.classList.remove('highlight'), 600);
+      }
+    };
+
+    updateCounter();
+  };
+
+  // Color-coded status badge for health score
+  window.getHealthStatusBadge = function(score) {
+    if (score >= 75) return { class: 'excellent', text: '✓ Excellent', icon: '🎯' };
+    if (score >= 50) return { class: 'good', text: '✓ Good', icon: '📈' };
+    if (score >= 25) return { class: 'fair', text: '⚠ Fair', icon: '📊' };
+    return { class: 'poor', text: '✕ Needs Work', icon: '📉' };
+  };
+
+  // Color-coded status for FIRE tracking
+  window.getFireStatusBadge = function(isOnTrack) {
+    return isOnTrack
+      ? { class: 'on-track', text: '✓ On Track', icon: '🚀' }
+      : { class: 'behind', text: '⚠ Behind Target', icon: '📍' };
+  };
+
+  // Update display elements with status badges
+  window.updateStatusBadges = function(state) {
+    // Health score badge
+    const scoreEl = document.getElementById('healthScore');
+    if (scoreEl) {
+      const score = state.dashboard?.healthScore || 0;
+      const status = getHealthStatusBadge(score);
+
+      let badgeEl = document.getElementById('health-status-badge');
+      if (!badgeEl) {
+        badgeEl = document.createElement('div');
+        badgeEl.id = 'health-status-badge';
+        scoreEl.parentElement.insertAdjacentElement('afterend', badgeEl);
+      }
+      badgeEl.className = `status-badge ${status.class}`;
+      badgeEl.innerHTML = `<span>${status.icon}</span><span>${status.text}</span>`;
+    }
+
+    // FIRE status badge
+    const fireStatusEl = document.getElementById('fireOnTrack');
+    if (fireStatusEl) {
+      const isOnTrack = state.fire?._onTrack || false;
+      const status = getFireStatusBadge(isOnTrack);
+
+      let badgeEl = document.getElementById('fire-status-badge');
+      if (!badgeEl) {
+        badgeEl = document.createElement('div');
+        badgeEl.id = 'fire-status-badge';
+        fireStatusEl.insertAdjacentElement('afterend', badgeEl);
+      }
+      badgeEl.className = `status-badge ${status.class}`;
+      badgeEl.innerHTML = `<span>${status.icon}</span><span>${status.text}</span>`;
+    }
+  };
+
+  // Emphasize metrics when they update
+  window.emphasizeMetric = function(elementId) {
+    const element = document.getElementById(elementId);
+    if (!element) return;
+
+    const card = element.closest('.metric-card');
+    if (card) {
+      card.classList.add('emphasized');
+      setTimeout(() => card.classList.remove('emphasized'), 500);
+    }
+  };
+
+  // Show loading state during calculation
+  window.showCalculatingState = function() {
+    let overlay = document.getElementById('calculating-overlay');
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.id = 'calculating-overlay';
+      overlay.className = 'calculating-overlay';
+      overlay.innerHTML = '<div class="calculating-spinner"></div>';
+      document.body.appendChild(overlay);
+    }
+    overlay.classList.add('show');
+  };
+
+  window.hideCalculatingState = function() {
+    const overlay = document.getElementById('calculating-overlay');
+    if (overlay) {
+      overlay.classList.remove('show');
+    }
+  };
+
+  // Enhance recalculate with visual feedback
+  const enhancedRecalc = window.recalculateAll;
+  window.recalculateAll = function(state) {
+    showCalculatingState();
+
+    setTimeout(() => {
+      enhancedRecalc(state);
+      updateStatusBadges(state);
+      hideCalculatingState();
+    }, 100);
+  };
+
+  // Emphasize important metrics on update
+  const originalUpdate = window.updateDashboard;
+  if (originalUpdate) {
+    window.updateDashboard = function(state) {
+      originalUpdate(state);
+      ['dashboardIncome', 'dashboardSurplus', 'dashboardSavingsRate'].forEach(id => {
+        emphasizeMetric(id);
+      });
+    };
+  }
 })();
 
     </script>
