@@ -23,15 +23,18 @@
     <style>
         :root {
             /* Modern Vibrant Palette - Kenya Inspired */
-            --primary: #1B4B8C;
-            --primary-light: #2563EB;
-            --secondary: #10B981;
-            --secondary-light: #34D399;
-            --accent: #F59E0B;
-            --accent-light: #FBBF24;
-            --danger: #EF4444;
-            --danger-light: #FCA5A5;
-            --navy: #0F1419;
+            --primary: #667eea;
+            --primary-light: #764ba2;
+            --secondary: #10b981;
+            --secondary-light: #34d399;
+            --accent: #f093fb;
+            --accent-light: #f5576c;
+            --danger: #ef4444;
+            --danger-light: #fca5a5;
+            --navy: #0f1419;
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-3: linear-gradient(135deg, #10b981 0%, #3b82f6 100%);
 
             /* Neutrals */
             --white: #FFFFFF;
@@ -1736,10 +1739,25 @@
 
     <!-- Screen 1: Profile (MVP) -->
     <section id="screen-1" class="active">
-        <h1 class="section-title">📋 About You</h1>
+        <div style="text-align: center; margin-bottom: 2rem; padding: 2rem 1rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 20px; color: white;">
+            <h1 style="font-size: 2.5rem; margin: 0; font-weight: 700; letter-spacing: -1px;">JiPange</h1>
+            <p style="font-size: 1.1rem; margin: 0.5rem 0 0; opacity: 0.95;">Your African Finance Copilot</p>
+            <p style="font-size: 0.95rem; margin: 0.8rem 0 0; opacity: 0.85;">Build wealth. Achieve goals. Secure your future.</p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem;">
+            <button onclick="showScreen('screen-2')" style="padding: 1.5rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; color: white; border-radius: 12px; cursor: pointer; font-size: 1.1rem; font-weight: 600; transition: transform 0.3s; box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);">
+                ▶️ Start Your Plan
+            </button>
+            <button onclick="loadDemoData(); showScreen('screen-2')" style="padding: 1.5rem; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border: none; color: white; border-radius: 12px; cursor: pointer; font-size: 1.1rem; font-weight: 600; transition: transform 0.3s; box-shadow: 0 8px 20px rgba(245, 87, 108, 0.3);">
+                🎬 View Demo
+            </button>
+        </div>
+
+        <h2 style="font-size: 1.4rem; color: var(--navy); margin-bottom: 1.5rem; font-weight: 600;">Let's Get to Know You</h2>
         <div class="card-grid">
-            <div class="card">
-                <h2 style="font-size: 1.1rem; color: var(--navy); margin-bottom: 1rem;">Personal Details</h2>
+            <div class="card" style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%); border: 2px solid #667eea; border-radius: 16px;">
+                <h2 style="font-size: 1.1rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 1rem; font-weight: 600;">Personal Details</h2>
                 <div class="field-group">
                     <label for="name">Full Name</label>
                     <input type="text" id="name" placeholder="Your name">
@@ -1772,8 +1790,8 @@
                 </div>
             </div>
 
-            <div class="card">
-                <h2 style="font-size: 1.1rem; color: var(--navy); margin-bottom: 1rem;">Household</h2>
+            <div class="card" style="background: linear-gradient(135deg, rgba(245, 147, 251, 0.05) 0%, rgba(245, 87, 108, 0.05) 100%); border: 2px solid #f093fb; border-radius: 16px;">
+                <h2 style="font-size: 1.1rem; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 1rem; font-weight: 600;">Household</h2>
                 <div class="field-group">
                     <label for="dependants">Number of Dependants</label>
                     <input type="number" id="dependants" min="0" max="20" value="0">
@@ -1791,8 +1809,8 @@
                 </div>
             </div>
 
-            <div class="card">
-                <h2 style="font-size: 1.1rem; color: var(--navy); margin-bottom: 1rem;">Household Mode <span class="badge">NEW</span></h2>
+            <div class="card" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(59, 130, 246, 0.05) 100%); border: 2px solid #10b981; border-radius: 16px;">
+                <h2 style="font-size: 1.1rem; background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 1rem; font-weight: 600;">Household Mode <span class="badge">✨</span></h2>
                 <p style="font-size: 0.9rem; color: var(--text-2); margin-bottom: 1rem;">Planning with a partner?</p>
                 <div class="field-group">
                     <label for="isHouseholdPlanning">
@@ -8591,6 +8609,24 @@ function showShareWithSpouseModal() {
 }
 
 // ============ STATE MANAGEMENT ============
+function loadDemoData() {
+    state.profile = { name: 'Demo User', age: 35, retirementAge: 60, county: 'Nairobi', dependants: 2, upcountryDep: 1, schoolChildren: 1, isHouseholdPlanning: false };
+    state.income = { salary: 120000, business: 25000, investment: 8000, rental: 10000, passive: 0, allowance: 0, other: 2000, bondCoupons: 0, _grossMonthly: 165000 };
+    state.budget = { schoolFees: 20000, rent: 40000, carLoan: 8000, insurance: 5000, otherFixed: 3000, tithe: 4000, upcountrySupport: 5000, harambee: 2000, chama: 2000, churchOther: 0, food: 15000, utilities: 6000, transport: 8000, airtime: 1200, houseHelp: 3500, dining: 3000, personal: 2000, misc: 1000 };
+    state.goals = [ { id: 1, name: 'House Down Payment', target: 1000000, current: 250000, deadline: 2027, monthlyContribution: 15000 }, { id: 2, name: 'Child Education Fund', target: 500000, current: 100000, deadline: 2025, monthlyContribution: 8000 } ];
+    state.investments = { list: [], bondLadder: [ { amount: 150000, tenor: 2, yield: 12 }, { amount: 150000, tenor: 5, yield: 13 }, { amount: 150000, tenor: 10, yield: 14 } ], totalBondLadder: 450000, _totalPortfolio: 450000 };
+    state.debts = [ { id: 1, amount: 300000, monthlyPayment: 8000, rate: 8, description: 'Car Loan' } ];
+    state.assets = [ { id: 1, value: 1500000, description: 'Primary Residence' } ];
+    state.savedBalances = { _mPesaLock: 50000, _mmf: 100000, _fixed: 75000, _other: 25000 };
+    state.insurance = { lifeCover: 500000, medicalCover: 100000, homeCover: 1500000, disabilityCover: 300000 };
+    state._meta.completedSteps = [1, 2, 3];
+    calculateIncome();
+    calculateBudget();
+    calculateFireNumber();
+    recalculateAll();
+    buildNavbar();
+}
+
 function saveState() {
     state._meta.updatedAt = new Date().toISOString();
     localStorage.setItem('jipange_v1', JSON.stringify(state));
