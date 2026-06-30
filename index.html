@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JiPange — Kenya's Financial Operating System</title>
+    <link rel="icon" type="image/jpeg" href="assets/images/logo-full.jpg">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -70,16 +71,43 @@
             backdrop-filter: blur(10px);
         }
 
-        .logo {
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logo-container:hover {
+            transform: scale(1.05);
+        }
+
+        .logo-image {
+            height: 40px;
+            width: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.15));
+            transition: all 0.3s ease;
+        }
+
+        .logo-container:hover .logo-image {
+            filter: drop-shadow(0 4px 12px rgba(255, 255, 255, 0.3));
+        }
+
+        .logo-text {
             font-weight: 900;
             font-size: 1.3rem;
             letter-spacing: 0.08em;
             color: var(--white);
             text-transform: uppercase;
+            display: none;
         }
-        .logo .accent {
-            color: var(--accent-light);
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+
+        @media (min-width: 768px) {
+            .logo-text {
+                display: inline;
+            }
         }
 
         .nav-center {
@@ -841,7 +869,10 @@
 </head>
 <body>
     <nav class="navbar">
-    <div class="logo">Ji<span class="accent">Pange</span></div>
+    <div class="logo-container">
+        <img src="assets/images/logo-full.jpg" alt="JiPange" class="logo-image" title="JiPange - Kenya's Financial Operating System">
+        <span class="logo-text">JiPange</span>
+    </div>
     <div class="nav-center" id="navTabs"></div>
     <div class="nav-right">
         <button id="langToggle" class="lang-toggle" title="Toggle English/Swahili">EN</button>
@@ -853,6 +884,7 @@
         <div style="max-width: 100%; margin: 0 auto;">
             <!-- Hero Section with Gradient -->
             <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 4rem 2rem; border-radius: 20px; margin-bottom: 3rem; box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3);">
+                <img src="assets/images/logo-full.jpg" alt="JiPange" style="height: 80px; width: auto; object-fit: contain; margin-bottom: 1.5rem; filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.2));">
                 <h1 style="font-size: 3.5rem; font-weight: 700; margin: 0; margin-bottom: 1rem; letter-spacing: -0.02em;">JiPange</h1>
                 <p style="font-size: 1.5rem; margin: 0; margin-bottom: 0.5rem; font-weight: 600; opacity: 0.95;">Your African Finance Copilot</p>
                 <p style="font-size: 1.1rem; margin: 0; opacity: 0.9; line-height: 1.6;">Build wealth. Achieve goals. Secure your future.</p>
@@ -1351,9 +1383,13 @@
         </div>
     </section>
 <section id="screen-5">
-        <h1 class="section-title">💎 Wealth Dashboard</h1>
-        <p class="section-subtitle">Your complete net worth and wealth journey, updated in real-time.</p>
-
+        <div style="display: flex; align-items: center; gap: 1.5rem; margin-bottom: 2rem; padding: 1.5rem; background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(16, 185, 129, 0.08) 100%); border-radius: 16px; border: 2px solid rgba(102, 126, 234, 0.1);">
+            <img src="assets/images/logo-full.jpg" alt="JiPange" style="height: 60px; width: auto; object-fit: contain; filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.1));">
+            <div>
+                <h2 style="margin: 0; color: #667eea; font-size: 1.2rem; font-weight: 700;">JiPange Wealth Dashboard</h2>
+                <p style="margin: 0.3rem 0 0 0; color: #64748B; font-size: 0.9rem;">Your complete net worth and wealth journey, updated in real-time.</p>
+            </div>
+        </div>
         <div class="metric-row">
             <div class="metric-card">
                 <div class="card-title">Net Worth (Today)</div>
