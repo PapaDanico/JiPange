@@ -6,12 +6,12 @@
 
 [[redirects]]
   from = "/"
-  to = "/jipange-phase4.html"
+  to = "/jipange.html"
   status = 200
 
 [[redirects]]
   from = "/*"
-  to = "/jipange-phase4.html"
+  to = "/jipange.html"
   status = 200
 
 # Cache settings
