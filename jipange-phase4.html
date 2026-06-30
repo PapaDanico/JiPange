@@ -3,38 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="JiPange: Comprehensive financial planning for Kenyan households and businesses. Create budgets, set goals, track investments, and plan your financial future.">
-    <meta name="theme-color" content="#1B4B8C">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="JiPange">
-    <link rel="manifest" href="manifest.json">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%231B4B8C' width='100' height='100'/><text x='50' y='50' font-size='50' font-weight='bold' fill='%2334D399' text-anchor='middle' dominant-baseline='central'>J</text></svg>">
     <title>JiPange — Kenya's Financial Operating System</title>
-    <!-- Modern Typography -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <!-- Supabase for Cloud Sync & Collaboration (Phase 4C) -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
-            /* Modern Vibrant Palette - Kenya Inspired */
+            /* Modern Vibrant Palette - Contemporary Design */
             --primary: #667eea;
             --primary-light: #764ba2;
             --secondary: #10b981;
             --secondary-light: #34d399;
             --accent: #f093fb;
             --accent-light: #f5576c;
-            --danger: #ef4444;
-            --danger-light: #fca5a5;
-            --navy: #0f1419;
-            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            --gradient-3: linear-gradient(135deg, #10b981 0%, #3b82f6 100%);
+            --danger: #EF4444;
+            --danger-light: #FCA5A5;
+
+            /* Gradients */
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-accent: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-success: linear-gradient(135deg, #10b981 0%, #3b82f6 100%);
 
             /* Neutrals */
             --white: #FFFFFF;
@@ -44,144 +32,6 @@
             --text-dark: #1E293B;
             --text-muted: #64748B;
             --text-light: #94A3B8;
-        }
-
-        /* Dark Mode */
-        @media (prefers-color-scheme: dark) {
-            :root.dark-mode {
-                --primary: #3B82F6;
-                --primary-light: #60A5FA;
-                --secondary: #34D399;
-                --secondary-light: #6EE7B7;
-                --accent: #FCD34D;
-                --accent-light: #FBBF24;
-                --navy: #E0E7FF;
-
-                --white: #0F1419;
-                --light-bg: #1E293B;
-                --surface: #334155;
-                --border: #475569;
-                --text-dark: #F1F5F9;
-                --text-muted: #CBD5E1;
-                --text-light: #94A3B8;
-            }
-        }
-
-        body.dark-mode {
-            background: linear-gradient(135deg, #1E293B 0%, #0F1419 100%);
-            color: #F1F5F9;
-        }
-
-        body.dark-mode .card,
-        body.dark-mode .nav-main-menu {
-            background: #1E293B;
-            border-color: #475569;
-        }
-
-        body.dark-mode input,
-        body.dark-mode select,
-        body.dark-mode textarea {
-            background: #334155;
-            color: #F1F5F9;
-            border-color: #475569;
-        }
-
-        body.dark-mode .navbar {
-            background: linear-gradient(135deg, #1E293B 0%, #0F1419 100%);
-        }
-
-        body.dark-mode .footer {
-            background: linear-gradient(135deg, #0F1419 0%, #000000 100%);
-        }
-
-        /* Dark mode toggle button */
-        .dark-mode-toggle {
-            background: none;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            color: white;
-            padding: 0.5rem 0.75rem;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .dark-mode-toggle:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.5);
-        }
-
-        /* Enhanced input states */
-        input.valid,
-        input.valid:focus {
-            border-color: #10B981;
-            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
-        }
-
-        input.invalid,
-        input.invalid:focus {
-            border-color: #EF4444;
-            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
-            animation: shake 0.3s ease;
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-        }
-
-        .input-error {
-            display: none;
-            font-size: 0.75rem;
-            margin-top: 0.25rem;
-            font-weight: 600;
-        }
-
-        .input-error.show {
-            display: block;
-        }
-
-        /* Accessibility improvements */
-        input[aria-invalid="true"] {
-            border-color: #EF4444;
-        }
-
-        button:focus-visible,
-        input:focus-visible,
-        select:focus-visible {
-            outline: 2px solid var(--primary);
-            outline-offset: 2px;
-        }
-
-        /* Toast notification enhancement */
-        @keyframes slideIn {
-            from {
-                transform: translateY(100px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .notification {
-            animation: slideIn 0.3s ease forwards;
-        }
-
-        /* Loading state animation */
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .loading {
-            animation: pulse 1.5s ease-in-out infinite;
-        }
 
             /* Status Colors */
             --success: #10B981;
@@ -195,50 +45,14 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html {
-            width: 100%;
-            height: 100%;
-            overflow-x: hidden;
-            overflow-y: auto;
-        }
+        html, body { width: 100%; height: 100%; overflow-x: hidden; }
         body {
-            width: 100%;
-            height: 100%;
-            overflow-x: hidden;
-        }
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', 'Roboto', sans-serif;
             font-size: 16px;
             line-height: 1.6;
             color: var(--text-dark);
             background: linear-gradient(135deg, var(--light-bg) 0%, #FFFFFF 100%);
             min-height: 100vh;
-            transition: background-color 0.3s ease, color 0.3s ease;
-            max-width: 100vw;
-        }
-
-        section, main, .navbar, .footer, .container, .card-grid {
-            max-width: 100%;
-            width: 100%;
-            overflow-x: hidden;
-        }
-
-        h1, h2, h3, h4, h5, h6 {
-            font-family: 'Poppins', 'Inter', sans-serif;
-            font-weight: 700;
-            letter-spacing: -0.02em;
-            margin-bottom: 0.5rem;
-        }
-
-        h1 { font-size: 2.5rem; line-height: 1.2; }
-        h2 { font-size: 2rem; line-height: 1.3; }
-        h3 { font-size: 1.5rem; line-height: 1.4; }
-        h4 { font-size: 1.25rem; }
-
-        @media (max-width: 768px) {
-            h1 { font-size: 1.75rem; }
-            h2 { font-size: 1.5rem; }
-            h3 { font-size: 1.25rem; }
         }
 
         /* Navigation */
@@ -337,55 +151,26 @@
         }
 
         .dropdown-menu {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(226, 232, 240, 0.6);
-            border-radius: 12px;
-            min-width: 220px;
-            box-shadow:
-                0 4px 12px rgba(0, 0, 0, 0.08),
-                0 12px 32px rgba(0, 0, 0, 0.12);
-            z-index: 1001;
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.35s ease;
-            opacity: 0;
-            transform-origin: top;
-            transform: scaleY(0.95) translateY(-8px);
+            position: fixed; top: auto; left: 0; background: var(--white);
+            border: 2px solid var(--border); border-radius: 8px; min-width: 200px;
+            box-shadow: 0 8px 24px rgba(139, 46, 46, 0.2); z-index: 1001;
+            max-height: 0; overflow: hidden; transition: max-height 0.3s ease, opacity 0.3s ease;
+            opacity: 0; transform-origin: top; transform: scaleY(0.95);
             pointer-events: none;
         }
 
         .nav-dropdown.open .dropdown-menu {
-            max-height: 600px;
-            opacity: 1;
-            transform: scaleY(1) translateY(0);
-            pointer-events: auto;
+            max-height: 600px; opacity: 1; transform: scaleY(1); pointer-events: auto;
         }
 
         .dropdown-item {
-            display: block;
-            padding: 0.9rem 1.2rem;
-            color: var(--text-dark);
-            text-decoration: none;
-            transition: all 0.25s ease;
-            border-bottom: 1px solid rgba(226, 232, 240, 0.4);
-            cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 500;
-            font-family: 'Inter', sans-serif;
-            position: relative;
-            z-index: 1002;
-            pointer-events: auto;
+            display: block; padding: 0.8rem 1.2rem; color: var(--text-1); text-decoration: none;
+            transition: all 0.2s; border-bottom: 1px solid var(--surface); cursor: pointer;
+            font-size: 0.85rem; font-weight: 500;
         }
 
         .dropdown-item:hover {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(52, 211, 153, 0.04) 100%);
-            color: var(--primary);
-            font-weight: 600;
-            padding-left: 1.4rem;
+            background: rgba(212, 160, 23, 0.08); color: var(--primary); font-weight: 600;
         }
 
         .dropdown-item.active {
@@ -421,32 +206,9 @@
             box-shadow: 0 4px 12px rgba(212, 160, 23, 0.3);
         }
 
-        /* Sections & Layout */
-        section {
-            margin-bottom: 2rem;
-            animation: fadeIn 0.5s ease forwards;
-        }
-
-        section h2 {
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid rgba(16, 185, 129, 0.1);
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
         /* Main */
         .main-container {
-            padding: 2rem 1.5rem;
+            padding: 1.5rem;
             max-width: 1400px;
             margin: 0 auto;
             padding-bottom: 150px;
@@ -543,16 +305,12 @@
         }
 
         .card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(226, 232, 240, 0.6);
+            background: var(--white);
+            border: 1px solid var(--border);
             border-radius: 16px;
-            padding: 2rem;
-            box-shadow:
-                0 1px 2px rgba(0, 0, 0, 0.03),
-                0 4px 8px rgba(0, 0, 0, 0.06),
-                0 16px 32px rgba(0, 0, 0, 0.08);
-            transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
         }
@@ -563,37 +321,15 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 3px;
+            height: 4px;
             background: linear-gradient(90deg, var(--secondary) 0%, var(--accent) 100%);
             border-radius: 16px 16px 0 0;
-            opacity: 0.8;
         }
 
         .card:hover {
-            box-shadow:
-                0 1px 2px rgba(0, 0, 0, 0.05),
-                0 8px 16px rgba(0, 0, 0, 0.1),
-                0 24px 48px rgba(0, 0, 0, 0.12);
-            transform: translateY(-6px) scale(1.01);
-            border-color: rgba(16, 185, 129, 0.3);
-        }
-
-        .card::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
-            border-radius: 16px;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .card:hover::after {
-            opacity: 1;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), 0 12px 28px rgba(0, 0, 0, 0.08);
+            transform: translateY(-4px);
+            border-color: var(--secondary);
         }
 
         .metric-row {
@@ -745,16 +481,10 @@
             margin-top: 0.5rem;
         }
 
-        /* Advanced Animations */
+        /* Animations */
         @keyframes slideIn {
-            from {
-                transform: translateX(400px);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
+            from { transform: translateX(400px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
 
         @keyframes fadeOut {
@@ -762,663 +492,41 @@
             to { opacity: 0; }
         }
 
-        @keyframes slideUp {
-            from {
-                transform: translateY(30px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        @keyframes slideDown {
-            from {
-                transform: translateY(-30px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        @keyframes zoomIn {
-            from {
-                transform: scale(0.95);
-                opacity: 0;
-            }
-            to {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-
-        @keyframes glow {
-            0%, 100% {
-                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
-            }
-            50% {
-                box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
-            }
-        }
-
-        @keyframes shimmer {
-            0% {
-                background-position: -1000px 0;
-            }
-            100% {
-                background-position: 1000px 0;
-            }
-        }
-
-        @keyframes float {
-            0%, 100% {
-                transform: translateY(0px);
-            }
-            50% {
-                transform: translateY(-10px);
-            }
-        }
-
-        @keyframes bounce {
-            0%, 100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-5px);
-            }
-        }
-
-        @keyframes rotate {
-            from {
-                transform: rotate(0deg);
-            }
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        @keyframes heartbeat {
-            0%, 100% {
-                transform: scale(1);
-            }
-            25% {
-                transform: scale(1.1);
-            }
-            50% {
-                transform: scale(1);
-            }
-        }
-
-        /* Screen & Page Animations */
-        [id^="screen-"] {
-            animation: slideUp 0.4s cubic-bezier(0.23, 1, 0.320, 1) forwards;
-        }
-
-        [id^="screen-"].hidden {
-            animation: fadeOut 0.3s ease forwards;
-        }
-
-        /* Input Animation */
-        input, select, textarea {
-            position: relative;
-        }
-
-        input::placeholder {
-            transition: opacity 0.3s ease;
-        }
-
-        input:focus::placeholder {
-            opacity: 0.6;
-        }
-
-        /* Loading Skeleton Animation */
-        .skeleton {
-            background: linear-gradient(
-                90deg,
-                rgba(0, 0, 0, 0.08) 0%,
-                rgba(0, 0, 0, 0.15) 50%,
-                rgba(0, 0, 0, 0.08) 100%
-            );
-            background-size: 1000px 100%;
-            animation: shimmer 2s infinite;
-        }
-
-        /* Notification Animations */
-        .notification {
-            animation: slideUp 0.4s cubic-bezier(0.23, 1, 0.320, 1) forwards;
-        }
-
-        .notification.success {
-            animation: slideUp 0.4s ease forwards, glow 2s ease-in-out 0.4s;
-        }
-
-        .notification.error {
-            animation: slideUp 0.4s ease forwards, shake 0.5s ease;
-        }
-
-        /* Chart Animation */
-        canvas {
-            animation: fadeIn 0.6s ease-out;
-        }
-
-        /* Hover Micro-interactions */
-        a:not(.no-hover) {
-            position: relative;
-            transition: color 0.3s ease;
-        }
-
-        a:not(.no-hover)::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--secondary);
-            transition: width 0.3s cubic-bezier(0.23, 1, 0.320, 1);
-        }
-
-        a:not(.no-hover):hover::after {
-            width: 100%;
-        }
-
-        /* Smooth Scroll */
-        html {
-            scroll-behavior: smooth;
-        }
-
-        /* Focus Visible (keyboard navigation) */
-        :focus-visible {
-            outline: 2px solid var(--primary);
-            outline-offset: 2px;
-        }
-
-        /* Transition Classes */
-        .fade-in {
-            animation: fadeIn 0.5s ease forwards;
-        }
-
-        .slide-up {
-            animation: slideUp 0.4s ease forwards;
-        }
-
-        .zoom-in {
-            animation: zoomIn 0.4s ease forwards;
-        }
-
-        .float {
-            animation: float 3s ease-in-out infinite;
-        }
-
-        .pulse-glow {
-            animation: glow 2s ease-in-out infinite;
-        }
-
-        /* Card Stagger Animation */
-        .card {
-            --card-index: 0;
-            animation: slideUp 0.5s cubic-bezier(0.23, 1, 0.320, 1) forwards;
-            animation-delay: calc(var(--card-index) * 0.1s);
-        }
-
-        .card:nth-child(1) { --card-index: 0; }
-        .card:nth-child(2) { --card-index: 1; }
-        .card:nth-child(3) { --card-index: 2; }
-        .card:nth-child(4) { --card-index: 3; }
-        .card:nth-child(5) { --card-index: 4; }
-
-        /* Button Ripple Enhanced */
-        button::before {
-            box-shadow: inset 0 0 0 0 rgba(255, 255, 255, 0.5);
-        }
-
-        button:active {
-            transform: scale(0.98);
-        }
-
-        /* Input Field Animation */
-        input:not(:placeholder-shown) {
-            box-shadow: 0 2px 8px rgba(27, 75, 140, 0.15);
-        }
-
-        /* Smooth transitions for all interactive elements */
-        * {
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        button, input, select, textarea, a {
-            transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
-        }
-
         /* Buttons */
         button {
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
             color: var(--white);
             border: none;
-            padding: 0.875rem 1.75rem;
-            border-radius: 12px;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
             font-size: 0.95rem;
-            font-weight: 600;
-            font-family: 'Inter', sans-serif;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+            transition: all 0.3s ease;
             letter-spacing: 0.3px;
-            box-shadow:
-                0 2px 8px rgba(27, 75, 140, 0.12),
-                0 8px 16px rgba(27, 75, 140, 0.08);
-            position: relative;
-            overflow: hidden;
-        }
-
-        button::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
-        }
-
-        button:active::before {
-            width: 300px;
-            height: 300px;
+            box-shadow: 0 2px 8px rgba(27, 75, 140, 0.15);
         }
 
         button:hover {
             background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
-            transform: translateY(-3px);
-            box-shadow:
-                0 4px 12px rgba(27, 75, 140, 0.15),
-                0 12px 28px rgba(27, 75, 140, 0.25);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(27, 75, 140, 0.3);
         }
 
         button.primary {
             background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-light) 100%);
             color: var(--white);
-            box-shadow:
-                0 2px 8px rgba(16, 185, 129, 0.12),
-                0 8px 16px rgba(16, 185, 129, 0.08);
         }
 
         button.primary:hover {
             background: linear-gradient(135deg, var(--secondary-light) 0%, var(--secondary) 100%);
-            box-shadow:
-                0 4px 12px rgba(16, 185, 129, 0.15),
-                0 12px 28px rgba(16, 185, 129, 0.25);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
         }
 
         button:disabled {
-            opacity: 0.5;
+            opacity: 0.6;
             cursor: not-allowed;
             transform: none !important;
-        }
-
-        /* Enhanced Loading States */
-        button.loading {
-            pointer-events: none;
-            position: relative;
-            opacity: 0.8;
-        }
-
-        button.loading::after {
-            content: '';
-            position: absolute;
-            width: 14px;
-            height: 14px;
-            top: 50%;
-            right: 12px;
-            margin-top: -7px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 0.6s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Modern Form Elements */
-        input, select, textarea {
-            width: 100%;
-            padding: 0.875rem 1rem;
-            border: 1.5px solid var(--border);
-            border-radius: 10px;
-            font-size: 0.95rem;
-            font-family: 'Inter', sans-serif;
-            background-color: rgba(255, 255, 255, 0.95);
-            color: var(--text-dark);
-            transition: all 0.3s ease;
-        }
-
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: var(--primary);
-            background-color: var(--white);
-            box-shadow: 0 0 0 3px rgba(27, 75, 140, 0.1);
-            transform: translateY(-1px);
-        }
-
-        input::placeholder {
-            color: var(--text-light);
-            font-weight: 400;
-        }
-
-        input::-webkit-outer-spin-button,
-        input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-
-        input[type="number"] {
-            -moz-appearance: textfield;
-        }
-
-        select {
-            cursor: pointer;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%231B4B8C' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 1rem center;
-            padding-right: 2.5rem;
-        }
-
-        label {
-            display: block;
-            font-weight: 600;
-            color: var(--text-dark);
-            margin-bottom: 0.6rem;
-            font-size: 0.95rem;
-            letter-spacing: 0.2px;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label + input,
-        .form-group label + select,
-        .form-group label + textarea {
-            margin-top: 0.5rem;
-        }
-
-        /* Text utilities */
-        .text-muted {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
-
-        .text-small {
-            font-size: 0.85rem;
-        }
-
-        .text-center {
-            text-align: center;
-        }
-
-        strong {
-            font-weight: 700;
-            color: var(--primary);
-        }
-
-        /* Badges and tags */
-        .badge {
-            display: inline-block;
-            padding: 0.4rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--secondary);
-            letter-spacing: 0.3px;
-        }
-
-        .badge.success {
-            background: rgba(16, 185, 129, 0.15);
-            color: var(--secondary);
-        }
-
-        .badge.warning {
-            background: rgba(245, 158, 11, 0.15);
-            color: var(--accent);
-        }
-
-        .badge.danger {
-            background: rgba(239, 68, 68, 0.15);
-            color: var(--danger);
-        }
-
-        /* Form Validation States */
-        input.valid {
-            border-color: var(--success) !important;
-            background: var(--success-bg) !important;
-        }
-
-        input.invalid {
-            border-color: var(--danger) !important;
-            background: var(--danger-bg) !important;
-        }
-
-        .input-error {
-            color: var(--danger);
-            font-size: 0.85rem;
-            margin-top: 0.25rem;
-            display: none;
-        }
-
-        .input-error.show {
-            display: block;
-        }
-
-        .input-hint {
-            color: var(--text-light);
-            font-size: 0.85rem;
-            margin-top: 0.25rem;
-        }
-
-        /* Floating Action Menu */
-        .fab-menu {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 999;
-        }
-
-        .fab-primary {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            padding: 0;
-            box-shadow: 0 4px 12px rgba(27, 75, 140, 0.3);
-            font-size: 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .fab-menu.expanded .fab-primary {
-            background: var(--danger) !important;
-        }
-
-        .fab-submenu {
-            position: absolute;
-            bottom: 70px;
-            right: 0;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-            padding: 0.75rem;
-            min-width: 180px;
-            display: none;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .fab-menu.expanded .fab-submenu {
-            display: flex;
-        }
-
-        .fab-submenu button {
-            width: 100%;
-            justify-content: flex-start;
-            padding: 0.75rem 1rem;
-            font-size: 0.9rem;
-            background: none;
-            color: var(--navy);
-            border: 1px solid var(--border);
-            text-align: left;
-            font-weight: 500;
-        }
-
-        .fab-submenu button:hover {
-            background: var(--light-bg);
-            color: var(--primary);
-            font-weight: 600;
-        }
-
-        /* Main Navigation Dropdown */
-        .nav-main-dropdown {
-            position: relative;
-            margin-right: auto;
-        }
-
-        .nav-main-btn {
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            color: white;
-            padding: 0.75rem 1.2rem;
-            border-radius: 6px;
-            font-size: 0.95rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all 0.3s ease;
-            font-weight: 600;
-        }
-
-        .nav-main-btn:hover {
-            background: rgba(255, 255, 255, 0.25);
-            border-color: rgba(255, 255, 255, 0.5);
-            transform: translateY(-2px);
-        }
-
-        .nav-main-btn::after {
-            content: '▼';
-            font-size: 0.7rem;
-            transition: transform 0.3s ease;
-        }
-
-        .nav-main-dropdown.open .nav-main-btn::after {
-            transform: rotate(180deg);
-        }
-
-        .nav-main-menu {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-            min-width: 320px;
-            max-height: 70vh;
-            overflow-y: auto;
-            display: none;
-            flex-direction: column;
-            margin-top: 0.5rem;
-            z-index: 1000;
-        }
-
-        .nav-main-dropdown.open .nav-main-menu {
-            display: flex;
-        }
-
-        .nav-section-title {
-            padding: 0.75rem 1rem;
-            font-weight: 800;
-            color: #0F1419;
-            border-bottom: 2px solid #D1FAE5;
-            background: #F0FDF4;
-            margin: 0;
-            font-size: 0.9rem;
-            letter-spacing: 0.5px;
-        }
-
-        .nav-section-title:first-child {
-            border-radius: 8px 8px 0 0;
-        }
-
-        .nav-screen-item {
-            padding: 0.8rem 1rem;
-            color: #0F1419;
-            cursor: pointer;
-            border-left: 3px solid transparent;
-            transition: all 0.2s ease;
-            border-bottom: 1px solid #E2E8F0;
-            font-weight: 500;
-        }
-
-        .nav-screen-item:hover {
-            background: #E8F4F8;
-            border-left-color: var(--secondary);
-            padding-left: 1.2rem;
-            color: #0F2647;
-            font-weight: 600;
-        }
-
-        .nav-screen-item.active {
-            background: #D1FAE5;
-            border-left-color: var(--secondary);
-            color: #047857;
-            font-weight: 700;
-        }
-
-        .nav-action-btn {
-            padding: 0.8rem 1rem;
-            background: none;
-            border: none;
-            color: #0F1419;
-            cursor: pointer;
-            text-align: left;
-            transition: all 0.2s ease;
-            border-left: 3px solid transparent;
-            border-bottom: 1px solid #E2E8F0;
-            font-weight: 500;
-            font-size: 0.95rem;
-        }
-
-        .nav-action-btn:hover {
-            background: #FEF3C7;
-            border-left-color: var(--accent);
-            padding-left: 1.2rem;
-            color: #92400E;
-            font-weight: 600;
-        }
-
-        /* Step Counter */
-        .step-counter {
-            position: sticky;
-            top: 70px;
-            background: white;
-            padding: 0.75rem 1.5rem;
-            border-bottom: 1px solid var(--border);
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            text-align: center;
-            z-index: 50;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-
-        .step-counter strong {
-            color: var(--primary);
-            font-weight: 700;
         }
 
         .button-group {
@@ -1521,8 +629,8 @@
         }
 
         .footer-content { max-width: 1200px; margin: 0 auto; }
-        .footer-primary { font-weight: 700; color: #FFD700; margin-bottom: 0.25rem; font-size: 0.9rem; }
-        .footer-secondary { color: #FFFFFF; font-size: 0.9rem; font-weight: 600; letter-spacing: 0.5px; }
+        .footer-primary { font-weight: 600; color: var(--amber); margin-bottom: 0.25rem; }
+        .footer-secondary { color: rgba(255, 255, 255, 0.8); font-size: 0.8rem; }
 
         /* Responsive */
         @media (max-width: 768px) {
@@ -1531,9 +639,6 @@
             .nav-dropdown-btn { font-size: 0.7rem; padding: 0.5rem 0.8rem; white-space: nowrap; }
             .dropdown-menu { position: fixed; min-width: 180px; max-width: 90vw; }
             .nav-tab { padding: 0.4rem 0.6rem; font-size: 0.7rem; }
-            .nav-main-btn { font-size: 0.85rem; padding: 0.6rem 1rem; }
-            .nav-main-menu { min-width: 280px; max-width: 90vw; }
-            .nav-right { display: flex; gap: 0.75rem; align-items: center; }
             .main-container { padding: 1rem; padding-bottom: 180px; }
             .section-title { font-size: 1.4rem; }
             .card-grid { grid-template-columns: 1fr; }
@@ -1739,12 +844,6 @@
     <div class="logo">Ji<span class="accent">Pange</span></div>
     <div class="nav-center" id="navTabs"></div>
     <div class="nav-right">
-        <!-- Main Navigation Dropdown -->
-        <div class="nav-main-dropdown" id="navMainDropdown">
-            <button class="nav-main-btn" onclick="toggleNavMainMenu()">🧭 Navigate</button>
-            <div class="nav-main-menu" id="navMainMenu"></div>
-        </div>
-        <button id="darkModeToggle" class="dark-mode-toggle" onclick="toggleDarkMode()" title="Toggle Dark Mode">🌙</button>
         <button id="langToggle" class="lang-toggle" title="Toggle English/Swahili">EN</button>
         <div class="health-badge">Plan Health: <span id="healthScore">—</span>/100</div>
     </div>
@@ -1753,27 +852,53 @@
 <!-- Main Content -->
 <div class="main-container">
 
+    <!-- Screen 0: Home & Hero -->
+    <section id="screen-0" class="active" style="text-align: center; padding: 3rem 2rem;">
+        <div style="max-width: 100%; margin: 0 auto;">
+            <!-- Hero Section with Gradient -->
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 4rem 2rem; border-radius: 20px; margin-bottom: 3rem; box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3);">
+                <h1 style="font-size: 3.5rem; font-weight: 700; margin: 0; margin-bottom: 1rem; letter-spacing: -0.02em;">JiPange</h1>
+                <p style="font-size: 1.5rem; margin: 0; margin-bottom: 0.5rem; font-weight: 600; opacity: 0.95;">Your African Finance Copilot</p>
+                <p style="font-size: 1.1rem; margin: 0; opacity: 0.9; line-height: 1.6;">Build wealth. Achieve goals. Secure your future.</p>
+            </div>
+
+            <!-- CTA Buttons -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 3rem;">
+                <button onclick="showScreen('screen-1')" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 1rem 2rem; border-radius: 12px; font-size: 1.1rem; font-weight: 600; cursor: pointer; box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3); transition: all 0.3s ease;">
+                    ▶️ Start Your Plan
+                </button>
+                <button onclick="(function() { loadDemoData(); setTimeout(() => showScreen('screen-1'), 100); })()" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; border: none; padding: 1rem 2rem; border-radius: 12px; font-size: 1.1rem; font-weight: 600; cursor: pointer; box-shadow: 0 10px 30px rgba(240, 147, 251, 0.3); transition: all 0.3s ease;">
+                    🎬 View Demo
+                </button>
+            </div>
+
+            <!-- Feature Highlights -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 3rem;">
+                <div style="background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.08);">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">💰</div>
+                    <h3 style="color: #667eea; font-weight: 600; margin-bottom: 0.5rem;">Smart Planning</h3>
+                    <p style="color: #64748B; font-size: 0.9rem;">AI-powered financial guidance</p>
+                </div>
+                <div style="background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.08);">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">📊</div>
+                    <h3 style="color: #667eea; font-weight: 600; margin-bottom: 0.5rem;">Real Goals</h3>
+                    <p style="color: #64748B; font-size: 0.9rem;">Track progress on what matters</p>
+                </div>
+                <div style="background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.08);">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔒</div>
+                    <h3 style="color: #667eea; font-weight: 600; margin-bottom: 0.5rem;">Your Privacy</h3>
+                    <p style="color: #64748B; font-size: 0.9rem;">Data stays with you always</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Screen 1: Profile (MVP) -->
-    <section id="screen-1" class="active">
-        <div style="text-align: center; margin-bottom: 2rem; padding: 2rem 1rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 20px; color: white;">
-            <h1 style="font-size: 2.5rem; margin: 0; font-weight: 700; letter-spacing: -1px;">JiPange</h1>
-            <p style="font-size: 1.1rem; margin: 0.5rem 0 0; opacity: 0.95;">Your African Finance Copilot</p>
-            <p style="font-size: 0.95rem; margin: 0.8rem 0 0; opacity: 0.85;">Build wealth. Achieve goals. Secure your future.</p>
-        </div>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem;">
-            <button onclick="showScreen('screen-2')" style="padding: 1.5rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; color: white; border-radius: 12px; cursor: pointer; font-size: 1.1rem; font-weight: 600; transition: transform 0.3s; box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);">
-                ▶️ Start Your Plan
-            </button>
-            <button onclick="(function() { loadDemoData(); setTimeout(() => showScreen('screen-2'), 100); })()" style="padding: 1.5rem; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border: none; color: white; border-radius: 12px; cursor: pointer; font-size: 1.1rem; font-weight: 600; transition: transform 0.3s; box-shadow: 0 8px 20px rgba(245, 87, 108, 0.3);">
-                🎬 View Demo
-            </button>
-        </div>
-
-        <h2 style="font-size: 1.4rem; color: var(--navy); margin-bottom: 1.5rem; font-weight: 600;">Let's Get to Know You</h2>
+    <section id="screen-1">
+        <h1 class="section-title">📋 About You</h1>
         <div class="card-grid">
-            <div class="card" style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%); border: 2px solid #667eea; border-radius: 16px;">
-                <h2 style="font-size: 1.1rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 1rem; font-weight: 600;">Personal Details</h2>
+            <div class="card">
+                <h2 style="font-size: 1.1rem; color: var(--navy); margin-bottom: 1rem;">Personal Details</h2>
                 <div class="field-group">
                     <label for="name">Full Name</label>
                     <input type="text" id="name" placeholder="Your name">
@@ -1806,8 +931,8 @@
                 </div>
             </div>
 
-            <div class="card" style="background: linear-gradient(135deg, rgba(245, 147, 251, 0.05) 0%, rgba(245, 87, 108, 0.05) 100%); border: 2px solid #f093fb; border-radius: 16px;">
-                <h2 style="font-size: 1.1rem; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 1rem; font-weight: 600;">Household</h2>
+            <div class="card">
+                <h2 style="font-size: 1.1rem; color: var(--navy); margin-bottom: 1rem;">Household</h2>
                 <div class="field-group">
                     <label for="dependants">Number of Dependants</label>
                     <input type="number" id="dependants" min="0" max="20" value="0">
@@ -1825,8 +950,8 @@
                 </div>
             </div>
 
-            <div class="card" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(59, 130, 246, 0.05) 100%); border: 2px solid #10b981; border-radius: 16px;">
-                <h2 style="font-size: 1.1rem; background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 1rem; font-weight: 600;">Household Mode <span class="badge">✨</span></h2>
+            <div class="card">
+                <h2 style="font-size: 1.1rem; color: var(--navy); margin-bottom: 1rem;">Household Mode <span class="badge">NEW</span></h2>
                 <p style="font-size: 0.9rem; color: var(--text-2); margin-bottom: 1rem;">Planning with a partner?</p>
                 <div class="field-group">
                     <label for="isHouseholdPlanning">
@@ -4347,26 +3472,11 @@ function init() {
         generateOptimizerScenarios();
         renderMultiChamaUI();
     }, 100);
-
-    // Phase 4C: Cloud Sync Initialization
-    setTimeout(() => {
-        initSupabase();
-    }, 500);
 }
 
 function buildNavbar() {
     const navTabs = document.getElementById('navTabs');
     navTabs.innerHTML = '';
-
-    // Add cloud sync button
-    const cloudButton = document.createElement('button');
-    cloudButton.id = 'cloudSyncButton';
-    cloudButton.style.cssText = 'position: absolute; top: 15px; right: 20px; padding: 0.6rem 1.2rem; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: all 0.3s;';
-    cloudButton.innerHTML = '☁️ Sign In for Cloud Sync';
-    cloudButton.style.background = 'var(--surface)';
-    cloudButton.style.color = 'var(--text-dark)';
-    cloudButton.onclick = showCloudAuthModal;
-    navTabs.parentElement.appendChild(cloudButton);
 
     // Two-tier navigation: 5 Primary + Tools
     const categories = [
@@ -4548,14 +3658,7 @@ function attachEventListeners() {
     incomeFields.forEach(id => {
         const el = document.getElementById(id);
         if (el) el.addEventListener('input', (e) => {
-            let value = parseInt(e.target.value) || 0;
-            // Enforce non-negative values
-            if (value < 0) {
-                value = 0;
-                e.target.value = '0';
-                showNotification('Income must be 0 or positive', 'warning');
-            }
-            state.income[id] = value;
+            state.income[id] = parseInt(e.target.value) || 0;
             saveState();
             recalculateAll();
         });
@@ -4565,13 +3668,7 @@ function attachEventListeners() {
     budgetFields.forEach(id => {
         const el = document.getElementById(id);
         if (el) el.addEventListener('input', (e) => {
-            let value = parseInt(e.target.value) || 0;
-            // Enforce non-negative values
-            if (value < 0) {
-                value = 0;
-                e.target.value = '0';
-            }
-            state.budget[id] = value;
+            state.budget[id] = parseInt(e.target.value) || 0;
             saveState();
             recalculateAll();
         });
@@ -4918,24 +4015,14 @@ function calculateIncome() {
     state.income._grossMonthly = grossMonthly;
     state.income._netMonthly = Math.max(0, netMonthly);
     state.income._stabilityBand = stabilityBand;
-
-    return {
-        grossMonthly: grossMonthly,
-        netMonthly: Math.max(0, netMonthly),
-        paye: Math.round(paye),
-        nssf: nssfT1 + Math.round(nssfT2),
-        shif: Math.round(shif),
-        totalDeductions: totalDeductions,
-        stabilityBand: stabilityBand
-    };
 }
 
 function calculateBudget() {
     const categories = ['schoolFees', 'rent', 'carLoan', 'insurance', 'otherFixed', 'tithe', 'upcountrySupport', 'harambee', 'chama', 'churchOther', 'food', 'utilities', 'transport', 'airtime', 'houseHelp', 'dining', 'personal', 'misc'];
     let total = 0;
-    categories.forEach(cat => total += state.budget[cat] || 0);
+    categories.forEach(cat => total += state.budget[cat]);
 
-    const netIncome = state.income._netMonthly || 0;
+    const netIncome = state.income._netMonthly;
     const surplus = netIncome - total;
     const savingsRate = netIncome > 0 ? (surplus / netIncome) : 0;
 
@@ -4943,17 +4030,7 @@ function calculateBudget() {
     state.budget._surplus = surplus;
     state.budget._savingsRate = savingsRate;
 
-    const fireMonthlyInvest = document.getElementById('fireMonthlyInvest');
-    if (fireMonthlyInvest) {
-        fireMonthlyInvest.value = Math.max(0, Math.round(surplus * 0.67));
-    }
-
-    return {
-        totalExpenses: total,
-        surplus: surplus,
-        savingsRate: savingsRate,
-        investmentAllocation: Math.max(0, Math.round(surplus * 0.67))
-    };
+    document.getElementById('fireMonthlyInvest').value = Math.max(0, Math.round(surplus * 0.67));
 }
 
 function calculateFireNumber() {
@@ -5127,14 +4204,10 @@ function computeHealthScore() {
 
     // DIMENSION 6: Goals (0-100 points)
     let scoreGoals = 0;
-    // Ensure goals is an array, not an object
-    const goalsArray = Array.isArray(s.goals) ? s.goals :
-                      (s.goals && typeof s.goals === 'object' ? Object.values(s.goals) : []);
-
-    const activeGoals = goalsArray.filter(g => g.targetAmount > 0).length;
+    const activeGoals = (s.goals || []).filter(g => g.targetAmount > 0).length;
     scoreGoals += Math.min(activeGoals * 12, 36); // Max 3 goals
 
-    const goalsWithContribution = goalsArray.filter(g => g.monthlyContribution > 0).length;
+    const goalsWithContribution = (s.goals || []).filter(g => g.monthlyContribution > 0).length;
     scoreGoals += Math.min(goalsWithContribution * 8, 24);
 
     if (s.goals && s.goals.length > 0) scoreGoals += 15; // FIRE defined
@@ -5659,38 +4732,132 @@ function updateFireHint() {
 
 // ============ NAVIGATION & HELPERS ============
 function showScreen(screenId) {
-    const allSections = document.querySelectorAll('section');
-    const targetScreen = document.getElementById(screenId);
-
-    if (!targetScreen) return;
-
-    // Fade out current sections
-    allSections.forEach(s => {
-        if (s.classList.contains('active')) {
-            s.style.animation = 'fadeOut 0.3s ease forwards';
-            s.classList.remove('active');
-        }
-    });
-
-    // Add slide up animation to new screen
-    setTimeout(() => {
-        targetScreen.classList.add('active');
-        targetScreen.style.animation = 'slideUp 0.4s cubic-bezier(0.23, 1, 0.320, 1) forwards';
-    }, 150);
-
-    // Smooth scroll to top
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-
-    // Update UI
+    document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+    document.getElementById(screenId).classList.add('active');
+    window.scrollTo(0, 0);
     updateProgressBar();
-    updateStepCounter();
-    initializeNavMainMenu();
     trackEvent('screen', screenId, `Visited ${screenId}`);
 
     // Update analytics stats if on Screen 10
     if (screenId === 'screen-10') {
-        setTimeout(updateAnalyticsQuickStats, 200);
+        setTimeout(updateAnalyticsQuickStats, 100);
     }
+}
+
+function loadDemoData() {
+    state.profile = {
+        name: 'Demo User',
+        age: 35,
+        retirementAge: 60,
+        county: 'Nairobi',
+        dependants: 2,
+        upcountryDep: 1,
+        schoolChildren: 1,
+        isHouseholdPlanning: false
+    };
+
+    state.income = {
+        salary: 120000,
+        consulting: 25000,
+        farm: 0,
+        rental: 10000,
+        remittance: 0,
+        business: 8000,
+        other: 2000,
+        bondCoupons: 0,
+        _grossMonthly: 165000
+    };
+
+    state.budget = {
+        schoolFees: 20000,
+        rent: 40000,
+        carLoan: 8000,
+        insurance: 5000,
+        otherFixed: 3000,
+        tithe: 4000,
+        upcountrySupport: 5000,
+        harambee: 2000,
+        chama: 2000,
+        churchOther: 0,
+        food: 15000,
+        utilities: 6000,
+        transport: 8000,
+        airtime: 1200,
+        houseHelp: 3500,
+        dining: 3000,
+        personal: 2000,
+        misc: 1000
+    };
+
+    state.goals = [
+        {
+            id: 1,
+            name: 'House Down Payment',
+            targetAmount: 1000000,
+            currentAmount: 250000,
+            deadline: 2027,
+            monthlyContribution: 15000,
+            category: 'wealth'
+        },
+        {
+            id: 2,
+            name: 'Child Education Fund',
+            targetAmount: 500000,
+            currentAmount: 100000,
+            deadline: 2025,
+            monthlyContribution: 8000,
+            category: 'education'
+        }
+    ];
+
+    state.investments = {
+        list: [],
+        bondLadder: [
+            { tenor: 2, amount: 150000, yield: 12, maturityDate: '2026' },
+            { tenor: 5, amount: 150000, yield: 13, maturityDate: '2029' },
+            { tenor: 10, amount: 150000, yield: 14, maturityDate: '2034' }
+        ],
+        totalBondLadder: 450000,
+        _totalPortfolio: 450000
+    };
+
+    state.debts = [
+        { id: 1, amount: 300000, monthlyPayment: 8000, rate: 8, description: 'Car Loan' }
+    ];
+
+    state.assets = [
+        { id: 1, value: 1500000, description: 'Primary Residence' }
+    ];
+
+    state.savedBalances = {
+        _mPesaLock: 50000,
+        _mmf: 100000,
+        _fixed: 75000,
+        _other: 25000
+    };
+
+    state.insurance = {
+        lifeCover: 500000,
+        medicalCover: 100000,
+        homeCover: 1500000,
+        disabilityCover: 300000
+    };
+
+    state._meta.completedSteps = [1, 2, 3];
+
+    // Populate form fields
+    document.getElementById('name').value = state.profile.name;
+    document.getElementById('age').value = state.profile.age;
+    document.getElementById('retirementAge').value = state.profile.retirementAge;
+    document.getElementById('county').value = state.profile.county;
+    document.getElementById('dependants').value = state.profile.dependants;
+    document.getElementById('upcountryDep').value = state.profile.upcountryDep;
+    document.getElementById('schoolChildren').value = state.profile.schoolChildren;
+
+    // Trigger UI updates and save
+    recalculateAll();  // This calls all calculations + updateUI()
+    buildNavbar();
+    saveState();
 }
 
 function markStepComplete(stepNum) {
@@ -6844,35 +6011,10 @@ function loadScenario(scenario) {
 function showNotification(message, type = 'success') {
     const toast = document.getElementById('notification-toast');
     const msgEl = document.getElementById('notification-message');
-
     msgEl.textContent = message;
-
-    // Set colors
-    const colors = {
-        success: '#10B981',
-        error: '#EF4444',
-        info: '#3B82F6',
-        warning: '#F59E0B'
-    };
-    toast.style.background = colors[type] || colors.success;
-
-    // Reset animation
-    toast.style.animation = 'none';
-
-    // Show with animation
-    toast.style.display = 'flex';
-    setTimeout(() => {
-        toast.style.animation = 'slideUp 0.4s cubic-bezier(0.23, 1, 0.320, 1)';
-    }, 10);
-
-    // Hide with fade
-    setTimeout(() => {
-        toast.style.animation = 'fadeOut 0.3s ease forwards';
-        setTimeout(() => {
-            toast.style.display = 'none';
-            toast.style.animation = 'none';
-        }, 300);
-    }, 3000);
+    toast.style.background = type === 'success' ? '#2D7659' : type === 'error' ? '#A32D2D' : '#D4A017';
+    toast.style.display = 'block';
+    setTimeout(() => toast.style.display = 'none', 3000);
 }
 
 function updateProgressBar() {
@@ -7204,176 +6346,6 @@ function clearAllData() {
         recalculateAll();
         alert('✅ Data cleared. Starting fresh.');
     }
-}
-
-// ============ QUICK WINS: ENHANCED UI/UX ============
-
-// Enhanced button loading state
-function setButtonLoading(button, isLoading, text = '⏳ Processing...') {
-    if (isLoading) {
-        button.disabled = true;
-        button.classList.add('loading');
-        button.dataset.originalText = button.textContent;
-        button.textContent = text;
-    } else {
-        button.disabled = false;
-        button.classList.remove('loading');
-        button.textContent = button.dataset.originalText || 'Export';
-    }
-}
-
-// Enhanced form input validation with visual feedback
-function validateInput(input, rules = {}) {
-    const value = input.value.trim();
-    let isValid = true;
-    let errorMsg = '';
-    let successMsg = '';
-
-    if (rules.required && !value) {
-        isValid = false;
-        errorMsg = '⚠️ This field is required';
-    } else if (value) {
-        successMsg = '✓';
-    }
-
-    if (rules.minLength && value && value.length < rules.minLength) {
-        isValid = false;
-        errorMsg = `⚠️ Minimum ${rules.minLength} characters required`;
-    }
-
-    if (rules.maxLength && value && value.length > rules.maxLength) {
-        isValid = false;
-        errorMsg = `⚠️ Maximum ${rules.maxLength} characters allowed`;
-    }
-
-    if (rules.pattern && value && !rules.pattern.test(value)) {
-        isValid = false;
-        errorMsg = rules.patternError || '⚠️ Invalid format';
-    }
-
-    if (rules.min && value && parseFloat(value) < rules.min) {
-        isValid = false;
-        errorMsg = `⚠️ Minimum value is ${rules.min}`;
-    }
-
-    if (rules.max && value && parseFloat(value) > rules.max) {
-        isValid = false;
-        errorMsg = `⚠️ Maximum value is ${rules.max}`;
-    }
-
-    // Add visual feedback
-    input.classList.toggle('valid', isValid && value);
-    input.classList.toggle('invalid', !isValid && value);
-    input.setAttribute('aria-invalid', !isValid && value ? 'true' : 'false');
-
-    // Update or create error message
-    let errorEl = input.parentElement?.querySelector('.input-error');
-    if (!errorEl && (errorMsg || successMsg)) {
-        errorEl = document.createElement('span');
-        errorEl.className = 'input-error';
-        input.parentElement?.appendChild(errorEl);
-    }
-
-    if (errorEl) {
-        errorEl.textContent = errorMsg || successMsg;
-        errorEl.classList.toggle('show', !isValid || (isValid && successMsg));
-        errorEl.style.color = isValid ? '#10B981' : '#EF4444';
-    }
-
-    return isValid;
-}
-
-// Toggle floating action menu
-let fabMenuOpen = false;
-function toggleFABMenu() {
-    const fabMenu = document.getElementById('fab-menu');
-    if (fabMenu) {
-        fabMenuOpen = !fabMenuOpen;
-        fabMenu.classList.toggle('expanded', fabMenuOpen);
-    }
-}
-
-// Close FAB menu when clicking elsewhere
-document.addEventListener('click', (e) => {
-    if (fabMenuOpen && !e.target.closest('.fab-menu')) {
-        fabMenuOpen = false;
-        document.getElementById('fab-menu')?.classList.remove('expanded');
-    }
-});
-
-// Update step counter
-function updateStepCounter() {
-    const activeScreen = document.querySelector('section.active');
-    if (!activeScreen) return;
-
-    const screenId = activeScreen.id;
-    const screenNum = parseInt(screenId.replace('screen-', '')) + 1;
-    const totalScreens = document.querySelectorAll('section').length;
-
-    let counter = document.getElementById('step-counter');
-    if (!counter) {
-        counter = document.createElement('div');
-        counter.id = 'step-counter';
-        counter.className = 'step-counter';
-        document.querySelector('.navbar').insertAdjacentElement('afterend', counter);
-    }
-
-    counter.innerHTML = `Step <strong>${screenNum}</strong> of <strong>${totalScreens}</strong>`;
-}
-
-// Keyboard shortcuts
-document.addEventListener('keydown', (e) => {
-    if (e.ctrlKey || e.metaKey) {
-        switch(e.key.toLowerCase()) {
-            case 'e':
-                e.preventDefault();
-                document.querySelector('[onclick*="exportMonthlyReport"]')?.click();
-                break;
-            case 'p':
-                e.preventDefault();
-                document.querySelector('[onclick*="printPlan"]')?.click();
-                break;
-            case 's':
-                e.preventDefault();
-                document.querySelector('[onclick*="shareWhatsApp"]')?.click();
-                break;
-            case 'k':
-                e.preventDefault();
-                showAnalyticsDashboard();
-                break;
-        }
-    }
-
-    // Arrow keys for navigation
-    if (e.key === 'ArrowRight') {
-        const nextBtn = document.querySelector('.button-group .primary');
-        nextBtn?.click();
-    } else if (e.key === 'ArrowLeft') {
-        const prevBtn = document.querySelector('.button-group button:not(.primary)');
-        prevBtn?.click();
-    }
-});
-
-// Character counter for text inputs
-function addCharacterCounter(input, maxLength) {
-    const wrapper = input.parentElement;
-    let counter = wrapper.querySelector('.char-counter');
-
-    if (!counter) {
-        counter = document.createElement('div');
-        counter.className = 'char-counter';
-        counter.style.cssText = 'font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;';
-        wrapper.appendChild(counter);
-    }
-
-    const updateCounter = () => {
-        const current = input.value.length;
-        counter.textContent = `${current}/${maxLength} characters`;
-        counter.style.color = current > maxLength * 0.8 ? 'var(--warning)' : 'var(--text-muted)';
-    };
-
-    input.addEventListener('input', updateCounter);
-    updateCounter();
 }
 
 // ============ PHASE 4C: ADOPTION METRICS & ANALYTICS ============
@@ -8160,499 +7132,10 @@ function checkQuizAnswers(count) {
     showNotification('Quiz submitted! Check your answers in the lesson.', 'info');
 }
 
-// ============ PHASE 4C: CLOUD SYNC & COLLABORATIVE PLANNING ============
-
-// Supabase Configuration (Phase 4C)
-// TODO: Move to environment variables (process.env.SUPABASE_URL, process.env.SUPABASE_KEY) in production for security
-const SUPABASE_URL = 'https://nbhhkwdnbavctzkffoeo.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5iaGhrd2RuYmF2Y3R6a2Zmb2VvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1OTczNDcsImV4cCI6MjA5ODE3MzM0N30.ftKoib2ZpUysKgBFifYoP929pKBre8DS26PFhYfM_lM';
-
-let supabase = null;
-let currentUser = null;
-let cloudSyncEnabled = false;
-
-// Initialize Supabase
-function initSupabase() {
-    try {
-        if (window.supabase && window.supabase.createClient) {
-            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-            console.log('✅ Supabase initialized for cloud sync');
-            checkAuthStatus();
-        }
-    } catch (e) {
-        console.log('ℹ️ Cloud sync not available (running offline)');
-    }
-}
-
-// Check if user is already authenticated
-async function checkAuthStatus() {
-    if (!supabase) return;
-    try {
-        const { data, error } = await supabase.auth.getSession();
-        if (data.session) {
-            currentUser = data.session.user;
-            cloudSyncEnabled = true;
-            updateCloudSyncUI();
-            await loadCloudPlan();
-            subscribeToCloudUpdates();
-        }
-    } catch (e) {
-        console.log('Auth check failed:', e.message);
-    }
-}
-
-// Cloud Auth: Sign Up
-async function cloudSignUp(email, password) {
-    if (!supabase) {
-        showNotification('Cloud sync not available', 'error');
-        return false;
-    }
-
-    try {
-        const { data, error } = await supabase.auth.signUp({
-            email,
-            password
-        });
-
-        if (error) {
-            const msg = error.message.toLowerCase();
-            if (msg.includes('already registered')) {
-                throw new Error('This email is already registered. Use Sign In instead.');
-            } else if (msg.includes('password')) {
-                throw new Error('Password must be at least 6 characters.');
-            }
-            throw error;
-        }
-
-        currentUser = data.user;
-        cloudSyncEnabled = true;
-        showNotification('✅ Account created! Ready to sync plans.', 'success');
-        updateCloudSyncUI();
-        return true;
-    } catch (error) {
-        console.error('Sign up error:', error);
-        showNotification('❌ Sign up failed: ' + error.message, 'error');
-        return false;
-    }
-}
-
-// Cloud Auth: Sign In
-async function cloudSignIn(email, password) {
-    if (!supabase) {
-        showNotification('Cloud sync not available', 'error');
-        return false;
-    }
-
-    try {
-        const { data, error } = await supabase.auth.signInWithPassword({
-            email,
-            password
-        });
-
-        if (error) {
-            const msg = error.message.toLowerCase();
-            if (msg.includes('invalid') || msg.includes('credentials')) {
-                throw new Error('Invalid email or password. Please check and try again.');
-            } else if (msg.includes('not confirmed')) {
-                throw new Error('Email not confirmed. Check your inbox for verification link.');
-            }
-            throw error;
-        }
-
-        currentUser = data.user;
-        cloudSyncEnabled = true;
-        showNotification('✅ Signed in! Loading your plans...', 'success');
-        updateCloudSyncUI();
-        await loadCloudPlan();
-        return true;
-    } catch (error) {
-        console.error('Sign in error:', error);
-        showNotification('❌ Sign in failed: ' + error.message, 'error');
-        return false;
-    }
-}
-
-// Cloud Auth: Sign Out
-async function cloudSignOut() {
-    if (!supabase) return;
-
-    try {
-        await supabase.auth.signOut();
-        currentUser = null;
-        cloudSyncEnabled = false;
-        updateCloudSyncUI();
-        showNotification('Signed out', 'info');
-    } catch (error) {
-        showNotification('Sign out failed: ' + error.message, 'error');
-    }
-}
-
-// Save plan to cloud
-async function saveCloudPlan() {
-    if (!currentUser || !supabase) return false;
-
-    try {
-        const planData = {
-            user_id: currentUser.id,
-            plan_data: JSON.stringify(state),
-            saved_at: new Date().toISOString(),
-            plan_name: `${(state.profile && state.profile.name) || 'My Plan'} - ${new Date().toLocaleDateString()}`
-        };
-
-        // Try to update existing plan first
-        const { data: existing, error: selectError } = await supabase
-            .from('plans')
-            .select('id')
-            .eq('user_id', currentUser.id)
-            .limit(1);
-
-        if (selectError) throw selectError;
-
-        if (existing && existing.length > 0) {
-            const { error: updateError } = await supabase
-                .from('plans')
-                .update(planData)
-                .eq('id', existing[0].id);
-            if (updateError) throw updateError;
-        } else {
-            const { error: insertError } = await supabase
-                .from('plans')
-                .insert([planData]);
-            if (insertError) throw insertError;
-        }
-
-        showNotification('✅ Plan saved to cloud', 'success');
-        return true;
-    } catch (error) {
-        console.log('Cloud save error:', error);
-        return false;
-    }
-}
-
-// Load plan from cloud
-async function loadCloudPlan() {
-    if (!currentUser || !supabase) return false;
-
-    try {
-        const { data, error } = await supabase
-            .from('plans')
-            .select('plan_data')
-            .eq('user_id', currentUser.id)
-            .order('saved_at', { ascending: false })
-            .limit(1);
-
-        if (error) throw error;
-
-        if (data && data.length > 0) {
-            const loadedState = JSON.parse(data[0].plan_data);
-            Object.assign(state, loadedState);
-            window.state = state;
-            recalculateAll();
-            showNotification('✅ Plan loaded from cloud', 'success');
-            return true;
-        }
-    } catch (error) {
-        console.log('Cloud load error:', error);
-    }
-    return false;
-}
-
-// Household Collaboration: Add spouse/partner
-async function addHouseholdMember(partnerEmail, accessLevel = 'edit') {
-    if (!currentUser || !supabase) {
-        showNotification('Sign in to share plans', 'error');
-        return false;
-    }
-
-    try {
-        const { data, error } = await supabase
-            .from('household_shares')
-            .insert([{
-                owner_id: currentUser.id,
-                shared_with_email: partnerEmail,
-                access_level: accessLevel,
-                shared_at: new Date().toISOString()
-            }]);
-
-        if (error) throw error;
-
-        showNotification(`Plan shared with ${partnerEmail}`, 'success');
-        return true;
-    } catch (error) {
-        showNotification('Share failed: ' + error.message, 'error');
-        return false;
-    }
-}
-
-// Get household members
-async function getHouseholdMembers() {
-    if (!currentUser || !supabase) return [];
-
-    try {
-        const { data, error } = await supabase
-            .from('household_shares')
-            .select('shared_with_email, access_level, shared_at')
-            .eq('owner_id', currentUser.id);
-
-        if (error) throw error;
-        return data || [];
-    } catch (error) {
-        console.log('Get household members error:', error);
-        return [];
-    }
-}
-
-// Real-time sync listener
-function subscribeToCloudUpdates() {
-    if (!currentUser || !supabase) return;
-
-    try {
-        const channel = supabase
-            .channel(`public:plans:user_id=eq.${currentUser.id}`)
-            .on('postgres_changes',
-                { event: 'UPDATE', schema: 'public', table: 'plans' },
-                payload => {
-                    try {
-                        const updatedState = JSON.parse(payload.new.plan_data);
-                        Object.assign(state, updatedState);
-                        window.state = state;
-                        recalculateAll();
-                        showNotification('📱 Plan updated from another device', 'info');
-                    } catch (parseError) {
-                        console.log('Failed to parse cloud update:', parseError.message);
-                    }
-                }
-            )
-            .subscribe((status) => {
-                if (status === 'SUBSCRIBED') {
-                    console.log('Real-time sync subscribed');
-                }
-            });
-
-        return channel;
-    } catch (e) {
-        console.log('Real-time sync not available:', e.message);
-    }
-}
-
-// Update UI based on cloud sync status
-function updateCloudSyncUI() {
-    const cloudButton = document.getElementById('cloudSyncButton');
-
-    if (!cloudButton) return;
-
-    if (cloudSyncEnabled && currentUser) {
-        cloudButton.innerHTML = `☁️ Synced (${currentUser.email.split('@')[0]})`;
-        cloudButton.style.background = '#10B981';
-        cloudButton.style.color = 'white';
-        cloudButton.onclick = showCloudMenu;
-    } else {
-        cloudButton.innerHTML = '☁️ Sign In for Cloud Sync';
-        cloudButton.style.background = 'var(--surface)';
-        cloudButton.style.color = 'var(--text-dark)';
-        cloudButton.onclick = showCloudAuthModal;
-    }
-}
-
-// Show cloud auth modal
-function showCloudAuthModal() {
-    const modal = document.createElement('div');
-    modal.id = 'cloudAuthModal_' + Date.now();
-    modal.setAttribute('data-modal', 'auth');
-    modal.setAttribute('role', 'dialog');
-    modal.setAttribute('aria-modal', 'true');
-    modal.setAttribute('aria-labelledby', 'cloudAuthTitle');
-    modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 2000; padding: 20px;';
-
-    const content = document.createElement('div');
-    content.style.cssText = 'background: var(--white); color: var(--text-dark); border-radius: 12px; padding: 2rem; max-width: 500px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.3);';
-
-    content.innerHTML = `
-        <h2 id="cloudAuthTitle" style="margin-top: 0; color: var(--primary); margin-bottom: 1.5rem;">☁️ Cloud Sync Setup</h2>
-
-        <div style="margin-bottom: 1.5rem;">
-            <label for="cloudEmail" style="display: block; color: var(--text-dark); font-weight: 600; margin-bottom: 0.5rem;">Email</label>
-            <input type="email" id="cloudEmail" placeholder="your@email.com" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 6px; font-size: 0.95rem; background: var(--white); color: var(--text-dark); box-sizing: border-box;">
-        </div>
-
-        <div style="margin-bottom: 2rem;">
-            <label for="cloudPassword" style="display: block; color: var(--text-dark); font-weight: 600; margin-bottom: 0.5rem;">Password</label>
-            <input type="password" id="cloudPassword" placeholder="••••••••" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 6px; font-size: 0.95rem; background: var(--white); color: var(--text-dark); box-sizing: border-box;">
-        </div>
-
-        <div style="display: flex; gap: 1rem;">
-            <button class="primary" style="flex: 1;" id="cloudSignInBtn">Sign In</button>
-            <button style="flex: 1; background: var(--surface); border: none; padding: 0.75rem; border-radius: 6px; cursor: pointer; color: var(--text-dark);" id="cloudSignUpBtn">Create Account</button>
-        </div>
-
-        <button id="cloudModalCancel" style="width: 100%; margin-top: 1rem; background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 0.5rem;">Cancel</button>
-    `;
-
-    modal.appendChild(content);
-    document.body.appendChild(modal);
-
-    // Add event listeners with proper error handling
-    const emailInput = document.getElementById('cloudEmail');
-    const passwordInput = document.getElementById('cloudPassword');
-    const signInBtn = document.getElementById('cloudSignInBtn');
-    const signUpBtn = document.getElementById('cloudSignUpBtn');
-    const cancelBtn = document.getElementById('cloudModalCancel');
-
-    const closeModal = () => modal.remove();
-
-    signInBtn.addEventListener('click', async () => {
-        const email = emailInput.value;
-        const password = passwordInput.value;
-        if (email && password.length >= 6) {
-            signInBtn.disabled = true;
-            signInBtn.textContent = '⏳ Signing in...';
-            try {
-                const ok = await cloudSignIn(email, password);
-                if (ok) closeModal();
-            } catch (e) {
-                showNotification('Sign in failed: ' + e.message, 'error');
-            } finally {
-                signInBtn.disabled = false;
-                signInBtn.textContent = 'Sign In';
-            }
-        } else {
-            showNotification('Email and 6+ char password required', 'error');
-        }
-    });
-
-    signUpBtn.addEventListener('click', async () => {
-        const email = emailInput.value;
-        const password = passwordInput.value;
-        if (email && password.length >= 6) {
-            signUpBtn.disabled = true;
-            signUpBtn.textContent = '⏳ Creating...';
-            try {
-                const ok = await cloudSignUp(email, password);
-                if (ok) closeModal();
-            } catch (e) {
-                showNotification('Sign up failed: ' + e.message, 'error');
-            } finally {
-                signUpBtn.disabled = false;
-                signUpBtn.textContent = 'Create Account';
-            }
-        } else {
-            showNotification('Email and 6+ char password required', 'error');
-        }
-    });
-
-    cancelBtn.addEventListener('click', closeModal);
-
-    // Close on backdrop click
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) closeModal();
-    });
-
-    // Focus first input
-    emailInput.focus();
-
-    // Close on Escape key
-    const escapeHandler = (e) => {
-        if (e.key === 'Escape') {
-            closeModal();
-            document.removeEventListener('keydown', escapeHandler);
-        }
-    };
-    document.addEventListener('keydown', escapeHandler);
-}
-
-// Show cloud menu
-function showCloudMenu() {
-    const modal = document.createElement('div');
-    modal.style.cssText = 'position: fixed; top: 80px; right: 20px; background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 10px 30px rgba(0,0,0,0.2); z-index: 2000; min-width: 250px;';
-
-    modal.innerHTML = `
-        <div style="margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--text-muted);">Logged in as: <strong>${currentUser.email}</strong></div>
-        <hr style="margin: 1rem 0; border: none; border-top: 1px solid var(--border);">
-        <button style="width: 100%; text-align: left; background: none; border: none; padding: 0.75rem 0; cursor: pointer; color: var(--text-dark); font-weight: 500;" onclick="
-            saveCloudPlan();
-            this.parentElement.parentElement.remove();
-        ">💾 Save Plan Now</button>
-        <button style="width: 100%; text-align: left; background: none; border: none; padding: 0.75rem 0; cursor: pointer; color: var(--text-dark); font-weight: 500;" onclick="
-            showShareWithSpouseModal();
-            this.parentElement.parentElement.remove();
-        ">👥 Share with Spouse</button>
-        <button style="width: 100%; text-align: left; background: none; border: none; padding: 0.75rem 0; cursor: pointer; color: var(--text-dark); font-weight: 500;" onclick="
-            cloudSignOut();
-            this.parentElement.parentElement.remove();
-        ">🚪 Sign Out</button>
-    `;
-
-    document.body.appendChild(modal);
-    document.addEventListener('click', function closeMenu(e) {
-        if (e.target !== modal && !modal.contains(e.target)) {
-            modal.remove();
-            document.removeEventListener('click', closeMenu);
-        }
-    });
-}
-
-// Show share with spouse modal
-function showShareWithSpouseModal() {
-    const modal = document.createElement('div');
-    modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 2000; padding: 20px;';
-
-    const content = document.createElement('div');
-    content.style.cssText = 'background: white; border-radius: 12px; padding: 2rem; max-width: 400px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.3);';
-
-    content.innerHTML = `
-        <h2 style="margin-top: 0; color: var(--primary); margin-bottom: 1rem;">👥 Share Plan with Spouse</h2>
-        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Your spouse can view and edit the plan in real-time.</p>
-
-        <div style="margin-bottom: 1.5rem;">
-            <label style="display: block; color: var(--text-dark); font-weight: 600; margin-bottom: 0.5rem;">Spouse's Email</label>
-            <input type="email" id="spouseEmail" placeholder="spouse@email.com" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 6px; font-size: 0.95rem;">
-        </div>
-
-        <button class="primary" style="width: 100%; margin-bottom: 0.5rem;" onclick="
-            const email = document.getElementById('spouseEmail').value;
-            if (email) {
-                addHouseholdMember(email, 'edit').then(ok => {
-                    if (ok) document.querySelector('[style*=\"position: fixed\"]').remove();
-                });
-            }
-        ">Share Plan</button>
-        <button style="width: 100%; background: var(--surface); border: none; padding: 0.75rem; border-radius: 6px; cursor: pointer;" onclick="this.parentElement.parentElement.remove();">Cancel</button>
-    `;
-
-    modal.appendChild(content);
-    document.body.appendChild(modal);
-    modal.onclick = (e) => e.target === modal && modal.remove();
-}
-
 // ============ STATE MANAGEMENT ============
-function loadDemoData() {
-    state.profile = { name: 'Demo User', age: 35, retirementAge: 60, county: 'Nairobi', dependants: 2, upcountryDep: 1, schoolChildren: 1, isHouseholdPlanning: false };
-    state.income = { salary: 120000, business: 25000, investment: 8000, rental: 10000, passive: 0, allowance: 0, other: 2000, bondCoupons: 0, _grossMonthly: 165000 };
-    state.budget = { schoolFees: 20000, rent: 40000, carLoan: 8000, insurance: 5000, otherFixed: 3000, tithe: 4000, upcountrySupport: 5000, harambee: 2000, chama: 2000, churchOther: 0, food: 15000, utilities: 6000, transport: 8000, airtime: 1200, houseHelp: 3500, dining: 3000, personal: 2000, misc: 1000 };
-    state.goals = [ { id: 1, name: 'House Down Payment', target: 1000000, current: 250000, deadline: 2027, monthlyContribution: 15000 }, { id: 2, name: 'Child Education Fund', target: 500000, current: 100000, deadline: 2025, monthlyContribution: 8000 } ];
-    state.investments = { list: [], bondLadder: [ { amount: 150000, tenor: 2, yield: 12 }, { amount: 150000, tenor: 5, yield: 13 }, { amount: 150000, tenor: 10, yield: 14 } ], totalBondLadder: 450000, _totalPortfolio: 450000 };
-    state.debts = [ { id: 1, amount: 300000, monthlyPayment: 8000, rate: 8, description: 'Car Loan' } ];
-    state.assets = [ { id: 1, value: 1500000, description: 'Primary Residence' } ];
-    state.savedBalances = { _mPesaLock: 50000, _mmf: 100000, _fixed: 75000, _other: 25000 };
-    state.insurance = { lifeCover: 500000, medicalCover: 100000, homeCover: 1500000, disabilityCover: 300000 };
-    state._meta.completedSteps = [1, 2, 3];
-    calculateIncome();
-    calculateBudget();
-    calculateFireNumber();
-    recalculateAll();
-    buildNavbar();
-    // Navigate to income screen to show demo in action
-    setTimeout(() => showScreen('screen-2'), 300);
-}
-
 function saveState() {
     state._meta.updatedAt = new Date().toISOString();
     localStorage.setItem('jipange_v1', JSON.stringify(state));
-
-    // Auto-save to cloud if user is logged in (Phase 4C)
-    if (cloudSyncEnabled && currentUser) {
-        saveCloudPlan().catch(e => console.log('Cloud auto-save failed:', e));
-    }
 }
 
 function loadState() {
@@ -8660,21 +7143,13 @@ function loadState() {
     const loadedState = saved ? JSON.parse(saved) : {};
     const merged = JSON.parse(JSON.stringify(DEFAULT_STATE));
 
-    // Deep merge saved state with defaults, preserving all loaded properties
-    const mergeObjects = (target, source, deep = true) => {
+    // Deep merge saved state with defaults
+    const mergeObjects = (target, source) => {
         for (let key in source) {
             if (source.hasOwnProperty(key)) {
-                // If target has an array and source has an object, enforce array type
-                if (Array.isArray(target[key]) && source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
-                    // Don't try to merge object into array - reset to empty array
-                    source[key] = [];
-                }
-
-                if (deep && typeof source[key] === 'object' && !Array.isArray(source[key]) && source[key] !== null) {
-                    if (typeof target[key] !== 'object' || target[key] === null) {
-                        target[key] = {};
-                    }
-                    mergeObjects(target[key], source[key], true);
+                if (typeof source[key] === 'object' && !Array.isArray(source[key]) && source[key] !== null) {
+                    if (typeof target[key] !== 'object') target[key] = {};
+                    mergeObjects(target[key], source[key]);
                 } else {
                     target[key] = source[key];
                 }
@@ -8683,175 +7158,11 @@ function loadState() {
         return target;
     };
 
-    // Merge defaults first, then saved state (saved overrides defaults)
-    const result = mergeObjects(merged, loadedState, true);
-
-    // Ensure _meta is properly initialized
-    if (!result._meta) {
-        result._meta = { createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
-    } else if (!result._meta.updatedAt) {
-        result._meta.updatedAt = new Date().toISOString();
-    }
-
-    return result;
+    return mergeObjects(merged, loadedState);
 }
 
 // Initialize
 init();
-
-// Initialize UI/UX enhancements
-setTimeout(() => {
-    updateStepCounter();
-    initializeNavMainMenu();
-    initializeDarkMode();
-}, 100);
-
-// ============ ERROR HANDLING ============
-
-window.addEventListener('error', (event) => {
-    console.error('Global Error:', event.error);
-    showNotification('⚠️ An error occurred. Your data has been saved.', 'error');
-});
-
-window.addEventListener('unhandledrejection', (event) => {
-    console.error('Unhandled Promise Rejection:', event.reason);
-    showNotification('⚠️ Something went wrong. Please refresh the page.', 'error');
-});
-
-// ============ DARK MODE SUPPORT ============
-
-function initializeDarkMode() {
-    const saved = localStorage.getItem('jipange_darkMode');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const shouldBeDark = saved !== null ? saved === 'true' : prefersDark;
-
-    if (shouldBeDark) {
-        document.body.classList.add('dark-mode');
-        document.documentElement.classList.add('dark-mode');
-        updateDarkModeButton();
-    }
-}
-
-function toggleDarkMode() {
-    const isDark = document.body.classList.toggle('dark-mode');
-    document.documentElement.classList.toggle('dark-mode');
-    localStorage.setItem('jipange_darkMode', isDark);
-    updateDarkModeButton();
-}
-
-function updateDarkModeButton() {
-    const btn = document.getElementById('darkModeToggle');
-    if (btn) {
-        const isDark = document.body.classList.contains('dark-mode');
-        btn.textContent = isDark ? '☀️' : '🌙';
-        btn.title = isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode';
-    }
-}
-
-// ============ MAIN NAVIGATION DROPDOWN ============
-
-function toggleNavMainMenu() {
-    const dropdown = document.getElementById('navMainDropdown');
-    if (dropdown) {
-        dropdown.classList.toggle('open');
-    }
-}
-
-function initializeNavMainMenu() {
-    const menu = document.getElementById('navMainMenu');
-    if (!menu) return;
-
-    const activeScreen = document.querySelector('section.active');
-    const activeScreenId = activeScreen?.id || 'screen-1';
-
-    const screens = [
-        { num: 1, title: '📋 About You', id: 'screen-1' },
-        { num: 2, title: '💰 Income Profiler', id: 'screen-2' },
-        { num: 3, title: '📊 Budget Engine', id: 'screen-3' },
-        { num: 4, title: '🎬 Scenario Planner', id: 'screen-4' },
-        { num: 5, title: '💎 Wealth Dashboard', id: 'screen-5' },
-        { num: 6, title: '🤖 Smart Optimizer', id: 'screen-6' },
-        { num: 7, title: '👨‍👩‍👧 Household Planning', id: 'screen-7' },
-        { num: 8, title: '🎯 Goals + FIRE', id: 'screen-8' },
-        { num: 9, title: '📚 Financial Literacy', id: 'screen-9' },
-        { num: 10, title: '📊 Reports & Export', id: 'screen-10' },
-        { num: 11, title: '⏱️ How Long to Save?', id: 'screen-11' },
-        { num: 12, title: '📱 M-Pesa Tracker', id: 'screen-12' },
-        { num: 13, title: '📈 Investment Portfolio', id: 'screen-13' },
-        { num: 14, title: '💳 Debt Payoff Planner', id: 'screen-13' },
-        { num: 15, title: '🏢 Business Income', id: 'screen-14' },
-        { num: 16, title: '🏠 Asset Valuation', id: 'screen-15' },
-        { num: 17, title: '💰 Tax Optimizer', id: 'screen-16' },
-        { num: 18, title: '📚 Education Savings', id: 'screen-17' },
-        { num: 19, title: '🏖️ Retirement Income', id: 'screen-18' },
-        { num: 20, title: '🚀 Business Scenarios', id: 'screen-19' },
-        { num: 21, title: '🛡️ Insurance Planning', id: 'screen-20' },
-        { num: 22, title: '💰 Chama Group Planner', id: 'screen-21' }
-    ];
-
-    menu.innerHTML = `
-        <div class="nav-section-title">📍 FINANCIAL SCREENS</div>
-        ${screens.map(s => `
-            <div class="nav-screen-item ${s.id === activeScreenId ? 'active' : ''}" onclick="showScreen('${s.id}'); closeNavMainMenu();">
-                ${s.title}
-            </div>
-        `).join('')}
-
-        <div class="nav-section-title" style="margin-top: 1rem;">⚡ QUICK ACTIONS</div>
-        <button class="nav-action-btn" onclick="exportMonthlyReport(); closeNavMainMenu();" title="Ctrl+E">
-            📥 Export Monthly Report
-        </button>
-        <button class="nav-action-btn" onclick="printPlan(); closeNavMainMenu();" title="Ctrl+P">
-            🖨️ Print Plan
-        </button>
-        <button class="nav-action-btn" onclick="shareWhatsApp(); closeNavMainMenu();" title="Ctrl+S">
-            💬 Share via WhatsApp
-        </button>
-        <button class="nav-action-btn" onclick="showAnalyticsDashboard(); closeNavMainMenu();" title="Ctrl+K">
-            📊 View Analytics
-        </button>
-        <button class="nav-action-btn" onclick="showReportCustomization(); closeNavMainMenu();">
-            ⚙️ Customize Report
-        </button>
-    `;
-}
-
-function closeNavMainMenu() {
-    const dropdown = document.getElementById('navMainDropdown');
-    if (dropdown) {
-        dropdown.classList.remove('open');
-    }
-}
-
-// Close menu when clicking outside
-document.addEventListener('click', (e) => {
-    const dropdown = document.getElementById('navMainDropdown');
-    if (dropdown && !e.target.closest('.nav-main-dropdown')) {
-        closeNavMainMenu();
-    }
-});
-</script>
-
-<!-- Floating Action Menu (Quick Wins) -->
-<div id="fab-menu" class="fab-menu">
-    <button class="fab-primary" onclick="toggleFABMenu()" title="Quick Actions (Ctrl+Shift+M)">📊</button>
-    <div class="fab-submenu">
-        <button onclick="exportMonthlyReport(); toggleFABMenu();" title="Ctrl+E">📅 Monthly Report</button>
-        <button onclick="printPlan(); toggleFABMenu();" title="Ctrl+P">🖨️ Print</button>
-        <button onclick="shareWhatsApp(); toggleFABMenu();" title="Ctrl+S">💬 Share WhatsApp</button>
-        <button onclick="showAnalyticsDashboard(); toggleFABMenu();" title="Ctrl+K">📊 Analytics</button>
-    </div>
-</div>
-
-<script>
-// Register service worker for PWA/offline support
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js')
-            .then(reg => console.log('✓ Service Worker registered'))
-            .catch(err => console.log('Service Worker registration failed:', err));
-    });
-}
 </script>
 
 </body>
