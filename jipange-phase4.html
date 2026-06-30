@@ -195,7 +195,13 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body {
+        html {
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+        body {
             width: 100%;
             height: 100%;
             overflow-x: hidden;
@@ -363,6 +369,9 @@
             font-size: 0.9rem;
             font-weight: 500;
             font-family: 'Inter', sans-serif;
+            position: relative;
+            z-index: 1002;
+            pointer-events: auto;
         }
 
         .dropdown-item:hover {
@@ -8625,6 +8634,8 @@ function loadDemoData() {
     calculateFireNumber();
     recalculateAll();
     buildNavbar();
+    // Navigate to income screen to show demo in action
+    setTimeout(() => showScreen('screen-2'), 300);
 }
 
 function saveState() {
