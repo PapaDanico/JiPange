@@ -168,6 +168,173 @@
             display: block;
         }
 
+        /* Progress Wizard */
+        .progress-wizard {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(16, 185, 129, 0.08) 100%);
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            flex: 1;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .progress-step:hover {
+            transform: translateY(-4px);
+        }
+
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            border: 2px solid #ddd;
+            background: white;
+            color: var(--text-muted);
+            transition: all 0.3s ease;
+        }
+
+        .progress-step.completed .step-circle {
+            background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+            color: white;
+            border-color: #10b981;
+        }
+
+        .progress-step.active .step-circle {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .progress-step.completed .step-circle::after {
+            content: '✓';
+            font-size: 1.2rem;
+        }
+
+        .step-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-align: center;
+            color: var(--text-muted);
+            max-width: 60px;
+        }
+
+        .progress-step.active .step-label {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .step-connector {
+            flex: 1;
+            height: 2px;
+            background: #ddd;
+            margin: 0 0.5rem;
+            margin-top: 20px;
+            align-self: flex-start;
+        }
+
+        .progress-step.completed ~ .step-connector {
+            background: linear-gradient(90deg, #10b981 0%, #10b981 100%);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(16, 185, 129, 0.05) 100%);
+            border-radius: 16px;
+            border: 2px dashed rgba(102, 126, 234, 0.2);
+            margin: 2rem 0;
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state-message {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .empty-state-action {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.6rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .empty-state-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Next Step Guidance */
+        .guidance-banner {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-weight: 600;
+        }
+
+        .guidance-banner-icon {
+            font-size: 1.5rem;
+        }
+
+        .guidance-banner-text {
+            flex: 1;
+        }
+
+        .guidance-banner-action {
+            background: rgba(255, 255, 255, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .guidance-banner-action:hover {
+            background: rgba(255, 255, 255, 0.35);
+        }
+
         /* Navigation */
         .navbar {
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
@@ -4371,6 +4538,119 @@
   window.saveState = function() {
     originalSaveState();
     showToast('✓ Changes saved automatically', 'success', 2000);
+  };
+
+  // ============ PHASE 2: PROGRESS & GUIDANCE ============
+
+  // Track completion of MVP screens
+  window.checkScreenCompletion = function(screenId) {
+    const state = window.state || {};
+
+    const completionChecks = {
+      'screen-1': () => state.profile?.name && state.profile?.age,
+      'screen-2': () => state.income?.salary || state.income?.business || state.income?.consulting,
+      'screen-3': () => Object.values(state.budget || {}).some(v => v > 0),
+      'screen-4': () => state.mpesa?.currentSaved > 0,
+      'screen-8': () => state.fire?.monthlySpend > 0
+    };
+
+    return completionChecks[screenId] ? completionChecks[screenId]() : false;
+  };
+
+  // Update progress wizard display
+  window.updateProgressWizard = function() {
+    const container = document.getElementById('progress-wizard-container');
+    if (!container) return;
+
+    const steps = [
+      { id: 'screen-1', label: 'Profile', icon: '👤' },
+      { id: 'screen-2', label: 'Income', icon: '💰' },
+      { id: 'screen-3', label: 'Budget', icon: '📊' },
+      { id: 'screen-4', label: 'Savings', icon: '🏦' },
+      { id: 'screen-8', label: 'Goals', icon: '🎯' }
+    ];
+
+    const currentScreen = document.querySelector('section:not([style*="display: none"])')?.id || 'screen-0';
+    const progressHTML = steps.map((step, idx) => {
+      const isCompleted = checkScreenCompletion(step.id);
+      const isActive = currentScreen === step.id;
+      const status = isCompleted ? 'completed' : isActive ? 'active' : '';
+
+      return `
+        <div class="progress-step ${status}" onclick="showScreen('${step.id}')">
+          <div class="step-circle">${isCompleted ? '✓' : idx + 1}</div>
+          <div class="step-label">${step.label}</div>
+        </div>
+        ${idx < steps.length - 1 ? '<div class="step-connector"></div>' : ''}
+      `;
+    }).join('');
+
+    container.innerHTML = `<div class="progress-wizard">${progressHTML}</div>`;
+  };
+
+  // Show empty state guidance
+  window.showEmptyState = function(screenId, icon, title, message, action) {
+    const screen = document.getElementById(screenId);
+    if (!screen) return;
+
+    const existingEmpty = screen.querySelector('.empty-state');
+    if (existingEmpty) existingEmpty.remove();
+
+    const emptyStateHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon">${icon}</div>
+        <div class="empty-state-title">${title}</div>
+        <div class="empty-state-message">${message}</div>
+        <button class="empty-state-action" onclick="${action}">Get Started →</button>
+      </div>
+    `;
+
+    const firstInput = screen.querySelector('input, select, button');
+    if (firstInput) {
+      firstInput.insertAdjacentHTML('beforebegin', emptyStateHTML);
+    }
+  };
+
+  // Show next step guidance
+  window.showGuidance = function(title, action) {
+    const screen = document.querySelector('section:not([style*="display: none"])');
+    if (!screen) return;
+
+    const existingGuidance = screen.querySelector('.guidance-banner');
+    if (existingGuidance) existingGuidance.remove();
+
+    const guidanceHTML = `
+      <div class="guidance-banner">
+        <div class="guidance-banner-icon">💡</div>
+        <div class="guidance-banner-text">${title}</div>
+        <button class="guidance-banner-action" onclick="${action}">Next →</button>
+      </div>
+    `;
+
+    screen.insertAdjacentHTML('afterbegin', guidanceHTML);
+  };
+
+  // Initialize progress wizard on app load
+  const originalInitApp = window.initApp;
+  window.initApp = function() {
+    originalInitApp.call(this);
+
+    // Inject progress wizard after navbar
+    const navbar = document.querySelector('.navbar');
+    if (navbar && !document.getElementById('progress-wizard-container')) {
+      const wizardContainer = document.createElement('div');
+      wizardContainer.id = 'progress-wizard-container';
+      navbar.insertAdjacentElement('afterend', wizardContainer);
+    }
+
+    updateProgressWizard();
+  };
+
+  // Update wizard whenever state changes
+  const originalRecalc = window.recalculateAll;
+  window.recalculateAll = function(state) {
+    originalRecalc(state);
+    updateProgressWizard();
   };
 })();
 
