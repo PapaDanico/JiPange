@@ -3,11 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Redirecting to JiPange...</title>
-    <meta http-equiv="refresh" content="0; url=/">
+    <title>JiPange - Kenyan Financial Planning</title>
+    <meta http-equiv="refresh" content="0; url=/?t=refactored">
 </head>
 <body>
-    <script>window.location.href = '/';</script>
-    <p>Redirecting to JiPange Financial Planning App...</p>
+    <script>
+        // Force bypass any caching
+        window.location.href = '/?t=' + Date.now();
+    </script>
+    <noscript>
+        <p>Redirecting to <a href="/">JiPange Financial Planning App</a>...</p>
+    </noscript>
 </body>
 </html>
