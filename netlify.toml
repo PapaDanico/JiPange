@@ -5,6 +5,21 @@
   publish = "."
 
 [[redirects]]
+  from = "/jipange-phase4.html"
+  to = "/jipange.html"
+  status = 301
+
+[[redirects]]
+  from = "/jipange-phase3.html"
+  to = "/jipange.html"
+  status = 301
+
+[[redirects]]
+  from = "/jipange-phase2.html"
+  to = "/jipange.html"
+  status = 301
+
+[[redirects]]
   from = "/"
   to = "/jipange.html"
   status = 200
