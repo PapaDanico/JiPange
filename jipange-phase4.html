@@ -9,15 +9,20 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         :root {
-            /* Modern Vibrant Palette - Kenya Inspired */
-            --primary: #1B4B8C;
-            --primary-light: #2563EB;
-            --secondary: #10B981;
-            --secondary-light: #34D399;
-            --accent: #F59E0B;
-            --accent-light: #FBBF24;
+            /* Modern Vibrant Palette - Contemporary Design */
+            --primary: #667eea;
+            --primary-light: #764ba2;
+            --secondary: #10b981;
+            --secondary-light: #34d399;
+            --accent: #f093fb;
+            --accent-light: #f5576c;
             --danger: #EF4444;
             --danger-light: #FCA5A5;
+
+            /* Gradients */
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-accent: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-success: linear-gradient(135deg, #10b981 0%, #3b82f6 100%);
 
             /* Neutrals */
             --white: #FFFFFF;
@@ -146,7 +151,7 @@
         }
 
         .dropdown-menu {
-            position: absolute; top: 100%; left: 0; background: var(--white);
+            position: fixed; top: auto; left: 0; background: var(--white);
             border: 2px solid var(--border); border-radius: 8px; min-width: 200px;
             box-shadow: 0 8px 24px rgba(139, 46, 46, 0.2); z-index: 1001;
             max-height: 0; overflow: hidden; transition: max-height 0.3s ease, opacity 0.3s ease;
@@ -847,8 +852,49 @@
 <!-- Main Content -->
 <div class="main-container">
 
+    <!-- Screen 0: Home & Hero -->
+    <section id="screen-0" class="active" style="text-align: center; padding: 3rem 2rem;">
+        <div style="max-width: 100%; margin: 0 auto;">
+            <!-- Hero Section with Gradient -->
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 4rem 2rem; border-radius: 20px; margin-bottom: 3rem; box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3);">
+                <h1 style="font-size: 3.5rem; font-weight: 700; margin: 0; margin-bottom: 1rem; letter-spacing: -0.02em;">JiPange</h1>
+                <p style="font-size: 1.5rem; margin: 0; margin-bottom: 0.5rem; font-weight: 600; opacity: 0.95;">Your African Finance Copilot</p>
+                <p style="font-size: 1.1rem; margin: 0; opacity: 0.9; line-height: 1.6;">Build wealth. Achieve goals. Secure your future.</p>
+            </div>
+
+            <!-- CTA Buttons -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 3rem;">
+                <button onclick="showScreen('screen-1')" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 1rem 2rem; border-radius: 12px; font-size: 1.1rem; font-weight: 600; cursor: pointer; box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3); transition: all 0.3s ease;">
+                    ▶️ Start Your Plan
+                </button>
+                <button onclick="(function() { loadDemoData(); setTimeout(() => showScreen('screen-1'), 100); })()" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; border: none; padding: 1rem 2rem; border-radius: 12px; font-size: 1.1rem; font-weight: 600; cursor: pointer; box-shadow: 0 10px 30px rgba(240, 147, 251, 0.3); transition: all 0.3s ease;">
+                    🎬 View Demo
+                </button>
+            </div>
+
+            <!-- Feature Highlights -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 3rem;">
+                <div style="background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.08);">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">💰</div>
+                    <h3 style="color: #667eea; font-weight: 600; margin-bottom: 0.5rem;">Smart Planning</h3>
+                    <p style="color: #64748B; font-size: 0.9rem;">AI-powered financial guidance</p>
+                </div>
+                <div style="background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.08);">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">📊</div>
+                    <h3 style="color: #667eea; font-weight: 600; margin-bottom: 0.5rem;">Real Goals</h3>
+                    <p style="color: #64748B; font-size: 0.9rem;">Track progress on what matters</p>
+                </div>
+                <div style="background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.08);">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔒</div>
+                    <h3 style="color: #667eea; font-weight: 600; margin-bottom: 0.5rem;">Your Privacy</h3>
+                    <p style="color: #64748B; font-size: 0.9rem;">Data stays with you always</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Screen 1: Profile (MVP) -->
-    <section id="screen-1" class="active">
+    <section id="screen-1">
         <h1 class="section-title">📋 About You</h1>
         <div class="card-grid">
             <div class="card">
@@ -4696,6 +4742,122 @@ function showScreen(screenId) {
     if (screenId === 'screen-10') {
         setTimeout(updateAnalyticsQuickStats, 100);
     }
+}
+
+function loadDemoData() {
+    state.profile = {
+        name: 'Demo User',
+        age: 35,
+        retirementAge: 60,
+        county: 'Nairobi',
+        dependants: 2,
+        upcountryDep: 1,
+        schoolChildren: 1,
+        isHouseholdPlanning: false
+    };
+
+    state.income = {
+        salary: 120000,
+        consulting: 25000,
+        farm: 0,
+        rental: 10000,
+        remittance: 0,
+        business: 8000,
+        other: 2000,
+        bondCoupons: 0,
+        _grossMonthly: 165000
+    };
+
+    state.budget = {
+        schoolFees: 20000,
+        rent: 40000,
+        carLoan: 8000,
+        insurance: 5000,
+        otherFixed: 3000,
+        tithe: 4000,
+        upcountrySupport: 5000,
+        harambee: 2000,
+        chama: 2000,
+        churchOther: 0,
+        food: 15000,
+        utilities: 6000,
+        transport: 8000,
+        airtime: 1200,
+        houseHelp: 3500,
+        dining: 3000,
+        personal: 2000,
+        misc: 1000
+    };
+
+    state.goals = [
+        {
+            id: 1,
+            name: 'House Down Payment',
+            targetAmount: 1000000,
+            currentAmount: 250000,
+            deadline: 2027,
+            monthlyContribution: 15000,
+            category: 'wealth'
+        },
+        {
+            id: 2,
+            name: 'Child Education Fund',
+            targetAmount: 500000,
+            currentAmount: 100000,
+            deadline: 2025,
+            monthlyContribution: 8000,
+            category: 'education'
+        }
+    ];
+
+    state.investments = {
+        list: [],
+        bondLadder: [
+            { tenor: 2, amount: 150000, yield: 12, maturityDate: '2026' },
+            { tenor: 5, amount: 150000, yield: 13, maturityDate: '2029' },
+            { tenor: 10, amount: 150000, yield: 14, maturityDate: '2034' }
+        ],
+        totalBondLadder: 450000,
+        _totalPortfolio: 450000
+    };
+
+    state.debts = [
+        { id: 1, amount: 300000, monthlyPayment: 8000, rate: 8, description: 'Car Loan' }
+    ];
+
+    state.assets = [
+        { id: 1, value: 1500000, description: 'Primary Residence' }
+    ];
+
+    state.savedBalances = {
+        _mPesaLock: 50000,
+        _mmf: 100000,
+        _fixed: 75000,
+        _other: 25000
+    };
+
+    state.insurance = {
+        lifeCover: 500000,
+        medicalCover: 100000,
+        homeCover: 1500000,
+        disabilityCover: 300000
+    };
+
+    state._meta.completedSteps = [1, 2, 3];
+
+    // Populate form fields
+    document.getElementById('name').value = state.profile.name;
+    document.getElementById('age').value = state.profile.age;
+    document.getElementById('retirementAge').value = state.profile.retirementAge;
+    document.getElementById('county').value = state.profile.county;
+    document.getElementById('dependants').value = state.profile.dependants;
+    document.getElementById('upcountryDep').value = state.profile.upcountryDep;
+    document.getElementById('schoolChildren').value = state.profile.schoolChildren;
+
+    // Trigger UI updates and save
+    recalculateAll();  // This calls all calculations + updateUI()
+    buildNavbar();
+    saveState();
 }
 
 function markStepComplete(stepNum) {
