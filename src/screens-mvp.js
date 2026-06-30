@@ -151,14 +151,16 @@ function setupBudgetScreen(state, saveState) {
 }
 
 /**
- * Setup Savings screen (screen-5, merged with M-Pesa)
+ * Setup Savings screen (screen-11, M-Pesa Tracker in Phase 4)
+ * Note: Phase 4 doesn't have full savings inputs (MMF, FD, other).
+ * Only M-Pesa inputs available: mpesaTarget, mpesaCurrent
+ * Full Savings screen should be created in Phase C
  */
 function setupSavingsScreen(state, saveState) {
+    // Map available Phase 4 inputs to state
     const inputs = {
-        _mPesaLock: document.getElementById('mPesaLock'),
-        _mmf: document.getElementById('mmf'),
-        _fixed: document.getElementById('fixedDeposit'),
-        _other: document.getElementById('otherSavings')
+        mpesaCurrent: document.getElementById('mpesaCurrent'),
+        mpesaTarget: document.getElementById('mpesaTarget')
     };
 
     const handleChange = debounce(() => {
@@ -174,27 +176,38 @@ function setupSavingsScreen(state, saveState) {
         });
     };
 
-    Object.entries(inputs).forEach(([key, input]) => {
-        if (!input) return;
-        input.addEventListener('change', () => {
-            state.savedBalances[key] = parseInt(input.value) || 0;
+    // Bind M-Pesa inputs (only available in Phase 4)
+    if (inputs.mpesaCurrent) {
+        inputs.mpesaCurrent.addEventListener('change', () => {
+            state.mpesa.currentSaved = parseInt(inputs.mpesaCurrent.value) || 0;
+            // Use as M-Pesa balance for emergency fund calculation
+            state.savedBalances._mPesaLock = state.mpesa.currentSaved;
             handleChange();
         });
-    });
+    }
 
-    populateForm();
+    if (inputs.mpesaTarget) {
+        inputs.mpesaTarget.addEventListener('change', () => {
+            state.mpesa.monthlyTarget = parseInt(inputs.mpesaTarget.value) || 0;
+            handleChange();
+        });
+    }
+
+    // Populate M-Pesa form from state
+    if (inputs.mpesaCurrent) inputs.mpesaCurrent.value = state.mpesa?.currentSaved || 0;
+    if (inputs.mpesaTarget) inputs.mpesaTarget.value = state.mpesa?.monthlyTarget || 10000;
 }
 
 /**
- * Setup Goals & FIRE screen (screen-6)
+ * Setup Goals & FIRE screen (screen-8 in Phase 4)
+ * Uses actual input IDs from Phase 4 HTML
  */
 function setupGoalsScreen(state, saveState) {
     const inputs = {
-        targetAge: document.getElementById('fireTargetAge'),
         monthlySpend: document.getElementById('fireMonthlySpend'),
         swr: document.getElementById('fireSWR'),
         inflation: document.getElementById('fireInflation'),
-        growthRate: document.getElementById('fireGrowthRate')
+        growthRate: document.getElementById('fireGrowth')
     };
 
     const handleChange = debounce(() => {

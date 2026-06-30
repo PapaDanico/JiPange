@@ -3887,10 +3887,8 @@
   }
   function setupSavingsScreen(state, saveState2) {
     const inputs = {
-      _mPesaLock: document.getElementById("mPesaLock"),
-      _mmf: document.getElementById("mmf"),
-      _fixed: document.getElementById("fixedDeposit"),
-      _other: document.getElementById("otherSavings")
+      mpesaCurrent: document.getElementById("mpesaCurrent"),
+      mpesaTarget: document.getElementById("mpesaTarget")
     };
     const handleChange = debounce(() => {
       recalculateAll(state);
@@ -3904,23 +3902,30 @@
           input.value = state.savedBalances[key] || 0;
       });
     };
-    Object.entries(inputs).forEach(([key, input]) => {
-      if (!input)
-        return;
-      input.addEventListener("change", () => {
-        state.savedBalances[key] = parseInt(input.value) || 0;
+    if (inputs.mpesaCurrent) {
+      inputs.mpesaCurrent.addEventListener("change", () => {
+        state.mpesa.currentSaved = parseInt(inputs.mpesaCurrent.value) || 0;
+        state.savedBalances._mPesaLock = state.mpesa.currentSaved;
         handleChange();
       });
-    });
-    populateForm();
+    }
+    if (inputs.mpesaTarget) {
+      inputs.mpesaTarget.addEventListener("change", () => {
+        state.mpesa.monthlyTarget = parseInt(inputs.mpesaTarget.value) || 0;
+        handleChange();
+      });
+    }
+    if (inputs.mpesaCurrent)
+      inputs.mpesaCurrent.value = state.mpesa?.currentSaved || 0;
+    if (inputs.mpesaTarget)
+      inputs.mpesaTarget.value = state.mpesa?.monthlyTarget || 1e4;
   }
   function setupGoalsScreen(state, saveState2) {
     const inputs = {
-      targetAge: document.getElementById("fireTargetAge"),
       monthlySpend: document.getElementById("fireMonthlySpend"),
       swr: document.getElementById("fireSWR"),
       inflation: document.getElementById("fireInflation"),
-      growthRate: document.getElementById("fireGrowthRate")
+      growthRate: document.getElementById("fireGrowth")
     };
     const handleChange = debounce(() => {
       recalculateAll(state);
