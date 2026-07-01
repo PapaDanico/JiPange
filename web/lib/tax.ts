@@ -14,9 +14,9 @@ export interface PayeBand {
   rate: number;
 }
 
-/** 0% to 24,000; 25% to 32,333; 30% to 500,000; 32.5% to 800,000; 35% above. */
+/** 10% to 24,000; 25% to 32,333; 30% to 500,000; 32.5% to 800,000; 35% above. */
 export const PAYE_BANDS: readonly PayeBand[] = [
-  { upTo: 24_000, rate: 0 },
+  { upTo: 24_000, rate: 0.1 },
   { upTo: 32_333, rate: 0.25 },
   { upTo: 500_000, rate: 0.3 },
   { upTo: 800_000, rate: 0.325 },

@@ -29,19 +29,21 @@ describe("calculateSHIF", () => {
 });
 
 describe("calculatePAYE", () => {
-  it("charges zero tax when taxable pay is within the tax-free band", () => {
-    expect(calculatePAYE(18_920)).toEqual({ grossPaye: 0, paye: 0 });
+  it("charges zero tax when relief absorbs the 10% first-band tax", () => {
+    // 18,920 * 10% = 1,892 gross PAYE, fully absorbed by the 2,400 personal relief.
+    expect(calculatePAYE(18_920)).toEqual({ grossPaye: 1_892, paye: 0 });
   });
 
   it("applies personal relief so tax due can be zero even with some gross PAYE", () => {
     const result = calculatePAYE(24_920); // spans into the 25% band by 920
-    expect(result.grossPaye).toBe(230);
-    expect(result.paye).toBe(0); // 230 - 2400 relief -> floored at 0
+    // 24,000 * 10% + 920 * 25% = 2,400 + 230 = 2,630
+    expect(result.grossPaye).toBe(2_630);
+    expect(result.paye).toBe(230); // 2,630 - 2,400 relief
   });
 });
 
 describe("calculateNetPay — cross-checked against KRA ITAX bands", () => {
-  it("KES 20,000 gross — zero PAYE", () => {
+  it("KES 20,000 gross — zero PAYE (relief absorbs the 10% first-band tax)", () => {
     const result = calculateNetPay(20_000);
     expect(result.nssf).toEqual({ tier1: 360, tier2: 720, total: 1_080 });
     expect(result.shif).toBe(550);
@@ -53,40 +55,40 @@ describe("calculateNetPay — cross-checked against KRA ITAX bands", () => {
     const result = calculateNetPay(50_000);
     expect(result.nssf.total).toBe(1_080);
     expect(result.shif).toBe(1_375);
-    expect(result.paye).toBe(4_659.35);
-    expect(result.netMonthly).toBe(42_885.65);
+    expect(result.paye).toBe(7_059.35);
+    expect(result.netMonthly).toBe(40_485.65);
   });
 
   it("KES 100,000 gross", () => {
     const result = calculateNetPay(100_000);
     expect(result.nssf.total).toBe(1_080);
     expect(result.shif).toBe(2_750);
-    expect(result.paye).toBe(19_659.35);
-    expect(result.netMonthly).toBe(76_510.65);
+    expect(result.paye).toBe(22_059.35);
+    expect(result.netMonthly).toBe(74_110.65);
   });
 
   it("KES 200,000 gross", () => {
     const result = calculateNetPay(200_000);
     expect(result.nssf.total).toBe(1_080);
     expect(result.shif).toBe(5_500);
-    expect(result.paye).toBe(49_659.35);
-    expect(result.netMonthly).toBe(143_760.65);
+    expect(result.paye).toBe(52_059.35);
+    expect(result.netMonthly).toBe(141_360.65);
   });
 
   it("KES 500,000 gross", () => {
     const result = calculateNetPay(500_000);
     expect(result.nssf.total).toBe(1_080);
     expect(result.shif).toBe(13_750);
-    expect(result.paye).toBe(139_659.35);
-    expect(result.netMonthly).toBe(345_510.65);
+    expect(result.paye).toBe(142_059.35);
+    expect(result.netMonthly).toBe(343_110.65);
   });
 
   it("KES 1,000,000 gross — top band applies", () => {
     const result = calculateNetPay(1_000_000);
     expect(result.nssf.total).toBe(1_080);
     expect(result.shif).toBe(27_500);
-    expect(result.paye).toBe(307_105.35);
-    expect(result.netMonthly).toBe(664_314.65);
+    expect(result.paye).toBe(309_505.35);
+    expect(result.netMonthly).toBe(661_914.65);
   });
 
   it("handles zero/negative gross gracefully", () => {

@@ -6,8 +6,8 @@ export async function GET(request: Request) {
   const code = searchParams.get("code");
   const next = searchParams.get("next") ?? "/plan";
 
-  if (code) {
-    const supabase = createClient();
+  const supabase = createClient();
+  if (code && supabase) {
     await supabase.auth.exchangeCodeForSession(code);
   }
 

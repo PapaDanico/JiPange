@@ -12,12 +12,9 @@ interface WhatsAppShareProps {
 }
 
 function buildShareMessage({ calculations, plan, projectedWealth60 }: WhatsAppShareProps): string {
-  const savingsRate =
-    calculations.netMonthly > 0
-      ? Math.round((calculations.savingsCapacity / calculations.netMonthly) * 100)
-      : 0;
+  const savingsRate = Math.round(calculations.savingsRate * 100);
 
-  const [first, second, third] = plan;
+  const [first, second, third] = [...plan].sort((a, b) => a.rank - b.rank);
 
   return `🇰🇪 *My JiPange Financial Plan*
 

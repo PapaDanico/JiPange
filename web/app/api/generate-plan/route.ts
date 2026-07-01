@@ -10,6 +10,8 @@ async function logAiCall(params: {
 }) {
   try {
     const supabase = createServiceRoleClient();
+    if (!supabase) return;
+
     await supabase.from("ai_calls").insert({
       input_tokens: params.usage?.inputTokens ?? null,
       output_tokens: params.usage?.outputTokens ?? null,
@@ -38,11 +40,11 @@ export async function POST(request: NextRequest) {
       surplus: calculations.savingsCapacity,
     });
 
-    void logAiCall({ success: true, usage });
+    await logAiCall({ success: true, usage });
 
     return NextResponse.json({ recommendations: plan });
   } catch (error) {
-    void logAiCall({
+    await logAiCall({
       success: false,
       errorMessage: error instanceof Error ? error.message : "Unknown error",
     });

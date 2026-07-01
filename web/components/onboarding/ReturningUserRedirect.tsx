@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { calculateFinancials } from "@/lib/budget";
 import {
   getStoredProfile,
   setStoredCalculations,
@@ -30,11 +31,17 @@ export default function ReturningUserRedirect() {
       } = await supabase.auth.getUser();
       if (!user) return;
 
-      const { data: profileRow } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", user.id)
-        .maybeSingle();
+      const [{ data: profileRow }, { data: planRow }] = await Promise.all([
+        supabase.from("profiles").select("*").eq("id", user.id).maybeSingle(),
+        supabase
+          .from("plans")
+          .select("*")
+          .eq("user_id", user.id)
+          .eq("is_active", true)
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .maybeSingle(),
+      ]);
 
       if (!profileRow) return;
 
@@ -47,26 +54,12 @@ export default function ReturningUserRedirect() {
         chamaMember: Boolean(profileRow.chama_member),
       };
       setStoredProfile(profile);
+      // Recompute from salary rather than trusting stale DB columns, so budgetSplit
+      // (not persisted in `plans`) is always internally consistent with net/savings.
+      setStoredCalculations(calculateFinancials(profile.grossMonthlySalary));
 
-      const { data: planRow } = await supabase
-        .from("plans")
-        .select("*")
-        .eq("user_id", user.id)
-        .eq("is_active", true)
-        .order("created_at", { ascending: false })
-        .limit(1)
-        .maybeSingle();
-
-      if (planRow) {
-        setStoredCalculations({
-          netMonthly: Number(planRow.net_monthly ?? 0),
-          budgetSplit: { needs: 0, socialObligations: 0, wants: 0, savings: 0 },
-          savingsCapacity: Number(planRow.savings_capacity ?? 0),
-          savingsRate: Number(planRow.savings_rate ?? 0),
-        });
-        if (planRow.ai_recommendations) {
-          setStoredPlan(planRow.ai_recommendations as ActionPlan);
-        }
+      if (planRow?.ai_recommendations) {
+        setStoredPlan(planRow.ai_recommendations as ActionPlan);
       }
 
       router.replace("/plan");
