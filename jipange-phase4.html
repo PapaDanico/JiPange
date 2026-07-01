@@ -60,6 +60,7 @@
             color: var(--text-dark);
             background: linear-gradient(135deg, var(--light-bg) 0%, #FFFFFF 100%);
             min-height: 100vh;
+            padding-bottom: 200px;
         }
 
         /* Navigation */
@@ -632,7 +633,7 @@
         .footer {
             position: fixed; bottom: 0; left: 0; right: 0; background: linear-gradient(135deg, var(--navy) 0%, #0f2647 100%);
             color: var(--white); text-align: center; padding: 1.5rem 2rem; font-size: 0.85rem; line-height: 1.5;
-            border-top: 3px solid var(--amber); z-index: 50;
+            border-top: 3px solid var(--amber); z-index: 50; pointer-events: none;
         }
 
         .footer-content { max-width: 1200px; margin: 0 auto; }
@@ -924,10 +925,10 @@
 <body>
 
 <!-- Navigation -->
-<nav class="navbar">
+<nav class="navbar" aria-label="Main navigation" role="navigation">
     <div style="display: flex; align-items: center; gap: 1rem;">
         <img src="assets/images/logo-full.jpg" alt="JiPange" style="height: 40px; width: auto; border-radius: 8px;">
-        <div class="logo">Ji<span class="accent">Pange</span></div>
+        <div class="logo" aria-label="JiPange Financial Planning">Ji<span class="accent">Pange</span></div>
     </div>
     <div class="nav-center" id="navTabs"></div>
     <div class="nav-right">
@@ -937,7 +938,7 @@
 </nav>
 
 <!-- Main Content -->
-<div class="main-container">
+<div class="main-container" role="main" aria-label="JiPange Financial Planning Application">
 
     <!-- Screen 0: Home & Hero -->
     <section id="screen-0" class="active" style="text-align: center; padding: 3rem 2rem;">
