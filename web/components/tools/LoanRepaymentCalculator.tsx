@@ -18,7 +18,7 @@ export default function LoanRepaymentCalculator() {
 
     return calculateLoanAmortization({
       principal: principalValue,
-      annualRate: (Number(annualRate) || 0) / 100,
+      annualRate: Math.max(0, Number(annualRate) || 0) / 100,
       termMonths: Math.round(years * 12),
     });
   }, [principal, annualRate, termYears]);
