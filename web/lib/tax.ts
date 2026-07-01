@@ -9,6 +9,8 @@
  * cap and no floor).
  */
 
+import { round2 } from "./money";
+
 export interface PayeBand {
   upTo: number;
   rate: number;
@@ -55,10 +57,6 @@ export interface TaxBreakdown {
   nssf: NssfBreakdown;
   shif: number;
   netMonthly: number;
-}
-
-function round2(value: number): number {
-  return Math.round((value + Number.EPSILON) * 100) / 100;
 }
 
 export function calculateNSSF(grossMonthly: number): NssfBreakdown {
