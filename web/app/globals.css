@@ -11,3 +11,9 @@ body {
   background: #fafaf8;
   color: #171717;
 }
+
+/* Reserves scroll room below the footer so it isn't hidden under a fixed
+   bottom bar (e.g. WhatsAppShare) — toggled via body class, not per-page. */
+body.has-fixed-bottom-bar {
+  padding-bottom: 6rem;
+}
