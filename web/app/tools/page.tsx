@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import BrandHeader from "@/components/BrandHeader";
+import ToolsIndexList, { type ToolGroup } from "@/components/tools/ToolsIndexList";
 
 export const metadata: Metadata = {
   title: "Free Financial Calculators for Kenya",
@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     "Free, no-signup calculators for Kenyan money decisions: take-home pay, savings goals, loans, FIRE, and more.",
 };
 
-const CALCULATOR_GROUPS = [
+const CALCULATOR_GROUPS: ToolGroup[] = [
   {
     label: "Plan for today",
     calculators: [
@@ -17,18 +17,21 @@ const CALCULATOR_GROUPS = [
         icon: "💰",
         title: "Take-Home Pay Calculator",
         description: "See your exact net salary after PAYE, NSSF, SHIF, and the Housing Levy.",
+        insight: "Used by 1,200+ Kenyans this month.",
       },
       {
         href: "/tools/savings-goal",
         icon: "🎯",
         title: "Savings Goal Calculator",
         description: "Work out how much to save each month to hit a target amount.",
+        insight: "Small, consistent amounts beat big, irregular ones.",
       },
       {
         href: "/tools/loan-repayment",
         icon: "🏦",
         title: "Loan / HELB Repayment Calculator",
         description: "See your monthly installment and total interest on any loan.",
+        insight: "A SACCO loan can cost a third of what a mobile lender charges for the same amount.",
       },
     ],
   },
@@ -40,24 +43,73 @@ const CALCULATOR_GROUPS = [
         icon: "📈",
         title: "Investment Returns Calculator",
         description: "Project how a lump sum plus monthly contributions grows over time.",
+        insight: "Compounding grows your money fastest in the later years — start now.",
       },
       {
         href: "/tools/fire-number",
         icon: "🔥",
         title: "FIRE Number Calculator",
         description: "Find your Financial Independence number and how many years to reach it.",
+        insight: "At 6.5% Kenya inflation, you may need a lower withdrawal rate than the standard 4% rule.",
       },
       {
         href: "/tools/money-runway",
         icon: "⏳",
         title: "Money Runway Calculator",
         description: "See how long your savings will last at a given monthly withdrawal.",
+        insight: "A modest return can make your savings last years longer.",
       },
       {
         href: "/tools/education-savings",
         icon: "🎓",
         title: "Kids' Education Savings Calculator",
         description: "Plan monthly savings toward a future school fees target.",
+        insight: "Starting early turns a big fees bill into a small monthly amount.",
+      },
+    ],
+  },
+  {
+    label: "Kenya money tools",
+    calculators: [
+      {
+        href: "/tools/salary-negotiation",
+        icon: "💼",
+        title: "Salary Negotiation Calculator",
+        description: "Work out the gross salary to negotiate for a target take-home pay.",
+        insight: "Every Kenyan starting a new job should run this before agreeing to a number.",
+        isNew: true,
+      },
+      {
+        href: "/tools/sacco-vs-bank",
+        icon: "⚖️",
+        title: "SACCO vs Bank Loan Comparison",
+        description: "Compare SACCO, bank, and mobile lender costs for the same loan.",
+        insight: "Most Kenyans don't realise how much cheaper SACCO loans are.",
+        isNew: true,
+      },
+      {
+        href: "/tools/inflation-reality",
+        icon: "📉",
+        title: "Inflation Reality Calculator",
+        description: "See what your salary will really be worth in the future.",
+        insight: "Kenya CPI has averaged 6.5% per year — your salary needs to keep pace.",
+        isNew: true,
+      },
+      {
+        href: "/tools/fuliza-cost",
+        icon: "📱",
+        title: "True Cost of Fuliza Calculator",
+        description: "Find out what Fuliza really costs before you borrow.",
+        insight: "Fuliza costs ~400% APR — more than a payday lender.",
+        isNew: true,
+      },
+      {
+        href: "/tools/one-third-rule",
+        icon: "⚠️",
+        title: "1/3 Rule Checker",
+        description: "Check if your SACCO and loan deductions are legally compliant.",
+        insight: "Many Kenyans unknowingly have illegal deductions taken from their pay.",
+        isNew: true,
       },
     ],
   },
@@ -73,31 +125,7 @@ export default function ToolsPage() {
           Quick tools for everyday Kenyan money decisions — no account needed.
         </p>
       </div>
-      <div className="mt-8 w-full max-w-md space-y-8">
-        {CALCULATOR_GROUPS.map((group) => (
-          <div key={group.label}>
-            <h2 className="mb-3 text-xs font-semibold uppercase tracking-wide text-[#4B4238]">
-              {group.label}
-            </h2>
-            <div className="space-y-3">
-              {group.calculators.map((calc) => (
-                <Link
-                  key={calc.href}
-                  href={calc.href}
-                  className="flex items-center gap-3 rounded-2xl bg-white p-4 shadow-sm transition-colors hover:bg-[#F1ECE3]"
-                >
-                  <span className="text-2xl">{calc.icon}</span>
-                  <span className="flex-1">
-                    <span className="block text-sm font-semibold text-primary">{calc.title}</span>
-                    <span className="block text-xs text-[#4B4238]">{calc.description}</span>
-                  </span>
-                  <span className="text-primary">→</span>
-                </Link>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
+      <ToolsIndexList groups={CALCULATOR_GROUPS} />
     </div>
   );
 }

@@ -53,6 +53,16 @@ export function inflationAdjust(
   return nominalValue / Math.pow(1 + annualInflationRate, years);
 }
 
+/** The nominal KES amount, N years from now, that has the same purchasing power as `todaysValue` today. */
+export function inflateToFutureCost(
+  todaysValue: number,
+  years: number,
+  annualInflationRate: number = DEFAULT_INFLATION_RATE
+): number {
+  if (years <= 0) return todaysValue;
+  return todaysValue * Math.pow(1 + annualInflationRate, years);
+}
+
 export interface WealthProjection {
   nominalWealth: number;
   inflationAdjustedWealth: number;
