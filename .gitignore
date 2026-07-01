@@ -7,3 +7,6 @@ node_modules/
 .idea
 dist/
 build/
+test-production.js
+check-production.js
+verify-improvements.js
