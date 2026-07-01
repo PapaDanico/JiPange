@@ -1,40 +1,10 @@
-# Netlify Configuration for JiPange Financial Planning App
+# Netlify Configuration for JiPange — Next.js 14 app (web/)
+# Netlify auto-detects Next.js and attaches its Next.js Runtime automatically;
+# no explicit publish directory or plugin declaration is needed.
 
 [build]
-  command = "echo 'JiPange is a static application - no build step required'"
-  publish = "."
-
-[[redirects]]
-  from = "/jipange-phase4.html"
-  to = "/index.html"
-  status = 301
-  force = true
-
-[[redirects]]
-  from = "/jipange-phase3.html"
-  to = "/index.html"
-  status = 301
-  force = true
-
-[[redirects]]
-  from = "/jipange-phase2.html"
-  to = "/index.html"
-  status = 301
-  force = true
-
-[[redirects]]
-  from = "/jipange.html"
-  to = "/index.html"
-  status = 301
-  force = true
-
-# Cache settings
-[cache]
-  directory = "."
-
-# Environment variables (if needed)
-[env.production]
-  # Add production-specific settings here if needed
+  base = "web"
+  command = "npm run build"
 
 # Headers for security and performance
 [[headers]]
@@ -45,24 +15,3 @@
     X-XSS-Protection = "1; mode=block"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "geolocation=(), microphone=(), camera=()"
-
-[[headers]]
-  for = "/*.html"
-  [headers.values]
-    Cache-Control = "no-cache, no-store, must-revalidate"
-    Pragma = "no-cache"
-    Expires = "0"
-
-[[headers]]
-  for = "/index.html"
-  [headers.values]
-    Cache-Control = "no-cache, no-store, must-revalidate"
-    Pragma = "no-cache"
-    Expires = "0"
-
-[[headers]]
-  for = "/"
-  [headers.values]
-    Cache-Control = "no-cache, no-store, must-revalidate"
-    Pragma = "no-cache"
-    Expires = "0"
