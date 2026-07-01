@@ -5,6 +5,7 @@ import { calculateNetPay } from "@/lib/tax";
 import { formatKES } from "@/lib/budget";
 import NumberField from "./NumberField";
 import ResultCard from "./ResultCard";
+import ShareResultButton from "./ShareResultButton";
 
 export default function TakeHomePayCalculator() {
   const [gross, setGross] = useState("");
@@ -38,6 +39,9 @@ export default function TakeHomePayCalculator() {
             Figures are estimates based on KRA 2025/26 PAYE bands. Check your payslip for exact
             deductions.
           </p>
+          <ShareResultButton
+            message={`🇰🇪 *My Take-Home Pay*\n\nGross salary: ${formatKES(Number(gross))}\nTake-home pay: ${formatKES(result.netMonthly)}/month\n\nCalculate yours → jipangefinance.netlify.app/tools/take-home-pay`}
+          />
         </>
       )}
     </div>

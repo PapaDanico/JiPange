@@ -1,5 +1,12 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import BrandHeader from "@/components/BrandHeader";
+
+export const metadata: Metadata = {
+  title: "Free Financial Calculators for Kenya",
+  description:
+    "Free, no-signup calculators for Kenyan money decisions: take-home pay, savings goals, loans, FIRE, and more.",
+};
 
 const CALCULATORS = [
   {
