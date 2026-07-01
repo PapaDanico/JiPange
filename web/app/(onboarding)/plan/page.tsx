@@ -20,6 +20,18 @@ export default function PlanPage() {
       <div className="mt-8 w-full flex justify-center">
         <ActionPlan />
       </div>
+      <div className="mt-8 w-full max-w-md rounded-2xl bg-white p-6 text-center shadow-sm">
+        <p className="text-sm font-medium text-primary">Want to model a specific scenario?</p>
+        <p className="mt-1 text-xs text-[#4B4238]">
+          Try our free calculators for loans, savings goals, FIRE, and more.
+        </p>
+        <Link
+          href="/tools"
+          className="mt-3 inline-flex h-10 items-center justify-center rounded-full bg-accent px-5 text-sm font-medium text-[#171717] transition-colors hover:bg-[#d6961f]"
+        >
+          Explore calculators
+        </Link>
+      </div>
     </div>
   );
 }
