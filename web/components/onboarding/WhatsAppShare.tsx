@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { ActionPlan, Calculations, Profile } from "@/lib/types";
 import { formatKES } from "@/lib/budget";
 
@@ -34,6 +34,13 @@ export default function WhatsAppShare(props: WhatsAppShareProps) {
   const [copied, setCopied] = useState(false);
   const message = buildShareMessage(props);
   const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+
+  // This bar is fixed to the viewport, so without extra clearance it would
+  // permanently cover the footer at the bottom of the page.
+  useEffect(() => {
+    document.body.classList.add("has-fixed-bottom-bar");
+    return () => document.body.classList.remove("has-fixed-bottom-bar");
+  }, []);
 
   async function handleCopy() {
     try {

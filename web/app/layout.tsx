@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Footer from "@/components/Footer";
 import "./globals.css";
 
 const SITE_URL = "https://jipangefinance.netlify.app";
@@ -27,6 +28,7 @@ export default function RootLayout({
     <html lang="en" className="h-full">
       <body className="min-h-full flex flex-col bg-background text-[#171717] antialiased">
         {children}
+        <Footer />
       </body>
     </html>
   );
