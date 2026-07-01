@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { migrateGuestDataToSupabase } from "@/lib/supabase/sync";
 
-type Status = "idle" | "sending" | "sent" | "signed-in" | "error";
+type Status = "idle" | "sending" | "sent" | "signed-in" | "error" | "unavailable";
 
 export default function SaveMyPlan() {
   const [email, setEmail] = useState("");
@@ -12,6 +12,10 @@ export default function SaveMyPlan() {
 
   useEffect(() => {
     const supabase = createClient();
+    if (!supabase) {
+      setStatus("unavailable");
+      return;
+    }
     supabase.auth.getUser().then(async ({ data: { user } }) => {
       if (user) {
         await migrateGuestDataToSupabase();
@@ -22,8 +26,12 @@ export default function SaveMyPlan() {
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
-    setStatus("sending");
     const supabase = createClient();
+    if (!supabase) {
+      setStatus("unavailable");
+      return;
+    }
+    setStatus("sending");
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
@@ -31,6 +39,14 @@ export default function SaveMyPlan() {
       },
     });
     setStatus(error ? "error" : "sent");
+  }
+
+  if (status === "unavailable") {
+    return (
+      <div className="rounded-2xl bg-[#F1ECE3] p-5 text-center text-sm text-[#4B4238]">
+        Your plan is saved on this device. Account sync is coming soon.
+      </div>
+    );
   }
 
   if (status === "signed-in") {

@@ -23,6 +23,8 @@ export default function ReturningUserRedirect() {
       }
 
       const supabase = createClient();
+      if (!supabase) return;
+
       const {
         data: { user },
       } = await supabase.auth.getUser();

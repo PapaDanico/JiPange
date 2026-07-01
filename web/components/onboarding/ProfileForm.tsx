@@ -77,7 +77,7 @@ export default function ProfileForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-md space-y-6">
+    <form onSubmit={handleSubmit} noValidate className="w-full max-w-md space-y-6">
       <div>
         <label htmlFor="fullName" className="block text-sm font-medium text-[#4B4238]">
           Full name

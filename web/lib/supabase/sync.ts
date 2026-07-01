@@ -4,6 +4,8 @@ import { getStoredCalculations, getStoredPlan, getStoredProfile } from "../stora
 /** Migrates the guest's localStorage journey into Supabase once they've signed in. */
 export async function migrateGuestDataToSupabase(): Promise<boolean> {
   const supabase = createClient();
+  if (!supabase) return false;
+
   const {
     data: { user },
   } = await supabase.auth.getUser();
