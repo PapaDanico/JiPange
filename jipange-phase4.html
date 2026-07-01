@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JiPange — Kenya's Financial Operating System</title>
+    <!-- Favicon Assets -->
+    <link rel="icon" type="image/jpeg" href="favicon.jpg">
+    <link rel="icon" type="image/jpeg" sizes="32x32" href="favicon.jpg">
+    <link rel="apple-touch-icon" href="assets/images/logo-full.jpg">
+    <meta name="theme-color" content="#6B5B4D">
+    <meta name="description" content="JiPange - Kenya's Financial Operating System. Build wealth, achieve goals, secure your future.">
+    <!-- External Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -841,7 +848,10 @@
 
 <!-- Navigation -->
 <nav class="navbar">
-    <div class="logo">Ji<span class="accent">Pange</span></div>
+    <div style="display: flex; align-items: center; gap: 1rem;">
+        <img src="assets/images/logo-full.jpg" alt="JiPange" style="height: 40px; width: auto; border-radius: 8px;">
+        <div class="logo">Ji<span class="accent">Pange</span></div>
+    </div>
     <div class="nav-center" id="navTabs"></div>
     <div class="nav-right">
         <button id="langToggle" class="lang-toggle" title="Toggle English/Swahili">EN</button>
@@ -857,6 +867,7 @@
         <div style="max-width: 100%; margin: 0 auto;">
             <!-- Hero Section with Gradient -->
             <div style="background: linear-gradient(135deg, #6B5B4D 0%, #8B7355 100%); color: white; padding: 4rem 2rem; border-radius: 20px; margin-bottom: 3rem; box-shadow: 0 20px 60px rgba(107, 91, 77, 0.2);">
+                <img src="assets/images/logo-full.jpg" alt="JiPange Logo" style="height: 80px; width: auto; margin: 0 auto 2rem auto; display: block; border-radius: 12px; background: rgba(255,255,255,0.1); padding: 8px;">
                 <h1 style="font-size: 3.5rem; font-weight: 700; margin: 0; margin-bottom: 1rem; letter-spacing: -0.02em;">JiPange</h1>
                 <p style="font-size: 1.5rem; margin: 0; margin-bottom: 0.5rem; font-weight: 600; opacity: 0.95;">Your African Finance Copilot</p>
                 <p style="font-size: 1.1rem; margin: 0; opacity: 0.9; line-height: 1.6;">Build wealth. Achieve goals. Secure your future.</p>
@@ -1365,6 +1376,9 @@
 
     <!-- Screen 5: Wealth Dashboard (NEW) -->
     <section id="screen-5">
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <img src="assets/images/logo-shield-growth.jpg" alt="Growth & Wealth" style="height: 120px; width: auto; margin-bottom: 1.5rem; border-radius: 16px;">
+        </div>
         <h1 class="section-title">💎 Wealth Dashboard</h1>
         <p class="section-subtitle">Your complete net worth and wealth journey, updated in real-time.</p>
 
@@ -1614,6 +1628,9 @@
 
     <!-- Screen 8: Goals + FIRE (NEW - Enhanced) -->
     <section id="screen-8">
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <img src="assets/images/logo-text.jpg" alt="JiPange" style="height: 60px; width: auto; border-radius: 12px;">
+        </div>
         <h1 class="section-title">🎯 Goals + FIRE Calculator</h1>
         <p class="section-subtitle">Define your life goals and calculate your path to financial independence.</p>
 
