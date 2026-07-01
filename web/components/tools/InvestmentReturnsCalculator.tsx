@@ -38,7 +38,7 @@ export default function InvestmentReturnsCalculator() {
       {result && (
         <>
           <ResultCard label="Projected future value" value={formatKES(result.total)} tone="success" />
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <ResultCard label="Total contributed" value={formatKES(result.totalContributed)} />
             <ResultCard label="Growth earned" value={formatKES(result.growth)} tone="success" />
           </div>

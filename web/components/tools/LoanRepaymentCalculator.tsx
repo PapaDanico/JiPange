@@ -51,7 +51,7 @@ export default function LoanRepaymentCalculator() {
       {result && (
         <>
           <ResultCard label="Monthly installment" value={formatKES(result.monthlyPayment)} tone="success" />
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <ResultCard label="Total interest paid" value={formatKES(result.totalInterest)} />
             <ResultCard label="Total repaid" value={formatKES(result.totalPaid)} />
           </div>
