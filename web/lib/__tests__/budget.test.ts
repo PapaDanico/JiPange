@@ -23,7 +23,7 @@ describe("savingsRateBand", () => {
 describe("calculateFinancials", () => {
   it("derives net pay, budget split and a 20% savings rate by construction", () => {
     const result = calculateFinancials(50_000);
-    expect(result.netMonthly).toBeCloseTo(40_485.65, 2);
+    expect(result.netMonthly).toBeCloseTo(39_029.15, 2);
     expect(result.savingsRate).toBeCloseTo(0.2, 10);
     expect(result.savingsCapacity).toBeCloseTo(result.netMonthly * 0.2, 6);
   });

@@ -16,7 +16,7 @@ const CALCULATOR_GROUPS = [
         href: "/tools/take-home-pay",
         icon: "💰",
         title: "Take-Home Pay Calculator",
-        description: "See your exact net salary after PAYE, NSSF, and SHIF deductions.",
+        description: "See your exact net salary after PAYE, NSSF, SHIF, and the Housing Levy.",
       },
       {
         href: "/tools/savings-goal",
