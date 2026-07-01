@@ -3,26 +3,11 @@
 import { useMemo, useState } from "react";
 import { calculateNetPay } from "@/lib/tax";
 import { formatKES } from "@/lib/budget";
+import CalculatorDisclaimer from "./CalculatorDisclaimer";
+import DeductionRow from "./DeductionRow";
 import NumberField from "./NumberField";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
-
-function DeductionRow({
-  label,
-  value,
-  bold = false,
-}: {
-  label: string;
-  value: string;
-  bold?: boolean;
-}) {
-  return (
-    <div className={`flex justify-between py-1.5 text-sm ${bold ? "font-semibold text-primary" : "text-[#4B4238]"}`}>
-      <span>{label}</span>
-      <span>{value}</span>
-    </div>
-  );
-}
 
 export default function TakeHomePayCalculator() {
   const [gross, setGross] = useState("");
@@ -89,26 +74,7 @@ export default function TakeHomePayCalculator() {
             </p>
           </div>
 
-          <div className="space-y-1 text-xs text-[#4B4238]">
-            <p>Rates current as of February 2026.</p>
-            <p>
-              Sources: PAYE bands — KRA Finance Act 2025/26 · NSSF — NSSF Act 2013 (Year 4, Feb
-              2026) · SHIF — Social Health Insurance Act, 2024 · Housing Levy — Affordable Housing
-              Act, 2024.
-            </p>
-            <p>
-              For guidance only. Verify against your payslip and check your exact figures at{" "}
-              <a
-                href="https://itax.kra.go.ke"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline hover:text-primary"
-              >
-                itax.kra.go.ke
-              </a>
-              .
-            </p>
-          </div>
+          <CalculatorDisclaimer />
 
           <ShareResultButton
             message={`🇰🇪 *My Take-Home Pay*\n\nGross salary: ${formatKES(Number(gross))}\nTake-home pay: ${formatKES(result.netMonthly)}/month\n\nCalculate yours → jipangefinance.netlify.app/tools/take-home-pay`}

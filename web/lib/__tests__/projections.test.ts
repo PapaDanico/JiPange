@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   buildRetirementComparison,
   futureValue,
+  inflateToFutureCost,
   inflationAdjust,
   projectWealthAtRetirement,
 } from "../projections";
@@ -33,6 +34,21 @@ describe("inflationAdjust", () => {
 
   it("discounts nominal value by the compounded inflation rate", () => {
     expect(inflationAdjust(1_000, 1, 0.1)).toBeCloseTo(909.09, 2);
+  });
+});
+
+describe("inflateToFutureCost", () => {
+  it("leaves value unchanged when years is 0", () => {
+    expect(inflateToFutureCost(100_000, 0)).toBe(100_000);
+  });
+
+  it("is the exact inverse of inflationAdjust", () => {
+    const future = inflateToFutureCost(150_000, 20, 0.065);
+    expect(inflationAdjust(future, 20, 0.065)).toBeCloseTo(150_000, 6);
+  });
+
+  it("grows the value at Kenya's default 6.5% inflation rate", () => {
+    expect(inflateToFutureCost(1_000, 1)).toBeCloseTo(1_065, 2);
   });
 });
 
