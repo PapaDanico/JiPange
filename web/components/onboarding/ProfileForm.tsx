@@ -203,7 +203,7 @@ export default function ProfileForm() {
         type="submit"
         className="h-12 w-full rounded-full bg-primary text-base font-medium text-white transition-colors hover:bg-[#584a3e]"
       >
-        See my Kenya Money Picture →
+        See my Pesa Picture →
       </button>
     </form>
   );

@@ -5,6 +5,9 @@ export const metadata: Metadata = {
   title: "JiPange — Kenya's Financial Planning Copilot",
   description:
     "The financial plan every Kenyan deserves — built for how we actually live.",
+  icons: {
+    icon: "/logo-icon.webp",
+  },
 };
 
 export default function RootLayout({
