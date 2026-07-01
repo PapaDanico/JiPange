@@ -53,7 +53,7 @@ export default function MoneyPicture() {
   }, [profile, financials]);
 
   if (!profile || !financials || !retirement) {
-    return <p className="text-center text-[#4B4238]">Loading your money picture...</p>;
+    return <p className="text-center text-[#4B4238]">Loading your Pesa Picture...</p>;
   }
 
   const chartData = [
