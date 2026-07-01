@@ -10,3 +10,4 @@ build/
 test-production.js
 check-production.js
 verify-improvements.js
+final-verification.js
