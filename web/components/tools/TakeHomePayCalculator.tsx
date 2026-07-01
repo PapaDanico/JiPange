@@ -29,7 +29,7 @@ export default function TakeHomePayCalculator() {
       {result && (
         <>
           <ResultCard label="Take-home pay" value={formatKES(result.netMonthly)} tone="success" />
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <ResultCard label="PAYE" value={formatKES(result.paye)} />
             <ResultCard label="NSSF" value={formatKES(result.nssf.total)} />
             <ResultCard label="SHIF" value={formatKES(result.shif)} />
