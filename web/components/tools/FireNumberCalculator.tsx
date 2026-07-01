@@ -22,7 +22,7 @@ export default function FireNumberCalculator() {
       fireNumber,
       currentSavings: Number(currentSavings) || 0,
       monthlyContribution: Number(monthlyContribution) || 0,
-      annualReturnRate: (Number(annualReturn) || 0) / 100,
+      annualReturnRate: Math.max(0, Number(annualReturn) || 0) / 100,
     });
 
     return { fireNumber, yearsToFire };

@@ -27,7 +27,7 @@ export default function MoneyRunwayCalculator() {
     return calculateMoneyRunwayMonths({
       startingBalance: balance,
       monthlyWithdrawal: withdrawal,
-      annualReturnRate: (Number(annualReturn) || 0) / 100,
+      annualReturnRate: Math.max(0, Number(annualReturn) || 0) / 100,
     });
   }, [startingBalance, monthlyWithdrawal, annualReturn]);
 

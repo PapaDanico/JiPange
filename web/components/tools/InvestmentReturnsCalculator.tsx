@@ -18,7 +18,7 @@ export default function InvestmentReturnsCalculator() {
 
     const presentValue = Number(lumpSum) || 0;
     const monthlyContribution = Number(monthly) || 0;
-    const rate = (Number(annualReturn) || 0) / 100;
+    const rate = Math.max(0, Number(annualReturn) || 0) / 100;
 
     const total = futureValue(presentValue, monthlyContribution, rate, yearsValue);
     const totalContributed = presentValue + monthlyContribution * yearsValue * 12;

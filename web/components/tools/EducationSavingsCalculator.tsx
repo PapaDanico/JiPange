@@ -20,7 +20,7 @@ export default function EducationSavingsCalculator() {
     const monthly = solveMonthlyContribution({
       targetFutureValue,
       presentValue: Number(currentSavings) || 0,
-      annualRate: (Number(annualReturn) || 0) / 100,
+      annualRate: Math.max(0, Number(annualReturn) || 0) / 100,
       years,
     });
 
