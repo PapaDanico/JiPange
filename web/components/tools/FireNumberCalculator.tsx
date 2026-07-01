@@ -6,6 +6,7 @@ import { SAFE_WITHDRAWAL_RATE_NOTE } from "@/lib/projections";
 import { formatKES } from "@/lib/budget";
 import NumberField from "./NumberField";
 import ResultCard from "./ResultCard";
+import ShareResultButton from "./ShareResultButton";
 
 export default function FireNumberCalculator() {
   const [monthlyExpenses, setMonthlyExpenses] = useState("");
@@ -71,6 +72,11 @@ export default function FireNumberCalculator() {
             }
           />
           <p className="text-xs text-[#4B4238]">{SAFE_WITHDRAWAL_RATE_NOTE}</p>
+          <ShareResultButton
+            message={`🔥 *My FIRE Number*\n\nFIRE number: ${formatKES(result.fireNumber)}\nYears to Financial Independence: ${
+              Number.isFinite(result.yearsToFire) ? result.yearsToFire.toFixed(1) : "N/A"
+            }\n\nCalculate yours → jipangefinance.netlify.app/tools/fire-number`}
+          />
         </>
       )}
     </div>

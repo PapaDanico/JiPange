@@ -5,6 +5,7 @@ import { futureValue } from "@/lib/projections";
 import { formatKES } from "@/lib/budget";
 import NumberField from "./NumberField";
 import ResultCard from "./ResultCard";
+import ShareResultButton from "./ShareResultButton";
 
 export default function InvestmentReturnsCalculator() {
   const [lumpSum, setLumpSum] = useState("0");
@@ -41,6 +42,9 @@ export default function InvestmentReturnsCalculator() {
             <ResultCard label="Total contributed" value={formatKES(result.totalContributed)} />
             <ResultCard label="Growth earned" value={formatKES(result.growth)} tone="success" />
           </div>
+          <ShareResultButton
+            message={`📈 *My Investment Projection*\n\nIn ${years} years: ${formatKES(result.total)}\nGrowth earned: ${formatKES(result.growth)}\n\nCalculate yours → jipangefinance.netlify.app/tools/investment-returns`}
+          />
         </>
       )}
     </div>

@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { calculateMoneyRunwayMonths } from "@/lib/runway";
 import NumberField from "./NumberField";
 import ResultCard from "./ResultCard";
+import ShareResultButton from "./ShareResultButton";
 
 function formatDuration(months: number): string {
   if (!Number.isFinite(months)) return "Forever — your balance keeps growing";
@@ -56,12 +57,17 @@ export default function MoneyRunwayCalculator() {
       />
 
       {result !== null && (
-        <ResultCard
-          label="Your money will last"
-          value={formatDuration(result)}
-          sublabel="Assumes the remaining balance keeps earning the return rate above."
-          tone="success"
-        />
+        <>
+          <ResultCard
+            label="Your money will last"
+            value={formatDuration(result)}
+            sublabel="Assumes the remaining balance keeps earning the return rate above."
+            tone="success"
+          />
+          <ShareResultButton
+            message={`⏳ *My Money Runway*\n\nMy savings will last: ${formatDuration(result)}\n\nCalculate yours → jipangefinance.netlify.app/tools/money-runway`}
+          />
+        </>
       )}
     </div>
   );

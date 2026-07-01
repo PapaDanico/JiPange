@@ -5,6 +5,7 @@ import { calculateLoanAmortization } from "@/lib/loans";
 import { formatKES } from "@/lib/budget";
 import NumberField from "./NumberField";
 import ResultCard from "./ResultCard";
+import ShareResultButton from "./ShareResultButton";
 
 export default function LoanRepaymentCalculator() {
   const [principal, setPrincipal] = useState("");
@@ -54,6 +55,9 @@ export default function LoanRepaymentCalculator() {
             <ResultCard label="Total interest paid" value={formatKES(result.totalInterest)} />
             <ResultCard label="Total repaid" value={formatKES(result.totalPaid)} />
           </div>
+          <ShareResultButton
+            message={`🏦 *My Loan Repayment*\n\nLoan amount: ${formatKES(Number(principal))}\nMonthly installment: ${formatKES(result.monthlyPayment)}\nTotal interest: ${formatKES(result.totalInterest)}\n\nCalculate yours → jipangefinance.netlify.app/tools/loan-repayment`}
+          />
         </>
       )}
     </div>

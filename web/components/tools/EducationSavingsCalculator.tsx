@@ -5,6 +5,7 @@ import { solveMonthlyContribution } from "@/lib/savings-goal";
 import { formatKES } from "@/lib/budget";
 import NumberField from "./NumberField";
 import ResultCard from "./ResultCard";
+import ShareResultButton from "./ShareResultButton";
 
 export default function EducationSavingsCalculator() {
   const [targetFees, setTargetFees] = useState("");
@@ -59,12 +60,17 @@ export default function EducationSavingsCalculator() {
       />
 
       {result !== null && (
-        <ResultCard
-          label="Monthly savings needed"
-          value={formatKES(result)}
-          sublabel="A dedicated education fund (e.g. a money market fund) can help this grow steadily."
-          tone="success"
-        />
+        <>
+          <ResultCard
+            label="Monthly savings needed"
+            value={formatKES(result)}
+            sublabel="A dedicated education fund (e.g. a money market fund) can help this grow steadily."
+            tone="success"
+          />
+          <ShareResultButton
+            message={`🎓 *My Kids' Education Savings Plan*\n\nTarget: ${formatKES(Number(targetFees))}\nMonthly savings needed: ${formatKES(result)}\n\nCalculate yours → jipangefinance.netlify.app/tools/education-savings`}
+          />
+        </>
       )}
     </div>
   );

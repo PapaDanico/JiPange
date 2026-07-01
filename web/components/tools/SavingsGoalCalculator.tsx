@@ -5,6 +5,7 @@ import { solveMonthlyContribution } from "@/lib/savings-goal";
 import { formatKES } from "@/lib/budget";
 import NumberField from "./NumberField";
 import ResultCard from "./ResultCard";
+import ShareResultButton from "./ShareResultButton";
 
 export default function SavingsGoalCalculator() {
   const [target, setTarget] = useState("");
@@ -47,12 +48,17 @@ export default function SavingsGoalCalculator() {
       />
 
       {result !== null && (
-        <ResultCard
-          label="Monthly savings needed"
-          value={formatKES(result)}
-          sublabel="Assumes returns compound monthly at the rate above."
-          tone="success"
-        />
+        <>
+          <ResultCard
+            label="Monthly savings needed"
+            value={formatKES(result)}
+            sublabel="Assumes returns compound monthly at the rate above."
+            tone="success"
+          />
+          <ShareResultButton
+            message={`🎯 *My Savings Goal*\n\nTarget: ${formatKES(Number(target))} in ${years} years\nMonthly savings needed: ${formatKES(result)}\n\nCalculate yours → jipangefinance.netlify.app/tools/savings-goal`}
+          />
+        </>
       )}
     </div>
   );
