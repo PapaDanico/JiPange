@@ -1,10 +1,11 @@
 # Netlify Configuration for JiPange — Next.js 14 app (web/)
-# Netlify auto-detects Next.js and attaches its Next.js Runtime automatically;
-# no explicit publish directory or plugin declaration is needed.
 
 [build]
   base = "web"
   command = "npm run build"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
 
 # Headers for security and performance
 [[headers]]
