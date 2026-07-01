@@ -842,6 +842,83 @@
         .pyramid-title { font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; }
         .pyramid-amount { font-size: 1.5rem; font-weight: 700; }
         .pyramid-status { font-size: 0.85rem; opacity: 0.9; margin-top: 0.5rem; }
+
+        /* Mobile-Friendly Optimizations */
+        img { max-width: 100%; height: auto; display: block; }
+
+        /* Ensure minimum touch target size (44x44px) */
+        button, a[role="button"], [onclick] {
+            min-height: 44px;
+            min-width: 44px;
+            padding: max(0.75rem, calc(22px - 0.5em)) max(1rem, calc(22px - 0.5em));
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Minimum font sizes for readability */
+        body { font-size: max(16px, 100%); }
+        p, span, label, input, select, textarea { font-size: max(14px, 1em); }
+        small, .input-hint { font-size: max(12px, 0.875em); }
+        h1 { font-size: max(1.75rem, 28px); }
+        h2 { font-size: max(1.5rem, 24px); }
+        h3 { font-size: max(1.25rem, 20px); }
+        h4, h5, h6 { font-size: max(1rem, 16px); }
+
+        /* Improved text contrast */
+        body { color: #1a1a1a; }
+        .section-subtitle { color: #4a4a4a; }
+        .input-hint { color: #5a5a5a; opacity: 0.9; }
+
+        /* Mobile-specific media query */
+        @media (max-width: 768px) {
+            * { box-sizing: border-box; }
+            html, body { width: 100%; overflow-x: hidden; }
+
+            body { font-size: 16px; line-height: 1.6; padding: 0; margin: 0; }
+            h1 { font-size: 1.75rem; }
+            h2 { font-size: 1.4rem; }
+            h3 { font-size: 1.1rem; }
+
+            button, a[role="button"] {
+                padding: 0.75rem 1rem;
+                min-height: 44px;
+                width: auto;
+            }
+
+            /* Stack buttons vertically on mobile */
+            .button-group { display: flex; flex-direction: column; gap: 1rem; }
+            .button-group button { width: 100%; }
+
+            input, select, textarea {
+                font-size: 16px; /* Prevents zoom on iOS */
+                padding: 0.75rem;
+                min-height: 44px;
+                width: 100%;
+                max-width: 100%;
+            }
+
+            /* Improve spacing on mobile */
+            .card { padding: 1.25rem; margin-bottom: 1.5rem; box-sizing: border-box; }
+            .metric-row { gap: 1rem; }
+            section { padding: 1rem; box-sizing: border-box; }
+        }
+
+        @media (max-width: 480px) {
+            * { box-sizing: border-box; }
+            html, body { width: 100vw; overflow-x: hidden; }
+
+            h1 { font-size: 1.5rem; }
+            h2 { font-size: 1.25rem; }
+            h3 { font-size: 1rem; }
+
+            /* Touch-friendly spacing */
+            button, input, select, textarea { min-height: 48px; }
+
+            .navbar { padding: 0.75rem 1rem; max-width: 100%; overflow-x: hidden; }
+            section { padding: 1rem; max-width: 100%; overflow-x: hidden; }
+            .card { max-width: 100%; overflow-x: hidden; }
+        }
     </style>
 </head>
 <body>
