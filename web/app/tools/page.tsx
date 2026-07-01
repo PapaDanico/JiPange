@@ -69,7 +69,7 @@ const CALCULATOR_GROUPS: ToolGroup[] = [
     ],
   },
   {
-    label: "Kenya money tools",
+    label: "Pesa realities",
     calculators: [
       {
         href: "/tools/salary-negotiation",
