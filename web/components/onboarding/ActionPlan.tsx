@@ -106,7 +106,7 @@ export default function ActionPlan() {
         </div>
       )}
 
-      {error && !loading && (
+      {error && !loading && !plan && (
         <div className="rounded-2xl bg-[#FBEAEA] p-6 text-center">
           <p className="text-sm text-danger">{error}</p>
           <button
@@ -116,6 +116,12 @@ export default function ActionPlan() {
             Try again
           </button>
         </div>
+      )}
+
+      {error && !loading && plan && (
+        <p className="text-center text-xs text-danger">
+          {error} Showing your last successful plan below.
+        </p>
       )}
 
       {plan && !loading && (
