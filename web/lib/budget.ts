@@ -1,4 +1,4 @@
-import type { BudgetSplit, Calculations } from "./types";
+import type { BudgetSplit, Calculations, FiftyTwentyFiveTwentyFiveSplit } from "./types";
 import { calculateNetPay } from "./tax";
 
 /** Kenya-calibrated 50/30/20 variant: Needs / Social obligations+Wants / Savings. */
@@ -15,6 +15,21 @@ export function calculateBudgetSplit(netMonthly: number): BudgetSplit {
     socialObligations: netMonthly * BUDGET_ALLOCATION.socialObligations,
     wants: netMonthly * BUDGET_ALLOCATION.wants,
     savings: netMonthly * BUDGET_ALLOCATION.savings,
+  };
+}
+
+/** Alternative model: 50% household expenses / 25% savings (stability, emergency fund) / 25% investments (future projects). */
+export const BUDGET_ALLOCATION_502525 = {
+  household: 0.5,
+  savingsEmergency: 0.25,
+  investments: 0.25,
+} as const;
+
+export function calculate502525Split(netMonthly: number): FiftyTwentyFiveTwentyFiveSplit {
+  return {
+    household: netMonthly * BUDGET_ALLOCATION_502525.household,
+    savingsEmergency: netMonthly * BUDGET_ALLOCATION_502525.savingsEmergency,
+    investments: netMonthly * BUDGET_ALLOCATION_502525.investments,
   };
 }
 

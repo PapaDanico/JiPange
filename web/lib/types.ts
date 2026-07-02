@@ -19,6 +19,14 @@ export interface BudgetSplit {
   savings: number;
 }
 
+export type BudgetModel = "kenya" | "fiftyTwentyFiveTwentyFive";
+
+export interface FiftyTwentyFiveTwentyFiveSplit {
+  household: number;
+  savingsEmergency: number;
+  investments: number;
+}
+
 export interface Calculations {
   netMonthly: number;
   budgetSplit: BudgetSplit;
