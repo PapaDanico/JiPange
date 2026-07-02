@@ -1,10 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getStoredWhatsAppNumber } from "@/lib/storage";
 
 export default function ShareResultButton({ message }: { message: string }) {
   const [copied, setCopied] = useState(false);
-  const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+  // Read after mount (not during render) so the server-rendered href matches
+  // the client's first render — localStorage isn't available during SSR.
+  const [whatsappNumber, setWhatsappNumber] = useState<string | null>(null);
+
+  useEffect(() => {
+    setWhatsappNumber(getStoredWhatsAppNumber());
+  }, []);
+
+  const whatsappUrl = whatsappNumber
+    ? `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`
+    : `https://wa.me/?text=${encodeURIComponent(message)}`;
 
   async function handleCopy() {
     try {
