@@ -102,6 +102,7 @@ export default function MoneyPicture() {
         <button
           type="button"
           onClick={() => setModel("kenya")}
+          aria-pressed={model === "kenya"}
           className={`flex-1 rounded-full py-2 transition-colors ${
             model === "kenya" ? "bg-white text-primary shadow-sm" : "text-[#4B4238]"
           }`}
@@ -111,6 +112,7 @@ export default function MoneyPicture() {
         <button
           type="button"
           onClick={() => setModel("fiftyTwentyFiveTwentyFive")}
+          aria-pressed={model === "fiftyTwentyFiveTwentyFive"}
           className={`flex-1 rounded-full py-2 transition-colors ${
             model === "fiftyTwentyFiveTwentyFive" ? "bg-white text-primary shadow-sm" : "text-[#4B4238]"
           }`}
@@ -128,24 +130,33 @@ export default function MoneyPicture() {
 
       <div className="rounded-2xl bg-white p-6 shadow-sm">
         <h2 className="text-base font-semibold text-primary">Your budget split</h2>
-        <div className="mt-4 h-56">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={chartData}
-                dataKey="value"
-                nameKey="name"
-                innerRadius={55}
-                outerRadius={85}
-                paddingAngle={2}
-              >
-                {chartData.map((entry) => (
-                  <Cell key={entry.name} fill={SLICE_COLORS[entry.name]} />
-                ))}
-              </Pie>
-              <Tooltip formatter={(value: number) => formatKES(value)} />
-            </PieChart>
-          </ResponsiveContainer>
+        <div
+          className="mt-4 h-56"
+          role="img"
+          aria-label={`Budget split: ${chartData
+            .map((entry) => `${entry.name} ${formatKES(entry.value)}`)
+            .join(", ")}`}
+        >
+          <div aria-hidden="true" className="h-full w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart accessibilityLayer={false}>
+                <Pie
+                  data={chartData}
+                  dataKey="value"
+                  nameKey="name"
+                  innerRadius={55}
+                  outerRadius={85}
+                  paddingAngle={2}
+                  rootTabIndex={-1}
+                >
+                  {chartData.map((entry) => (
+                    <Cell key={entry.name} fill={SLICE_COLORS[entry.name]} />
+                  ))}
+                </Pie>
+                <Tooltip formatter={(value: number) => formatKES(value)} />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
         </div>
         <ul className="mt-2 space-y-1 text-sm">
           {chartData.map((entry) => (
@@ -165,7 +176,7 @@ export default function MoneyPicture() {
 
       {model === "kenya" && (
         <div className="rounded-2xl border-2 border-accent bg-[#FFF8EA] p-6">
-          <h3 className="text-sm font-semibold uppercase tracking-wide text-accent">
+          <h3 className="text-sm font-semibold uppercase tracking-wide text-[#946213]">
             What most apps ignore
           </h3>
           <p className="mt-2 text-sm text-[#4B4238]">

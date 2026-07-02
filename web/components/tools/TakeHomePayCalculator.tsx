@@ -48,24 +48,33 @@ export default function TakeHomePayCalculator() {
 
   return (
     <div className="space-y-4">
-      <NumberField
-        id="gross"
-        label="Monthly gross salary (KES)"
-        value={gross}
-        onChange={setGross}
-        placeholder="e.g. 80000"
-      />
+      <div className="hidden print:block">
+        <p className="text-lg font-semibold">JiPange — Take-Home Pay Estimate</p>
+        <p className="text-sm">Generated {new Date().toLocaleDateString("en-KE", { year: "numeric", month: "long", day: "numeric" })}</p>
+      </div>
+
+      <div className="print:hidden">
+        <NumberField
+          id="gross"
+          label="Monthly gross salary (KES)"
+          value={gross}
+          onChange={setGross}
+          placeholder="e.g. 80000"
+        />
+      </div>
 
       <button
         type="button"
         onClick={() => setShowReliefs((prev) => !prev)}
-        className="text-sm font-medium text-primary underline"
+        aria-expanded={showReliefs}
+        aria-controls="optional-tax-reliefs"
+        className="text-sm font-medium text-primary underline print:hidden"
       >
         {showReliefs ? "− Hide optional tax reliefs" : "+ Add optional tax reliefs"}
       </button>
 
       {showReliefs && (
-        <div className="space-y-3 rounded-2xl bg-white p-6 shadow-sm">
+        <div id="optional-tax-reliefs" className="space-y-3 rounded-2xl bg-white p-6 shadow-sm print:hidden">
           <NumberField
             id="pensionContribution"
             label="Voluntary pension contribution (KES/month) — capped at Ksh 30,000"
@@ -172,13 +181,15 @@ export default function TakeHomePayCalculator() {
           <button
             type="button"
             onClick={() => setShowYearComparison((prev) => !prev)}
-            className="text-sm font-medium text-primary underline"
+            aria-expanded={showYearComparison}
+            aria-controls="year-over-year-comparison"
+            className="text-sm font-medium text-primary underline print:hidden"
           >
             {showYearComparison ? "− Hide year-over-year comparison" : "+ Compare with last year's rates"}
           </button>
 
           {showYearComparison && priorYearResult && (
-            <div className="rounded-2xl bg-white p-6 shadow-sm">
+            <div id="year-over-year-comparison" className="rounded-2xl bg-white p-6 shadow-sm">
               <p className="text-sm font-semibold text-primary">
                 NSSF Year 3 (2025) vs Year 4 (2026)
               </p>
@@ -215,15 +226,34 @@ export default function TakeHomePayCalculator() {
             </div>
           )}
 
-          <CalculatorDisclaimer
-            extraNotes={[
-              "Pension relief — Income Tax Act s.15(3), capped at Ksh 30,000/month. Mortgage interest relief — Ksh 30,000/month cap, raised from Ksh 25,000 by the Finance Act 2025. Insurance relief — 15% of premiums up to Ksh 5,000/month, per s.31.",
-            ]}
-          />
+          <div className="print:hidden">
+            <CalculatorDisclaimer
+              extraNotes={[
+                "Pension relief — Income Tax Act s.15(3), capped at Ksh 30,000/month. Mortgage interest relief — Ksh 30,000/month cap, raised from Ksh 25,000 by the Finance Act 2025. Insurance relief — 15% of premiums up to Ksh 5,000/month, per s.31.",
+              ]}
+            />
+          </div>
 
-          <ShareResultButton
-            message={`🇰🇪 *My Take-Home Pay*\n\nGross salary: ${formatKES(Number(gross))}\nTake-home pay: ${formatKES(result.netMonthly)}/month\n\nCalculate yours → jipangefinance.netlify.app/tools/take-home-pay`}
-          />
+          <div className="hidden print:block">
+            <p className="mt-4 text-xs text-[#4B4238]">
+              Estimate only, not a payslip or licensed financial advice — rates current as of
+              February 2026. Generated at jipangefinance.netlify.app/tools/take-home-pay
+            </p>
+          </div>
+
+          <div className="print:hidden">
+            <ShareResultButton
+              message={`🇰🇪 *My Take-Home Pay*\n\nGross salary: ${formatKES(Number(gross))}\nTake-home pay: ${formatKES(result.netMonthly)}/month\n\nCalculate yours → jipangefinance.netlify.app/tools/take-home-pay`}
+            />
+          </div>
+
+          <button
+            type="button"
+            onClick={() => window.print()}
+            className="h-11 w-full rounded-full border border-[#E5E0D8] text-sm font-medium text-[#4B4238] print:hidden"
+          >
+            Print / Save as PDF
+          </button>
         </>
       )}
     </div>

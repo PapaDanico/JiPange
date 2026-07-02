@@ -11,8 +11,10 @@ const config: Config = {
         primary: "#6B5B4D",
         accent: "#E8A838",
         success: "#2D7D46",
-        warning: "#D97706",
-        danger: "#DC2626",
+        // Darkened from #D97706/#DC2626 so text using these tokens meets the
+        // WCAG AA 4.5:1 contrast minimum on white/near-white backgrounds.
+        warning: "#B45309",
+        danger: "#C81E1E",
         background: "#FAFAF8",
       },
     },
