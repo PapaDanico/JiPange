@@ -5,6 +5,7 @@ import {
   calculateNSSF,
   calculatePAYE,
   calculateSHIF,
+  NSSF_PRIOR_YEAR_LIMITS,
 } from "../tax";
 
 describe("calculateNSSF", () => {
@@ -125,5 +126,59 @@ describe("calculateNetPay — NSSF/SHIF/AHL rates effective February 2026", () =
   it("handles zero/negative gross gracefully", () => {
     expect(calculateNetPay(0).netMonthly).toBe(0);
     expect(calculateNetPay(-100).netMonthly).toBe(0);
+  });
+});
+
+describe("calculateNetPay — optional reliefs", () => {
+  it("pension contribution reduces taxable pay and PAYE (KES 100,000 gross, KES 10,000 pension)", () => {
+    const result = calculateNetPay(100_000, { pensionContribution: 10_000 });
+    expect(result.pensionRelief).toBe(10_000);
+    expect(result.taxablePay).toBe(79_750);
+    expect(result.paye).toBe(16_308.35);
+    expect(result.netMonthly).toBe(73_441.65);
+  });
+
+  it("caps pension relief at KES 30,000/month even if more is contributed", () => {
+    const result = calculateNetPay(100_000, { pensionContribution: 50_000 });
+    expect(result.pensionRelief).toBe(30_000);
+  });
+
+  it("caps mortgage interest relief at KES 30,000/month", () => {
+    const result = calculateNetPay(100_000, { mortgageInterest: 45_000 });
+    expect(result.mortgageRelief).toBe(30_000);
+  });
+
+  it("insurance relief is 15% of premiums up to KES 5,000/month, applied as a tax credit", () => {
+    const result = calculateNetPay(50_000, { insurancePremium: 5_000 });
+    expect(result.insuranceRelief).toBe(750);
+    expect(result.taxablePay).toBe(44_875); // unaffected — insurance relief doesn't reduce taxable pay
+    expect(result.paye).toBe(5_095.85); // 5,845.85 base paye − 750 relief
+    expect(result.netMonthly).toBe(39_779.15); // 39,029.15 base + 750 relief
+  });
+
+  it("caps insurance relief at 15% of KES 5,000 even if more premium is paid", () => {
+    const result = calculateNetPay(50_000, { insurancePremium: 20_000 });
+    expect(result.insuranceRelief).toBe(750);
+  });
+
+  it("ignores negative relief inputs", () => {
+    const result = calculateNetPay(100_000, { pensionContribution: -5_000 });
+    expect(result.pensionRelief).toBe(0);
+  });
+});
+
+describe("calculateNetPay — year-over-year NSSF comparison", () => {
+  it("Year 3 (2025) NSSF limits produce a smaller NSSF deduction and higher net pay than Year 4 (2026)", () => {
+    const currentYear = calculateNetPay(100_000);
+    const priorYear = calculateNetPay(100_000, {}, NSSF_PRIOR_YEAR_LIMITS);
+
+    expect(priorYear.nssf).toEqual({ tier1: 480, tier2: 3_840, total: 4_320 });
+    expect(priorYear.taxablePay).toBe(91_430);
+    expect(priorYear.paye).toBe(19_812.35);
+    expect(priorYear.netMonthly).toBe(71_617.65);
+
+    // The NSSF phase-in raised the mandatory deduction more than the resulting
+    // PAYE saving offset, so take-home pay is lower under the current-year rates.
+    expect(currentYear.netMonthly).toBeLessThan(priorYear.netMonthly);
   });
 });
