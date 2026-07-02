@@ -27,6 +27,14 @@ const CALCULATOR_GROUPS: ToolGroup[] = [
         insight: "Small, consistent amounts beat big, irregular ones.",
       },
       {
+        href: "/tools/budget-split",
+        icon: "🥧",
+        title: "50/25/25 Budget Split Calculator",
+        description: "Split your take-home pay: 50% household, 25% savings, 25% investments.",
+        insight: "A simpler alternative to the Kenya-calibrated split used in your Pesa Picture.",
+        isNew: true,
+      },
+      {
         href: "/tools/loan-repayment",
         icon: "🏦",
         title: "Loan / HELB Repayment Calculator",
