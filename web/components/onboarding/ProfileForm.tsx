@@ -19,7 +19,7 @@ interface FormState {
 
 const INITIAL_STATE: FormState = {
   fullName: "",
-  age: "",
+  age: "29",
   county: "Nairobi",
   grossMonthlySalary: "",
   dependants: "0",
@@ -94,19 +94,20 @@ export default function ProfileForm() {
       </div>
 
       <div>
-        <label htmlFor="age" className="block text-sm font-medium text-[#4B4238]">
-          Age
-        </label>
+        <div className="flex items-center justify-between">
+          <label htmlFor="age" className="block text-sm font-medium text-[#4B4238]">
+            Age
+          </label>
+          <span className="text-sm font-semibold text-primary">{form.age}</span>
+        </div>
         <input
           id="age"
-          type="number"
-          inputMode="numeric"
+          type="range"
           min={18}
           max={80}
           value={form.age}
           onChange={(event) => updateField("age", event.target.value)}
-          className="mt-1 h-12 w-full rounded-lg border border-[#E5E0D8] bg-white px-4 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-          placeholder="e.g. 29"
+          className="mt-2 h-2 w-full accent-primary"
         />
         {errors.age && <p className="mt-1 text-sm text-danger">{errors.age}</p>}
       </div>
@@ -115,18 +116,21 @@ export default function ProfileForm() {
         <label htmlFor="county" className="block text-sm font-medium text-[#4B4238]">
           County
         </label>
-        <select
+        <input
           id="county"
+          type="text"
+          list="county-options"
           value={form.county}
           onChange={(event) => updateField("county", event.target.value)}
           className="mt-1 h-12 w-full rounded-lg border border-[#E5E0D8] bg-white px-4 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-        >
+          placeholder="Start typing, e.g. Nai..."
+        />
+        <datalist id="county-options">
           {KENYA_COUNTIES.map((county) => (
-            <option key={county} value={county}>
-              {county}
-            </option>
+            <option key={county} value={county} />
           ))}
-        </select>
+        </datalist>
+        {errors.county && <p className="mt-1 text-sm text-danger">{errors.county}</p>}
       </div>
 
       <div>
@@ -197,13 +201,14 @@ export default function ProfileForm() {
             No
           </button>
         </div>
+        <p className="mt-1 text-xs text-[#4B4238]">Helps us tailor your recommendations.</p>
       </div>
 
       <button
         type="submit"
         className="h-12 w-full rounded-full bg-primary text-base font-medium text-white transition-colors hover:bg-[#584a3e]"
       >
-        See my Pesa Picture →
+        Show me my numbers →
       </button>
     </form>
   );

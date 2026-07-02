@@ -1,12 +1,14 @@
 import Link from "next/link";
 import BrandHeader from "@/components/BrandHeader";
 import ActionPlan from "@/components/onboarding/ActionPlan";
+import OnboardingStepIndicator from "@/components/onboarding/OnboardingStepIndicator";
 
 export default function PlanPage() {
   return (
     <div className="flex flex-1 flex-col items-center px-6 py-12">
       <div className="w-full max-w-md">
         <BrandHeader />
+        <OnboardingStepIndicator step={3} />
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-semibold text-primary">Your 3-Step Action Plan</h1>
           <Link href="/profile" className="text-xs font-medium text-primary underline">
