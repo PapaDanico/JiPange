@@ -12,7 +12,6 @@ import {
   setProfileDraft,
   setStoredProfile,
   setStoredWhatsAppNumber,
-  type ProfileDraft,
 } from "@/lib/storage";
 import { normalizeKenyanPhoneNumber } from "@/lib/whatsapp";
 
