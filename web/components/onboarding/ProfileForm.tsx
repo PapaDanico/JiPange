@@ -26,9 +26,12 @@ const INITIAL_STATE: FormState = {
   chamaMember: false,
 };
 
+const TOTAL_STEPS = 6;
+
 export default function ProfileForm() {
   const router = useRouter();
   const [form, setForm] = useState<FormState>(INITIAL_STATE);
+  const [whatsappNumber, setWhatsappNumber] = useState("");
   const [debouncedSalary, setDebouncedSalary] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -77,163 +80,229 @@ export default function ProfileForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="w-full max-w-md space-y-6">
-      <div>
-        <label htmlFor="fullName" className="block text-sm font-medium text-[#4B4238]">
-          Full name
-        </label>
-        <input
-          id="fullName"
-          type="text"
-          value={form.fullName}
-          onChange={(event) => updateField("fullName", event.target.value)}
-          aria-invalid={Boolean(errors.fullName)}
-          aria-describedby={errors.fullName ? "fullName-error" : undefined}
-          className="mt-1 h-12 w-full rounded-lg border border-[#E5E0D8] bg-white px-4 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-          placeholder="e.g. Wanjiru Kamau"
-        />
-        {errors.fullName && (
-          <p id="fullName-error" className="mt-1 text-sm text-danger">
-            {errors.fullName}
-          </p>
-        )}
-      </div>
-
-      <div>
-        <div className="flex items-center justify-between">
-          <label htmlFor="age" className="block text-sm font-medium text-[#4B4238]">
-            Age
-          </label>
-          <span className="text-sm font-semibold text-primary">{form.age}</span>
-        </div>
-        <input
-          id="age"
-          type="range"
-          min={18}
-          max={80}
-          value={form.age}
-          onChange={(event) => updateField("age", event.target.value)}
-          aria-invalid={Boolean(errors.age)}
-          aria-describedby={errors.age ? "age-error" : undefined}
-          className="mt-2 h-2 w-full accent-primary"
-        />
-        {errors.age && (
-          <p id="age-error" className="mt-1 text-sm text-danger">
-            {errors.age}
-          </p>
-        )}
-      </div>
-
-      <div>
-        <label htmlFor="county" className="block text-sm font-medium text-[#4B4238]">
-          County
-        </label>
-        <input
-          id="county"
-          type="text"
-          list="county-options"
-          value={form.county}
-          onChange={(event) => updateField("county", event.target.value)}
-          aria-invalid={Boolean(errors.county)}
-          aria-describedby={errors.county ? "county-error" : undefined}
-          className="mt-1 h-12 w-full rounded-lg border border-[#E5E0D8] bg-white px-4 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-          placeholder="Start typing, e.g. Nai..."
-        />
-        <datalist id="county-options">
-          {KENYA_COUNTIES.map((county) => (
-            <option key={county} value={county} />
+    <div className="w-full max-w-md">
+      <div className="mb-6">
+        <div className="flex items-center justify-center gap-1.5">
+          {Array.from({ length: TOTAL_STEPS }, (_, i) => (
+            <span
+              key={i}
+              className={
+                i === 0
+                  ? "h-2 w-2 rounded-full bg-success"
+                  : "h-2 w-2 rounded-full border border-success"
+              }
+            />
           ))}
-        </datalist>
-        {errors.county && (
-          <p id="county-error" className="mt-1 text-sm text-danger">
-            {errors.county}
-          </p>
-        )}
-      </div>
-
-      <div>
-        <label htmlFor="grossMonthlySalary" className="block text-sm font-medium text-[#4B4238]">
-          Monthly gross salary (KES)
-        </label>
-        <input
-          id="grossMonthlySalary"
-          type="number"
-          inputMode="numeric"
-          min={0}
-          value={form.grossMonthlySalary}
-          onChange={(event) => updateField("grossMonthlySalary", event.target.value)}
-          aria-invalid={Boolean(errors.grossMonthlySalary)}
-          aria-describedby={errors.grossMonthlySalary ? "grossMonthlySalary-error" : undefined}
-          className="mt-1 h-12 w-full rounded-lg border border-[#E5E0D8] bg-white px-4 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-          placeholder="e.g. 80000"
-        />
-        {errors.grossMonthlySalary && (
-          <p id="grossMonthlySalary-error" className="mt-1 text-sm text-danger">
-            {errors.grossMonthlySalary}
-          </p>
-        )}
-        {previewNet && (
-          <p className="mt-2 rounded-lg bg-[#F1ECE3] px-4 py-3 text-sm text-primary">
-            Estimated take-home pay:{" "}
-            <span className="font-semibold">{formatKES(previewNet.netMonthly)}</span> /month
-          </p>
-        )}
-      </div>
-
-      <div>
-        <label htmlFor="dependants" className="block text-sm font-medium text-[#4B4238]">
-          Number of dependants
-        </label>
-        <input
-          id="dependants"
-          type="number"
-          inputMode="numeric"
-          min={0}
-          value={form.dependants}
-          onChange={(event) => updateField("dependants", event.target.value)}
-          className="mt-1 h-12 w-full rounded-lg border border-[#E5E0D8] bg-white px-4 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-        />
-      </div>
-
-      <div>
-        <span className="block text-sm font-medium text-[#4B4238]">
-          Do you contribute to a Chama or SACCO?
-        </span>
-        <div className="mt-2 flex gap-3">
-          <button
-            type="button"
-            onClick={() => updateField("chamaMember", true)}
-            aria-pressed={form.chamaMember}
-            className={`h-12 flex-1 rounded-full border text-base font-medium transition-colors ${
-              form.chamaMember
-                ? "border-accent bg-accent text-[#171717]"
-                : "border-[#E5E0D8] bg-white text-[#4B4238]"
-            }`}
-          >
-            Yes
-          </button>
-          <button
-            type="button"
-            onClick={() => updateField("chamaMember", false)}
-            aria-pressed={!form.chamaMember}
-            className={`h-12 flex-1 rounded-full border text-base font-medium transition-colors ${
-              !form.chamaMember
-                ? "border-accent bg-accent text-[#171717]"
-                : "border-[#E5E0D8] bg-white text-[#4B4238]"
-            }`}
-          >
-            No
-          </button>
         </div>
-        <p className="mt-1 text-xs text-[#4B4238]">Helps us tailor your recommendations.</p>
+        <p className="mt-2 text-center text-xs font-medium text-[#4B4238]">
+          Step 1 of {TOTAL_STEPS}
+        </p>
       </div>
 
-      <button
-        type="submit"
-        className="h-12 w-full rounded-full bg-primary text-base font-medium text-white transition-colors hover:bg-[#584a3e]"
-      >
-        Show me my numbers →
-      </button>
-    </form>
+      <div className="mb-5 rounded-lg bg-[#f0f7f0] px-4 py-3">
+        <p className="text-[13px] font-semibold leading-[1.7] text-primary">
+          In 90 seconds you&apos;ll see:
+        </p>
+        <ul className="text-[13px] leading-[1.7] text-[#4B4238]">
+          <li>
+            📊 <strong>Your Pesa Score</strong> — a single number rating your financial health
+          </li>
+          <li>
+            🔥 <strong>Your FIRE number</strong> — the exact amount you need to retire in Kenya
+          </li>
+          <li>
+            💡 <strong>Your biggest money gap</strong> — and how to close it
+          </li>
+        </ul>
+      </div>
+
+      <form onSubmit={handleSubmit} noValidate className="space-y-6">
+        <div>
+          <label htmlFor="fullName" className="block text-sm font-medium text-[#4B4238]">
+            Full name
+          </label>
+          <input
+            id="fullName"
+            type="text"
+            value={form.fullName}
+            onChange={(event) => updateField("fullName", event.target.value)}
+            aria-invalid={Boolean(errors.fullName)}
+            aria-describedby={errors.fullName ? "fullName-error" : undefined}
+            className="mt-1 h-12 w-full rounded-lg border border-[#E5E0D8] bg-white px-4 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+            placeholder="e.g. Wanjiru Kamau"
+          />
+          {errors.fullName && (
+            <p id="fullName-error" className="mt-1 text-sm text-danger">
+              {errors.fullName}
+            </p>
+          )}
+        </div>
+
+        <div>
+          <label htmlFor="whatsappNumber" className="block text-sm font-medium text-[#4B4238]">
+            WhatsApp number (optional)
+          </label>
+          <input
+            id="whatsappNumber"
+            type="tel"
+            value={whatsappNumber}
+            onChange={(event) => setWhatsappNumber(event.target.value)}
+            className="mt-1 h-12 w-full rounded-lg border border-[#E5E0D8] bg-white px-4 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+            placeholder="07XX XXX XXX"
+          />
+          <p className="mt-1 text-xs text-[#6f6e69]">
+            So you can share your Pesa Picture via WhatsApp
+          </p>
+        </div>
+
+        <div>
+          <label htmlFor="county" className="block text-sm font-medium text-[#4B4238]">
+            County
+          </label>
+          <input
+            id="county"
+            type="text"
+            list="county-options"
+            value={form.county}
+            onChange={(event) => updateField("county", event.target.value)}
+            aria-invalid={Boolean(errors.county)}
+            aria-describedby={errors.county ? "county-error" : undefined}
+            className="mt-1 h-12 w-full rounded-lg border border-[#E5E0D8] bg-white px-4 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+            placeholder="Start typing, e.g. Nai..."
+          />
+          <datalist id="county-options">
+            {KENYA_COUNTIES.map((county) => (
+              <option key={county} value={county} />
+            ))}
+          </datalist>
+          {errors.county && (
+            <p id="county-error" className="mt-1 text-sm text-danger">
+              {errors.county}
+            </p>
+          )}
+        </div>
+
+        <div>
+          <div className="flex items-center justify-between">
+            <label htmlFor="age" className="block text-sm font-medium text-[#4B4238]">
+              Age
+            </label>
+            <span className="text-sm font-semibold text-primary">{form.age}</span>
+          </div>
+          <input
+            id="age"
+            type="range"
+            min={18}
+            max={80}
+            value={form.age}
+            onChange={(event) => updateField("age", event.target.value)}
+            aria-invalid={Boolean(errors.age)}
+            aria-describedby={errors.age ? "age-error" : undefined}
+            className="mt-2 h-2 w-full accent-primary"
+          />
+          {errors.age && (
+            <p id="age-error" className="mt-1 text-sm text-danger">
+              {errors.age}
+            </p>
+          )}
+        </div>
+
+        <div>
+          <label htmlFor="dependants" className="block text-sm font-medium text-[#4B4238]">
+            Number of dependants
+          </label>
+          <input
+            id="dependants"
+            type="number"
+            inputMode="numeric"
+            min={0}
+            value={form.dependants}
+            onChange={(event) => updateField("dependants", event.target.value)}
+            className="mt-1 h-12 w-full rounded-lg border border-[#E5E0D8] bg-white px-4 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+          />
+          <p className="mt-1 text-xs text-[#6f6e69]">
+            Include children, spouse, parents and anyone who depends on your income.
+          </p>
+        </div>
+
+        <div>
+          <span className="block text-sm font-medium text-[#4B4238]">
+            Do you contribute to a Chama or SACCO?
+          </span>
+          <div className="mt-2 flex gap-3">
+            <button
+              type="button"
+              onClick={() => updateField("chamaMember", true)}
+              aria-pressed={form.chamaMember}
+              className={`h-12 flex-1 rounded-full border text-base font-medium transition-colors ${
+                form.chamaMember
+                  ? "border-accent bg-accent text-[#171717]"
+                  : "border-[#E5E0D8] bg-white text-[#4B4238]"
+              }`}
+            >
+              Yes
+            </button>
+            <button
+              type="button"
+              onClick={() => updateField("chamaMember", false)}
+              aria-pressed={!form.chamaMember}
+              className={`h-12 flex-1 rounded-full border text-base font-medium transition-colors ${
+                !form.chamaMember
+                  ? "border-accent bg-accent text-[#171717]"
+                  : "border-[#E5E0D8] bg-white text-[#4B4238]"
+              }`}
+            >
+              No
+            </button>
+          </div>
+          <p className="mt-1 text-xs text-[#4B4238]">Helps us tailor your recommendations.</p>
+        </div>
+
+        <div>
+          <label htmlFor="grossMonthlySalary" className="block text-sm font-medium text-[#4B4238]">
+            Monthly gross salary (KES)
+          </label>
+          <input
+            id="grossMonthlySalary"
+            type="number"
+            inputMode="numeric"
+            min={0}
+            value={form.grossMonthlySalary}
+            onChange={(event) => updateField("grossMonthlySalary", event.target.value)}
+            aria-invalid={Boolean(errors.grossMonthlySalary)}
+            aria-describedby={errors.grossMonthlySalary ? "grossMonthlySalary-error" : undefined}
+            className="mt-1 h-12 w-full rounded-lg border border-[#E5E0D8] bg-white px-4 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+            placeholder="e.g. 80000"
+          />
+          {errors.grossMonthlySalary && (
+            <p id="grossMonthlySalary-error" className="mt-1 text-sm text-danger">
+              {errors.grossMonthlySalary}
+            </p>
+          )}
+          <p className="mt-1 text-xs text-[#6f6e69]">
+            Your total monthly pay before PAYE, NSSF and SHIF deductions — check your payslip.
+          </p>
+          {previewNet && (
+            <p className="mt-2 rounded-lg bg-[#F1ECE3] px-4 py-3 text-sm text-primary">
+              Estimated take-home pay:{" "}
+              <span className="font-semibold">{formatKES(previewNet.netMonthly)}</span> /month
+            </p>
+          )}
+        </div>
+
+        <p className="mb-4 text-center text-xs text-[#5f5e5a]">
+          <span aria-hidden="true">🔒 </span>
+          Your data never leaves your device. All calculations run in your browser — nothing is
+          stored or transmitted.
+        </p>
+
+        <button
+          type="submit"
+          className="min-h-[52px] w-full rounded-lg bg-primary text-base font-semibold text-white transition-colors hover:bg-[#584a3e]"
+        >
+          Show me my numbers →
+        </button>
+      </form>
+    </div>
   );
 }
