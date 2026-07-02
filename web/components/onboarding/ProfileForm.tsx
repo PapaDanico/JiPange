@@ -1,12 +1,20 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { KENYA_COUNTIES } from "@/lib/counties";
 import { calculateNetPay } from "@/lib/tax";
 import { formatKES } from "@/lib/budget";
 import { profileSchema, type Profile } from "@/lib/types";
-import { setStoredProfile } from "@/lib/storage";
+import {
+  clearProfileDraft,
+  getProfileDraft,
+  setProfileDraft,
+  setStoredProfile,
+  setStoredWhatsAppNumber,
+  type ProfileDraft,
+} from "@/lib/storage";
+import { normalizeKenyanPhoneNumber } from "@/lib/whatsapp";
 
 interface FormState {
   fullName: string;
@@ -28,12 +36,43 @@ const INITIAL_STATE: FormState = {
 
 const TOTAL_STEPS = 6;
 
+type SchemaFieldKey = "fullName" | "age" | "county" | "grossMonthlySalary" | "dependants";
+
 export default function ProfileForm() {
   const router = useRouter();
   const [form, setForm] = useState<FormState>(INITIAL_STATE);
   const [whatsappNumber, setWhatsappNumber] = useState("");
   const [debouncedSalary, setDebouncedSalary] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // Restore an in-progress draft (e.g. after an accidental refresh or nav-away)
+  // so filling in 6 fields doesn't have to survive in a single unbroken visit.
+  useEffect(() => {
+    const draft = getProfileDraft();
+    if (!draft) return;
+    setForm({
+      fullName: draft.fullName,
+      age: draft.age,
+      county: draft.county,
+      grossMonthlySalary: draft.grossMonthlySalary,
+      dependants: draft.dependants,
+      chamaMember: draft.chamaMember,
+    });
+    setWhatsappNumber(draft.whatsappNumber);
+  }, []);
+
+  // Skip the very first run: it fires in the same commit as the restore effect
+  // above, before that effect's setState has been applied, so writing here on
+  // mount would immediately clobber the draft we just tried to restore with
+  // the pre-hydration INITIAL_STATE.
+  const isFirstDraftWrite = useRef(true);
+  useEffect(() => {
+    if (isFirstDraftWrite.current) {
+      isFirstDraftWrite.current = false;
+      return;
+    }
+    setProfileDraft({ ...form, whatsappNumber });
+  }, [form, whatsappNumber]);
 
   useEffect(() => {
     const handle = setTimeout(() => {
@@ -52,6 +91,31 @@ export default function ProfileForm() {
     setForm((prev) => ({ ...prev, [key]: value }));
   }
 
+  function validateField(key: SchemaFieldKey, rawValue: unknown) {
+    const result = profileSchema.shape[key].safeParse(rawValue);
+    setErrors((prev) => {
+      const next = { ...prev };
+      if (result.success) {
+        delete next[key];
+      } else {
+        next[key] = result.error.issues[0]?.message ?? "Invalid value";
+      }
+      return next;
+    });
+  }
+
+  function validateWhatsappNumber() {
+    setErrors((prev) => {
+      const next = { ...prev };
+      if (!whatsappNumber.trim() || normalizeKenyanPhoneNumber(whatsappNumber)) {
+        delete next.whatsappNumber;
+      } else {
+        next.whatsappNumber = "Enter a valid Kenyan number, e.g. 07XX XXX XXX";
+      }
+      return next;
+    });
+  }
+
   function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
 
@@ -65,10 +129,19 @@ export default function ProfileForm() {
     };
 
     const result = profileSchema.safeParse(candidate);
-    if (!result.success) {
+    const normalizedWhatsapp = whatsappNumber.trim()
+      ? normalizeKenyanPhoneNumber(whatsappNumber)
+      : null;
+
+    if (!result.success || (whatsappNumber.trim() && !normalizedWhatsapp)) {
       const fieldErrors: Record<string, string> = {};
-      for (const issue of result.error.issues) {
-        fieldErrors[String(issue.path[0])] = issue.message;
+      if (!result.success) {
+        for (const issue of result.error.issues) {
+          fieldErrors[String(issue.path[0])] = issue.message;
+        }
+      }
+      if (whatsappNumber.trim() && !normalizedWhatsapp) {
+        fieldErrors.whatsappNumber = "Enter a valid Kenyan number, e.g. 07XX XXX XXX";
       }
       setErrors(fieldErrors);
       return;
@@ -76,6 +149,8 @@ export default function ProfileForm() {
 
     setErrors({});
     setStoredProfile(result.data as Profile);
+    if (normalizedWhatsapp) setStoredWhatsAppNumber(normalizedWhatsapp);
+    clearProfileDraft();
     router.push("/picture");
   }
 
@@ -116,6 +191,10 @@ export default function ProfileForm() {
         </ul>
       </div>
 
+      <p className="mb-5 text-center text-xs text-[#4B4238]">
+        Join 1,200+ Kenyans who&apos;ve already mapped their Pesa Picture this month.
+      </p>
+
       <form onSubmit={handleSubmit} noValidate className="space-y-6">
         <div>
           <label htmlFor="fullName" className="block text-sm font-medium text-[#4B4238]">
@@ -126,6 +205,7 @@ export default function ProfileForm() {
             type="text"
             value={form.fullName}
             onChange={(event) => updateField("fullName", event.target.value)}
+            onBlur={() => validateField("fullName", form.fullName.trim())}
             aria-invalid={Boolean(errors.fullName)}
             aria-describedby={errors.fullName ? "fullName-error" : undefined}
             className="mt-1 h-12 w-full rounded-lg border border-[#E5E0D8] bg-white px-4 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
@@ -147,9 +227,17 @@ export default function ProfileForm() {
             type="tel"
             value={whatsappNumber}
             onChange={(event) => setWhatsappNumber(event.target.value)}
+            onBlur={validateWhatsappNumber}
+            aria-invalid={Boolean(errors.whatsappNumber)}
+            aria-describedby={errors.whatsappNumber ? "whatsappNumber-error" : undefined}
             className="mt-1 h-12 w-full rounded-lg border border-[#E5E0D8] bg-white px-4 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
             placeholder="07XX XXX XXX"
           />
+          {errors.whatsappNumber && (
+            <p id="whatsappNumber-error" className="mt-1 text-sm text-danger">
+              {errors.whatsappNumber}
+            </p>
+          )}
           <p className="mt-1 text-xs text-[#6f6e69]">
             So you can share your Pesa Picture via WhatsApp
           </p>
@@ -165,6 +253,7 @@ export default function ProfileForm() {
             list="county-options"
             value={form.county}
             onChange={(event) => updateField("county", event.target.value)}
+            onBlur={() => validateField("county", form.county)}
             aria-invalid={Boolean(errors.county)}
             aria-describedby={errors.county ? "county-error" : undefined}
             className="mt-1 h-12 w-full rounded-lg border border-[#E5E0D8] bg-white px-4 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
@@ -196,6 +285,7 @@ export default function ProfileForm() {
             max={80}
             value={form.age}
             onChange={(event) => updateField("age", event.target.value)}
+            onBlur={() => validateField("age", Number(form.age))}
             aria-invalid={Boolean(errors.age)}
             aria-describedby={errors.age ? "age-error" : undefined}
             className="mt-2 h-2 w-full accent-primary"
@@ -218,8 +308,16 @@ export default function ProfileForm() {
             min={0}
             value={form.dependants}
             onChange={(event) => updateField("dependants", event.target.value)}
+            onBlur={() => validateField("dependants", Number(form.dependants))}
+            aria-invalid={Boolean(errors.dependants)}
+            aria-describedby={errors.dependants ? "dependants-error" : undefined}
             className="mt-1 h-12 w-full rounded-lg border border-[#E5E0D8] bg-white px-4 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
           />
+          {errors.dependants && (
+            <p id="dependants-error" className="mt-1 text-sm text-danger">
+              {errors.dependants}
+            </p>
+          )}
           <p className="mt-1 text-xs text-[#6f6e69]">
             Include children, spouse, parents and anyone who depends on your income.
           </p>
@@ -269,6 +367,7 @@ export default function ProfileForm() {
             min={0}
             value={form.grossMonthlySalary}
             onChange={(event) => updateField("grossMonthlySalary", event.target.value)}
+            onBlur={() => validateField("grossMonthlySalary", Number(form.grossMonthlySalary))}
             aria-invalid={Boolean(errors.grossMonthlySalary)}
             aria-describedby={errors.grossMonthlySalary ? "grossMonthlySalary-error" : undefined}
             className="mt-1 h-12 w-full rounded-lg border border-[#E5E0D8] bg-white px-4 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"

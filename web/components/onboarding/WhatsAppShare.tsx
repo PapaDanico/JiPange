@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import type { ActionPlan, Calculations, Profile } from "@/lib/types";
 import { formatKES } from "@/lib/budget";
+import { getStoredWhatsAppNumber } from "@/lib/storage";
 
 interface WhatsAppShareProps {
   profile: Profile;
@@ -33,7 +34,17 @@ Get your free plan → jipangefinance.netlify.app`;
 export default function WhatsAppShare(props: WhatsAppShareProps) {
   const [copied, setCopied] = useState(false);
   const message = buildShareMessage(props);
-  const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+  // Read after mount (not during render) so the server-rendered href matches
+  // the client's first render — localStorage isn't available during SSR.
+  const [whatsappNumber, setWhatsappNumber] = useState<string | null>(null);
+
+  useEffect(() => {
+    setWhatsappNumber(getStoredWhatsAppNumber());
+  }, []);
+
+  const whatsappUrl = whatsappNumber
+    ? `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`
+    : `https://wa.me/?text=${encodeURIComponent(message)}`;
 
   // This bar is fixed to the viewport, so without extra clearance it would
   // permanently cover the footer at the bottom of the page.
@@ -59,7 +70,7 @@ export default function WhatsAppShare(props: WhatsAppShareProps) {
           href={whatsappUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex h-12 flex-1 items-center justify-center rounded-full bg-[#25D366] text-base font-medium text-white"
+          className="flex h-12 flex-1 items-center justify-center rounded-full bg-[#0E7C56] text-base font-medium text-white"
         >
           Share on WhatsApp
         </a>
