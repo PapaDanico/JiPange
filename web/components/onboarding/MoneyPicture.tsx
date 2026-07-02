@@ -5,15 +5,18 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import { getStoredProfile, setStoredCalculations } from "@/lib/storage";
-import { calculateFinancials, formatKES, savingsRateBand } from "@/lib/budget";
+import { calculate502525Split, calculateFinancials, formatKES, savingsRateBand } from "@/lib/budget";
 import { buildRetirementComparison } from "@/lib/projections";
-import type { Profile } from "@/lib/types";
+import type { BudgetModel, Profile } from "@/lib/types";
 
 const SLICE_COLORS: Record<string, string> = {
   Needs: "#6B5B4D",
   "Social obligations": "#E8A838",
   Wants: "#C9BFB2",
   Savings: "#2D7D46",
+  Household: "#6B5B4D",
+  "Savings (emergency)": "#2D7D46",
+  Investments: "#3B6FA0",
 };
 
 const BAND_COLOR: Record<"green" | "amber" | "red", string> = {
@@ -22,9 +25,15 @@ const BAND_COLOR: Record<"green" | "amber" | "red", string> = {
   red: "text-danger",
 };
 
+const MODEL_GROWTH_RATE: Record<BudgetModel, number> = {
+  kenya: 0.2,
+  fiftyTwentyFiveTwentyFive: 0.5,
+};
+
 export default function MoneyPicture() {
   const router = useRouter();
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [model, setModel] = useState<BudgetModel>("kenya");
 
   useEffect(() => {
     const stored = getStoredProfile();
@@ -49,21 +58,36 @@ export default function MoneyPicture() {
     return buildRetirementComparison({
       currentAge: profile.age,
       netMonthlyIncome: financials.netMonthly,
+      withPlanSavingsRate: MODEL_GROWTH_RATE[model],
     });
-  }, [profile, financials]);
+  }, [profile, financials, model]);
 
   if (!profile || !financials || !retirement) {
     return <p className="text-center text-[#4B4238]">Loading your Pesa Picture...</p>;
   }
 
-  const chartData = [
-    { name: "Needs", value: financials.budgetSplit.needs },
-    { name: "Social obligations", value: financials.budgetSplit.socialObligations },
-    { name: "Wants", value: financials.budgetSplit.wants },
-    { name: "Savings", value: financials.budgetSplit.savings },
-  ];
+  const split502525 = calculate502525Split(financials.netMonthly);
 
-  const band = savingsRateBand(financials.savingsRate);
+  const chartData =
+    model === "kenya"
+      ? [
+          { name: "Needs", value: financials.budgetSplit.needs },
+          { name: "Social obligations", value: financials.budgetSplit.socialObligations },
+          { name: "Wants", value: financials.budgetSplit.wants },
+          { name: "Savings", value: financials.budgetSplit.savings },
+        ]
+      : [
+          { name: "Household", value: split502525.household },
+          { name: "Savings (emergency)", value: split502525.savingsEmergency },
+          { name: "Investments", value: split502525.investments },
+        ];
+
+  const growthCapacity =
+    model === "kenya"
+      ? financials.savingsCapacity
+      : split502525.savingsEmergency + split502525.investments;
+  const growthRate = MODEL_GROWTH_RATE[model];
+  const band = savingsRateBand(model === "kenya" ? financials.savingsRate : growthRate);
 
   return (
     <div className="w-full max-w-md space-y-8">
@@ -73,6 +97,34 @@ export default function MoneyPicture() {
           {formatKES(financials.netMonthly)}
         </p>
       </div>
+
+      <div className="flex rounded-full bg-[#F1ECE3] p-1 text-sm font-medium">
+        <button
+          type="button"
+          onClick={() => setModel("kenya")}
+          className={`flex-1 rounded-full py-2 transition-colors ${
+            model === "kenya" ? "bg-white text-primary shadow-sm" : "text-[#4B4238]"
+          }`}
+        >
+          Kenya-calibrated
+        </button>
+        <button
+          type="button"
+          onClick={() => setModel("fiftyTwentyFiveTwentyFive")}
+          className={`flex-1 rounded-full py-2 transition-colors ${
+            model === "fiftyTwentyFiveTwentyFive" ? "bg-white text-primary shadow-sm" : "text-[#4B4238]"
+          }`}
+        >
+          50/25/25
+        </button>
+      </div>
+
+      {model === "fiftyTwentyFiveTwentyFive" && (
+        <p className="-mt-4 text-xs text-[#4B4238]">
+          A simpler 3-way split: 50% for daily living, 25% for a stability/emergency fund, 25%
+          for investing in future projects.
+        </p>
+      )}
 
       <div className="rounded-2xl bg-white p-6 shadow-sm">
         <h2 className="text-base font-semibold text-primary">Your budget split</h2>
@@ -111,25 +163,33 @@ export default function MoneyPicture() {
         </ul>
       </div>
 
-      <div className="rounded-2xl border-2 border-accent bg-[#FFF8EA] p-6">
-        <h3 className="text-sm font-semibold uppercase tracking-wide text-accent">
-          What most apps ignore
-        </h3>
-        <p className="mt-2 text-sm text-[#4B4238]">
-          {formatKES(financials.budgetSplit.socialObligations)}/month set aside for your real
-          Kenyan obligations — Harambee, tithe, upcountry family support, and Chama
-          contributions.
-        </p>
-      </div>
+      {model === "kenya" && (
+        <div className="rounded-2xl border-2 border-accent bg-[#FFF8EA] p-6">
+          <h3 className="text-sm font-semibold uppercase tracking-wide text-accent">
+            What most apps ignore
+          </h3>
+          <p className="mt-2 text-sm text-[#4B4238]">
+            {formatKES(financials.budgetSplit.socialObligations)}/month set aside for your real
+            Kenyan obligations — Harambee, tithe, upcountry family support, and Chama
+            contributions.
+          </p>
+        </div>
+      )}
 
       <div className="rounded-2xl bg-white p-6 shadow-sm">
-        <h2 className="text-base font-semibold text-primary">Your savings capacity</h2>
+        <h2 className="text-base font-semibold text-primary">
+          {model === "kenya" ? "Your savings capacity" : "Your savings + investing capacity"}
+        </h2>
         <p className={`mt-1 text-2xl font-semibold ${BAND_COLOR[band]}`}>
-          {formatKES(financials.savingsCapacity)}
-          <span className="ml-2 text-base font-normal">
-            ({(financials.savingsRate * 100).toFixed(0)}%)
-          </span>
+          {formatKES(growthCapacity)}
+          <span className="ml-2 text-base font-normal">({(growthRate * 100).toFixed(0)}%)</span>
         </p>
+        {model === "fiftyTwentyFiveTwentyFive" && (
+          <p className="mt-1 text-xs text-[#4B4238]">
+            {formatKES(split502525.savingsEmergency)} stability/emergency fund +{" "}
+            {formatKES(split502525.investments)} investments
+          </p>
+        )}
       </div>
 
       <div className="rounded-2xl bg-white p-6 shadow-sm">
@@ -137,20 +197,21 @@ export default function MoneyPicture() {
         <div className="mt-4 grid grid-cols-2 gap-4">
           <div className="rounded-xl bg-[#FBEAEA] p-4">
             <p className="text-xs text-[#4B4238]">Current trajectory</p>
-            <p className="mt-1 text-lg font-semibold text-danger">
+            <p className="mt-1 break-words text-lg font-semibold text-danger">
               {formatKES(retirement.currentTrajectory.nominalWealth)}
             </p>
           </div>
           <div className="rounded-xl bg-[#E9F5EC] p-4">
             <p className="text-xs text-[#4B4238]">With a plan</p>
-            <p className="mt-1 text-lg font-semibold text-success">
+            <p className="mt-1 break-words text-lg font-semibold text-success">
               {formatKES(retirement.withPlan.nominalWealth)}
             </p>
           </div>
         </div>
         <p className="mt-3 text-xs text-[#4B4238]">
-          Assumes a 20% savings rate at 10% annual return over {retirement.yearsToRetirement}{" "}
-          years. Figures are nominal KES — inflation will reduce real purchasing power.
+          Assumes a {(growthRate * 100).toFixed(0)}% savings rate at 10% annual return over{" "}
+          {retirement.yearsToRetirement} years. Figures are nominal KES — inflation will reduce
+          real purchasing power.
         </p>
       </div>
 

@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { calculateBudgetSplit, calculateFinancials, savingsRateBand } from "../budget";
+import {
+  calculate502525Split,
+  calculateBudgetSplit,
+  calculateFinancials,
+  savingsRateBand,
+} from "../budget";
 
 describe("calculateBudgetSplit", () => {
   it("splits net pay into the 50/15/15/20 Kenya-calibrated allocation", () => {
@@ -8,6 +13,20 @@ describe("calculateBudgetSplit", () => {
     expect(split.socialObligations).toBe(15_000);
     expect(split.wants).toBe(15_000);
     expect(split.savings).toBe(20_000);
+  });
+});
+
+describe("calculate502525Split", () => {
+  it("splits net pay into the 50/25/25 household/savings/investments allocation", () => {
+    const split = calculate502525Split(100_000);
+    expect(split.household).toBe(50_000);
+    expect(split.savingsEmergency).toBe(25_000);
+    expect(split.investments).toBe(25_000);
+  });
+
+  it("adds up to the full net amount", () => {
+    const split = calculate502525Split(83_450);
+    expect(split.household + split.savingsEmergency + split.investments).toBeCloseTo(83_450, 6);
   });
 });
 
