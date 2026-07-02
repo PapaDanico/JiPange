@@ -87,10 +87,16 @@ export default function ProfileForm() {
           type="text"
           value={form.fullName}
           onChange={(event) => updateField("fullName", event.target.value)}
+          aria-invalid={Boolean(errors.fullName)}
+          aria-describedby={errors.fullName ? "fullName-error" : undefined}
           className="mt-1 h-12 w-full rounded-lg border border-[#E5E0D8] bg-white px-4 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
           placeholder="e.g. Wanjiru Kamau"
         />
-        {errors.fullName && <p className="mt-1 text-sm text-danger">{errors.fullName}</p>}
+        {errors.fullName && (
+          <p id="fullName-error" className="mt-1 text-sm text-danger">
+            {errors.fullName}
+          </p>
+        )}
       </div>
 
       <div>
@@ -107,9 +113,15 @@ export default function ProfileForm() {
           max={80}
           value={form.age}
           onChange={(event) => updateField("age", event.target.value)}
+          aria-invalid={Boolean(errors.age)}
+          aria-describedby={errors.age ? "age-error" : undefined}
           className="mt-2 h-2 w-full accent-primary"
         />
-        {errors.age && <p className="mt-1 text-sm text-danger">{errors.age}</p>}
+        {errors.age && (
+          <p id="age-error" className="mt-1 text-sm text-danger">
+            {errors.age}
+          </p>
+        )}
       </div>
 
       <div>
@@ -122,6 +134,8 @@ export default function ProfileForm() {
           list="county-options"
           value={form.county}
           onChange={(event) => updateField("county", event.target.value)}
+          aria-invalid={Boolean(errors.county)}
+          aria-describedby={errors.county ? "county-error" : undefined}
           className="mt-1 h-12 w-full rounded-lg border border-[#E5E0D8] bg-white px-4 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
           placeholder="Start typing, e.g. Nai..."
         />
@@ -130,7 +144,11 @@ export default function ProfileForm() {
             <option key={county} value={county} />
           ))}
         </datalist>
-        {errors.county && <p className="mt-1 text-sm text-danger">{errors.county}</p>}
+        {errors.county && (
+          <p id="county-error" className="mt-1 text-sm text-danger">
+            {errors.county}
+          </p>
+        )}
       </div>
 
       <div>
@@ -144,11 +162,15 @@ export default function ProfileForm() {
           min={0}
           value={form.grossMonthlySalary}
           onChange={(event) => updateField("grossMonthlySalary", event.target.value)}
+          aria-invalid={Boolean(errors.grossMonthlySalary)}
+          aria-describedby={errors.grossMonthlySalary ? "grossMonthlySalary-error" : undefined}
           className="mt-1 h-12 w-full rounded-lg border border-[#E5E0D8] bg-white px-4 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
           placeholder="e.g. 80000"
         />
         {errors.grossMonthlySalary && (
-          <p className="mt-1 text-sm text-danger">{errors.grossMonthlySalary}</p>
+          <p id="grossMonthlySalary-error" className="mt-1 text-sm text-danger">
+            {errors.grossMonthlySalary}
+          </p>
         )}
         {previewNet && (
           <p className="mt-2 rounded-lg bg-[#F1ECE3] px-4 py-3 text-sm text-primary">
@@ -181,6 +203,7 @@ export default function ProfileForm() {
           <button
             type="button"
             onClick={() => updateField("chamaMember", true)}
+            aria-pressed={form.chamaMember}
             className={`h-12 flex-1 rounded-full border text-base font-medium transition-colors ${
               form.chamaMember
                 ? "border-accent bg-accent text-[#171717]"
@@ -192,6 +215,7 @@ export default function ProfileForm() {
           <button
             type="button"
             onClick={() => updateField("chamaMember", false)}
+            aria-pressed={!form.chamaMember}
             className={`h-12 flex-1 rounded-full border text-base font-medium transition-colors ${
               !form.chamaMember
                 ? "border-accent bg-accent text-[#171717]"

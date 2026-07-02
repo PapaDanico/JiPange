@@ -211,7 +211,9 @@ export function calculateNetPay(
   );
   const totalRelief = PERSONAL_RELIEF_MONTHLY + insuranceRelief;
   const { grossPaye, paye } = calculatePAYE(taxablePay, totalRelief);
-  const netMonthly = round2(grossMonthly - paye - nssf.total - shif - ahl);
+  // SHIF's flat Ksh 300 monthly minimum can exceed statutory deductions for a
+  // near-zero gross salary, which would otherwise make take-home pay negative.
+  const netMonthly = Math.max(0, round2(grossMonthly - paye - nssf.total - shif - ahl));
 
   // Employer matches the employee's NSSF contribution and pays its own 1.5% AHL
   // share on top of gross — SHIF has no employer-matched component.

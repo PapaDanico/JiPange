@@ -127,6 +127,11 @@ describe("calculateNetPay — NSSF/SHIF/AHL rates effective February 2026", () =
     expect(calculateNetPay(0).netMonthly).toBe(0);
     expect(calculateNetPay(-100).netMonthly).toBe(0);
   });
+
+  it("never returns negative take-home pay for a tiny gross salary (SHIF's Ksh 300 minimum can exceed it)", () => {
+    expect(calculateNetPay(1).netMonthly).toBe(0);
+    expect(calculateNetPay(100).netMonthly).toBe(0);
+  });
 });
 
 describe("calculateNetPay — optional reliefs", () => {

@@ -17,3 +17,9 @@ body {
 body.has-fixed-bottom-bar {
   padding-bottom: 6rem;
 }
+
+@media print {
+  footer {
+    display: none !important;
+  }
+}

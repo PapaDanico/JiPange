@@ -22,7 +22,7 @@ export default function ShareResultButton({ message }: { message: string }) {
         href={whatsappUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex h-11 flex-1 items-center justify-center rounded-full bg-[#25D366] text-sm font-medium text-white"
+        className="flex h-11 flex-1 items-center justify-center rounded-full bg-[#0E7C56] text-sm font-medium text-white"
       >
         Share on WhatsApp
       </a>
