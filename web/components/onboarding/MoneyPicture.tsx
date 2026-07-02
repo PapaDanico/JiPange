@@ -205,16 +205,16 @@ export default function MoneyPicture() {
 
       <div className="rounded-2xl bg-white p-6 shadow-sm">
         <h2 className="text-base font-semibold text-primary">Wealth at age 60</h2>
-        <div className="mt-4 grid grid-cols-2 gap-4">
+        <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="rounded-xl bg-[#FBEAEA] p-4">
             <p className="text-xs text-[#4B4238]">Current trajectory</p>
-            <p className="mt-1 break-words text-lg font-semibold text-danger">
+            <p className="mt-1 whitespace-nowrap text-lg font-semibold text-danger">
               {formatKES(retirement.currentTrajectory.nominalWealth)}
             </p>
           </div>
           <div className="rounded-xl bg-[#E9F5EC] p-4">
             <p className="text-xs text-[#4B4238]">With a plan</p>
-            <p className="mt-1 break-words text-lg font-semibold text-success">
+            <p className="mt-1 whitespace-nowrap text-lg font-semibold text-success">
               {formatKES(retirement.withPlan.nominalWealth)}
             </p>
           </div>
