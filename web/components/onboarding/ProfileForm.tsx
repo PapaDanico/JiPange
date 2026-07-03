@@ -34,6 +34,7 @@ const INITIAL_STATE: FormState = {
 };
 
 const TOTAL_STEPS = 6;
+const WHATSAPP_ERROR = "Enter a valid Kenyan number, e.g. 07XX XXX XXX";
 
 type SchemaFieldKey = "fullName" | "age" | "county" | "grossMonthlySalary" | "dependants";
 
@@ -98,7 +99,7 @@ export default function ProfileForm() {
       if (result.success) {
         delete next[key];
       } else {
-        next[key] = result.error.issues[0]?.message ?? "Invalid value";
+        next[key] = result.error.issues[0]?.message ?? "Required";
       }
       return next;
     });
@@ -110,7 +111,7 @@ export default function ProfileForm() {
       if (!whatsappNumber.trim() || normalizeKenyanPhoneNumber(whatsappNumber)) {
         delete next.whatsappNumber;
       } else {
-        next.whatsappNumber = "Enter a valid Kenyan number, e.g. 07XX XXX XXX";
+        next.whatsappNumber = WHATSAPP_ERROR;
       }
       return next;
     });
@@ -125,7 +126,7 @@ export default function ProfileForm() {
     }
     if (currentStep === 2 && whatsappNumber.trim()) {
       if (!normalizeKenyanPhoneNumber(whatsappNumber))
-        stepErrors.whatsappNumber = "Enter a valid Kenyan number, e.g. 07XX XXX XXX";
+        stepErrors.whatsappNumber = WHATSAPP_ERROR;
     }
     if (currentStep === 3) {
       const r = profileSchema.shape.county.safeParse(form.county);
@@ -187,7 +188,7 @@ export default function ProfileForm() {
         }
       }
       if (whatsappNumber.trim() && !normalizedWhatsapp) {
-        fieldErrors.whatsappNumber = "Enter a valid Kenyan number, e.g. 07XX XXX XXX";
+        fieldErrors.whatsappNumber = WHATSAPP_ERROR;
       }
       setErrors(fieldErrors);
       return;
