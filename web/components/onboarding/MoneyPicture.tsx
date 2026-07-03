@@ -8,6 +8,7 @@ import { getStoredProfile, setStoredCalculations } from "@/lib/storage";
 import { calculate502525Split, calculateFinancials, formatKES, savingsRateBand } from "@/lib/budget";
 import { buildRetirementComparison } from "@/lib/projections";
 import type { BudgetModel, Profile } from "@/lib/types";
+import { useCountUp } from "@/hooks/useCountUp";
 
 const SLICE_COLORS: Record<string, string> = {
   Needs: "#6B5B4D",
@@ -62,11 +63,24 @@ export default function MoneyPicture() {
     });
   }, [profile, financials, model]);
 
-  if (!profile || !financials || !retirement) {
+  const split502525 = useMemo(
+    () => (financials ? calculate502525Split(financials.netMonthly) : null),
+    [financials]
+  );
+
+  const growthCapacity =
+    model === "kenya"
+      ? financials?.savingsCapacity ?? 0
+      : (split502525 ? split502525.savingsEmergency + split502525.investments : 0);
+
+  const animatedNetMonthly = useCountUp(financials?.netMonthly ?? 0);
+  const animatedGrowthCapacity = useCountUp(growthCapacity);
+  const animatedCurrentTrajectory = useCountUp(retirement?.currentTrajectory.nominalWealth ?? 0);
+  const animatedWithPlan = useCountUp(retirement?.withPlan.nominalWealth ?? 0);
+
+  if (!profile || !financials || !retirement || !split502525) {
     return <p className="text-center text-[#4B4238]">Loading your Pesa Picture...</p>;
   }
-
-  const split502525 = calculate502525Split(financials.netMonthly);
 
   const chartData =
     model === "kenya"
@@ -82,10 +96,6 @@ export default function MoneyPicture() {
           { name: "Investments", value: split502525.investments },
         ];
 
-  const growthCapacity =
-    model === "kenya"
-      ? financials.savingsCapacity
-      : split502525.savingsEmergency + split502525.investments;
   const growthRate = MODEL_GROWTH_RATE[model];
   const band = savingsRateBand(model === "kenya" ? financials.savingsRate : growthRate);
 
@@ -94,7 +104,7 @@ export default function MoneyPicture() {
       <div className="rounded-2xl bg-white p-6 shadow-sm">
         <p className="text-sm text-[#4B4238]">Your monthly take-home pay</p>
         <p className="mt-1 text-3xl font-semibold text-primary">
-          {formatKES(financials.netMonthly)}
+          {formatKES(animatedNetMonthly)}
         </p>
       </div>
 
@@ -192,7 +202,7 @@ export default function MoneyPicture() {
           {model === "kenya" ? "Your savings capacity" : "Your savings + investing capacity"}
         </h2>
         <p className={`mt-1 text-2xl font-semibold ${BAND_COLOR[band]}`}>
-          {formatKES(growthCapacity)}
+          {formatKES(animatedGrowthCapacity)}
           <span className="ml-2 text-base font-normal">({(growthRate * 100).toFixed(0)}%)</span>
         </p>
         {model === "fiftyTwentyFiveTwentyFive" && (
@@ -209,13 +219,13 @@ export default function MoneyPicture() {
           <div className="rounded-xl bg-[#FBEAEA] p-4">
             <p className="text-xs text-[#4B4238]">Current trajectory</p>
             <p className="mt-1 whitespace-nowrap text-lg font-semibold text-danger">
-              {formatKES(retirement.currentTrajectory.nominalWealth)}
+              {formatKES(animatedCurrentTrajectory)}
             </p>
           </div>
           <div className="rounded-xl bg-[#E9F5EC] p-4">
             <p className="text-xs text-[#4B4238]">With a plan</p>
             <p className="mt-1 whitespace-nowrap text-lg font-semibold text-success">
-              {formatKES(retirement.withPlan.nominalWealth)}
+              {formatKES(animatedWithPlan)}
             </p>
           </div>
         </div>
