@@ -73,10 +73,12 @@ export default function MoneyPicture() {
       ? financials?.savingsCapacity ?? 0
       : (split502525 ? split502525.savingsEmergency + split502525.investments : 0);
 
-  const animatedNetMonthly = useCountUp(financials?.netMonthly ?? 0);
-  const animatedGrowthCapacity = useCountUp(growthCapacity);
-  const animatedCurrentTrajectory = useCountUp(retirement?.currentTrajectory.nominalWealth ?? 0);
-  const animatedWithPlan = useCountUp(retirement?.withPlan.nominalWealth ?? 0);
+  const animatedNetMonthly = useCountUp(financials ? financials.netMonthly : null);
+  const animatedGrowthCapacity = useCountUp(financials ? growthCapacity : null);
+  const animatedCurrentTrajectory = useCountUp(
+    retirement ? retirement.currentTrajectory.nominalWealth : null
+  );
+  const animatedWithPlan = useCountUp(retirement ? retirement.withPlan.nominalWealth : null);
 
   if (!profile || !financials || !retirement || !split502525) {
     return <p className="text-center text-[#4B4238]">Loading your Pesa Picture...</p>;
