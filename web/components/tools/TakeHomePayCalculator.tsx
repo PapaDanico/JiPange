@@ -123,10 +123,22 @@ export default function TakeHomePayCalculator() {
 
           <div className="rounded-2xl bg-white p-6 shadow-sm">
             <DeductionRow label="Gross salary" value={formatKES(result.grossMonthly)} bold />
-            <DeductionRow label="Less: NSSF Tier 1" value={`(${formatKES(result.nssf.tier1)})`} />
+            <DeductionRow
+              label="Less: NSSF Tier 1"
+              value={`(${formatKES(result.nssf.tier1)})`}
+              info="National Social Security Fund — Kenya's mandatory retirement savings scheme. Tier 1 covers the first Ksh 9,000 of pay at 6%; Tier 2 covers pay between Ksh 9,000 and Ksh 108,000, also at 6%. It's still your money — it goes into your own NSSF account."
+            />
             <DeductionRow label="Less: NSSF Tier 2" value={`(${formatKES(result.nssf.tier2)})`} />
-            <DeductionRow label="Less: SHIF (2.75%)" value={`(${formatKES(result.shif)})`} />
-            <DeductionRow label="Less: Housing Levy (AHL)" value={`(${formatKES(result.ahl)})`} />
+            <DeductionRow
+              label="Less: SHIF (2.75%)"
+              value={`(${formatKES(result.shif)})`}
+              info="Social Health Insurance Fund — replaced NHIF in October 2024. Funds your public health cover, charged at 2.75% of gross pay with a Ksh 300/month minimum."
+            />
+            <DeductionRow
+              label="Less: Housing Levy (AHL)"
+              value={`(${formatKES(result.ahl)})`}
+              info="Affordable Housing Levy — a mandatory 1.5% of gross pay funding government affordable-housing projects. Your employer pays a matching 1.5% on top of your gross salary."
+            />
             {result.pensionRelief > 0 && (
               <DeductionRow
                 label="Less: Pension relief"
@@ -140,9 +152,18 @@ export default function TakeHomePayCalculator() {
               />
             )}
             <hr className="my-2 border-[#E5E0D8]" />
-            <DeductionRow label="Taxable pay" value={formatKES(result.taxablePay)} bold />
+            <DeductionRow
+              label="Taxable pay"
+              value={formatKES(result.taxablePay)}
+              bold
+              info="Your gross salary minus NSSF, SHIF, Housing Levy, and any pension or mortgage relief above. PAYE (income tax) is calculated on this smaller amount, not your full gross salary."
+            />
             <DeductionRow label="PAYE (before relief)" value={`(${formatKES(result.grossPaye)})`} />
-            <DeductionRow label="Less: Personal relief" value={formatKES(result.personalRelief)} />
+            <DeductionRow
+              label="Less: Personal relief"
+              value={formatKES(result.personalRelief)}
+              info="A flat Ksh 2,400/month tax credit every formally employed Kenyan automatically gets, subtracted from your PAYE bill before you pay it — not something you need to apply for."
+            />
             {result.insuranceRelief > 0 && (
               <DeductionRow label="Less: Insurance relief" value={formatKES(result.insuranceRelief)} />
             )}
