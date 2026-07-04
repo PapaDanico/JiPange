@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { calculateFinancials } from "@/lib/budget";
 import {
+  getStoredJourneyAnswers,
   getStoredProfile,
   setStoredCalculations,
   setStoredPlan,
@@ -20,6 +21,10 @@ export default function ReturningUserRedirect() {
     async function check() {
       if (getStoredProfile()) {
         router.replace("/plan");
+        return;
+      }
+      if (getStoredJourneyAnswers()) {
+        router.replace("/dashboard");
         return;
       }
 

@@ -47,7 +47,7 @@ export default function PlannersPage() {
           month.
         </p>
         <Link
-          href="/profile"
+          href="/profile/full"
           className="mt-3 inline-flex h-10 items-center justify-center rounded-full bg-accent px-5 text-sm font-medium text-[#171717] transition-colors hover:bg-[#d6961f]"
         >
           Build my free plan
