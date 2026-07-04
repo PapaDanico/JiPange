@@ -2,7 +2,14 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { mapJourney, type DashboardModel } from "@/lib/journey";
+import {
+  ASSUMED_CURRENT_YIELD,
+  CURRENT_INFLATION,
+  TARGET_MMF_YIELD,
+  mapJourney,
+  type DashboardModel,
+} from "@/lib/journey";
+import { FULIZA_DAILY_RATE } from "@/lib/fuliza";
 import { getStoredJourneyAnswers } from "@/lib/storage";
 import DebtFreedomTracker from "./DebtFreedomTracker";
 import FulizaTaxCounter from "./FulizaTaxCounter";
@@ -13,9 +20,63 @@ import YieldMatchmaker from "./YieldMatchmaker";
  * The tailored action dashboard. Recomputes the model from stored answers
  * with the same pure engine the API uses — nothing is persisted server-side.
  */
+const pctOf = (rate: number) => `${parseFloat((rate * 100).toFixed(2))}%`;
+const kes = (n: number) => `KSh ${Math.round(n).toLocaleString("en-KE")}`;
+
+/** Analyst mode: the constants and rule outcomes behind every card, in the open. */
+function AnalystCard({ model }: { model: DashboardModel }) {
+  const rows: [string, string][] = [
+    ["Engine theme", model.theme === "recovery" ? "Recovery (Rule A: expensive-debt intercept)" : "Growth"],
+    ["Matched vehicle (Rule C)", model.match.name],
+  ];
+  if (model.fulizaTax) {
+    rows.push(
+      ["Est. Fuliza outstanding (income-bracket table)", kes(model.fulizaTax.estOutstanding)],
+      ["Daily fee rate", `${parseFloat((FULIZA_DAILY_RATE * 100).toFixed(3))}%/day → ${kes(model.fulizaTax.dailyFee)}/day`],
+      ["Est. monthly cost (~20 borrowed days)", kes(model.fulizaTax.estMonthlyCost)],
+      ["Annualised", kes(model.fulizaTax.estAnnualCost)]
+    );
+  }
+  if (model.inflationDrag) {
+    rows.push(
+      ["Median savings for your bracket", kes(model.inflationDrag.medianSavings)],
+      [
+        "Bank yield vs inflation",
+        `${pctOf(ASSUMED_CURRENT_YIELD)} vs ${pctOf(CURRENT_INFLATION)} → −${kes(model.inflationDrag.netLossAnnual)}/yr real`,
+      ],
+      [
+        "MMF baseline upside",
+        `${pctOf(TARGET_MMF_YIELD)} (+${model.inflationDrag.upsidePoints} pts) → +${kes(model.inflationDrag.mmfExtraAnnual)}/yr`,
+      ]
+    );
+  }
+  if (model.suppressedNote) rows.push(["Suppressed vehicles", model.suppressedNote]);
+
+  return (
+    <div
+      data-testid="analyst-card"
+      className="rounded-2xl border border-dashed border-[#C9BFB2] bg-white p-5"
+    >
+      <h2 className="text-sm font-semibold text-primary">📊 Under the hood</h2>
+      <p className="mt-1 text-xs text-[#6f6e69]">
+        Every figure above comes from these documented assumptions — no black box.
+      </p>
+      <dl className="mt-3 space-y-2">
+        {rows.map(([term, value]) => (
+          <div key={term} className="flex items-baseline justify-between gap-4 text-xs">
+            <dt className="text-[#4B4238]">{term}</dt>
+            <dd className="text-right font-medium text-primary">{value}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  );
+}
+
 export default function DashboardView() {
   const [model, setModel] = useState<DashboardModel | null>(null);
   const [checked, setChecked] = useState(false);
+  const [analytical, setAnalytical] = useState(false);
 
   useEffect(() => {
     const answers = getStoredJourneyAnswers();
@@ -65,6 +126,23 @@ export default function DashboardView() {
 
   return (
     <div className="w-full max-w-md space-y-6">
+      {/* Simple ↔ analytical view switch */}
+      <div className="flex justify-end">
+        <button
+          type="button"
+          onClick={() => setAnalytical((v) => !v)}
+          aria-pressed={analytical}
+          data-testid="analyst-toggle"
+          className={`rounded-full border px-4 py-1.5 text-xs font-medium transition-colors ${
+            analytical
+              ? "border-primary bg-primary text-white"
+              : "border-[#E5E0D8] bg-white text-[#4B4238] hover:bg-[#F1ECE3]"
+          }`}
+        >
+          📊 Analyst mode {analytical ? "on" : "off"}
+        </button>
+      </div>
+
       {/* Priority banner */}
       <div
         className={`rounded-2xl p-5 ${
@@ -99,6 +177,8 @@ export default function DashboardView() {
           microFundTarget={model.microFundTarget}
         />
       )}
+
+      {analytical && <AnalystCard model={model} />}
 
       {model.inflationDrag && <InflationDragCard drag={model.inflationDrag} />}
 
