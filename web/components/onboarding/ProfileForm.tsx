@@ -60,6 +60,14 @@ export default function ProfileForm() {
       chamaMember: draft.chamaMember,
     });
     setWhatsappNumber(draft.whatsappNumber);
+    if (
+      typeof draft.currentStep === "number" &&
+      Number.isInteger(draft.currentStep) &&
+      draft.currentStep >= 1 &&
+      draft.currentStep <= TOTAL_STEPS
+    ) {
+      setCurrentStep(draft.currentStep);
+    }
   }, []);
 
   // Skip the very first run: it fires in the same commit as the restore effect
@@ -72,8 +80,8 @@ export default function ProfileForm() {
       isFirstDraftWrite.current = false;
       return;
     }
-    setProfileDraft({ ...form, whatsappNumber });
-  }, [form, whatsappNumber]);
+    setProfileDraft({ ...form, whatsappNumber, currentStep });
+  }, [form, whatsappNumber, currentStep]);
 
   useEffect(() => {
     const handle = setTimeout(() => {

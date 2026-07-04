@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { buildGoalPlan, solveYearsToTarget } from "../goal-planner";
-import { futureValue } from "../projections";
+import {
+  buildGoalPlan,
+  solveYearsToInflatingTarget,
+  solveYearsToTarget,
+} from "../goal-planner";
+import { futureValue, inflateToFutureCost } from "../projections";
 
 describe("solveYearsToTarget", () => {
   it("returns 0 when the target is already covered by current savings", () => {
@@ -68,6 +72,55 @@ describe("solveYearsToTarget", () => {
   });
 });
 
+describe("solveYearsToInflatingTarget", () => {
+  it("needs longer than the fixed-target solve, because the target keeps moving", () => {
+    const fixed = solveYearsToTarget({
+      targetAmount: inflateToFutureCost(800_000, 8),
+      monthlyContribution: 5_000,
+      annualRate: 0.09,
+    });
+    const inflating = solveYearsToInflatingTarget({
+      todayValue: 800_000,
+      monthlyContribution: 5_000,
+      annualRate: 0.09,
+    });
+    expect(inflating).toBeGreaterThan(fixed);
+  });
+
+  it("lands where savings equal the inflated cost at that same horizon", () => {
+    const years = solveYearsToInflatingTarget({
+      todayValue: 800_000,
+      monthlyContribution: 5_000,
+      annualRate: 0.09,
+    });
+    const saved = futureValue(0, 5_000, 0.09, years);
+    const cost = inflateToFutureCost(800_000, years);
+    expect(saved).toBeCloseTo(cost, 0);
+  });
+
+  it("returns 0 when current savings already cover today's value", () => {
+    expect(
+      solveYearsToInflatingTarget({
+        todayValue: 100_000,
+        presentValue: 100_000,
+        monthlyContribution: 0,
+        annualRate: 0.09,
+      })
+    ).toBe(0);
+  });
+
+  it("returns Infinity when contributions can never outpace inflation", () => {
+    // 2% return vs 6.5% inflation, tiny contribution against a big target.
+    expect(
+      solveYearsToInflatingTarget({
+        todayValue: 10_000_000,
+        monthlyContribution: 100,
+        annualRate: 0.02,
+      })
+    ).toBe(Infinity);
+  });
+});
+
 describe("buildGoalPlan", () => {
   const base = {
     targetAmount: 800_000,
@@ -118,6 +171,32 @@ describe("buildGoalPlan", () => {
     expect(plan.amountAtCapacityByTargetDate!).toBeCloseTo(
       futureValue(0, capacity, 0.09, 8),
       5
+    );
+  });
+
+  it("uses the inflating-target solve for the timeline lever when targetInflation is set", () => {
+    const todayValue = 800_000;
+    const years = 8;
+    const capacity = 5_000;
+    const withInflation = buildGoalPlan({
+      targetAmount: inflateToFutureCost(todayValue, years),
+      years,
+      annualReturn: 0.09,
+      monthlyCapacity: capacity,
+      targetInflation: { todayValue },
+    });
+    const withoutInflation = buildGoalPlan({
+      targetAmount: inflateToFutureCost(todayValue, years),
+      years,
+      annualReturn: 0.09,
+      monthlyCapacity: capacity,
+    });
+    expect(withInflation.yearsAtCapacity!).toBeGreaterThan(withoutInflation.yearsAtCapacity!);
+    // Saving full capacity for the suggested years must actually cover the
+    // cost as inflated to that same horizon — the lever keeps its promise.
+    const n = withInflation.yearsAtCapacity!;
+    expect(futureValue(0, capacity, 0.09, n)).toBeGreaterThanOrEqual(
+      inflateToFutureCost(todayValue, n) - 1
     );
   });
 

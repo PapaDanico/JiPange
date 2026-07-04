@@ -8,6 +8,8 @@ const WHATSAPP_NUMBER_KEY = "jipange:whatsapp-number";
 
 /** Raw, not-yet-validated field values from an in-progress /profile form. */
 export interface ProfileDraft {
+  /** Wizard step (1-based) the user was on, so a refresh resumes in place. */
+  currentStep?: number;
   fullName: string;
   whatsappNumber: string;
   age: string;
