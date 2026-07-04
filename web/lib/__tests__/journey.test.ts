@@ -5,6 +5,7 @@ import {
   TARGET_MMF_YIELD,
   derivePersona,
   deriveSurvivalState,
+  microMilestoneTarget,
   mapJourney,
   matchVehicle,
   type JourneyAnswers,
@@ -163,5 +164,22 @@ describe("deriveSurvivalState", () => {
     expect(deriveSurvivalState("active_savings")).toBe("optimized");
     expect(deriveSurvivalState("credit_card")).toBe("exposed");
     expect(deriveSurvivalState("friends_family")).toBe("exposed");
+  });
+});
+
+describe("microMilestoneTarget", () => {
+  it("uses the goal base scaled by income bracket, rounded to 5k", () => {
+    expect(
+      microMilestoneTarget({ ...base, primary_goal: "home_deposit", income_bracket: "50k_120k" })
+    ).toBe(100_000);
+    expect(
+      microMilestoneTarget({ ...base, primary_goal: "emergency_fund", income_bracket: "50k_120k" })
+    ).toBe(50_000);
+    expect(
+      microMilestoneTarget({ ...base, primary_goal: "home_deposit", income_bracket: "under_50k" })
+    ).toBe(50_000);
+    expect(
+      microMilestoneTarget({ ...base, primary_goal: "clear_debt", income_bracket: "above_250k" })
+    ).toBe(60_000);
   });
 });

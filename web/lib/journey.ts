@@ -355,3 +355,30 @@ export function deriveSurvivalState(leak: LiquidityLeak): SurvivalState {
   if (leak === "active_savings") return "optimized";
   return "exposed";
 }
+
+// ── Micro-milestone (the /plan first-target generator) ──
+
+/** Yield assumption for the milestone slider (Serrari KES MMF leaders baseline). */
+export const MILESTONE_YIELD = 0.115;
+
+const MILESTONE_BASE: Record<PrimaryGoal, number> = {
+  home_deposit: 100_000,
+  business_capital: 100_000,
+  education: 50_000,
+  emergency_fund: 50_000,
+  clear_debt: 30_000,
+};
+
+const MILESTONE_BRACKET_MULTIPLIER: Record<IncomeBracket, number> = {
+  under_50k: 0.5,
+  "50k_120k": 1,
+  "120k_250k": 1.5,
+  above_250k: 2,
+};
+
+/** A manageable first target: goal base × income multiplier, rounded to 5k. */
+export function microMilestoneTarget(answers: JourneyAnswers): number {
+  const raw =
+    MILESTONE_BASE[answers.primary_goal] * MILESTONE_BRACKET_MULTIPLIER[answers.income_bracket];
+  return Math.max(5_000, Math.round(raw / 5_000) * 5_000);
+}

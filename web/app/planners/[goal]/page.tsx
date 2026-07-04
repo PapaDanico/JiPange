@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import GoalPlanner from "@/components/planners/GoalPlanner";
+import TermlyFeeSmoother from "@/components/planners/TermlyFeeSmoother";
 import { GOAL_CONFIGS, GOAL_TYPES, type GoalType } from "@/lib/goal-planner";
 
 interface PageProps {
@@ -36,7 +37,18 @@ export default function GoalPlannerPage({ params }: PageProps) {
         </h1>
         <p className="mt-1 text-sm text-[#4B4238]">{config.tagline}</p>
       </div>
-      <div className="mt-8 w-full max-w-md">
+      <div className="mt-8 w-full max-w-md space-y-10">
+        {config.type === "education" && (
+          <div>
+            <TermlyFeeSmoother />
+            <h2 className="mt-10 border-t border-[#E5E0D8] pt-8 text-lg font-semibold text-primary">
+              Future stages — plan the big transitions
+            </h2>
+            <p className="mt-1 text-sm text-[#4B4238]">
+              Junior Secondary, Senior Secondary, university — reverse-engineered per child.
+            </p>
+          </div>
+        )}
         <GoalPlanner config={config} />
       </div>
     </div>
