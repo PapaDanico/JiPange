@@ -6,6 +6,7 @@ import { formatKES } from "@/lib/budget";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import NumberField from "./NumberField";
 import ResultCard from "./ResultCard";
+import ShareResultButton from "./ShareResultButton";
 
 export default function OneThirdRuleCalculator() {
   const [basicSalary, setBasicSalary] = useState("");
@@ -86,6 +87,14 @@ export default function OneThirdRuleCalculator() {
           </p>
 
           <CalculatorDisclaimer />
+
+          <ShareResultButton
+            message={`⚖️ *One-Third Rule Check*\n\n${
+              result.compliant
+                ? `My deductions are within Kenya's legal limit — I retain ${formatKES(result.netAfterDeductions)}/month.`
+                : `My deductions may exceed Kenya's legal limit by ${formatKES(result.excessDeduction)}/month.`
+            }\n\nCheck yours → jipangefinance.netlify.app/tools/one-third-rule`}
+          />
         </>
       )}
     </div>
