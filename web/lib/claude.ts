@@ -200,6 +200,7 @@ The numbers (already computed — do not recompute them):
 - Required monthly saving to hit the target: KES ${Math.round(request.requiredMonthly)}
 ${request.monthlyCapacity ? `- Their total monthly savings capacity: KES ${Math.round(request.monthlyCapacity)}` : ""}
 - ${feasibilityNote}
+${request.context ? `- Goal details: ${request.context}` : ""}
 
 Recommend WHERE to put this money in Kenya and HOW to start, tailored to this goal's time horizon and the need for ${request.goalType === "emergency" ? "instant liquidity" : "growth with acceptable risk"}. Reference only real Kenyan products and institutions (e.g. money market funds from CIC/Britam/Sanlam, M-Shwari Lock Savings, SACCO deposits, T-Bills/Bonds via CBK DhowCSD, education insurance policies). ${HONESTY_RULE}
 

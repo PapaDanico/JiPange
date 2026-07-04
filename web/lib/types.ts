@@ -71,6 +71,8 @@ export const goalStrategyRequestSchema = z.object({
   requiredMonthly: z.number().min(0).max(MAX_KES),
   feasibility: z.enum(["comfortable", "tight", "stretch", "beyond-reach", "unknown"]),
   monthlyCapacity: z.number().positive().max(MAX_KES).nullable(),
+  /** Short human summary of the goal's variables, e.g. per-child breakdown. */
+  context: z.string().max(240).optional(),
 });
 
 export type GoalStrategyRequest = z.infer<typeof goalStrategyRequestSchema>;
