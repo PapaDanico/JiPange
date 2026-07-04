@@ -68,12 +68,19 @@ function MicroMilestone({ answers }: { answers: JourneyAnswers }) {
 
 // ── Module 2: the Direct Vendor Referral Blueprint ──
 
+type PaybillInfo = { provider: string; paybill: string; account: string };
+
 const BLUEPRINTS: Record<
   Vehicle["id"],
-  { title: string; steps: string[]; guideName: string; guide: string }
+  { title: string; steps: string[]; guideName: string; guide: string; payment: PaybillInfo }
 > = {
   sacco: {
     title: "🏛️ Action Item: Establish Your Sacco Core",
+    payment: {
+      provider: "Stima Sacco (example)",
+      paybill: "0240240",
+      account: "802 + your member no. + 00",
+    },
     steps: [
       "Choose a SASRA-regulated Tier-1 Sacco (e.g., Stima, Safaricom, Police).",
       "Commit to a fixed monthly deposit (aligns with the milestone slider above).",
@@ -94,6 +101,11 @@ For guidance only — not financial advice.`,
   },
   mmf: {
     title: "📈 Action Item: Open Your Money Market Fund",
+    payment: {
+      provider: "Britam MMF (example)",
+      paybill: "500005",
+      account: "your Britam a/c (BAxxxxxx)",
+    },
     steps: [
       "Pick a CMA-regulated MMF with M-Pesa deposits and T+1 withdrawals (e.g., Britam, ICEA Lion, Sanlam).",
       "Complete the app/USSD sign-up with your ID and KRA PIN — most start from about KSh 500.",
@@ -113,6 +125,11 @@ For guidance only — not financial advice.`,
   },
   ifb: {
     title: "🏦 Action Item: Stage Your Infrastructure Bond Entry",
+    payment: {
+      provider: "CBK DhowCSD (≤ KSh 250,000)",
+      paybill: "200222",
+      account: "shown under DhowCSD → Transactions",
+    },
     steps: [
       "Register on CBK DhowCSD (app or web) with your ID and KRA PIN.",
       "Park monthly savings in an MMF until you reach the bond minimum (typically KSh 50,000).",
@@ -131,6 +148,41 @@ Check current auction calendars and minimums at cbk.go.ke.
 For guidance only — not financial advice.`,
   },
 };
+
+/** One-tap M-Pesa transaction string, ready to paste into Lipa na M-Pesa. */
+function PaybillCopy({ payment }: { payment: PaybillInfo }) {
+  const [copied, setCopied] = useState(false);
+
+  async function handleCopy() {
+    try {
+      await navigator.clipboard.writeText(
+        `Paybill: ${payment.paybill} | Account: ${payment.account}`
+      );
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      // Clipboard unavailable (http / old browser) — the details stay visible to copy by hand.
+    }
+  }
+
+  return (
+    <div className="mt-4 flex items-center justify-between gap-3 rounded-xl bg-[#F1ECE3] p-3">
+      <p className="text-xs text-[#4B4238]">
+        <span className="font-semibold text-primary">{payment.provider}</span>
+        <br />
+        Paybill <strong>{payment.paybill}</strong> · A/c {payment.account}
+      </p>
+      <button
+        type="button"
+        onClick={handleCopy}
+        data-testid="paybill-copy"
+        className="h-9 shrink-0 rounded-full border border-primary px-4 text-xs font-medium text-primary transition-colors hover:bg-primary hover:text-white"
+      >
+        {copied ? "✓ Copied" : "📋 Copy"}
+      </button>
+    </div>
+  );
+}
 
 function VendorBlueprint({ vehicleId }: { vehicleId: Vehicle["id"] }) {
   const blueprint = BLUEPRINTS[vehicleId];
@@ -182,6 +234,10 @@ function VendorBlueprint({ vehicleId }: { vehicleId: Vehicle["id"] }) {
           </li>
         ))}
       </ul>
+      <PaybillCopy payment={blueprint.payment} />
+      <p className="mt-1.5 text-[11px] text-[#6f6e69]">
+        Paybills verified Jul 2026 — always confirm with the provider before sending money.
+      </p>
       <button
         type="button"
         onClick={downloadGuide}
