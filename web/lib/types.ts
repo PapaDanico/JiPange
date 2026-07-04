@@ -63,7 +63,7 @@ export const generatePlanRequestSchema = z.object({
 const MAX_KES = 100_000_000_000; // 100B KES — far beyond any personal goal
 
 export const goalStrategyRequestSchema = z.object({
-  goalType: z.enum(["education", "home", "emergency", "business"]),
+  goalType: z.enum(["education", "home", "emergency", "business", "retirement"]),
   goalTitle: z.string().min(1).max(80),
   targetAmount: z.number().positive().max(MAX_KES),
   years: z.number().positive().max(50),

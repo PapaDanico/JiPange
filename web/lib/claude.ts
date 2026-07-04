@@ -177,6 +177,8 @@ const GOAL_CONTEXT: Record<GoalStrategyRequest["goalType"], string> = {
   emergency:
     "The goal is an emergency fund — money that must stay liquid and instantly accessible, so capital preservation beats returns.",
   business: "The goal is seed capital for a small business (biashara).",
+  retirement:
+    "The goal is a retirement pot sized to pay a monthly income for life (the target was derived from a ~4% withdrawal rule). The horizon is long, so tax-advantaged pension vehicles matter: NSSF Tier 2 voluntary contributions, registered personal/occupational pension schemes (with their tax relief), plus long-horizon growth assets.",
 };
 
 function buildGoalStrategyPrompt(request: GoalStrategyRequest): string {

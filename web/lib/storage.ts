@@ -4,6 +4,7 @@ const PROFILE_KEY = "jipange:profile";
 const CALCULATIONS_KEY = "jipange:calculations";
 const PLAN_KEY = "jipange:plan";
 const PROFILE_DRAFT_KEY = "jipange:profile-draft";
+const GOALS_KEY = "jipange:goals";
 const WHATSAPP_NUMBER_KEY = "jipange:whatsapp-number";
 
 /** Raw, not-yet-validated field values from an in-progress /profile form. */
@@ -58,6 +59,33 @@ export function clearProfileDraft(): void {
 
 export const getStoredWhatsAppNumber = () => read<string>(WHATSAPP_NUMBER_KEY);
 export const setStoredWhatsAppNumber = (number: string) => write(WHATSAPP_NUMBER_KEY, number);
+
+/** A goal the user committed to from a planner — one per goal type. */
+export interface SavedGoal {
+  goalType: string;
+  title: string;
+  emoji: string;
+  /** The amount the user entered (today's prices for inflating goals). */
+  amountToday: number;
+  /** The inflation-adjusted target actually planned against. */
+  nominalTarget: number;
+  years: number;
+  requiredMonthly: number;
+  savedAt: string;
+}
+
+export const getStoredGoals = () => read<SavedGoal[]>(GOALS_KEY) ?? [];
+
+/** Saves a goal, replacing any existing goal of the same type. */
+export function saveStoredGoal(goal: SavedGoal): void {
+  const others = getStoredGoals().filter((g) => g.goalType !== goal.goalType);
+  write(GOALS_KEY, [...others, goal]);
+}
+
+export function removeStoredGoal(goalType: string): void {
+  const remaining = getStoredGoals().filter((g) => g.goalType !== goalType);
+  write(GOALS_KEY, remaining);
+}
 
 export function clearStoredJourney(): void {
   if (!isBrowser()) return;

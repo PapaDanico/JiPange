@@ -9,6 +9,7 @@ import { calculate502525Split, calculateFinancials, formatKES, savingsRateBand }
 import { buildRetirementComparison } from "@/lib/projections";
 import type { BudgetModel, Profile } from "@/lib/types";
 import { useCountUp } from "@/hooks/useCountUp";
+import MyGoals from "./MyGoals";
 
 const SLICE_COLORS: Record<string, string> = {
   Needs: "#6B5B4D",
@@ -214,6 +215,8 @@ export default function MoneyPicture() {
           </p>
         )}
       </div>
+
+      <MyGoals savingsCapacity={growthCapacity} />
 
       <div className="rounded-2xl bg-white p-6 shadow-sm">
         <h2 className="text-base font-semibold text-primary">Wealth at age 60</h2>
