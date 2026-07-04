@@ -19,6 +19,7 @@ const COLUMNS: { heading: string; links: { href: string; label: string }[] }[] =
       { href: "/tools/fire-number", label: "FIRE number" },
       { href: "/tools/loan-repayment", label: "Loan repayment" },
       { href: "/tools/tax-shield", label: "KRA tax shield" },
+      { href: "/tools/guarantor-shield", label: "Sacco guarantor shield" },
       { href: "/tools/fuliza-cost", label: "Fuliza cost" },
       { href: "/tools", label: "All calculators →" },
     ],
