@@ -494,7 +494,7 @@ export default function ProfileForm() {
         )}
 
         {/* Navigation */}
-        <div className={currentStep > 1 ? "flex gap-3" : ""}>
+        <div className="flex gap-3">
           {currentStep > 1 && (
             <button
               type="button"
