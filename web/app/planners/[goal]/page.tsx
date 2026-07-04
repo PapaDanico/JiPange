@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import GoalPlanner from "@/components/planners/GoalPlanner";
 import TermlyFeeSmoother from "@/components/planners/TermlyFeeSmoother";
+import MjengoMilestone from "@/components/planners/MjengoMilestone";
 import { GOAL_CONFIGS, GOAL_TYPES, type GoalType } from "@/lib/goal-planner";
 
 interface PageProps {
@@ -38,6 +39,17 @@ export default function GoalPlannerPage({ params }: PageProps) {
         <p className="mt-1 text-sm text-[#4B4238]">{config.tagline}</p>
       </div>
       <div className="mt-8 w-full max-w-md space-y-10">
+        {config.type === "home" && (
+          <div>
+            <MjengoMilestone />
+            <h2 className="mt-10 border-t border-[#E5E0D8] pt-8 text-lg font-semibold text-primary">
+              Or save the classic deposit
+            </h2>
+            <p className="mt-1 text-sm text-[#4B4238]">
+              Reverse-engineer a straight cash deposit on your own timeline.
+            </p>
+          </div>
+        )}
         {config.type === "education" && (
           <div>
             <TermlyFeeSmoother />

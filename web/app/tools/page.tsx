@@ -12,6 +12,14 @@ const CALCULATOR_GROUPS: ToolGroup[] = [
     label: "Plan for today",
     calculators: [
       {
+        href: "/tools/tax-shield",
+        icon: "🧾",
+        title: "KRA Tax Shield Optimizer",
+        description: "Find the PAYE you overpay monthly by leaving pension and relief headroom unused.",
+        insight: "Unused pension headroom at the 30% band is cash KRA keeps that your retirement fund could.",
+        isNew: true,
+      },
+      {
         href: "/tools/take-home-pay",
         icon: "💰",
         title: "Take-Home Pay Calculator",
@@ -56,8 +64,16 @@ const CALCULATOR_GROUPS: ToolGroup[] = [
         href: "/tools/fire-number",
         icon: "🔥",
         title: "FIRE Number Calculator",
-        description: "Find your Financial Independence number and how many years to reach it.",
-        insight: "At 6.5% Kenya inflation, you may need a lower withdrawal rate than the standard 4% rule.",
+        description: "Your Kenya-localized retirement number: 20× expenses, inflation-adjusted to your retirement year.",
+        insight: "Kenya's high MMF/bond yields support a 5% withdrawal rate — 20× expenses, not the Western 25×.",
+      },
+      {
+        href: "/tools/dhowcsd",
+        icon: "🏦",
+        title: "DhowCSD T-Bill Ladder",
+        description: "Split capital across 91/182/364-day Treasury Bills for quarterly liquidity.",
+        insight: "The blended ladder yield nearly triples what a bank savings account pays.",
+        isNew: true,
       },
       {
         href: "/tools/money-runway",
