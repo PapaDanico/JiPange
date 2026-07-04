@@ -275,8 +275,12 @@ export interface GoalConfig {
   tagline: string;
   /** Default assumed net annual return for the typical vehicle for this goal. */
   defaultAnnualReturn: number;
-  /** Suggested target-amount presets shown as quick-picks, in KES. */
-  amountPresets: { label: string; amount: number }[];
+  /**
+   * Suggested target-amount presets shown as quick-picks, in KES.
+   * `startAge` (education stages) is the typical age fees for that stage
+   * begin under CBC — used to derive a child's timeline from their age.
+   */
+  amountPresets: { label: string; amount: number; startAge?: number }[];
   defaultYears: number;
   /** Upper bound of the timeline slider. Defaults to 25 when omitted. */
   maxYears?: number;
@@ -312,10 +316,11 @@ export const GOAL_CONFIGS: Record<GoalType, GoalConfig> = {
     tagline: "From nursery to university — fund school fees before they're due.",
     defaultAnnualReturn: 0.09,
     amountPresets: [
-      { label: "Junior Secondary (3 yrs, day)", amount: 150_000 },
-      { label: "Senior Secondary (3 yrs, boarding)", amount: 400_000 },
-      { label: "University degree (4 yrs, public)", amount: 800_000 },
-      { label: "University degree (4 yrs, private)", amount: 2_000_000 },
+      // CBC stage entry ages: JSS ≈ Grade 7 at 12, SSS ≈ Grade 10 at 15, university ≈ 18.
+      { label: "Junior Secondary (3 yrs, day)", amount: 150_000, startAge: 12 },
+      { label: "Senior Secondary (3 yrs, boarding)", amount: 400_000, startAge: 15 },
+      { label: "University degree (4 yrs, public)", amount: 800_000, startAge: 18 },
+      { label: "University degree (4 yrs, private)", amount: 2_000_000, startAge: 18 },
     ],
     builder: "children",
     defaultYears: 8,
