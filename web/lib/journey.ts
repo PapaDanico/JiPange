@@ -310,3 +310,48 @@ export function mapJourney(answers: JourneyAnswers): DashboardModel {
       : null,
   };
 }
+
+// ── Pesa Engine Persona (the /picture diagnostic) ──
+
+export interface Persona {
+  name: string;
+  blurb: string;
+}
+
+/**
+ * Persona precedence: debt stress dominates everything; real growth vehicles
+ * beat idle bank money; idle bank money beats nothing tracked.
+ */
+export function derivePersona(answers: JourneyAnswers): Persona {
+  if (answers.liquidity_leak === "mobile_loans") {
+    return {
+      name: "The Debt-Stressed Striver",
+      blurb: "Hustling hard, but short-term credit keeps skimming the gains.",
+    };
+  }
+  if (answers.current_vehicle.includes("sacco") || answers.current_vehicle.includes("mmf")) {
+    return {
+      name: "The Budding Wealth Builder",
+      blurb: "Your money already works in real vehicles — now compound it.",
+    };
+  }
+  if (answers.current_vehicle.includes("mpesa_bank")) {
+    return {
+      name: "The Casual Saver (Leaking Yield)",
+      blurb: "You save — but where it sits, inflation eats faster than it grows.",
+    };
+  }
+  return {
+    name: "The Clean-Slate Builder",
+    blurb: "No leaks, no baggage — the perfect moment to pick the right vehicle first.",
+  };
+}
+
+/** Survival status for the /picture header card, keyed off the liquidity leak. */
+export type SurvivalState = "high_risk" | "optimized" | "exposed";
+
+export function deriveSurvivalState(leak: LiquidityLeak): SurvivalState {
+  if (leak === "mobile_loans") return "high_risk";
+  if (leak === "active_savings") return "optimized";
+  return "exposed";
+}

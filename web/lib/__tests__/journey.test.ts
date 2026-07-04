@@ -3,6 +3,8 @@ import {
   CURRENT_INFLATION,
   ASSUMED_CURRENT_YIELD,
   TARGET_MMF_YIELD,
+  derivePersona,
+  deriveSurvivalState,
   mapJourney,
   matchVehicle,
   type JourneyAnswers,
@@ -122,5 +124,44 @@ describe("Rule Block C — the Vehicle Matchmaker", () => {
     const { match, alternatives } = matchVehicle("education", "mid_term", false);
     expect(alternatives.length).toBeGreaterThan(0);
     expect(alternatives.map((v) => v.id)).not.toContain(match.id);
+  });
+});
+
+describe("derivePersona", () => {
+  it("debt stress dominates every other signal", () => {
+    expect(
+      derivePersona({ ...base, liquidity_leak: "mobile_loans", current_vehicle: ["mmf", "sacco"] })
+        .name
+    ).toBe("The Debt-Stressed Striver");
+  });
+
+  it("real vehicles beat idle bank money", () => {
+    expect(derivePersona({ ...base, current_vehicle: ["mpesa_bank", "mmf"] }).name).toBe(
+      "The Budding Wealth Builder"
+    );
+    expect(derivePersona({ ...base, current_vehicle: ["sacco"] }).name).toBe(
+      "The Budding Wealth Builder"
+    );
+  });
+
+  it("idle bank money without debt is the leaking casual saver", () => {
+    expect(derivePersona({ ...base, current_vehicle: ["mpesa_bank", "chama"] }).name).toBe(
+      "The Casual Saver (Leaking Yield)"
+    );
+  });
+
+  it("nothing tracked gets the clean-slate persona", () => {
+    expect(derivePersona({ ...base, current_vehicle: ["none"] }).name).toBe(
+      "The Clean-Slate Builder"
+    );
+  });
+});
+
+describe("deriveSurvivalState", () => {
+  it("maps each leak to the right banner state", () => {
+    expect(deriveSurvivalState("mobile_loans")).toBe("high_risk");
+    expect(deriveSurvivalState("active_savings")).toBe("optimized");
+    expect(deriveSurvivalState("credit_card")).toBe("exposed");
+    expect(deriveSurvivalState("friends_family")).toBe("exposed");
   });
 });

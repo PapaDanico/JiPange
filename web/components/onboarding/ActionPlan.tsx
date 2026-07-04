@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   getStoredCalculations,
@@ -35,16 +36,17 @@ export default function ActionPlan() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
+  const [checked, setChecked] = useState(false);
+
   useEffect(() => {
     const storedProfile = getStoredProfile();
     const storedCalculations = getStoredCalculations();
-    if (!storedProfile || !storedCalculations) {
-      router.replace("/profile/full");
-      return;
+    if (storedProfile && storedCalculations) {
+      setProfile(storedProfile);
+      setCalculations(storedCalculations);
+      setPlan(getStoredPlan());
     }
-    setProfile(storedProfile);
-    setCalculations(storedCalculations);
-    setPlan(getStoredPlan());
+    setChecked(true);
   }, [router]);
 
   useEffect(() => {
@@ -84,8 +86,42 @@ export default function ActionPlan() {
     }
   }
 
-  if (!profile || !calculations) {
+  if (!checked) {
     return <p className="text-center text-[#4B4238]">Loading...</p>;
+  }
+
+  // Quiz-only (or brand-new) visitors: the AI plan needs real salary numbers.
+  // Invite them into the deep profile instead of bouncing them off the page.
+  if (!profile || !calculations) {
+    return (
+      <div className="w-full max-w-md rounded-2xl bg-white p-6 text-center shadow-sm">
+        <p className="text-2xl" aria-hidden="true">
+          🤖
+        </p>
+        <h2 className="mt-2 text-lg font-semibold text-primary">
+          Your AI action plan needs your real numbers
+        </h2>
+        <p className="mt-1 text-sm text-[#4B4238]">
+          Six quick questions — your actual salary and household — and JiPange generates a
+          3-step plan built on real KRA tax maths. Still anonymous, still on your device.
+        </p>
+        <Link
+          href="/profile/full"
+          className="mt-4 inline-flex h-11 items-center justify-center rounded-full bg-accent px-6 text-sm font-medium text-[#171717] transition-colors hover:bg-[#d6961f]"
+        >
+          Take the 90-second deep profile →
+        </Link>
+        <p className="mt-4 text-xs text-[#6f6e69]">
+          <Link href="/dashboard" className="font-medium text-primary underline">
+            Back to my dashboard
+          </Link>{" "}
+          ·{" "}
+          <Link href="/tools" className="font-medium text-primary underline">
+            explore calculators
+          </Link>
+        </p>
+      </div>
+    );
   }
 
   const retirement = buildRetirementComparison({

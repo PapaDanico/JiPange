@@ -124,6 +124,12 @@ export default function DashboardView() {
       </div>
 
       <div className="flex items-center justify-center gap-4 text-xs">
+        <Link href="/picture" className="font-medium text-primary underline">
+          My Pesa Picture
+        </Link>
+        <span aria-hidden="true" className="text-[#C9BFB2]">
+          ·
+        </span>
         <Link href="/profile" className="font-medium text-primary underline">
           Retake the quiz
         </Link>
