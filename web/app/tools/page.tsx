@@ -91,6 +91,14 @@ const CALCULATOR_GROUPS: ToolGroup[] = [
         insight: "A modest return can make your savings last years longer.",
       },
       {
+        href: "/planners/education",
+        icon: "🏫",
+        title: "School Fees Sinking Fund Smoother",
+        description: "Turn three termly fee shocks into one flat monthly deposit that earns its own subsidy.",
+        insight: "An MMF's interest quietly pays ~12% of your annual fees for you — free school uniforms.",
+        isNew: true,
+      },
+      {
         href: "/tools/education-savings",
         icon: "🎓",
         title: "Kids' Education Savings Calculator",
@@ -140,6 +148,14 @@ const CALCULATOR_GROUPS: ToolGroup[] = [
         title: "True Cost of Fuliza Calculator",
         description: "Find out what Fuliza really costs before you borrow.",
         insight: "Fuliza costs ~400% APR — more than a payday lender.",
+        isNew: true,
+      },
+      {
+        href: "/tools/guarantor-shield",
+        icon: "🎯",
+        title: "Sacco Guarantor Liability Shield",
+        description: "See how much of your 3× borrowing power is frozen by loans you've guaranteed.",
+        insight: "Guarantee half your deposits away and your development loan gets slashed — check before you apply.",
         isNew: true,
       },
       {
