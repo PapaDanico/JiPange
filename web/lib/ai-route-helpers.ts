@@ -1,5 +1,12 @@
 import { NextResponse } from "next/server";
-import { AiAuthError, AiNotConfiguredError, type AiUsage } from "./claude";
+import {
+  AiAuthError,
+  AiBillingError,
+  AiNotConfiguredError,
+  AiTimeoutError,
+  AiUpstreamBusyError,
+  type AiUsage,
+} from "./claude";
 import { createServiceRoleClient } from "./supabase/server";
 
 export async function logAiCall(params: {
@@ -47,6 +54,30 @@ export async function aiErrorResponse(routeName: string, error: unknown): Promis
     return NextResponse.json(
       { error: "The server's AI credentials were rejected — the API key needs to be rotated." },
       { status: 502 }
+    );
+  }
+
+  if (error instanceof AiBillingError) {
+    return NextResponse.json(
+      {
+        error:
+          "The AI account has run out of credits — top up the Anthropic account, then try again.",
+      },
+      { status: 502 }
+    );
+  }
+
+  if (error instanceof AiUpstreamBusyError) {
+    return NextResponse.json(
+      { error: "The AI service is busy right now — give it a minute and try again." },
+      { status: 503 }
+    );
+  }
+
+  if (error instanceof AiTimeoutError) {
+    return NextResponse.json(
+      { error: "The AI took too long to answer — usually a brief congestion blip. Try again." },
+      { status: 504 }
     );
   }
 

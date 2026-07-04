@@ -40,6 +40,30 @@ export class AiAuthError extends Error {
   }
 }
 
+/** The Anthropic account has no credits / a billing block. */
+export class AiBillingError extends Error {
+  constructor(detail: string) {
+    super(`Anthropic billing/credit failure: ${detail}`);
+    this.name = "AiBillingError";
+  }
+}
+
+/** Rate-limited (429) or overloaded (5xx/529) upstream — retryable later. */
+export class AiUpstreamBusyError extends Error {
+  constructor(status: number | undefined) {
+    super(`Anthropic upstream busy (status ${status ?? "unknown"})`);
+    this.name = "AiUpstreamBusyError";
+  }
+}
+
+/** The request exceeded our own 8s budget (kept under Netlify's ~10s kill). */
+export class AiTimeoutError extends Error {
+  constructor() {
+    super(`Anthropic request exceeded the ${REQUEST_TIMEOUT_MS}ms budget`);
+    this.name = "AiTimeoutError";
+  }
+}
+
 const JIPANGE_VOICE = `You are JiPange, a friendly and direct Kenyan financial advisor. You speak plain, warm English with occasional Swahili where natural (e.g., "pesa", "harambee", "chama"). You understand how Kenyans actually manage money.`;
 
 const HONESTY_RULE = `Never invent financial products, interest rates, or institutions that do not exist. If you are unsure of a current rate, tell the user to check current rates at the relevant institution instead of stating a specific number.`;
@@ -94,10 +118,18 @@ async function generateJson<Schema extends z.ZodTypeAny>(
     };
   };
 
-  const mapApiError = (error: unknown): unknown =>
-    error instanceof Anthropic.APIError && (error.status === 401 || error.status === 403)
-      ? new AiAuthError()
-      : error;
+  const mapApiError = (error: unknown): unknown => {
+    if (error instanceof Anthropic.APIConnectionTimeoutError) return new AiTimeoutError();
+    if (!(error instanceof Anthropic.APIError)) return error;
+    if (error.status === 401 || error.status === 403) return new AiAuthError();
+    if (error.status === 400 && /credit|billing/i.test(error.message)) {
+      return new AiBillingError(error.message);
+    }
+    if (error.status === 429 || (error.status !== undefined && error.status >= 500)) {
+      return new AiUpstreamBusyError(error.status);
+    }
+    return error;
+  };
 
   try {
     return await attempt();
