@@ -94,14 +94,22 @@ async function generateJson<Schema extends z.ZodTypeAny>(
     };
   };
 
+  const mapApiError = (error: unknown): unknown =>
+    error instanceof Anthropic.APIError && (error.status === 401 || error.status === 403)
+      ? new AiAuthError()
+      : error;
+
   try {
     return await attempt();
   } catch (error) {
     if (error instanceof Anthropic.APIError) {
-      if (error.status === 401 || error.status === 403) throw new AiAuthError();
-      throw error;
+      throw mapApiError(error);
     }
-    return await attempt(0);
+    try {
+      return await attempt(0);
+    } catch (retryError) {
+      throw mapApiError(retryError);
+    }
   }
 }
 

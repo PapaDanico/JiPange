@@ -58,15 +58,19 @@ export const generatePlanRequestSchema = z.object({
 
 // ── Goal planner (reverse-engineered goal → strategy) ──
 
+// Bounds are generous but finite: this endpoint is unauthenticated and each
+// request spends AI tokens, so nothing in it may be unbounded.
+const MAX_KES = 100_000_000_000; // 100B KES — far beyond any personal goal
+
 export const goalStrategyRequestSchema = z.object({
   goalType: z.enum(["education", "home", "emergency", "business"]),
-  goalTitle: z.string().min(1),
-  targetAmount: z.number().positive(),
+  goalTitle: z.string().min(1).max(80),
+  targetAmount: z.number().positive().max(MAX_KES),
   years: z.number().positive().max(50),
-  currentSavings: z.number().min(0),
-  requiredMonthly: z.number().min(0),
+  currentSavings: z.number().min(0).max(MAX_KES),
+  requiredMonthly: z.number().min(0).max(MAX_KES),
   feasibility: z.enum(["comfortable", "tight", "stretch", "beyond-reach", "unknown"]),
-  monthlyCapacity: z.number().positive().nullable(),
+  monthlyCapacity: z.number().positive().max(MAX_KES).nullable(),
 });
 
 export type GoalStrategyRequest = z.infer<typeof goalStrategyRequestSchema>;

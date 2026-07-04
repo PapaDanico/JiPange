@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { formatKES } from "@/lib/budget";
 import {
   buildGoalPlan,
@@ -54,8 +54,10 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
 
   const parsedAmount = Number(amount);
   const parsedYears = Number(years);
-  const parsedSavings = Number(currentSavings) || 0;
-  const parsedCapacity = Number(capacity) || 0;
+  // Clamp: a pasted/typed negative would inflate the required monthly and be
+  // rejected by the strategy endpoint's schema.
+  const parsedSavings = Math.max(0, Number(currentSavings) || 0);
+  const parsedCapacity = Math.max(0, Number(capacity) || 0);
   const hasValidInputs = parsedAmount > 0 && parsedYears > 0;
 
   // For goals quoted in today's prices (school fees, home prices), the real
@@ -93,9 +95,14 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
 
   // A strategy is grounded in the numbers it was generated for — clear it
   // when those numbers change so we never show advice for a different goal.
+  // Bumping the sequence also invalidates any request still in flight, so a
+  // slow response can't land after an input change and resurrect stale advice.
+  const strategyRequestSeq = useRef(0);
   useEffect(() => {
+    strategyRequestSeq.current++;
     setStrategy(null);
     setStrategyError(null);
+    setStrategyLoading(false);
   }, [nominalTarget, parsedYears, parsedSavings, parsedCapacity]);
 
   /** Lever 1: adopt the timeline that fits saving the full capacity. */
@@ -120,6 +127,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
 
   async function fetchStrategy() {
     if (!plan || !hasValidInputs) return;
+    const seq = ++strategyRequestSeq.current;
     setStrategyLoading(true);
     setStrategyError(null);
     try {
@@ -144,11 +152,13 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
       }
 
       const data = await response.json();
+      if (seq !== strategyRequestSeq.current) return; // inputs changed mid-flight
       setStrategy(data.strategy);
     } catch (err) {
+      if (seq !== strategyRequestSeq.current) return;
       setStrategyError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
-      setStrategyLoading(false);
+      if (seq === strategyRequestSeq.current) setStrategyLoading(false);
     }
   }
 
