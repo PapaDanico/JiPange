@@ -1,10 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
+import ResumeToast from "@/components/onboarding/ResumeToast";
 import ReturningUserRedirect from "@/components/onboarding/ReturningUserRedirect";
 
 export default function Home() {
   return (
     <div className="flex flex-1 flex-col items-center justify-center px-6 py-16 text-center">
+      <ResumeToast />
       <ReturningUserRedirect />
       <Image
         src="/logo-lockup.webp"
