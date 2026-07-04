@@ -3,9 +3,10 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import type { JourneyAnswers } from "@/lib/journey";
-import { getStoredJourneyAnswers, getStoredProfile } from "@/lib/storage";
+import { getStoredGoals, getStoredJourneyAnswers, getStoredProfile } from "@/lib/storage";
 import PesaDiagnostic from "@/components/journey/PesaDiagnostic";
 import MoneyPicture from "./MoneyPicture";
+import MyGoals from "./MyGoals";
 import OnboardingStepIndicator from "./OnboardingStepIndicator";
 
 /**
@@ -17,11 +18,13 @@ import OnboardingStepIndicator from "./OnboardingStepIndicator";
 export default function PictureView() {
   const [answers, setAnswers] = useState<JourneyAnswers | null>(null);
   const [hasProfile, setHasProfile] = useState(false);
+  const [hasGoals, setHasGoals] = useState(false);
   const [checked, setChecked] = useState(false);
 
   useEffect(() => {
     setAnswers(getStoredJourneyAnswers());
     setHasProfile(Boolean(getStoredProfile()));
+    setHasGoals(getStoredGoals().length > 0);
     setChecked(true);
   }, []);
 
@@ -31,7 +34,9 @@ export default function PictureView() {
 
   if (!answers && !hasProfile) {
     return (
-      <div className="w-full max-w-md rounded-2xl bg-white p-6 text-center shadow-sm">
+      <div className="w-full max-w-md space-y-6">
+        {hasGoals && <MyGoals savingsCapacity={0} />}
+        <div className="rounded-2xl bg-white p-6 text-center shadow-sm">
         <p className="text-2xl" aria-hidden="true">
           🖼️
         </p>
@@ -58,6 +63,7 @@ export default function PictureView() {
             goal planners
           </Link>
         </p>
+        </div>
       </div>
     );
   }
@@ -78,6 +84,7 @@ export default function PictureView() {
           </div>
         </div>
       )}
+      {answers && !hasProfile && hasGoals && <MyGoals savingsCapacity={0} />}
       {answers && !hasProfile && (
         <p className="text-center text-xs text-[#6f6e69]">
           Want the shilling-exact version — real take-home pay, budget split, wealth projection?{" "}

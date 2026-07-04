@@ -58,7 +58,7 @@ export default function MyGoals({ savingsCapacity }: { savingsCapacity: number }
             key={goal.goalType}
             className="flex items-center justify-between gap-3 rounded-xl bg-[#FAF7F0] p-3"
           >
-            <Link href={`/planners/${goal.goalType}`} className="flex min-w-0 items-center gap-3">
+            <Link href={`/planners/${goal.goalType.split("-")[0]}`} className="flex min-w-0 items-center gap-3">
               <span className="text-xl" aria-hidden="true">
                 {goal.emoji}
               </span>

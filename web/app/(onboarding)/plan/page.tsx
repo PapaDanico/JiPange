@@ -1,24 +1,24 @@
+import type { Metadata } from "next";
 import Link from "next/link";
-import ActionPlan from "@/components/onboarding/ActionPlan";
-import OnboardingStepIndicator from "@/components/onboarding/OnboardingStepIndicator";
+import PlanView from "@/components/onboarding/PlanView";
+
+export const metadata: Metadata = {
+  title: "My Action Plan",
+  description:
+    "Your money roadmap: a first milestone, exact execution steps for the right Kenyan vehicle, and an AI plan when you want shilling-exact numbers.",
+};
 
 export default function PlanPage() {
   return (
     <div className="flex flex-1 flex-col items-center px-6 py-12">
       <div className="w-full max-w-md">
-        <OnboardingStepIndicator step={3} />
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-semibold text-primary">Your 3-Step Action Plan</h1>
-          <Link href="/profile/full" className="text-xs font-medium text-primary underline">
-            Update my plan
-          </Link>
-        </div>
+        <h1 className="text-2xl font-semibold text-primary">My Action Plan</h1>
         <p className="mt-1 text-sm text-[#4B4238]">
-          Personalised recommendations based on your Pesa Picture.
+          A first milestone, the exact steps to execute it, and who to open the account with.
         </p>
       </div>
-      <div className="mt-8 w-full flex justify-center">
-        <ActionPlan />
+      <div className="mt-6 w-full flex justify-center">
+        <PlanView />
       </div>
       <div className="mt-8 w-full max-w-md rounded-2xl border-2 border-accent bg-[#FFF8EA] p-6 text-center">
         <p className="text-sm font-medium text-primary">Have a specific goal in mind?</p>
