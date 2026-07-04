@@ -8,6 +8,8 @@ import {
   nextCycleRunway,
   type VentureType,
 } from "@/lib/hustle";
+import { TARGET_MMF_YIELD } from "@/lib/journey";
+import HowItWorks from "@/components/tools/HowItWorks";
 
 /**
  * The three-bucket volatile-income smoother: cycle lump sums become a steady
@@ -21,6 +23,7 @@ export default function HustleSmoother() {
   const [payout, setPayout] = useState("");
   const [activeSavings, setActiveSavings] = useState("");
   const [draw, setDraw] = useState<number | null>(null); // null = follow the safe default
+  const [buffer, setBuffer] = useState(0); // % of payout ring-fenced for a bad cycle
 
   const parsedCosts = Math.max(0, Number(inputCosts) || 0);
   const parsedPayout = Math.max(0, Number(payout) || 0);
@@ -29,12 +32,14 @@ export default function HustleSmoother() {
   const safeDraw = useMemo(
     () =>
       maxSafeMonthlyDraw({
-        targetLumpSumPayout: parsedPayout,
+        targetLumpSumPayout: parsedPayout * (1 - buffer / 100),
         inputCostsPerCycle: parsedCosts,
         cycleLengthDays: cycleDays,
       }),
-    [parsedPayout, parsedCosts, cycleDays]
+    [parsedPayout, parsedCosts, cycleDays, buffer]
   );
+  // Rough MMF earnings on the draining tank: average balance ≈ half the payout.
+  const tankInterestYear = Math.round((parsedPayout / 2) * TARGET_MMF_YIELD);
   const runway = nextCycleRunway({ activeSavings: parsedSavings, inputCostsPerCycle: parsedCosts });
   const currentDraw = draw ?? Math.round(safeDraw);
   const hasNumbers = parsedPayout > 0 && parsedCosts >= 0 && cycleDays > 0;
@@ -166,7 +171,9 @@ export default function HustleSmoother() {
             <h2 className="text-base font-semibold text-primary">The MMF smoothing tank</h2>
             <p className="mt-1 text-xs text-[#4B4238]">
               Park the {formatKES(parsedPayout)} payout in a money market fund; draw a salary
-              monthly while the rest compounds.
+              monthly while the rest compounds — worth ≈{" "}
+              <strong className="text-success">{formatKES(tankInterestYear)}/yr</strong> at ~
+              {(TARGET_MMF_YIELD * 100).toFixed(1)}% on the average balance.
             </p>
 
             <div className="mt-4 rounded-xl bg-[#F1ECE3] p-4 text-center">
@@ -176,6 +183,28 @@ export default function HustleSmoother() {
               <p className="mt-1 text-3xl font-semibold text-primary" data-testid="hustle-draw">
                 {formatKES(currentDraw)}/mo
               </p>
+            </div>
+
+            <div className="mt-3">
+              <div className="flex items-center justify-between">
+                <label htmlFor="hustle-buffer" className="text-sm font-medium text-[#4B4238]">
+                  Bad-cycle buffer (disease, drought, late payment)
+                </label>
+                <span className="text-sm font-semibold text-primary">{buffer}% held back</span>
+              </div>
+              <input
+                id="hustle-buffer"
+                type="range"
+                min={0}
+                max={30}
+                step={5}
+                value={buffer}
+                onChange={(event) => {
+                  setBuffer(Number(event.target.value));
+                  setDraw(null);
+                }}
+                className="mt-2 h-2 w-full accent-primary"
+              />
             </div>
 
             <div className="mt-3">
@@ -237,6 +266,15 @@ export default function HustleSmoother() {
           </section>
         </>
       )}
+
+      <HowItWorks
+        steps={[
+          "Pick your venture and set the cycle length, input costs, and expected payout.",
+          "The safe salary = (payout − next cycle's inputs) spread over the cycle — seed capital is never touched.",
+          "Use the bad-cycle buffer to hold back 10–20% if your payouts swing (disease, drought, late buyers).",
+          "Park the payout in an M-Pesa MMF and automate the monthly withdrawal — the tank pays you a salary and earns interest while it waits.",
+        ]}
+      />
 
       <p className="text-xs text-[#4B4238]">
         For guidance only, not financial advice. Yields vary — verify current MMF rates before

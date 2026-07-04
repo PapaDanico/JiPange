@@ -43,6 +43,33 @@ export function futureValue(
   );
 }
 
+/**
+ * Future value where the monthly contribution steps up once a year (e.g. +10%
+ * as salary grows). Computed year by year; equals futureValue when stepUp = 0.
+ */
+export function futureValueWithStepUp(
+  presentValue: number,
+  firstYearMonthly: number,
+  annualRate: number,
+  years: number,
+  annualStepUpRate: number
+): { total: number; totalContributed: number } {
+  let total = presentValue;
+  let totalContributed = presentValue;
+  let monthly = firstYearMonthly;
+  for (let year = 0; year < Math.floor(years); year++) {
+    total = futureValue(total, monthly, annualRate, 1);
+    totalContributed += monthly * 12;
+    monthly *= 1 + annualStepUpRate;
+  }
+  const remainder = years - Math.floor(years);
+  if (remainder > 0) {
+    total = futureValue(total, monthly, annualRate, remainder);
+    totalContributed += monthly * 12 * remainder;
+  }
+  return { total, totalContributed };
+}
+
 /** Converts a nominal future KES amount to today's purchasing power. */
 export function inflationAdjust(
   nominalValue: number,

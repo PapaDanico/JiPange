@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  futureValueWithStepUp,
   buildRetirementComparison,
   futureValue,
   inflateToFutureCost,
@@ -87,5 +88,24 @@ describe("buildRetirementComparison", () => {
     );
     // Sanity bound: 30 years of 10k/mo at 10% should be in the tens of millions of KES.
     expect(comparison.withPlan.nominalWealth).toBeGreaterThan(10_000_000);
+  });
+});
+
+describe("futureValueWithStepUp", () => {
+  it("equals plain futureValue when step-up is zero", () => {
+    const { total } = futureValueWithStepUp(100_000, 10_000, 0.1, 10, 0);
+    expect(total).toBeCloseTo(futureValue(100_000, 10_000, 0.1, 10), 6);
+  });
+
+  it("grows contributions annually and counts them correctly", () => {
+    const { total, totalContributed } = futureValueWithStepUp(0, 10_000, 0, 3, 0.1);
+    // 120k + 132k + 145.2k contributed, zero return
+    expect(totalContributed).toBeCloseTo(397_200, 0);
+    expect(total).toBeCloseTo(397_200, 0);
+  });
+
+  it("handles fractional years", () => {
+    const { total } = futureValueWithStepUp(0, 10_000, 0, 1.5, 0.1);
+    expect(total).toBeCloseTo(120_000 + 11_000 * 6, 0);
   });
 });

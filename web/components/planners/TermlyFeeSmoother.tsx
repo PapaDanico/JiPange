@@ -10,9 +10,12 @@ import {
   termlyMonthlyTarget,
 } from "@/lib/school-fees";
 import { saveStoredGoal } from "@/lib/storage";
+import HowItWorks from "@/components/tools/HowItWorks";
 
 const FEE_PRESETS = [50_000, 100_000, 250_000];
 const MAX_CHILDREN = 5;
+/** Kenyan term fees are usually front-loaded: Term 1 carries about half the year. */
+const FRONT_LOADED_SPLIT = [0.5, 0.3, 0.2];
 
 /**
  * Solves the cyclical cash-flow problem of Kenyan school terms: three lumpy
@@ -24,6 +27,8 @@ export default function TermlyFeeSmoother() {
   const [children, setChildren] = useState(1);
   const [cbc, setCbc] = useState(false);
   const [locked, setLocked] = useState(false);
+  const [frontLoaded, setFrontLoaded] = useState(false);
+  const [escalation, setEscalation] = useState(8);
 
   const parsedFees = Math.max(0, Number(annualFees) || 0);
   const monthly = termlyMonthlyTarget(parsedFees, children);
@@ -140,13 +145,15 @@ export default function TermlyFeeSmoother() {
                 <p className="text-[11px] font-semibold uppercase tracking-wide text-danger">
                   Standard approach
                 </p>
-                <p className="mt-1 text-lg font-semibold text-danger">
-                  {formatKES(Math.round(termLump))}
+                <p className="mt-1 text-lg font-semibold text-danger" data-testid="term-shock">
+                  {formatKES(Math.round(frontLoaded ? parsedFees * children * FRONT_LOADED_SPLIT[0] : termLump))}
                 </p>
-                <p className="text-xs text-[#4B4238]">× 3 termly shocks (Jan, May, Sep)</p>
+                <p className="text-xs text-[#4B4238]">
+                  {frontLoaded ? "Jan shock (then 30% May, 20% Sep)" : "× 3 termly shocks (Jan, May, Sep)"}
+                </p>
                 <div className="mt-2 flex items-end gap-1" aria-hidden="true">
-                  {[1, 2, 3].map((i) => (
-                    <div key={i} className="h-8 w-3 rounded-sm bg-danger" />
+                  {(frontLoaded ? FRONT_LOADED_SPLIT : [1 / 3, 1 / 3, 1 / 3]).map((w, i) => (
+                    <div key={i} style={{ height: `${w * 64}px` }} className="w-3 rounded-sm bg-danger" />
                   ))}
                 </div>
               </div>
@@ -164,6 +171,42 @@ export default function TermlyFeeSmoother() {
                   ))}
                 </div>
               </div>
+            </div>
+
+            <label className="mt-3 flex cursor-pointer items-center gap-2 text-xs text-[#4B4238]">
+              <input
+                type="checkbox"
+                checked={frontLoaded}
+                onChange={(event) => setFrontLoaded(event.target.checked)}
+                className="h-4 w-4 accent-primary"
+              />
+              My school front-loads Term 1 (≈50% / 30% / 20%)
+            </label>
+
+            {/* Fee escalation: plan for next January before it plans for you. */}
+            <div className="mt-4">
+              <div className="flex items-center justify-between">
+                <label htmlFor="fee-escalation" className="text-sm font-medium text-[#4B4238]">
+                  Annual fee increase
+                </label>
+                <span className="text-sm font-semibold text-primary">+{escalation}%/yr</span>
+              </div>
+              <input
+                id="fee-escalation"
+                type="range"
+                min={0}
+                max={15}
+                value={escalation}
+                onChange={(event) => setEscalation(Number(event.target.value))}
+                className="mt-2 h-2 w-full accent-primary"
+              />
+              <p className="mt-1 text-xs text-[#6f6e69]" data-testid="next-year-monthly">
+                Next year&apos;s target at that pace: ≈{" "}
+                <strong className="text-primary">
+                  {formatKES(Math.round(monthly * (1 + escalation / 100)))}/mo
+                </strong>{" "}
+                — lock the increase into your standing order each January.
+              </p>
             </div>
 
             <p className="mt-4 rounded-xl bg-[#FFF8EA] p-3 text-sm text-[#4B4238]">
@@ -253,6 +296,15 @@ export default function TermlyFeeSmoother() {
           )}
         </section>
       )}
+
+      <HowItWorks
+        steps={[
+          "Enter one child's annual fees (or tap a preset) and set how many children you're paying for.",
+          "The smoother turns three lumpy termly bills into one flat monthly amount — tick the front-loaded box if your school charges ~half the year in Term 1.",
+          "Park the monthly amount in an M-Pesa MMF: its interest pays part of the fees for you (the 'free uniforms' line).",
+          "Set the fee-increase slider to your school's pace so next January's step-up never surprises you, then lock the plan to your profile.",
+        ]}
+      />
     </div>
   );
 }
