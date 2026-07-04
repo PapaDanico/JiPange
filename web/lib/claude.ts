@@ -1,9 +1,36 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { actionPlanSchema, type ActionPlan, type Profile } from "./types";
 
-/** Pinned per the JiPange product spec; still an active model as of writing. */
-const CLAUDE_MODEL = "claude-sonnet-4-6";
+/**
+ * Haiku rather than Sonnet: this route runs inside a Netlify Function with a
+ * ~10-second synchronous execution cap, and Sonnet routinely needs 12-20s to
+ * emit a full plan. Haiku finishes the same 3-recommendation JSON in ~3-5s,
+ * which leaves room for one parse-retry inside the budget.
+ */
+const CLAUDE_MODEL = "claude-haiku-4-5";
 const MAX_TOKENS = 800;
+
+/**
+ * Per-request budget, in ms. The Netlify kill at ~10s surfaces to the client
+ * as an opaque 502, so we abort ourselves first and return a real error.
+ */
+const REQUEST_TIMEOUT_MS = 8_000;
+
+/** The server has no ANTHROPIC_API_KEY configured at all. */
+export class AiNotConfiguredError extends Error {
+  constructor() {
+    super("ANTHROPIC_API_KEY is not set");
+    this.name = "AiNotConfiguredError";
+  }
+}
+
+/** The configured key was rejected by the API (revoked, disabled, or mistyped). */
+export class AiAuthError extends Error {
+  constructor() {
+    super("Anthropic API rejected the configured API key");
+    this.name = "AiAuthError";
+  }
+}
 
 function buildPrompt(params: { profile: Profile; net: number; surplus: number }): string {
   const { profile, net, surplus } = params;
@@ -59,7 +86,13 @@ export async function generateActionPlan(params: {
   net: number;
   surplus: number;
 }): Promise<GeneratePlanResult> {
-  const client = new Anthropic();
+  if (!process.env.ANTHROPIC_API_KEY) {
+    throw new AiNotConfiguredError();
+  }
+
+  // maxRetries: 0 — the SDK's default of 2 internal retries can triple the
+  // wall-clock time on a slow failure, blowing the Netlify execution cap.
+  const client = new Anthropic({ maxRetries: 0, timeout: REQUEST_TIMEOUT_MS });
   const prompt = buildPrompt(params);
 
   const attempt = async (temperature?: number): Promise<GeneratePlanResult> => {
@@ -88,8 +121,16 @@ export async function generateActionPlan(params: {
 
   try {
     return await attempt();
-  } catch {
-    // Retry once with temperature 0 to reduce the chance of a repeat parse failure.
+  } catch (error) {
+    if (error instanceof Anthropic.APIError) {
+      if (error.status === 401 || error.status === 403) throw new AiAuthError();
+      // API-level failures (rate limit, overload, timeout) won't be cured by
+      // an identical immediate retry — surface them instead of doubling the
+      // request time and risking the platform kill.
+      throw error;
+    }
+    // Parse/validation failure: the model answered fast but with malformed
+    // JSON. One retry at temperature 0 fits the remaining time budget.
     return await attempt(0);
   }
 }
