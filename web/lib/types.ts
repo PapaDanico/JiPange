@@ -55,3 +55,33 @@ export const generatePlanRequestSchema = z.object({
     savingsCapacity: z.number(),
   }),
 });
+
+// ── Goal planner (reverse-engineered goal → strategy) ──
+
+export const goalStrategyRequestSchema = z.object({
+  goalType: z.enum(["education", "home", "emergency", "business"]),
+  goalTitle: z.string().min(1),
+  targetAmount: z.number().positive(),
+  years: z.number().positive().max(50),
+  currentSavings: z.number().min(0),
+  requiredMonthly: z.number().min(0),
+  feasibility: z.enum(["comfortable", "tight", "stretch", "beyond-reach", "unknown"]),
+  monthlyCapacity: z.number().positive().nullable(),
+});
+
+export type GoalStrategyRequest = z.infer<typeof goalStrategyRequestSchema>;
+
+export const goalStrategyStepSchema = z.object({
+  step: z.number().int().min(1).max(3),
+  title: z.string().min(1),
+  description: z.string().min(1),
+});
+
+export const goalStrategySchema = z.object({
+  vehicle: z.string().min(1),
+  why: z.string().min(1),
+  steps: z.array(goalStrategyStepSchema).length(3),
+  watchOut: z.string().min(1),
+});
+
+export type GoalStrategy = z.infer<typeof goalStrategySchema>;

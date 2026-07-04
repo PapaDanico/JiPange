@@ -22,7 +22,20 @@ export default function PlanPage() {
       <div className="mt-8 w-full flex justify-center">
         <ActionPlan />
       </div>
-      <div className="mt-8 w-full max-w-md rounded-2xl bg-white p-6 text-center shadow-sm">
+      <div className="mt-8 w-full max-w-md rounded-2xl border-2 border-accent bg-[#FFF8EA] p-6 text-center">
+        <p className="text-sm font-medium text-primary">Have a specific goal in mind?</p>
+        <p className="mt-1 text-xs text-[#4B4238]">
+          School fees, a home deposit, an emergency fund — pick the goal and we&apos;ll reverse-engineer
+          the monthly plan.
+        </p>
+        <Link
+          href="/planners"
+          className="mt-3 inline-flex h-10 items-center justify-center rounded-full bg-primary px-5 text-sm font-medium text-white transition-colors hover:bg-[#584a3e]"
+        >
+          Open the goal planners
+        </Link>
+      </div>
+      <div className="mt-4 w-full max-w-md rounded-2xl bg-white p-6 text-center shadow-sm">
         <p className="text-sm font-medium text-primary">Want to model a specific scenario?</p>
         <p className="mt-1 text-xs text-[#4B4238]">
           Try our free calculators for loans, savings goals, FIRE, and more.
