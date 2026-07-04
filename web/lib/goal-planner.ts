@@ -132,7 +132,7 @@ export function solveYearsToInflatingTarget(params: {
   return hi;
 }
 
-function gradeFeasibility(capacityShare: number | null): Feasibility {
+export function gradeFeasibility(capacityShare: number | null): Feasibility {
   if (capacityShare === null) return "unknown";
   if (capacityShare <= 0.5) return "comfortable";
   if (capacityShare <= 0.8) return "tight";
@@ -195,6 +195,79 @@ export function buildGoalPlan(input: GoalPlanInput): GoalPlanResult {
   };
 }
 
+export interface PlanItemInput {
+  /** KES in today's prices (inflated internally when `inflates` is set). */
+  todayValue: number;
+  years: number;
+}
+
+export interface PlannedItem extends GoalPlanResult {
+  nominalTarget: number;
+  years: number;
+}
+
+export interface MultiGoalPlan {
+  items: PlannedItem[];
+  totalRequiredMonthly: number;
+  feasibility: Feasibility;
+  capacityShare: number | null;
+  /** Longest horizon across the items. */
+  maxYears: number;
+  totalNominalTarget: number;
+}
+
+/**
+ * Plans several sub-goals as one commitment — e.g. school fees for 2-3
+ * children on different timelines. Each item is solved independently;
+ * shared current savings are allocated proportionally to each item's
+ * nominal target, and feasibility is graded on the combined monthly total.
+ */
+export function buildMultiGoalPlan(
+  inputs: PlanItemInput[],
+  opts: {
+    inflates: boolean;
+    currentSavings?: number;
+    annualReturn: number;
+    monthlyCapacity?: number;
+  }
+): MultiGoalPlan {
+  const currentSavings = opts.currentSavings ?? 0;
+  const nominalTargets = inputs.map((item) =>
+    opts.inflates ? inflateToFutureCost(item.todayValue, item.years) : item.todayValue
+  );
+  const totalNominal = nominalTargets.reduce((sum, t) => sum + t, 0);
+
+  const items: PlannedItem[] = inputs.map((item, i) => {
+    const savingsShare =
+      totalNominal > 0 ? currentSavings * (nominalTargets[i] / totalNominal) : 0;
+    const plan = buildGoalPlan({
+      targetAmount: nominalTargets[i],
+      years: item.years,
+      currentSavings: savingsShare,
+      annualReturn: opts.annualReturn,
+      monthlyCapacity: opts.monthlyCapacity,
+      ...(opts.inflates ? { targetInflation: { todayValue: item.todayValue } } : {}),
+    });
+    return { ...plan, nominalTarget: nominalTargets[i], years: item.years };
+  });
+
+  const totalRequiredMonthly = items.reduce((sum, item) => sum + item.requiredMonthly, 0);
+  const hasCapacity = opts.monthlyCapacity !== undefined && opts.monthlyCapacity > 0;
+  const capacityShare =
+    hasCapacity && Number.isFinite(totalRequiredMonthly)
+      ? totalRequiredMonthly / opts.monthlyCapacity!
+      : null;
+
+  return {
+    items,
+    totalRequiredMonthly,
+    feasibility: totalRequiredMonthly === 0 ? "comfortable" : gradeFeasibility(capacityShare),
+    capacityShare,
+    maxYears: inputs.reduce((max, item) => Math.max(max, item.years), 0),
+    totalNominalTarget: totalNominal,
+  };
+}
+
 export interface GoalConfig {
   type: GoalType;
   title: string;
@@ -207,6 +280,15 @@ export interface GoalConfig {
   defaultYears: number;
   /** Upper bound of the timeline slider. Defaults to 25 when omitted. */
   maxYears?: number;
+  /**
+   * Which variable-builder UI drives the target amount:
+   * - "children": one row per child, each with a stage and timeline (education)
+   * - "expenses-months": monthly expenses × months of cover (emergency)
+   * - "price-deposit": property price × deposit % (home)
+   * - "income": desired monthly income × 300 via the 4% rule (retirement)
+   * - "presets": plain quick-pick amounts (business)
+   */
+  builder: "children" | "expenses-months" | "price-deposit" | "income" | "presets";
   /** Whether the target is naturally quoted in today's prices (inflate before solving). */
   inflatesWithTime: boolean;
   /**
@@ -235,6 +317,7 @@ export const GOAL_CONFIGS: Record<GoalType, GoalConfig> = {
       { label: "University degree (4 yrs, public)", amount: 800_000 },
       { label: "University degree (4 yrs, private)", amount: 2_000_000 },
     ],
+    builder: "children",
     defaultYears: 8,
     inflatesWithTime: true,
   },
@@ -250,6 +333,7 @@ export const GOAL_CONFIGS: Record<GoalType, GoalConfig> = {
       { label: "10% on a KES 8M home", amount: 800_000 },
       { label: "20% on a KES 8M home", amount: 1_600_000 },
     ],
+    builder: "price-deposit",
     defaultYears: 5,
     inflatesWithTime: true,
   },
@@ -264,6 +348,7 @@ export const GOAL_CONFIGS: Record<GoalType, GoalConfig> = {
       { label: "3 months of expenses", amount: 150_000 },
       { label: "6 months of expenses", amount: 300_000 },
     ],
+    builder: "expenses-months",
     defaultYears: 1,
     inflatesWithTime: false,
   },
@@ -279,6 +364,7 @@ export const GOAL_CONFIGS: Record<GoalType, GoalConfig> = {
       { label: "Shop / serious stock", amount: 500_000 },
       { label: "Bigger venture", amount: 1_000_000 },
     ],
+    builder: "presets",
     defaultYears: 3,
     inflatesWithTime: false,
   },
@@ -296,6 +382,7 @@ export const GOAL_CONFIGS: Record<GoalType, GoalConfig> = {
       { label: "KES 100k/month for life", amount: 30_000_000 },
       { label: "KES 150k/month for life", amount: 45_000_000 },
     ],
+    builder: "income",
     defaultYears: 25,
     maxYears: 40,
     inflatesWithTime: true,
