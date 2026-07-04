@@ -8,6 +8,7 @@ const COLUMNS: { heading: string; links: { href: string; label: string }[] }[] =
       { href: "/planners/home", label: "Home deposit" },
       { href: "/planners/emergency", label: "Emergency fund" },
       { href: "/planners/business", label: "Business capital" },
+      { href: "/planners/retirement", label: "Retirement" },
     ],
   },
   {

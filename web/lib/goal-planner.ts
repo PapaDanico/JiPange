@@ -11,7 +11,7 @@ import { solveMonthlyContribution } from "./savings-goal";
  * goal is reachable by the original date.
  */
 
-export type GoalType = "education" | "home" | "emergency" | "business";
+export type GoalType = "education" | "home" | "emergency" | "business" | "retirement";
 
 export type Feasibility = "comfortable" | "tight" | "stretch" | "beyond-reach" | "unknown";
 
@@ -205,8 +205,16 @@ export interface GoalConfig {
   /** Suggested target-amount presets shown as quick-picks, in KES. */
   amountPresets: { label: string; amount: number }[];
   defaultYears: number;
+  /** Upper bound of the timeline slider. Defaults to 25 when omitted. */
+  maxYears?: number;
   /** Whether the target is naturally quoted in today's prices (inflate before solving). */
   inflatesWithTime: boolean;
+  /**
+   * When set, the default timeline becomes (retireAtAge − profile age) for
+   * users with a stored profile. Plain data, not a function — GoalConfig
+   * crosses the server→client component boundary.
+   */
+  retireAtAge?: number;
 }
 
 /**
@@ -273,6 +281,26 @@ export const GOAL_CONFIGS: Record<GoalType, GoalConfig> = {
     ],
     defaultYears: 3,
     inflatesWithTime: false,
+  },
+  retirement: {
+    type: "retirement",
+    title: "Retirement Planner",
+    emoji: "🌴",
+    tagline: "Reverse-engineer the pot that pays you a monthly income for life.",
+    defaultAnnualReturn: 0.1,
+    // Pot sizes derived from the 4% rule: monthly income × 12 ÷ 0.04
+    // (i.e. × 300). A rough guide from US data — the planner copy says so.
+    amountPresets: [
+      { label: "KES 30k/month for life", amount: 9_000_000 },
+      { label: "KES 50k/month for life", amount: 15_000_000 },
+      { label: "KES 100k/month for life", amount: 30_000_000 },
+      { label: "KES 150k/month for life", amount: 45_000_000 },
+    ],
+    defaultYears: 25,
+    maxYears: 40,
+    inflatesWithTime: true,
+    // Kenya's typical retirement age; timeline defaults to 60 − user's age.
+    retireAtAge: 60,
   },
 };
 

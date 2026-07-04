@@ -8,7 +8,7 @@ import {
   type GoalConfig,
 } from "@/lib/goal-planner";
 import { inflateToFutureCost, inflationAdjust } from "@/lib/projections";
-import { getStoredCalculations } from "@/lib/storage";
+import { getStoredCalculations, getStoredProfile, saveStoredGoal } from "@/lib/storage";
 import type { GoalStrategy } from "@/lib/types";
 import { useCountUp } from "@/hooks/useCountUp";
 import NumberField from "@/components/tools/NumberField";
@@ -43,13 +43,24 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
   const [strategyLoading, setStrategyLoading] = useState(false);
   const [strategyError, setStrategyError] = useState<string | null>(null);
 
-  // Prefill capacity from the onboarding journey when it exists.
+  const maxYears = config.maxYears ?? 25;
+
+  // Prefill capacity — and, where the goal defines it, the timeline — from
+  // the onboarding journey when it exists.
   useEffect(() => {
     const stored = getStoredCalculations();
     if (stored && stored.savingsCapacity > 0) {
       setCapacity(String(Math.round(stored.savingsCapacity)));
       setCapacityFromProfile(true);
     }
+    if (config.retireAtAge !== undefined) {
+      const profile = getStoredProfile();
+      if (profile) {
+        const derived = Math.min(maxYears, Math.max(1, config.retireAtAge - profile.age));
+        setYears(String(derived));
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const parsedAmount = Number(amount);
@@ -98,17 +109,34 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
   // Bumping the sequence also invalidates any request still in flight, so a
   // slow response can't land after an input change and resurrect stale advice.
   const strategyRequestSeq = useRef(0);
+  const [goalSaved, setGoalSaved] = useState(false);
   useEffect(() => {
     strategyRequestSeq.current++;
     setStrategy(null);
     setStrategyError(null);
     setStrategyLoading(false);
+    setGoalSaved(false);
   }, [nominalTarget, parsedYears, parsedSavings, parsedCapacity]);
+
+  function handleSaveGoal() {
+    if (!plan || !hasValidInputs) return;
+    saveStoredGoal({
+      goalType: config.type,
+      title: config.title.replace(" Planner", ""),
+      emoji: config.emoji,
+      amountToday: parsedAmount,
+      nominalTarget,
+      years: parsedYears,
+      requiredMonthly: plan.requiredMonthly,
+      savedAt: new Date().toISOString(),
+    });
+    setGoalSaved(true);
+  }
 
   /** Lever 1: adopt the timeline that fits saving the full capacity. */
   function applyTimeline() {
     if (plan?.yearsAtCapacity == null) return;
-    setYears(String(Math.min(25, Math.max(1, Math.ceil(plan.yearsAtCapacity)))));
+    setYears(String(Math.min(maxYears, Math.max(1, Math.ceil(plan.yearsAtCapacity)))));
   }
 
   /** Lever 2: adopt the target reachable by the original date. */
@@ -123,7 +151,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
   }
 
   const canApplyTimeline =
-    plan?.yearsAtCapacity != null && Math.ceil(plan.yearsAtCapacity) <= 25;
+    plan?.yearsAtCapacity != null && Math.ceil(plan.yearsAtCapacity) <= maxYears;
 
   async function fetchStrategy() {
     if (!plan || !hasValidInputs) return;
@@ -214,7 +242,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
             id="goal-years"
             type="range"
             min={1}
-            max={25}
+            max={maxYears}
             value={years}
             onChange={(event) => setYears(event.target.value)}
             className="mt-2 h-2 w-full accent-primary"
@@ -443,9 +471,23 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
           )}
 
           {plan.requiredMonthly > 0 && (
-            <ShareResultButton
-              message={`${config.emoji} *My JiPange ${config.title.replace(" Planner", "")} Goal*\n\nTarget: ${formatKES(nominalTarget)} in ${formatYears(parsedYears)}\nMonthly saving needed: ${formatKES(plan.requiredMonthly)}${strategy ? `\nWhere it lives: ${strategy.vehicle}` : ""}\n\nPlan yours → jipangefinance.netlify.app/planners`}
-            />
+            <>
+              <button
+                type="button"
+                onClick={handleSaveGoal}
+                disabled={goalSaved}
+                className={`h-11 w-full rounded-full text-sm font-medium transition-colors ${
+                  goalSaved
+                    ? "bg-[#E9F5EC] text-success"
+                    : "border border-primary text-primary hover:bg-primary hover:text-white"
+                }`}
+              >
+                {goalSaved ? "✓ Saved — see it on your Pesa Picture" : "Save this goal to my plan"}
+              </button>
+              <ShareResultButton
+                message={`${config.emoji} *My JiPange ${config.title.replace(" Planner", "")} Goal*\n\nTarget: ${formatKES(nominalTarget)} in ${formatYears(parsedYears)}\nMonthly saving needed: ${formatKES(plan.requiredMonthly)}${strategy ? `\nWhere it lives: ${strategy.vehicle}` : ""}\n\nPlan yours → jipangefinance.netlify.app/planners`}
+              />
+            </>
           )}
         </div>
       )}
