@@ -14,9 +14,14 @@ export default function BrandHeader() {
         />
         <span className="text-sm font-semibold text-primary">JiPange</span>
       </Link>
-      <Link href="/tools" className="text-xs font-medium text-primary underline">
-        Calculators
-      </Link>
+      <nav className="flex items-center gap-3">
+        <Link href="/planners" className="text-xs font-medium text-primary underline">
+          Planners
+        </Link>
+        <Link href="/tools" className="text-xs font-medium text-primary underline">
+          Calculators
+        </Link>
+      </nav>
     </div>
   );
 }

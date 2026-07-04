@@ -1,4 +1,4 @@
-import { futureValue } from "./projections";
+import { DEFAULT_INFLATION_RATE, futureValue, inflateToFutureCost } from "./projections";
 import { solveMonthlyContribution } from "./savings-goal";
 
 /**
@@ -26,6 +26,16 @@ export interface GoalPlanInput {
   annualReturn: number;
   /** The user's total monthly savings capacity in KES, when known. */
   monthlyCapacity?: number;
+  /**
+   * Set when the goal is quoted in today's prices and its real cost inflates
+   * with time (school fees, home prices). `targetAmount` must still be the
+   * nominal cost at `years`; this lets the extend-the-timeline lever solve
+   * against a target that keeps moving as the horizon stretches.
+   */
+  targetInflation?: {
+    todayValue: number;
+    annualRate?: number;
+  };
 }
 
 export interface GoalPlanResult {
@@ -83,6 +93,45 @@ export function solveYearsToTarget(params: {
   return months / 12;
 }
 
+/**
+ * Years until savings catch an inflating target: solves
+ * futureValue(n) >= todayValue·(1+i)^n by bisection. The plain closed form
+ * in `solveYearsToTarget` can't be used because the target moves with n —
+ * extending a school-fees timeline also inflates the fees.
+ */
+export function solveYearsToInflatingTarget(params: {
+  todayValue: number;
+  inflationRate?: number;
+  presentValue?: number;
+  monthlyContribution: number;
+  annualRate: number;
+}): number {
+  const { todayValue, monthlyContribution, annualRate } = params;
+  const inflationRate = params.inflationRate ?? DEFAULT_INFLATION_RATE;
+  const presentValue = params.presentValue ?? 0;
+
+  const reaches = (n: number) =>
+    futureValue(presentValue, monthlyContribution, annualRate, n) >=
+    inflateToFutureCost(todayValue, n, inflationRate);
+
+  if (reaches(0)) return 0;
+
+  const MAX_YEARS = 60;
+  if (!reaches(MAX_YEARS)) return Infinity;
+
+  let lo = 0;
+  let hi = MAX_YEARS;
+  for (let i = 0; i < 50; i++) {
+    const mid = (lo + hi) / 2;
+    if (reaches(mid)) {
+      hi = mid;
+    } else {
+      lo = mid;
+    }
+  }
+  return hi;
+}
+
 function gradeFeasibility(capacityShare: number | null): Feasibility {
   if (capacityShare === null) return "unknown";
   if (capacityShare <= 0.5) return "comfortable";
@@ -113,12 +162,20 @@ export function buildGoalPlan(input: GoalPlanInput): GoalPlanResult {
   let amountAtCapacityByTargetDate: number | null = null;
 
   if (hasCapacity) {
-    const solved = solveYearsToTarget({
-      targetAmount,
-      presentValue: currentSavings,
-      monthlyContribution: monthlyCapacity,
-      annualRate: annualReturn,
-    });
+    const solved = input.targetInflation
+      ? solveYearsToInflatingTarget({
+          todayValue: input.targetInflation.todayValue,
+          inflationRate: input.targetInflation.annualRate,
+          presentValue: currentSavings,
+          monthlyContribution: monthlyCapacity,
+          annualRate: annualReturn,
+        })
+      : solveYearsToTarget({
+          targetAmount,
+          presentValue: currentSavings,
+          monthlyContribution: monthlyCapacity,
+          annualRate: annualReturn,
+        });
     yearsAtCapacity = Number.isFinite(solved) ? solved : null;
     amountAtCapacityByTargetDate = futureValue(
       currentSavings,

@@ -7,11 +7,13 @@ import {
   type Feasibility,
   type GoalConfig,
 } from "@/lib/goal-planner";
-import { inflateToFutureCost } from "@/lib/projections";
+import { inflateToFutureCost, inflationAdjust } from "@/lib/projections";
 import { getStoredCalculations } from "@/lib/storage";
 import type { GoalStrategy } from "@/lib/types";
+import { useCountUp } from "@/hooks/useCountUp";
 import NumberField from "@/components/tools/NumberField";
 import ResultCard from "@/components/tools/ResultCard";
+import ShareResultButton from "@/components/tools/ShareResultButton";
 
 const FEASIBILITY_BADGE: Record<
   Exclude<Feasibility, "unknown">,
@@ -72,8 +74,49 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
       currentSavings: parsedSavings,
       annualReturn: annualReturn / 100,
       monthlyCapacity: parsedCapacity > 0 ? parsedCapacity : undefined,
+      ...(config.inflatesWithTime
+        ? { targetInflation: { todayValue: parsedAmount } }
+        : {}),
     });
-  }, [hasValidInputs, nominalTarget, parsedYears, parsedSavings, annualReturn, parsedCapacity]);
+  }, [
+    hasValidInputs,
+    nominalTarget,
+    parsedYears,
+    parsedSavings,
+    annualReturn,
+    parsedCapacity,
+    config.inflatesWithTime,
+    parsedAmount,
+  ]);
+
+  const animatedRequiredMonthly = useCountUp(plan ? plan.requiredMonthly : null);
+
+  // A strategy is grounded in the numbers it was generated for — clear it
+  // when those numbers change so we never show advice for a different goal.
+  useEffect(() => {
+    setStrategy(null);
+    setStrategyError(null);
+  }, [nominalTarget, parsedYears, parsedSavings, parsedCapacity]);
+
+  /** Lever 1: adopt the timeline that fits saving the full capacity. */
+  function applyTimeline() {
+    if (plan?.yearsAtCapacity == null) return;
+    setYears(String(Math.min(25, Math.max(1, Math.ceil(plan.yearsAtCapacity)))));
+  }
+
+  /** Lever 2: adopt the target reachable by the original date. */
+  function applyAmount() {
+    if (plan?.amountAtCapacityByTargetDate == null) return;
+    // The amount field is quoted in today's prices for inflating goals, so
+    // deflate the nominal reachable amount back before writing it.
+    const reachableToday = config.inflatesWithTime
+      ? inflationAdjust(plan.amountAtCapacityByTargetDate, parsedYears)
+      : plan.amountAtCapacityByTargetDate;
+    setAmount(String(Math.max(1000, Math.floor(reachableToday / 1000) * 1000)));
+  }
+
+  const canApplyTimeline =
+    plan?.yearsAtCapacity != null && Math.ceil(plan.yearsAtCapacity) <= 25;
 
   async function fetchStrategy() {
     if (!plan || !hasValidInputs) return;
@@ -235,7 +278,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
 
           <ResultCard
             label={`Save this every month for ${formatYears(parsedYears)}`}
-            value={`${formatKES(plan.requiredMonthly)}/mo`}
+            value={`${formatKES(animatedRequiredMonthly)}/mo`}
             sublabel={
               plan.requiredMonthly === 0
                 ? "Your current savings already cover this goal. Well done!"
@@ -272,27 +315,47 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
               </div>
 
               {plan.feasibility === "beyond-reach" && (
-                <div className="mt-4 space-y-2 text-sm text-[#4B4238]">
+                <div className="mt-4 space-y-3 text-sm text-[#4B4238]">
                   <p className="font-medium text-primary">
                     The goal doesn&apos;t fit the timeline — but you have two levers:
                   </p>
                   {plan.yearsAtCapacity !== null && (
-                    <p>
-                      🕐 <span className="font-medium">Extend the timeline:</span> saving your
-                      full {formatKES(parsedCapacity)}/mo, you reach it in{" "}
-                      <span className="font-semibold">{formatYears(plan.yearsAtCapacity)}</span>.
-                    </p>
+                    <div className="flex items-start justify-between gap-3">
+                      <p>
+                        🕐 <span className="font-medium">Extend the timeline:</span> saving your
+                        full {formatKES(parsedCapacity)}/mo, you reach it in{" "}
+                        <span className="font-semibold">{formatYears(plan.yearsAtCapacity)}</span>.
+                      </p>
+                      {canApplyTimeline && (
+                        <button
+                          type="button"
+                          onClick={applyTimeline}
+                          className="shrink-0 rounded-full border border-primary px-3 py-1 text-xs font-medium text-primary transition-colors hover:bg-primary hover:text-white"
+                        >
+                          Use it
+                        </button>
+                      )}
+                    </div>
                   )}
                   {plan.amountAtCapacityByTargetDate !== null && (
-                    <p>
-                      🎯 <span className="font-medium">Shrink the target:</span> by your original
-                      date you&apos;d have{" "}
-                      <span className="font-semibold">
-                        {formatKES(plan.amountAtCapacityByTargetDate)}
-                      </span>{" "}
-                      — {Math.round((plan.amountAtCapacityByTargetDate / nominalTarget) * 100)}%
-                      of the goal.
-                    </p>
+                    <div className="flex items-start justify-between gap-3">
+                      <p>
+                        🎯 <span className="font-medium">Shrink the target:</span> by your
+                        original date you&apos;d have{" "}
+                        <span className="font-semibold">
+                          {formatKES(plan.amountAtCapacityByTargetDate)}
+                        </span>{" "}
+                        — {Math.round((plan.amountAtCapacityByTargetDate / nominalTarget) * 100)}%
+                        of the goal.
+                      </p>
+                      <button
+                        type="button"
+                        onClick={applyAmount}
+                        className="shrink-0 rounded-full border border-primary px-3 py-1 text-xs font-medium text-primary transition-colors hover:bg-primary hover:text-white"
+                      >
+                        Use it
+                      </button>
+                    </div>
                   )}
                 </div>
               )}
@@ -367,6 +430,12 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
                 Try a different strategy
               </button>
             </div>
+          )}
+
+          {plan.requiredMonthly > 0 && (
+            <ShareResultButton
+              message={`${config.emoji} *My JiPange ${config.title.replace(" Planner", "")} Goal*\n\nTarget: ${formatKES(nominalTarget)} in ${formatYears(parsedYears)}\nMonthly saving needed: ${formatKES(plan.requiredMonthly)}${strategy ? `\nWhere it lives: ${strategy.vehicle}` : ""}\n\nPlan yours → jipangefinance.netlify.app/planners`}
+            />
           )}
         </div>
       )}
