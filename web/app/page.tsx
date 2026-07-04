@@ -24,6 +24,17 @@ export default function Home() {
       >
         Start my plan — 90 seconds
       </Link>
+      <div className="mt-6 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-sm">
+        <Link href="/planners" className="font-medium text-primary underline">
+          Goal planners
+        </Link>
+        <span aria-hidden="true" className="text-[#C9BFB2]">
+          ·
+        </span>
+        <Link href="/tools" className="font-medium text-primary underline">
+          Free calculators
+        </Link>
+      </div>
     </div>
   );
 }
