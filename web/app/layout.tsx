@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Footer from "@/components/Footer";
+import AppHeader from "@/components/nav/AppHeader";
+import BottomNav from "@/components/nav/BottomNav";
 import "./globals.css";
 
 const SITE_URL = "https://jipangefinance.netlify.app";
@@ -26,9 +28,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-full">
-      <body className="min-h-full flex flex-col bg-background text-[#171717] antialiased">
+      {/* pb-16 clears the fixed mobile bottom nav; sm:pb-0 removes it where the bar is hidden. */}
+      <body className="min-h-full flex flex-col bg-background pb-16 text-[#171717] antialiased sm:pb-0 print:pb-0">
+        <AppHeader />
         {children}
         <Footer />
+        <BottomNav />
       </body>
     </html>
   );

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import BrandHeader from "@/components/BrandHeader";
 import ToolsIndexList, { type ToolGroup } from "@/components/tools/ToolsIndexList";
 
 export const metadata: Metadata = {
@@ -127,7 +126,6 @@ export default function ToolsPage() {
   return (
     <div className="flex flex-1 flex-col items-center px-6 py-12">
       <div className="w-full max-w-md">
-        <BrandHeader />
         <h1 className="text-2xl font-semibold text-primary">Free Financial Calculators</h1>
         <p className="mt-1 text-sm text-[#4B4238]">
           Quick tools for everyday Kenyan money decisions — no account needed.

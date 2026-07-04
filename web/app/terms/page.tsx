@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import BrandHeader from "@/components/BrandHeader";
 
 export const metadata: Metadata = {
   title: "Terms of Use",
@@ -10,7 +9,6 @@ export default function TermsPage() {
   return (
     <div className="flex flex-1 flex-col items-center px-6 py-12">
       <div className="w-full max-w-2xl">
-        <BrandHeader />
         <h1 className="text-2xl font-semibold text-primary">Terms of Use</h1>
         <p className="mt-1 text-sm text-[#4B4238]">Last updated: 1 July 2026</p>
 
