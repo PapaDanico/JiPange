@@ -38,6 +38,20 @@ export default function PlannersPage() {
             </Link>
           );
         })}
+        <Link
+          href="/planners/hustle"
+          className="block rounded-2xl bg-white p-5 shadow-sm transition-shadow hover:shadow-md"
+        >
+          <div className="flex items-center gap-3">
+            <span className="text-2xl">🔄</span>
+            <div>
+              <h2 className="text-base font-semibold text-primary">Hustle Income Smoother</h2>
+              <p className="mt-0.5 text-sm text-[#4B4238]">
+                Turn lumpy poultry, farm or gig payouts into a steady monthly salary.
+              </p>
+            </div>
+          </div>
+        </Link>
       </div>
 
       <div className="mt-8 w-full max-w-md rounded-2xl bg-white p-6 text-center shadow-sm">

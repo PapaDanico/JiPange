@@ -9,6 +9,7 @@ const COLUMNS: { heading: string; links: { href: string; label: string }[] }[] =
       { href: "/planners/emergency", label: "Emergency fund" },
       { href: "/planners/business", label: "Business capital" },
       { href: "/planners/retirement", label: "Retirement" },
+      { href: "/planners/hustle", label: "Hustle income smoother" },
     ],
   },
   {
@@ -17,6 +18,7 @@ const COLUMNS: { heading: string; links: { href: string; label: string }[] }[] =
       { href: "/tools/take-home-pay", label: "Take-home pay" },
       { href: "/tools/fire-number", label: "FIRE number" },
       { href: "/tools/loan-repayment", label: "Loan repayment" },
+      { href: "/tools/tax-shield", label: "KRA tax shield" },
       { href: "/tools/fuliza-cost", label: "Fuliza cost" },
       { href: "/tools", label: "All calculators →" },
     ],
