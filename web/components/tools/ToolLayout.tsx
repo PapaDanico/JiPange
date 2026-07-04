@@ -1,5 +1,4 @@
 import Link from "next/link";
-import BrandHeader from "@/components/BrandHeader";
 
 export default function ToolLayout({
   title,
@@ -13,7 +12,6 @@ export default function ToolLayout({
   return (
     <div className="flex flex-1 flex-col items-center px-6 py-12">
       <div className="w-full max-w-md print:hidden">
-        <BrandHeader />
         <Link href="/tools" className="text-xs font-medium text-primary underline">
           ← All calculators
         </Link>

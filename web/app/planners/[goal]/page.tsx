@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import BrandHeader from "@/components/BrandHeader";
 import GoalPlanner from "@/components/planners/GoalPlanner";
 import { GOAL_CONFIGS, GOAL_TYPES, type GoalType } from "@/lib/goal-planner";
 
@@ -29,7 +28,6 @@ export default function GoalPlannerPage({ params }: PageProps) {
   return (
     <div className="flex flex-1 flex-col items-center px-6 py-12">
       <div className="w-full max-w-md">
-        <BrandHeader />
         <Link href="/planners" className="text-xs font-medium text-primary underline">
           ← All planners
         </Link>
