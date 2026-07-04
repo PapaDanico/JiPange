@@ -42,6 +42,14 @@ const CALCULATOR_GROUPS: ToolGroup[] = [
         isNew: true,
       },
       {
+        href: "/tools/payday-router",
+        icon: "📱",
+        title: "M-Pesa Payday Safety Router",
+        description: "Your true weekly spend limit — and the surplus to move out of M-Pesa on payday.",
+        insight: "Money left floating in your main wallet gets spent; route the surplus out on day one.",
+        isNew: true,
+      },
+      {
         href: "/tools/loan-repayment",
         icon: "🏦",
         title: "Loan / HELB Repayment Calculator",
@@ -116,6 +124,14 @@ const CALCULATOR_GROUPS: ToolGroup[] = [
         title: "Inflation Reality Calculator",
         description: "See what your salary will really be worth in the future.",
         insight: "Kenya CPI has averaged 6.5% per year — your salary needs to keep pace.",
+        isNew: true,
+      },
+      {
+        href: "/tools/kplc-optimizer",
+        icon: "⚡",
+        title: "KPLC Token Band Optimizer",
+        description: "Split your monthly token budget into two buys and gain free units on the same spend.",
+        insight: "Two half-month purchases keep you in the lower tariff band — same money, more kWh.",
         isNew: true,
       },
       {
