@@ -40,7 +40,7 @@ export default function MoneyPicture() {
   useEffect(() => {
     const stored = getStoredProfile();
     if (!stored) {
-      router.replace("/profile");
+      router.replace("/profile/full");
       return;
     }
     setProfile(stored);

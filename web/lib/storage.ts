@@ -1,10 +1,12 @@
 import type { ActionPlan, Calculations, Profile } from "./types";
+import type { JourneyAnswers } from "./journey";
 
 const PROFILE_KEY = "jipange:profile";
 const CALCULATIONS_KEY = "jipange:calculations";
 const PLAN_KEY = "jipange:plan";
 const PROFILE_DRAFT_KEY = "jipange:profile-draft";
 const GOALS_KEY = "jipange:goals";
+const JOURNEY_KEY = "jipange:journey";
 const WHATSAPP_NUMBER_KEY = "jipange:whatsapp-number";
 
 /** Raw, not-yet-validated field values from an in-progress /profile form. */
@@ -86,6 +88,10 @@ export function removeStoredGoal(goalType: string): void {
   const remaining = getStoredGoals().filter((g) => g.goalType !== goalType);
   write(GOALS_KEY, remaining);
 }
+
+/** Answers from the 5-question journey funnel. */
+export const getStoredJourneyAnswers = () => read<JourneyAnswers>(JOURNEY_KEY);
+export const setStoredJourneyAnswers = (answers: JourneyAnswers) => write(JOURNEY_KEY, answers);
 
 export function clearStoredJourney(): void {
   if (!isBrowser()) return;

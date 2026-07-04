@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { getStoredProfile } from "@/lib/storage";
+import { getStoredJourneyAnswers, getStoredProfile } from "@/lib/storage";
 
 /**
  * Mobile-only bottom tab bar — the navigation pattern Kenyan users already
@@ -13,14 +13,18 @@ import { getStoredProfile } from "@/lib/storage";
 export default function BottomNav() {
   const pathname = usePathname();
   const [hasProfile, setHasProfile] = useState(false);
+  const [hasJourney, setHasJourney] = useState(false);
 
   useEffect(() => {
     setHasProfile(Boolean(getStoredProfile()));
+    setHasJourney(Boolean(getStoredJourneyAnswers()));
   }, [pathname]);
 
   const planTab = hasProfile
     ? { href: "/picture", label: "My Plan" }
-    : { href: "/profile", label: "Get Plan" };
+    : hasJourney
+      ? { href: "/dashboard", label: "My Plan" }
+      : { href: "/profile", label: "Get Plan" };
 
   const tabs = [
     { href: "/", label: "Home", emoji: "🏠", exact: true },
@@ -31,7 +35,7 @@ export default function BottomNav() {
       label: planTab.label,
       emoji: "📊",
       // The plan journey spans three routes; highlight the tab on any of them.
-      activePaths: ["/profile", "/picture", "/plan"],
+      activePaths: ["/profile", "/picture", "/plan", "/dashboard"],
       exact: false,
     },
   ];

@@ -39,7 +39,7 @@ export default function ActionPlan() {
     const storedProfile = getStoredProfile();
     const storedCalculations = getStoredCalculations();
     if (!storedProfile || !storedCalculations) {
-      router.replace("/profile");
+      router.replace("/profile/full");
       return;
     }
     setProfile(storedProfile);

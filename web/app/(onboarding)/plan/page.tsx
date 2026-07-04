@@ -9,7 +9,7 @@ export default function PlanPage() {
         <OnboardingStepIndicator step={3} />
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-semibold text-primary">Your 3-Step Action Plan</h1>
-          <Link href="/profile" className="text-xs font-medium text-primary underline">
+          <Link href="/profile/full" className="text-xs font-medium text-primary underline">
             Update my plan
           </Link>
         </div>

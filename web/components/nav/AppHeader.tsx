@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { getStoredProfile } from "@/lib/storage";
+import { getStoredJourneyAnswers, getStoredProfile } from "@/lib/storage";
 
 const DESKTOP_LINKS = [
   { href: "/planners", label: "Planners" },
@@ -15,14 +15,18 @@ export default function AppHeader() {
   const pathname = usePathname();
   // Read after mount so the server render matches the client's first paint.
   const [hasProfile, setHasProfile] = useState(false);
+  const [hasJourney, setHasJourney] = useState(false);
 
   useEffect(() => {
     setHasProfile(Boolean(getStoredProfile()));
+    setHasJourney(Boolean(getStoredJourneyAnswers()));
   }, [pathname]);
 
   const cta = hasProfile
     ? { href: "/picture", label: "My plan" }
-    : { href: "/profile", label: "Start my plan" };
+    : hasJourney
+      ? { href: "/dashboard", label: "My plan" }
+      : { href: "/profile", label: "Start my plan" };
 
   // Segment-aware prefix match so e.g. "/plan" can never claim "/planners".
   const underPath = (base: string) => pathname === base || pathname.startsWith(`${base}/`);
