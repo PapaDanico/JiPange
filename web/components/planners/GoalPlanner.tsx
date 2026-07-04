@@ -35,6 +35,8 @@ const MAX_CHILDREN = 5;
 const CHILD_TIMELINE_MAX = 18;
 
 interface ChildGoal {
+  /** Child's age today — drives the derived timeline when a stage is picked. */
+  age: string;
   amount: string;
   years: string;
   stageLabel: string | null;
@@ -64,7 +66,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
 
   // ── Builder-specific variables ──
   const [children, setChildren] = useState<ChildGoal[]>([
-    { amount: "", years: "8", stageLabel: null },
+    { age: "", amount: "", years: "8", stageLabel: null },
   ]);
   const [expenses, setExpenses] = useState(""); // emergency: monthly expenses
   const [coverMonths, setCoverMonths] = useState(6); // emergency: months of cover
@@ -127,6 +129,36 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
 
   function updateChild(index: number, patch: Partial<ChildGoal>) {
     setChildren((prev) => prev.map((c, i) => (i === index ? { ...c, ...patch } : c)));
+  }
+
+  function stageStartAge(stageLabel: string | null): number | undefined {
+    return config.amountPresets.find((p) => p.label === stageLabel)?.startAge;
+  }
+
+  /** Years until the stage's typical start age, clamped to the slider range. */
+  function deriveChildYears(ageValue: string, startAge: number | undefined): string | null {
+    const age = Number(ageValue);
+    if (ageValue.trim() === "" || !Number.isFinite(age) || age < 0 || startAge === undefined) {
+      return null;
+    }
+    return String(Math.min(CHILD_TIMELINE_MAX, Math.max(1, Math.round(startAge - age))));
+  }
+
+  function handleChildStage(index: number, preset: { label: string; amount: number; startAge?: number }) {
+    const derived = deriveChildYears(children[index].age, preset.startAge);
+    updateChild(index, {
+      amount: String(preset.amount),
+      stageLabel: preset.label,
+      ...(derived !== null ? { years: derived } : {}),
+    });
+  }
+
+  function handleChildAge(index: number, ageValue: string) {
+    const derived = deriveChildYears(ageValue, stageStartAge(children[index].stageLabel));
+    updateChild(index, {
+      age: ageValue,
+      ...(derived !== null ? { years: derived } : {}),
+    });
   }
 
   const parsedAmount = Number(amount);
@@ -300,6 +332,20 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
                   )}
                 </div>
 
+                <div className="mt-3">
+                  <NumberField
+                    id={`child-${index}-age`}
+                    label="Child's age today (optional)"
+                    value={child.age}
+                    onChange={(v) => handleChildAge(index, v)}
+                    placeholder="e.g. 7"
+                    suffix="yrs"
+                  />
+                  <p className="mt-1 text-xs text-[#6f6e69]">
+                    With an age, we work out when fees start for the stage you pick.
+                  </p>
+                </div>
+
                 <p className="mt-3 text-sm font-medium text-[#4B4238]">
                   What are you saving for?
                 </p>
@@ -308,12 +354,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
                     <button
                       key={preset.label}
                       type="button"
-                      onClick={() =>
-                        updateChild(index, {
-                          amount: String(preset.amount),
-                          stageLabel: preset.label,
-                        })
-                      }
+                      onClick={() => handleChildStage(index, preset)}
                       aria-pressed={child.stageLabel === preset.label}
                       className={chipClass(child.stageLabel === preset.label)}
                     >
@@ -353,6 +394,12 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
                     onChange={(event) => updateChild(index, { years: event.target.value })}
                     className="mt-2 h-2 w-full accent-primary"
                   />
+                  {child.age.trim() !== "" && stageStartAge(child.stageLabel) !== undefined && (
+                    <p className="mt-1 text-xs text-[#6f6e69]">
+                      ≈ when they turn {stageStartAge(child.stageLabel)} — nudge the slider if
+                      their path differs.
+                    </p>
+                  )}
                 </div>
               </div>
             ))}
@@ -361,7 +408,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
               <button
                 type="button"
                 onClick={() =>
-                  setChildren((prev) => [...prev, { amount: "", years: "8", stageLabel: null }])
+                  setChildren((prev) => [...prev, { age: "", amount: "", years: "8", stageLabel: null }])
                 }
                 className="h-11 w-full rounded-xl border border-dashed border-[#C9BFB2] text-sm font-medium text-[#4B4238] hover:bg-[#F1ECE3]"
               >
