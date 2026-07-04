@@ -153,7 +153,7 @@ export default function Home() {
         <div className="flex items-baseline justify-between">
           <h2 className="text-lg font-semibold text-primary">Start with a quick win</h2>
           <Link href="/tools" className="text-sm font-medium text-primary underline">
-            All 17 calculators →
+            All 18 calculators →
           </Link>
         </div>
         <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">

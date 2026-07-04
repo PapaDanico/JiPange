@@ -64,6 +64,20 @@ export default function MoneyRunwayCalculator() {
             sublabel="Assumes the remaining balance keeps earning the return rate above."
             tone="success"
           />
+          {/* Survival triage: is this cushion thick enough to invest from? */}
+          {result < 3 ? (
+            <p data-testid="runway-triage" className="rounded-2xl border-2 border-danger bg-[#FBEAEA] p-4 text-sm text-[#4B4238]">
+              🚨 <strong className="text-danger">Action Level: High Urgency.</strong> Your safety
+              cushion is critically thin. Freeze discretionary spending and route 100% of spare
+              liquidity into an emergency MMF buffer before any long-term investing.
+            </p>
+          ) : (
+            <p data-testid="runway-triage" className="rounded-2xl bg-[#E9F5EC] p-4 text-sm text-[#2b4a2b]">
+              ✓ <strong>Action Level: Stable Runway.</strong> A healthy baseline safety net — your
+              cushion can absorb a shock, so salary surpluses can confidently flow to long-term
+              wealth builders.
+            </p>
+          )}
           <ShareResultButton
             message={`⏳ *My Money Runway*\n\nMy savings will last: ${formatDuration(result)}\n\nCalculate yours → jipangefinance.netlify.app/tools/money-runway`}
           />

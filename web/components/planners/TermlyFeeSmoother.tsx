@@ -29,8 +29,9 @@ export default function TermlyFeeSmoother() {
   const [locked, setLocked] = useState(false);
   const [frontLoaded, setFrontLoaded] = useState(false);
   const [escalation, setEscalation] = useState(8);
+  const [perTerm, setPerTerm] = useState(false); // parents often know the per-term figure
 
-  const parsedFees = Math.max(0, Number(annualFees) || 0);
+  const parsedFees = Math.max(0, Number(annualFees) || 0) * (perTerm ? 3 : 1);
   const monthly = termlyMonthlyTarget(parsedFees, children);
   const subsidy = mmfFeeSubsidy(parsedFees, children);
   const termLump = (parsedFees * children) / 3;
@@ -66,7 +67,26 @@ export default function TermlyFeeSmoother() {
           Three lumpy termly bills become one flat monthly amount that earns while it waits.
         </p>
 
-        <p className="mt-4 text-sm font-medium text-[#4B4238]">Annual school fees (per child)</p>
+        <div className="mt-4 flex items-center justify-between">
+          <p className="text-sm font-medium text-[#4B4238]">School fees (per child)</p>
+          <div className="flex gap-1" role="group" aria-label="Fee period">
+            {([["Per year", false], ["Per term", true]] as const).map(([label, value]) => (
+              <button
+                key={label}
+                type="button"
+                onClick={() => { setPerTerm(value); handleInputsChanged(); }}
+                aria-pressed={perTerm === value}
+                className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
+                  perTerm === value
+                    ? "border-primary bg-primary text-white"
+                    : "border-[#E5E0D8] bg-white text-[#4B4238] hover:bg-[#F1ECE3]"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
         <div className="mt-2 flex flex-wrap gap-2">
           {FEE_PRESETS.map((preset) => (
             <button
@@ -74,6 +94,7 @@ export default function TermlyFeeSmoother() {
               type="button"
               onClick={() => {
                 setAnnualFees(String(preset));
+                setPerTerm(false);
                 handleInputsChanged();
               }}
               aria-pressed={annualFees === String(preset)}
@@ -102,7 +123,7 @@ export default function TermlyFeeSmoother() {
             className="h-12 w-full rounded-lg border border-[#E5E0D8] bg-white px-4 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
           />
           <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-sm text-[#4B4238]">
-            KES/yr
+            {perTerm ? "KES/term" : "KES/yr"}
           </span>
         </div>
 
