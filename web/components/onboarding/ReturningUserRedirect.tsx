@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { calculateFinancials } from "@/lib/budget";
 import {
@@ -13,18 +13,22 @@ import {
 } from "@/lib/storage";
 import type { ActionPlan, Profile } from "@/lib/types";
 
-/** Sends a returning visitor straight to their saved plan instead of the profile form. */
+/**
+ * Welcomes a returning visitor with a continue link instead of forcing a
+ * redirect — the homepage stays explorable (the bottom-nav Home tab must
+ * never bounce), while one tap resumes the journey.
+ */
 export default function ReturningUserRedirect() {
-  const router = useRouter();
+  const [destination, setDestination] = useState<{ href: string; label: string } | null>(null);
 
   useEffect(() => {
     async function check() {
       if (getStoredProfile()) {
-        router.replace("/plan");
+        setDestination({ href: "/plan", label: "Continue to my action plan" });
         return;
       }
       if (getStoredJourneyAnswers()) {
-        router.replace("/dashboard");
+        setDestination({ href: "/dashboard", label: "Continue to my dashboard" });
         return;
       }
 
@@ -67,11 +71,25 @@ export default function ReturningUserRedirect() {
         setStoredPlan(planRow.ai_recommendations as ActionPlan);
       }
 
-      router.replace("/plan");
+      setDestination({ href: "/plan", label: "Continue to my action plan" });
     }
 
     void check();
-  }, [router]);
+  }, []);
 
-  return null;
+  if (!destination) return null;
+
+  return (
+    <div className="mb-6 w-full max-w-md rounded-2xl border border-[#E5E0D8] bg-white p-4 text-center shadow-sm">
+      <p className="text-sm text-[#4B4238]">
+        <span aria-hidden="true">👋 </span>Welcome back — pick up where you left off.
+      </p>
+      <Link
+        href={destination.href}
+        className="mt-2 inline-flex h-10 items-center justify-center rounded-full bg-primary px-5 text-sm font-medium text-white transition-colors hover:bg-[#584a3e]"
+      >
+        {destination.label} →
+      </Link>
+    </div>
+  );
 }

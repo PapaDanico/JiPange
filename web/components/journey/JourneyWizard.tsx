@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   JOURNEY_QUESTIONS,
-  mapJourney,
   type AssetLocation,
   type JourneyAnswers,
 } from "@/lib/journey";
@@ -26,21 +26,16 @@ export default function JourneyWizard() {
 
   const question = JOURNEY_QUESTIONS[step];
 
-  async function finish(finalAnswers: JourneyAnswers) {
+  function finish(finalAnswers: JourneyAnswers) {
     setSubmitting(true);
     setStoredJourneyAnswers(finalAnswers);
-    try {
-      // The backend mapping engine is the source of truth; the local engine
-      // is an identical pure function, so a network failure never strands
-      // the user — the dashboard recomputes from stored answers either way.
-      await fetch("/api/journey-map", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(finalAnswers),
-      });
-    } catch {
-      mapJourney(finalAnswers);
-    }
+    // Fire-and-forget: the dashboard recomputes from stored answers with the
+    // identical pure engine, so the reveal moment never waits on the network.
+    fetch("/api/journey-map", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(finalAnswers),
+    }).catch(() => {});
     router.push("/dashboard");
   }
 
@@ -50,7 +45,7 @@ export default function JourneyWizard() {
     if (step < TOTAL_STEPS - 1) {
       setStep(step + 1);
     } else {
-      void finish(next as JourneyAnswers);
+      finish(next as JourneyAnswers);
     }
   }
 
@@ -167,6 +162,18 @@ export default function JourneyWizard() {
       {submitting && !question.multi && (
         <p className="mt-4 text-center text-sm text-[#4B4238]">Building your dashboard...</p>
       )}
+
+      <p className="mt-8 text-center text-xs text-[#6f6e69]">
+        Just exploring?{" "}
+        <Link href="/tools" className="font-medium text-primary underline">
+          Try the free calculators
+        </Link>{" "}
+        or{" "}
+        <Link href="/planners" className="font-medium text-primary underline">
+          plan a specific goal
+        </Link>
+        {" "}— no questions asked.
+      </p>
     </div>
   );
 }
