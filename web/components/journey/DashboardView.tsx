@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { mapJourney, type DashboardModel } from "@/lib/journey";
 import { getStoredJourneyAnswers } from "@/lib/storage";
 import DebtFreedomTracker from "./DebtFreedomTracker";
@@ -15,20 +14,51 @@ import YieldMatchmaker from "./YieldMatchmaker";
  * with the same pure engine the API uses — nothing is persisted server-side.
  */
 export default function DashboardView() {
-  const router = useRouter();
   const [model, setModel] = useState<DashboardModel | null>(null);
+  const [checked, setChecked] = useState(false);
 
   useEffect(() => {
     const answers = getStoredJourneyAnswers();
-    if (!answers) {
-      router.replace("/profile");
-      return;
-    }
-    setModel(mapJourney(answers));
-  }, [router]);
+    if (answers) setModel(mapJourney(answers));
+    setChecked(true);
+  }, []);
 
-  if (!model) {
+  if (!checked) {
     return <p className="text-center text-[#4B4238]">Building your dashboard...</p>;
+  }
+
+  // No answers yet: invite, don't shove — and keep every explore path open.
+  if (!model) {
+    return (
+      <div className="w-full max-w-md rounded-2xl bg-white p-6 text-center shadow-sm">
+        <p className="text-2xl" aria-hidden="true">
+          📊
+        </p>
+        <h2 className="mt-2 text-lg font-semibold text-primary">
+          Your dashboard is five taps away
+        </h2>
+        <p className="mt-1 text-sm text-[#4B4238]">
+          Answer five quick questions — anonymous, no typing — and we&apos;ll map your money to
+          the right Kenyan vehicles.
+        </p>
+        <Link
+          href="/profile"
+          className="mt-4 inline-flex h-11 items-center justify-center rounded-full bg-accent px-6 text-sm font-medium text-[#171717] transition-colors hover:bg-[#d6961f]"
+        >
+          Start the 90-second check →
+        </Link>
+        <p className="mt-4 text-xs text-[#6f6e69]">
+          Or explore freely:{" "}
+          <Link href="/tools" className="font-medium text-primary underline">
+            calculators
+          </Link>{" "}
+          ·{" "}
+          <Link href="/planners" className="font-medium text-primary underline">
+            goal planners
+          </Link>
+        </p>
+      </div>
+    );
   }
 
   const recovery = model.theme === "recovery";
