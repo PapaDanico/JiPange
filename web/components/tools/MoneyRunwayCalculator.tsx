@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { calculateMoneyRunwayMonths } from "@/lib/runway";
+import HowItWorks from "./HowItWorks";
 import NumberField from "./NumberField";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
@@ -83,6 +84,15 @@ export default function MoneyRunwayCalculator() {
           />
         </>
       )}
+
+      <HowItWorks
+        steps={[
+          "Enter everything you could access within days: M-Pesa, bank, and instant-withdrawal MMF balances.",
+          "Set your survival burn rate — rent, basic food, and core utilities only (use 0% return for a strict stress test).",
+          "The runway is how long you'd survive a job loss or cash-flow freeze at that burn rate.",
+          "Under 3 months: build the cushion first. Over 3 months: your surplus is free for long-term wealth builders.",
+        ]}
+      />
     </div>
   );
 }
