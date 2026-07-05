@@ -13,11 +13,12 @@ const pct = (rate: number) => `${parseFloat((rate * 100).toFixed(2))}%`;
 
 const TRUST_CHIPS = ["🕶️ 100% anonymous", "👆🏿 Tap-only, zero typing", "🆓 Free — no signup"];
 
-const STATS: { figure: string; label: string; detail: string; href: string; tone: "danger" | "success" }[] = [
+const STATS: { figure: string; label: string; detail: string; source: string; href: string; tone: "danger" | "success" }[] = [
   {
     figure: pct(ASSUMED_CURRENT_YIELD),
     label: "what the average bank savings account pays",
     detail: `Inflation runs at ${pct(CURRENT_INFLATION)} — money "safe" in the bank loses buying power every single day.`,
+    source: "CBK Banking Sector Report, 2026",
     href: "/tools/inflation-reality",
     tone: "danger",
   },
@@ -25,6 +26,7 @@ const STATS: { figure: string; label: string; detail: string; href: string; tone
     figure: pct(TARGET_MMF_YIELD),
     label: "Kenya's money-market growth baseline",
     detail: `The same shillings, moved to the right vehicle, earn +${YIELD_UPSIDE_POINTS} points more — automatically.`,
+    source: "CMA Collective Investment Schemes, July 2026",
     href: "/tools/investment-returns",
     tone: "success",
   },
@@ -32,6 +34,7 @@ const STATS: { figure: string; label: string; detail: string; href: string; tone
     figure: "≈400%",
     label: "Fuliza's true annualised cost",
     detail: "The overdraft that feels like KSh 25 a day is the most expensive credit in your life.",
+    source: "Safaricom tariff: KSh 6.75/day on KSh 600 (annualised)",
     href: "/tools/fuliza-cost",
     tone: "danger",
   },
@@ -123,6 +126,7 @@ export default function Home() {
               <p className="mt-3 text-xs font-medium text-primary underline group-hover:no-underline">
                 Run your numbers →
               </p>
+              <p className="mt-2 text-[10px] text-[#8A7B6E]">Source: {stat.source}</p>
             </Link>
           ))}
         </div>

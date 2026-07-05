@@ -215,8 +215,8 @@ export default function TakeHomePayCalculator() {
                 NSSF Year 3 (2025) vs Year 4 (2026)
               </p>
               <p className="mt-1 text-xs text-[#4B4238]">
-                The NSSF Act 2013&apos;s phased rollout raised the earnings limits again this
-                February — this shows how that change alone affects your take-home pay, holding
+                The NSSF Act 2013&apos;s phased rollout raised the earnings limits in early 2026
+                (Year 4) — this shows how that change alone affects your take-home pay, holding
                 your gross salary and any reliefs above constant.
               </p>
               <hr className="my-2 border-[#E5E0D8]" />
@@ -258,7 +258,7 @@ export default function TakeHomePayCalculator() {
           <div className="hidden print:block">
             <p className="mt-4 text-xs text-[#4B4238]">
               Estimate only, not a payslip or licensed financial advice — rates current as of
-              February 2026. Generated at jipangefinance.netlify.app/tools/take-home-pay
+              July 2026. Generated at jipangefinance.netlify.app/tools/take-home-pay
             </p>
           </div>
 
