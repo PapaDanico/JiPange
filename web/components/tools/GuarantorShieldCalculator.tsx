@@ -4,6 +4,7 @@ import { useState } from "react";
 import { SACCO_LEVERAGE_MULTIPLIER } from "@/lib/market-2026";
 import { formatKES } from "@/lib/budget";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
+import HowItWorks from "./HowItWorks";
 import NumberField from "./NumberField";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
@@ -51,6 +52,14 @@ export default function GuarantorShieldCalculator() {
           <ShareResultButton message={`🎯 *My Sacco Guarantor Shield*\n\nFree borrowing power: ${formatKES(available)}\nFrozen by guarantees: ${formatKES(frozen)}\n\nCheck yours → jipangefinance.netlify.app/tools/guarantor-shield`} />
         </>
       )}
+      <HowItWorks
+        steps={[
+          "Enter your total Sacco deposits, your own active loans, and everything you've signed as guarantor.",
+          "Guaranteed amounts freeze the matching deposits — they can't back your own borrowing until released.",
+          "Your true power = (free deposits × 3) minus current loans; the frozen figure is leverage locked away.",
+          "Above 50% exposure, request guarantor substitutions from the borrowers before applying for a big loan.",
+        ]}
+      />
     </div>
   );
 }
