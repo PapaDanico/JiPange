@@ -1,8 +1,8 @@
+import Image from "next/image";
 import Link from "next/link";
 import ResumeToast from "@/components/onboarding/ResumeToast";
 import ReturningUserRedirect from "@/components/onboarding/ReturningUserRedirect";
 import LandingInteractivity from "@/components/landing/LandingInteractivity";
-import ShieldSvg from "@/components/landing/ShieldSvg";
 import {
   ASSUMED_CURRENT_YIELD,
   CURRENT_INFLATION,
@@ -213,11 +213,15 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Right column — shield + teaser */}
+            {/* Right column — logo + teaser */}
             <div className="flex flex-col items-center gap-6 lg:items-start">
-              <ShieldSvg
-                id="shield-hero"
-                className="w-36 sm:w-44 drop-shadow-lg"
+              <Image
+                src="/logo-icon.webp"
+                alt="JiPange shield"
+                width={973}
+                height={833}
+                priority
+                className="w-44 sm:w-56 h-auto"
               />
               <div
                 data-reveal

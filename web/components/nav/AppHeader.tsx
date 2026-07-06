@@ -34,15 +34,15 @@ export default function AppHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-[#E5E0D8] bg-background/95 backdrop-blur print:hidden">
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4 sm:px-6">
-        <Link href="/" className="flex items-center gap-2" aria-label="JiPange home">
+        <Link href="/" className="flex items-center" aria-label="JiPange home">
           <Image
-            src="/logo-icon.webp"
-            alt=""
-            width={973}
-            height={833}
-            className="h-8 w-auto"
+            src="/logo-lockup.webp"
+            alt="JiPange"
+            width={1131}
+            height={609}
+            className="h-9 w-auto"
+            priority
           />
-          <span className="text-sm font-semibold text-primary">JiPange</span>
         </Link>
 
         <nav className="flex items-center gap-4" aria-label="Primary">
