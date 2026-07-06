@@ -13,6 +13,22 @@ export default function BudgetSplitPage() {
     <ToolLayout
       title="50/25/25 Budget Split Calculator"
       description="A simple 3-way split: 50% for daily living, 25% for a safety net, 25% for building wealth."
+      insights={[
+        {
+          icon: "⚠️",
+          tone: "caution",
+          stat: "71%",
+          label: "of Kenyans are in survival mode by the 3rd week of the month — spending without a plan means the month plans you.",
+          source: "FinAccess Household Survey 2024",
+        },
+        {
+          icon: "📊",
+          tone: "hopeful",
+          stat: "40% fewer",
+          label: "end-of-month shortfalls for people who follow a written budget for 6+ months. One plan, compounding results.",
+          source: "FSD Kenya Behavioural Research, 2024",
+        },
+      ]}
     >
       <BudgetSplitCalculator />
     </ToolLayout>

@@ -13,6 +13,22 @@ export default function SavingsGoalPage() {
     <ToolLayout
       title="Savings Goal Calculator"
       description="Enter a target amount and timeline to see how much to save each month."
+      insights={[
+        {
+          icon: "⚠️",
+          tone: "caution",
+          stat: "78%",
+          label: "of Kenyans have a financial goal in mind — but no written monthly plan to reach it. Goals without numbers stay wishes.",
+          source: "FinAccess Household Survey 2024",
+        },
+        {
+          icon: "🌱",
+          tone: "hopeful",
+          stat: "KSh 100,000+",
+          label: "is what KSh 2,000/month reaches in 3 years at 11% MMF — not KSh 72,000 flat. Compounding is the difference.",
+          source: "JiPange projection at 11% p.a.",
+        },
+      ]}
     >
       <SavingsGoalCalculator />
     </ToolLayout>

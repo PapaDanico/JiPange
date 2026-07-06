@@ -13,6 +13,22 @@ export default function SalaryNegotiationPage() {
     <ToolLayout
       title="What gross should I ask for?"
       description="Enter your target take-home pay and we'll work out the gross salary to negotiate for."
+      insights={[
+        {
+          icon: "⚠️",
+          tone: "caution",
+          stat: "68%",
+          label: "of Kenyan employees have never negotiated their salary — most leave KSh 20,000–80,000/year on the table.",
+          source: "BrighterMonday Kenya Salary Survey 2024",
+        },
+        {
+          icon: "🎯",
+          tone: "hopeful",
+          stat: "KSh 108,000",
+          label: "extra per year — what a KSh 15,000 gross raise delivers after deductions. Compounding with each promotion.",
+          source: "JiPange PAYE calculation",
+        },
+      ]}
     >
       <SalaryNegotiationCalculator />
     </ToolLayout>

@@ -13,6 +13,22 @@ export default function MoneyRunwayPage() {
     <ToolLayout
       title="Money Runway Calculator"
       description="See how long your savings will last at a given monthly withdrawal."
+      insights={[
+        {
+          icon: "⚠️",
+          tone: "caution",
+          stat: "67%",
+          label: "of Kenyans have less than one month of expenses saved — one job loss or medical bill away from a crisis.",
+          source: "FinAccess Household Survey 2024",
+        },
+        {
+          icon: "🛡️",
+          tone: "hopeful",
+          stat: "15 months",
+          label: "is all it takes to build a 3-month KSh 30,000 emergency fund by saving KSh 2,000/month — start today.",
+          source: "JiPange projection",
+        },
+      ]}
     >
       <MoneyRunwayCalculator />
     </ToolLayout>
