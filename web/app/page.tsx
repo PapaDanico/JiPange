@@ -1,207 +1,622 @@
-import Image from "next/image";
 import Link from "next/link";
 import ResumeToast from "@/components/onboarding/ResumeToast";
 import ReturningUserRedirect from "@/components/onboarding/ReturningUserRedirect";
+import LandingInteractivity from "@/components/landing/LandingInteractivity";
+import ShieldSvg from "@/components/landing/ShieldSvg";
 import {
   ASSUMED_CURRENT_YIELD,
   CURRENT_INFLATION,
   TARGET_MMF_YIELD,
-  YIELD_UPSIDE_POINTS,
 } from "@/lib/journey";
+import {
+  FINACCESS_LITERACY_FAIL_PCT,
+  FINACCESS_FORMAL_INCLUSION_PCT,
+  FINACCESS_LITERACY_PASS_PCT,
+  RBA_NO_PENSION_PCT,
+  INFORMAL_WORKERS_MILLIONS,
+  INFORMAL_PENSION_COVERAGE_PCT,
+  FULIZA_USERS_MILLIONS,
+} from "@/lib/kenya-stats";
 
 const pct = (rate: number) => `${parseFloat((rate * 100).toFixed(2))}%`;
 
-const TRUST_CHIPS = ["🕶️ 100% anonymous", "👆🏿 Tap-only, zero typing", "🆓 Free — no signup"];
+const TRUST_CHIPS = [
+  "🕶️ 100% anonymous",
+  "👆🏿 No salary questions",
+  "🆓 Free — no signup",
+  "🇰🇪 Built for Kenya",
+];
 
-const STATS: { figure: string; label: string; detail: string; source: string; href: string; tone: "danger" | "success" }[] = [
+const REALITY_STATS: {
+  figure: string;
+  dataCount: string | number;
+  dataSuffix: string;
+  decimals?: string;
+  color: string;
+  label: string;
+  detail: string;
+  source: string;
+  cta: string;
+  href: string;
+}[] = [
   {
     figure: pct(ASSUMED_CURRENT_YIELD),
-    label: "what the average bank savings account pays",
-    detail: `Inflation runs at ${pct(CURRENT_INFLATION)} — money "safe" in the bank loses buying power every single day.`,
+    dataCount: (ASSUMED_CURRENT_YIELD * 100).toFixed(2),
+    dataSuffix: "%",
+    decimals: "2",
+    color: "text-[#F4A09A]",
+    label: "Average bank savings rate",
+    detail: `Inflation runs at ${pct(CURRENT_INFLATION)}. Money "safe" in a bank account loses real purchasing power every single day — silently, automatically.`,
     source: "CBK Banking Sector Report, 2026",
+    cta: "Run the inflation maths →",
     href: "/tools/inflation-reality",
-    tone: "danger",
   },
   {
     figure: pct(TARGET_MMF_YIELD),
-    label: "Kenya's money-market growth baseline",
-    detail: `The same shillings, moved to the right vehicle, earn +${YIELD_UPSIDE_POINTS} points more — automatically.`,
+    dataCount: (TARGET_MMF_YIELD * 100).toFixed(1),
+    dataSuffix: "%",
+    color: "text-[#86CBA5]",
+    label: "Kenya MMF baseline return",
+    detail: `Same shillings, right vehicle. Yet KSh 5 trillion sits in bank accounts — only KSh 370 billion (7%) is in money market funds.`,
     source: "CMA Collective Investment Schemes, July 2026",
+    cta: "See the compounding →",
     href: "/tools/investment-returns",
-    tone: "success",
   },
   {
-    figure: "≈400%",
-    label: "Fuliza's true annualised cost",
-    detail: "The overdraft that feels like KSh 25 a day is the most expensive credit in your life.",
-    source: "Safaricom tariff: KSh 6.75/day on KSh 600 (annualised)",
+    figure: `${FULIZA_USERS_MILLIONS}M`,
+    dataCount: FULIZA_USERS_MILLIONS,
+    dataSuffix: "M",
+    color: "text-[#F0C060]",
+    label: "Kenyans who used Fuliza in a year",
+    detail:
+      "KSh 1.46 trillion borrowed — mostly for food, rent and school fees. Average ticket: KSh 254. This is a planning gap, not a cash-flow accident.",
+    source: "Safaricom FY2026 · Nation Africa",
+    cta: "Calculate Fuliza's true cost →",
     href: "/tools/fuliza-cost",
-    tone: "danger",
+  },
+];
+
+const RESEARCH_CARDS = [
+  {
+    figure: `${RBA_NO_PENSION_PCT}%`,
+    dataCount: RBA_NO_PENSION_PCT,
+    dataSuffix: "%",
+    tone: "danger" as const,
+    label: "of Kenya's workforce has no active pension contribution",
+    body: "Only 19% of working Kenyans actively contribute to a pension scheme. Of those who do and eventually retire, 65% are dissatisfied with what they receive — despite saving for 30–40 years.",
+    cite: "Retirement Benefits Authority Pensioners Survey 2024 · RBA Statistical Digest 2024",
+  },
+  {
+    figure: `${INFORMAL_PENSION_COVERAGE_PCT}%`,
+    dataCount: INFORMAL_PENSION_COVERAGE_PCT,
+    dataSuffix: "%",
+    tone: "danger" as const,
+    label: `pension coverage rate for Kenya's ${INFORMAL_WORKERS_MILLIONS}M informal workers`,
+    body: "Side hustles, chamas, small businesses — 18.1 million Kenyans in the informal sector are building their livelihoods with almost no formal retirement safety net.",
+    cite: "Kenya Pensions Paradox — Pension Policy International · KIPPRA 2024",
+  },
+  {
+    figure: `${FINACCESS_FORMAL_INCLUSION_PCT}%`,
+    dataCount: FINACCESS_FORMAL_INCLUSION_PCT,
+    dataSuffix: "%",
+    tone: "success" as const,
+    label: "of Kenyans have access to formal financial services",
+    body: "Financial inclusion has never been higher — M-Pesa has driven gender parity to within 1.6 percentage points. Access is not the problem. What Kenyans do with that access is where the gap persists.",
+    cite: "FinAccess Household Survey 2024 — CBK / FSD Kenya / KNBS",
+  },
+  {
+    figure: `${FINACCESS_LITERACY_PASS_PCT}%`,
+    dataCount: FINACCESS_LITERACY_PASS_PCT,
+    dataSuffix: "%",
+    tone: "success" as const,
+    label: "of Kenyans passed all 3 financial literacy questions",
+    body: `Questions covered inflation, compound interest, and risk. ${FINACCESS_LITERACY_FAIL_PCT}% could not pass — meaning the majority are making daily financial decisions without the tools to understand the consequences. JiPange is the missing tool.`,
+    cite: "FinAccess Household Survey 2024 — CBK / FSD Kenya / KNBS",
   },
 ];
 
 const STEPS = [
-  { emoji: "👆🏿", title: "Tap 5 answers", text: "90 seconds, anonymous, zero typing — no salary figures needed." },
-  { emoji: "🔍", title: "See your Pesa Picture", text: "Your survival status, where inflation is eating your savings, and the silent leaks." },
-  { emoji: "🗺️", title: "Get your action plan", text: "The exact vehicle, monthly milestone, and even the paybill to execute it." },
+  {
+    num: "1",
+    title: "Tap 5 answers",
+    body: "Anonymous, zero typing. Your life stage, income zone, and one financial priority — that's all we need to build something specific to you. 90 seconds, on any phone.",
+  },
+  {
+    num: "2",
+    title: "See your Pesa Picture",
+    body: "Your survival runway, where inflation is eroding your money, your real PAYE breakdown, and the exact cost of every silent leak — in one honest, Kenya-specific screen.",
+  },
+  {
+    num: "3",
+    title: "Get your action plan",
+    body: "The exact vehicle — MMF, Sacco, DhowCSD T-Bill — the monthly milestone, and the M-Pesa paybill to start today. Not next month. Today.",
+  },
 ];
 
 const TOOLS = [
-  { href: "/tools/take-home-pay", emoji: "💰", name: "Take-Home Pay", hook: "Your exact net after PAYE, SHIF & Housing Levy" },
-  { href: "/tools/fuliza-cost", emoji: "📱", name: "True Cost of Fuliza", hook: "What the overdraft really charges you" },
+  { href: "/tools/take-home-pay", emoji: "💰", name: "Take-Home Pay", hook: "Exact net: PAYE, NSSF, SHIF & Housing Levy" },
+  { href: "/tools/investment-returns", emoji: "📈", name: "Investment Returns", hook: "MMF vs bank vs T-Bill — see the compounding gap" },
+  { href: "/tools/money-runway", emoji: "⏳", name: "Money Runway", hook: "How long your savings survive a job loss" },
+  { href: "/tools/guarantor-shield", emoji: "🛡️", name: "Sacco Guarantor Shield", hook: "Your real unencumbered borrowing power" },
   { href: "/tools/kplc-optimizer", emoji: "⚡", name: "KPLC Token Optimizer", hook: "Free units by splitting your token buys" },
-  { href: "/tools/fire-number", emoji: "🔥", name: "FIRE Number", hook: "Your Kenya-localized retirement target" },
+  { href: "/tools/fuliza-cost", emoji: "📱", name: "True Cost of Fuliza", hook: "What KSh 6.75/day really costs you annually" },
+];
+
+const PLANNERS = [
+  { href: "/planners/education", emoji: "🎓", label: "School fees smoother" },
+  { href: "/planners/home", emoji: "🏠", label: "Plot & Mjengo" },
+  { href: "/planners/emergency", emoji: "🛡️", label: "Emergency fund" },
+  { href: "/planners/retirement", emoji: "🌅", label: "Retirement milestone" },
+  { href: "/planners/hustle", emoji: "💼", label: "Hustle income" },
+  { href: "/planners/business", emoji: "🚀", label: "Business capital" },
 ];
 
 export default function Home() {
   return (
-    <div className="flex flex-1 flex-col items-center px-6 py-12 sm:py-16">
+    <>
       <ResumeToast />
       <ReturningUserRedirect />
+      <LandingInteractivity />
 
       {/* ── Hero ── */}
-      <section className="flex flex-col items-center text-center">
-        <Image
-          src="/logo-lockup.webp"
-          alt="JiPange"
-          width={1131}
-          height={609}
-          priority
-          className="h-auto w-56 sm:w-64"
-        />
-        <h1 className="mt-4 max-w-lg text-2xl font-semibold leading-snug text-primary sm:text-3xl">
-          Jipange kabla pesa ikupange.
-        </h1>
-        <p className="mt-2 max-w-md text-base text-[#4B4238] sm:text-lg">
-          The financial plan every Kenyan deserves — built for how we actually live: M-Pesa,
-          Saccos, chamas, side hustles and all.
-        </p>
-        <div className="mt-6 flex flex-col items-center gap-3 sm:flex-row">
-          <Link
-            href="/profile"
-            className="inline-flex h-12 min-w-[220px] items-center justify-center rounded-full bg-accent px-6 text-base font-medium text-[#171717] transition-colors hover:bg-[#d6961f]"
-          >
-            Start my plan — 90 seconds
-          </Link>
-          <Link
-            href="/tools"
-            className="inline-flex h-12 min-w-[220px] items-center justify-center rounded-full border border-primary px-6 text-base font-medium text-primary transition-colors hover:bg-primary hover:text-white"
-          >
-            Explore free calculators
-          </Link>
+      <section className="bg-white border-b border-[#E5E0D8] py-14 sm:py-24">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6">
+          <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:items-center lg:gap-16">
+
+            {/* Left column */}
+            <div>
+              <p className="mb-5 inline-block rounded-full border border-[#F0D08A] bg-[#FFF8E8] px-3 py-1.5 text-xs font-bold uppercase tracking-widest text-accent">
+                Free · Anonymous · Built for Kenya 🇰🇪
+              </p>
+              <p className="mb-2 text-base italic font-medium text-[#7A6B5E]">
+                Jipange kabla pesa ikupange.
+              </p>
+              <h1
+                className="mb-5 text-[2.25rem] font-black leading-tight tracking-tight text-primary sm:text-5xl"
+                style={{ textWrap: "balance" } as React.CSSProperties}
+              >
+                Your money is working hard.{" "}
+                <span className="block">
+                  Just not{" "}
+                  <em className="not-italic text-accent">for you.</em>
+                </span>
+              </h1>
+              <p className="mb-8 max-w-prose text-base leading-relaxed text-[#4B4238]">
+                Inflation quietly erodes your savings. Fuliza bridges the gap for{" "}
+                {FULIZA_USERS_MILLIONS} million Kenyans borrowing for food and rent. And{" "}
+                {RBA_NO_PENSION_PCT}% of Kenya&apos;s workforce has no pension plan. JiPange
+                changes that — one honest calculation at a time.
+              </p>
+              <div className="mb-6 flex flex-wrap gap-3">
+                <Link
+                  href="/profile"
+                  className="inline-flex h-12 items-center justify-center rounded-full bg-accent px-6 text-base font-bold text-[#1A0D06] shadow-[0_2px_14px_rgba(232,160,32,0.30)] transition-colors hover:bg-[#d6961f]"
+                >
+                  Start my plan — 90 seconds ›
+                </Link>
+                <Link
+                  href="/tools"
+                  className="inline-flex h-12 items-center justify-center rounded-full border-[1.5px] border-[#E5E0D8] bg-[#F1ECE3] px-6 text-base font-semibold text-primary transition-colors hover:border-primary hover:bg-[#E6D9CA]"
+                >
+                  Explore calculators
+                </Link>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {TRUST_CHIPS.map((chip) => (
+                  <span
+                    key={chip}
+                    className="rounded-full border border-[#E5E0D8] bg-[#F1ECE3] px-3 py-1.5 text-[0.8125rem] font-medium text-[#7A6B5E]"
+                  >
+                    {chip}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Right column — shield + teaser */}
+            <div className="flex flex-col items-center gap-6 lg:items-start">
+              <ShieldSvg
+                id="shield-hero"
+                className="w-36 sm:w-44 drop-shadow-lg"
+              />
+              <div
+                data-reveal
+                className="w-full max-w-xs rounded-2xl border border-[#E5E0D8] bg-[#F1ECE3] px-6 py-5 text-center"
+              >
+                <p
+                  className="text-4xl font-black tracking-tighter text-[#9B2C1E]"
+                  style={{ fontVariantNumeric: "tabular-nums" }}
+                  data-count={FINACCESS_LITERACY_FAIL_PCT}
+                  data-suffix="%"
+                  data-decimals="1"
+                >
+                  {FINACCESS_LITERACY_FAIL_PCT}%
+                </p>
+                <p className="mt-1.5 text-[0.8125rem] text-[#7A6B5E]">
+                  of Kenyans cannot pass a basic financial literacy test
+                  <br />
+                  <span className="mt-1 block text-[0.7rem] text-[#9A8B80]">
+                    FinAccess Household Survey, 2024
+                  </span>
+                </p>
+              </div>
+            </div>
+
+          </div>
         </div>
-        <ul className="mt-5 flex flex-wrap items-center justify-center gap-2">
-          {TRUST_CHIPS.map((chip) => (
-            <li
-              key={chip}
-              className="rounded-full border border-[#E5E0D8] bg-white px-3 py-1.5 text-xs font-medium text-[#4B4238]"
-            >
-              {chip}
-            </li>
-          ))}
-        </ul>
       </section>
 
-      {/* ── The leak: why this matters right now ── */}
-      <section aria-label="Why it matters" className="mt-14 w-full max-w-4xl">
-        <h2 className="text-center text-lg font-semibold text-primary">
-          Your money is leaking <em>right now</em> — here&apos;s the maths
-        </h2>
-        <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-3">
-          {STATS.map((stat) => (
-            <Link
-              key={stat.figure}
-              href={stat.href}
-              className="group rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm transition-shadow hover:shadow-md"
+      {/* ── Reality band ── */}
+      <section className="bg-[#3A2E26] py-14 sm:py-20">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6">
+          <div data-reveal className="mb-10 text-center">
+            <p className="mb-2 text-[0.6875rem] font-bold uppercase tracking-[0.16em] text-[rgba(241,236,227,0.45)]">
+              The Kenya money gap — in three numbers
+            </p>
+            <h2 className="text-xl font-extrabold tracking-tight text-[rgba(241,236,227,0.9)] sm:text-2xl" style={{ textWrap: "balance" } as React.CSSProperties}>
+              What the data actually says about how Kenyans manage money
+            </h2>
+          </div>
+
+          <div
+            data-reveal
+            className="overflow-hidden rounded-2xl border border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.08)] grid grid-cols-1 sm:grid-cols-3 gap-px"
+          >
+            {REALITY_STATS.map((stat) => (
+              <Link key={stat.label} href={stat.href} className="group bg-[#3A2E26] p-6 sm:p-8 flex flex-col gap-1.5 hover:bg-[#4A3A2E] transition-colors">
+                <p
+                  className={`text-5xl sm:text-6xl font-black leading-none tracking-tighter ${stat.color}`}
+                  style={{ fontVariantNumeric: "tabular-nums" }}
+                  data-count={stat.dataCount}
+                  data-suffix={stat.dataSuffix}
+                  data-decimals={stat.decimals}
+                >
+                  {stat.figure}
+                </p>
+                <p className="text-[0.9375rem] font-bold leading-snug text-[rgba(241,236,227,0.9)]">
+                  {stat.label}
+                </p>
+                <p className="mt-1 text-[0.8125rem] leading-relaxed text-[rgba(241,236,227,0.5)]">
+                  {stat.detail}
+                </p>
+                <p className="mt-auto border-t border-[rgba(255,255,255,0.07)] pt-3 text-[0.6875rem] text-[rgba(241,236,227,0.3)]">
+                  {stat.source}
+                </p>
+                <span className="text-[0.8125rem] font-semibold text-accent group-hover:opacity-80">
+                  {stat.cta}
+                </span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Research findings ── */}
+      <section className="bg-[#F1ECE3] py-14 sm:py-20">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6">
+          <div data-reveal className="mb-6">
+            <p className="mb-1.5 text-xs font-bold uppercase tracking-widest text-accent">
+              Research findings
+            </p>
+            <h2
+              className="text-2xl font-extrabold tracking-tight text-primary sm:text-3xl"
+              style={{ textWrap: "balance" } as React.CSSProperties}
             >
-              <p
-                className={`text-3xl font-semibold ${
-                  stat.tone === "danger" ? "text-danger" : "text-success"
-                }`}
+              The problem is structural, not personal
+            </h2>
+            <p className="mt-2 max-w-prose text-[0.9375rem] text-[#4B4238]">
+              These are not individual failures. They are system-wide gaps that JiPange is designed
+              to help you navigate.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            {RESEARCH_CARDS.map((card, i) => (
+              <div
+                key={card.label}
+                data-reveal
+                data-delay={i % 2 === 1 ? "1" : undefined}
+                className="rounded-2xl border border-[#E5E0D8] bg-white p-6 shadow-sm"
               >
-                {stat.figure}
+                <p
+                  className={`text-4xl font-black leading-none tracking-tighter ${
+                    card.tone === "danger" ? "text-[#9B2C1E]" : "text-[#2b4a2b]"
+                  }`}
+                  style={{ fontVariantNumeric: "tabular-nums" }}
+                  data-count={card.dataCount}
+                  data-suffix={card.dataSuffix}
+                >
+                  {card.figure}
+                </p>
+                <p className="mt-2 text-[0.9375rem] font-bold text-primary">{card.label}</p>
+                <p className="mt-1.5 text-[0.875rem] leading-relaxed text-[#7A6B5E]">{card.body}</p>
+                <p className="mt-3 border-t border-[#E5E0D8] pt-3 text-[0.6875rem] italic text-[#7A6B5E]">
+                  {card.cite}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Narrative ── */}
+      <section className="border-y border-[#E5E0D8] bg-white py-14 sm:py-20">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6">
+          <div className="grid grid-cols-1 gap-10 lg:grid-cols-[5fr_4fr] lg:items-start lg:gap-16">
+
+            {/* Left — pull quote + body */}
+            <div>
+              <p
+                data-reveal
+                className="mb-5 text-2xl font-extrabold leading-tight tracking-tight text-primary sm:text-3xl"
+                style={{ textWrap: "balance" } as React.CSSProperties}
+              >
+                &ldquo;Most Kenyans aren&apos;t broke —<br />
+                they&apos;re <em className="not-italic text-accent">misallocated.</em>
+                <br />
+                The money is there. The plan is missing.&rdquo;
               </p>
-              <p className="mt-1 text-sm font-medium text-primary">{stat.label}</p>
-              <p className="mt-2 text-xs text-[#4B4238]">{stat.detail}</p>
-              <p className="mt-3 text-xs font-medium text-primary underline group-hover:no-underline">
-                Run your numbers →
+              <p data-reveal data-delay="1" className="mb-4 text-[0.9375rem] leading-loose text-[#4B4238]">
+                You earn a salary. PAYE, NSSF, SHIF and Housing Levy leave before you touch it.
+                Rent on the first. School fees in January, April, September. Fuliza at the end of
+                the month when the calculation doesn&apos;t balance. A Sacco loan you&apos;re
+                guaranteeing for three colleagues. Your financial life is genuinely complex — and it
+                was never designed with a Kenya-specific plan in mind.
               </p>
-              <p className="mt-2 text-[10px] text-[#8A7B6E]">Source: {stat.source}</p>
-            </Link>
-          ))}
+              <p data-reveal data-delay="2" className="mb-5 text-[0.9375rem] leading-loose text-[#4B4238]">
+                JiPange is the only calculator suite built specifically for this reality. Every
+                number is grounded in Kenya&apos;s actual tax bands, real MMF yields, the NSSF Act
+                2013 phased rollout, SHIF contributions, and Sacco mechanics — not a US retirement
+                spreadsheet with a KES sign dropped in.
+              </p>
+              <p data-reveal data-delay="2" className="text-[0.9375rem] leading-loose text-[#4B4238]">
+                <strong className="text-primary">No black box. No selling. No accounts.</strong>
+                <br />
+                JiPange shows you the maths, names the vehicle, and hands you the M-Pesa paybill.
+                The rest is yours.
+              </p>
+            </div>
+
+            {/* Right — Fuliza + MMF cards */}
+            <div className="flex flex-col gap-4">
+              <div
+                data-reveal
+                className="rounded-2xl border border-[#F5C8C4] bg-[#FBEAEA] p-6"
+              >
+                <p className="mb-3 text-xs font-bold uppercase tracking-widest text-[#9B2C1E]">
+                  ⚠️ Fuliza reality check
+                </p>
+                <p
+                  className="text-4xl font-black leading-none tracking-tighter text-[#9B2C1E]"
+                  style={{ fontVariantNumeric: "tabular-nums" }}
+                >
+                  ≈400%
+                </p>
+                <p className="mt-1.5 mb-3 text-[0.875rem] font-semibold text-[#4B4238]">
+                  Real annualised cost of Fuliza
+                </p>
+                <p className="text-[0.8125rem] leading-relaxed text-[#7A6B5E]">
+                  KSh 6.75/day on KSh 600 feels like loose change. Annualised, it&apos;s the most
+                  expensive credit product most Kenyans ever use — more than bank overdrafts, more
+                  than credit cards. Kenyans borrowed KSh 1.46 trillion through Fuliza in the year
+                  to March 2026.
+                </p>
+                <p className="mt-3 text-[0.6875rem] italic text-[#9B2C1E]">
+                  Safaricom FY2026 · Techweez · Nation Africa
+                </p>
+              </div>
+
+              <div
+                data-reveal
+                data-delay="1"
+                className="rounded-2xl border border-[#C5E8CC] bg-[#E9F5EC] p-6"
+              >
+                <p className="mb-3 text-xs font-bold uppercase tracking-widest text-[#2b4a2b]">
+                  💡 The opportunity
+                </p>
+                <p
+                  className="text-4xl font-black leading-none tracking-tighter text-[#2b4a2b]"
+                  style={{ fontVariantNumeric: "tabular-nums" }}
+                >
+                  KSh 4.6T
+                </p>
+                <p className="mt-1.5 mb-3 text-[0.875rem] font-semibold text-[#4B4238]">
+                  in bank accounts earning below inflation
+                </p>
+                <p className="text-[0.8125rem] leading-relaxed text-[#7A6B5E]">
+                  Of KSh 5 trillion in Kenyan bank savings, only KSh 370 billion is in money market
+                  funds — earning 9–12% vs. bank rates of {pct(ASSUMED_CURRENT_YIELD)}. The
+                  difference at KSh 100,000 over 5 years is over KSh 50,000 earned or lost.
+                </p>
+                <p className="mt-3 text-[0.6875rem] italic text-[#2b4a2b]">
+                  CMA 2026 · Business Daily Africa
+                </p>
+              </div>
+            </div>
+
+          </div>
         </div>
       </section>
 
       {/* ── How it works ── */}
-      <section aria-label="How it works" className="mt-14 w-full max-w-4xl">
-        <h2 className="text-center text-lg font-semibold text-primary">
-          From &quot;pesa inaisha tu&quot; to a plan — in three steps
-        </h2>
-        <ol className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-3">
-          {STEPS.map((step, index) => (
-            <li key={step.title} className="rounded-2xl bg-white p-5 shadow-sm">
-              <p className="text-2xl" aria-hidden="true">
-                {step.emoji}
-              </p>
-              <p className="mt-2 text-sm font-semibold text-primary">
-                {index + 1}. {step.title}
-              </p>
-              <p className="mt-1 text-sm text-[#4B4238]">{step.text}</p>
-            </li>
-          ))}
-        </ol>
+      <section className="bg-[#F1ECE3] py-14 sm:py-20">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6">
+          <div className="mb-8">
+            <p className="mb-1.5 text-xs font-bold uppercase tracking-widest text-accent">
+              The process
+            </p>
+            <h2
+              className="text-2xl font-extrabold tracking-tight text-primary sm:text-3xl"
+              style={{ textWrap: "balance" } as React.CSSProperties}
+            >
+              From &ldquo;pesa inaisha&rdquo; to a plan — in three steps
+            </h2>
+            <p className="mt-2 max-w-prose text-[0.9375rem] text-[#4B4238]">
+              No spreadsheets. No financial jargon. No signup. Just the honest picture and the next
+              move.
+            </p>
+          </div>
+
+          <ol className="grid grid-cols-1 gap-4 sm:grid-cols-3 list-none">
+            {STEPS.map((step, i) => (
+              <li
+                key={step.num}
+                data-reveal
+                data-delay={i > 0 ? String(i) : undefined}
+                className="rounded-2xl border border-[#E5E0D8] bg-white p-7"
+              >
+                <div className="mb-4 flex h-9 w-9 items-center justify-center rounded-full bg-accent text-sm font-black text-[#1A0D06]" aria-hidden="true">
+                  {step.num}
+                </div>
+                <h3 className="mb-1.5 text-base font-extrabold text-primary">{step.title}</h3>
+                <p className="text-sm leading-relaxed text-[#4B4238]">{step.body}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
       </section>
 
       {/* ── Popular tools ── */}
-      <section aria-label="Popular calculators" className="mt-14 w-full max-w-4xl">
-        <div className="flex items-baseline justify-between">
-          <h2 className="text-lg font-semibold text-primary">Start with a quick win</h2>
-          <Link href="/tools" className="text-sm font-medium text-primary underline">
-            All 18 calculators →
-          </Link>
-        </div>
-        <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
-          {TOOLS.map((tool) => (
+      <section className="border-t border-[#E5E0D8] bg-white py-14 sm:py-20">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6">
+          <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <p className="mb-1 text-xs font-bold uppercase tracking-widest text-accent">
+                Self-serve calculators
+              </p>
+              <h2 className="text-2xl font-extrabold tracking-tight text-primary">
+                Start with a quick win
+              </h2>
+            </div>
             <Link
-              key={tool.href}
-              href={tool.href}
-              className="flex items-center gap-3 rounded-2xl border border-[#E5E0D8] bg-white p-4 transition-colors hover:bg-[#F1ECE3]"
+              href="/tools"
+              className="text-sm font-semibold text-primary underline underline-offset-4 hover:text-accent"
             >
-              <span className="text-2xl" aria-hidden="true">
-                {tool.emoji}
-              </span>
-              <span>
-                <span className="block text-sm font-semibold text-primary">{tool.name}</span>
-                <span className="block text-xs text-[#4B4238]">{tool.hook}</span>
-              </span>
+              All 18 calculators →
             </Link>
-          ))}
+          </div>
+
+          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+            {TOOLS.map((tool, i) => (
+              <Link
+                key={tool.href}
+                href={tool.href}
+                data-reveal
+                data-delay={i % 2 === 1 ? "1" : undefined}
+                className="group flex items-center gap-3.5 rounded-xl border border-[#E5E0D8] bg-[#F1ECE3] p-4 transition-all hover:-translate-y-0.5 hover:border-accent hover:shadow-[0_3px_12px_rgba(232,160,32,0.12)]"
+              >
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-[#E5E0D8] bg-white text-lg">
+                  {tool.emoji}
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[0.9rem] font-bold text-primary">{tool.name}</p>
+                  <p className="text-[0.8rem] text-[#7A6B5E]">{tool.hook}</p>
+                </div>
+                <span className="ml-auto shrink-0 text-[#E5E0D8] transition-colors group-hover:text-accent">
+                  ›
+                </span>
+              </Link>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* ── Final CTA band ── */}
-      <section
-        aria-label="Get started"
-        className="mt-14 w-full max-w-4xl rounded-3xl bg-primary p-8 text-center text-white"
-      >
-        <h2 className="text-xl font-semibold">Jipange kabla pesa ikupange 😅</h2>
-        <p className="mx-auto mt-2 max-w-md text-sm text-[#F1ECE3]">
-          Five taps. No signup, no salary questions, nothing stored on our servers. Just your
-          money, mapped.
-        </p>
-        <Link
-          href="/profile"
-          className="mt-5 inline-flex h-12 items-center justify-center rounded-full bg-accent px-8 text-base font-medium text-[#171717] transition-colors hover:bg-[#d6961f]"
-        >
-          Start the 90-second check →
-        </Link>
-        <p className="mt-4 text-xs text-[#F1ECE3]">
-          Prefer a specific goal?{" "}
-          <Link href="/planners" className="font-medium text-white underline">
-            Education, home, business & retirement planners →
-          </Link>
-        </p>
+      {/* ── Goal planners ── */}
+      <section className="border-t border-[#E5E0D8] bg-[#F1ECE3] py-14 sm:py-20">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6">
+          <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <p className="mb-1.5 text-xs font-bold uppercase tracking-widest text-accent">
+                Goal planners
+              </p>
+              <h2 className="text-2xl font-extrabold tracking-tight text-primary sm:text-3xl">
+                Working toward something specific?
+              </h2>
+            </div>
+            <Link
+              href="/planners"
+              className="text-sm font-semibold text-primary underline underline-offset-4 hover:text-accent"
+            >
+              All 6 planners →
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:items-start">
+            <div data-reveal className="space-y-3 text-[0.9375rem] leading-loose text-[#4B4238]">
+              <p>
+                Six planners that reverse-engineer exactly what you need to do{" "}
+                <strong className="text-primary">this month</strong> to hit your goal — whether
+                it&apos;s school fees next term, a plot, or a retirement that doesn&apos;t
+                disappoint.
+              </p>
+              <p>
+                Each planner accounts for Kenya inflation, Sacco mechanics, and the actual savings
+                vehicles available to you — not a generic compound-interest graph built for a
+                different country.
+              </p>
+            </div>
+
+            <div data-reveal data-delay="1" className="flex flex-wrap gap-2.5">
+              {PLANNERS.map((planner) => (
+                <Link
+                  key={planner.href}
+                  href={planner.href}
+                  className="inline-flex items-center gap-1.5 rounded-full border-[1.5px] border-[#E5E0D8] bg-white px-4 py-2.5 text-sm font-semibold text-[#4B4238] transition-colors hover:border-primary hover:text-primary"
+                >
+                  <span>{planner.emoji}</span>
+                  {planner.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
       </section>
-    </div>
+
+      {/* ── CTA band ── */}
+      <section className="bg-primary py-16 sm:py-24">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 text-center">
+          <div data-reveal>
+            <h2
+              className="mb-3 text-3xl font-black leading-tight tracking-tight text-[#F1ECE3] sm:text-4xl"
+              style={{ textWrap: "balance" } as React.CSSProperties}
+            >
+              Your honest Pesa Picture.{" "}
+              <span className="text-accent">90 seconds away.</span>
+            </h2>
+            <p className="mx-auto mb-8 max-w-md text-base leading-relaxed text-[rgba(241,236,227,0.7)]">
+              No black box. No selling. No accounts. Just the maths, the vehicle, and the paybill to
+              start. The rest is yours.
+            </p>
+            <Link
+              href="/profile"
+              className="inline-flex h-14 items-center justify-center rounded-full bg-accent px-10 text-base font-extrabold text-[#1A0D06] shadow-[0_4px_18px_rgba(232,160,32,0.35)] transition-all hover:bg-[#d6961f] hover:-translate-y-0.5"
+            >
+              Start my plan — it&apos;s free ›
+            </Link>
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+              {["🕶️ Anonymous", "🆓 No signup", "🇰🇪 PAYE · SHIF · NSSF accurate", "⚡ Works on any phone"].map(
+                (chip) => (
+                  <span
+                    key={chip}
+                    className="rounded-full border border-[rgba(255,255,255,0.12)] bg-[rgba(255,255,255,0.07)] px-3 py-1.5 text-[0.8125rem] text-[rgba(241,236,227,0.55)]"
+                  >
+                    {chip}
+                  </span>
+                )
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Sources footnote ── */}
+      <div className="bg-primary border-t border-[rgba(255,255,255,0.1)] px-4 py-4 text-center">
+        <p className="text-[0.6875rem] text-[rgba(241,236,227,0.28)]">
+          Sources: FinAccess Household Survey 2024 (CBK/FSD Kenya/KNBS) · RBA Pensioners Survey
+          2024 · CMA Collective Investment Schemes, July 2026 · Safaricom FY2026 Annual Report ·
+          Pension Policy International/KIPPRA 2024. Rates current July 2026.
+        </p>
+      </div>
+    </>
   );
 }
