@@ -13,6 +13,22 @@ export default function FireNumberPage() {
     <ToolLayout
       title="FIRE Number Calculator"
       description="Find your Financial Independence number and how many years to reach it."
+      insights={[
+        {
+          icon: "⚠️",
+          tone: "caution",
+          stat: "81%",
+          label: "of Kenya's workforce contributes nothing to a pension — retirement will arrive whether they plan for it or not.",
+          source: "RBA Pensioners Survey 2024",
+        },
+        {
+          icon: "🌅",
+          tone: "hopeful",
+          stat: "2× more",
+          label: "wealth at 55 by starting KSh 3,000/month at 28 vs 38 — at 10% return. Starting early is the single biggest lever.",
+          source: "JiPange FIRE projection",
+        },
+      ]}
     >
       <FireNumberCalculator />
     </ToolLayout>

@@ -13,6 +13,22 @@ export default function GuarantorShieldPage() {
     <ToolLayout
       title="🎯 Sacco Guarantor Liability Shield"
       description="Your deposits back other people's loans — find your true unencumbered borrowing power."
+      insights={[
+        {
+          icon: "⚠️",
+          tone: "caution",
+          stat: "1 in 3",
+          label: "Sacco members don't know their total guarantor exposure — and discover it only when they try to borrow.",
+          source: "SASRA Sacco Supervision Report 2024",
+        },
+        {
+          icon: "💪",
+          tone: "hopeful",
+          stat: "Free up",
+          label: "frozen deposits by tracking guarantees and negotiating releases — unlocking borrowing power you already earned.",
+          source: "Employment Act Cap. 226, Sacco Societies Act",
+        },
+      ]}
     >
       <GuarantorShieldCalculator />
     </ToolLayout>
