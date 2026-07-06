@@ -263,7 +263,7 @@ export default function Home() {
             className="overflow-hidden rounded-2xl border border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.08)] grid grid-cols-1 sm:grid-cols-3 gap-px"
           >
             {REALITY_STATS.map((stat) => (
-              <div key={stat.label} className="bg-[#3A2E26] p-6 sm:p-8 flex flex-col gap-1.5">
+              <Link key={stat.label} href={stat.href} className="group bg-[#3A2E26] p-6 sm:p-8 flex flex-col gap-1.5 hover:bg-[#4A3A2E] transition-colors">
                 <p
                   className={`text-5xl sm:text-6xl font-black leading-none tracking-tighter ${stat.color}`}
                   style={{ fontVariantNumeric: "tabular-nums" }}
@@ -282,13 +282,10 @@ export default function Home() {
                 <p className="mt-auto border-t border-[rgba(255,255,255,0.07)] pt-3 text-[0.6875rem] text-[rgba(241,236,227,0.3)]">
                   {stat.source}
                 </p>
-                <Link
-                  href={stat.href}
-                  className="text-[0.8125rem] font-semibold text-accent hover:opacity-80"
-                >
+                <span className="text-[0.8125rem] font-semibold text-accent group-hover:opacity-80">
                   {stat.cta}
-                </Link>
-              </div>
+                </span>
+              </Link>
             ))}
           </div>
         </div>
@@ -460,22 +457,22 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <ol className="grid grid-cols-1 gap-4 sm:grid-cols-3 list-none">
             {STEPS.map((step, i) => (
-              <div
+              <li
                 key={step.num}
                 data-reveal
                 data-delay={i > 0 ? String(i) : undefined}
                 className="rounded-2xl border border-[#E5E0D8] bg-white p-7"
               >
-                <div className="mb-4 flex h-9 w-9 items-center justify-center rounded-full bg-accent text-sm font-black text-[#1A0D06]">
+                <div className="mb-4 flex h-9 w-9 items-center justify-center rounded-full bg-accent text-sm font-black text-[#1A0D06]" aria-hidden="true">
                   {step.num}
                 </div>
                 <h3 className="mb-1.5 text-base font-extrabold text-primary">{step.title}</h3>
                 <p className="text-sm leading-relaxed text-[#4B4238]">{step.body}</p>
-              </div>
+              </li>
             ))}
-          </div>
+          </ol>
         </div>
       </section>
 
@@ -527,13 +524,21 @@ export default function Home() {
       {/* ── Goal planners ── */}
       <section className="border-t border-[#E5E0D8] bg-[#F1ECE3] py-14 sm:py-20">
         <div className="mx-auto max-w-5xl px-4 sm:px-6">
-          <div className="mb-6">
-            <p className="mb-1.5 text-xs font-bold uppercase tracking-widest text-accent">
-              Goal planners
-            </p>
-            <h2 className="text-2xl font-extrabold tracking-tight text-primary sm:text-3xl">
-              Working toward something specific?
-            </h2>
+          <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <p className="mb-1.5 text-xs font-bold uppercase tracking-widest text-accent">
+                Goal planners
+              </p>
+              <h2 className="text-2xl font-extrabold tracking-tight text-primary sm:text-3xl">
+                Working toward something specific?
+              </h2>
+            </div>
+            <Link
+              href="/planners"
+              className="text-sm font-semibold text-primary underline underline-offset-4 hover:text-accent"
+            >
+              All 6 planners →
+            </Link>
           </div>
 
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:items-start">
