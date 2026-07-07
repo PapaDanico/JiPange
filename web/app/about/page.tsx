@@ -172,7 +172,7 @@ export default function AboutPage() {
               Explore the calculators →
             </Link>
             <Link
-              href="/journey"
+              href="/profile"
               className="flex h-12 items-center justify-center rounded-full border border-primary px-6 text-sm font-semibold text-primary transition-colors hover:bg-[#F1ECE3]"
             >
               Start my 5-question journey
