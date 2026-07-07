@@ -1,20 +1,30 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import Link from "next/link";
 import { CBC_GRADES, getCbcGrade } from "@/lib/cbc-grades";
 import { solveMonthlyContribution } from "@/lib/savings-goal";
 import { formatKES } from "@/lib/budget";
+import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import NumberField from "./NumberField";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
 
 export default function EducationSavingsCalculator() {
-  const [gradeValue, setGradeValue] = useState("grade1");
-  const [jssFees, setJssFees] = useState("");
-  const [sssFees, setSssFees] = useState("");
-  const [currentSavings, setCurrentSavings] = useState("0");
-  const [annualReturn, setAnnualReturn] = useState("8");
+  const [gradeValue, setGradeValue] = useStickyState(
+    "jipange:tool:education-savings:grade",
+    "grade1"
+  );
+  const [jssFees, setJssFees] = useStickyState("jipange:tool:education-savings:jssFees", "");
+  const [sssFees, setSssFees] = useStickyState("jipange:tool:education-savings:sssFees", "");
+  const [currentSavings, setCurrentSavings] = useStickyState(
+    "jipange:tool:education-savings:currentSavings",
+    "0"
+  );
+  const [annualReturn, setAnnualReturn] = useStickyState(
+    "jipange:tool:education-savings:annualReturn",
+    "8"
+  );
 
   const grade = getCbcGrade(gradeValue);
 
@@ -67,7 +77,24 @@ export default function EducationSavingsCalculator() {
     };
   }, [grade, jssFees, sssFees, currentSavings, annualReturn]);
 
+  const resultsRef = useScrollIntoView<HTMLDivElement>(result !== null);
+
   const alreadyInSeniorSecondary = grade && grade.yearsToJSS <= 0 && grade.yearsToSSS <= 0;
+
+  const isDirty =
+    gradeValue !== "grade1" ||
+    jssFees !== "" ||
+    sssFees !== "" ||
+    currentSavings !== "0" ||
+    annualReturn !== "8";
+
+  function handleReset() {
+    setGradeValue("grade1");
+    setJssFees("");
+    setSssFees("");
+    setCurrentSavings("0");
+    setAnnualReturn("8");
+  }
 
   return (
     <div className="space-y-4">
@@ -141,8 +168,18 @@ export default function EducationSavingsCalculator() {
         </>
       )}
 
+      {isDirty && (
+        <button
+          type="button"
+          onClick={handleReset}
+          className="text-xs text-[#9A8B80] underline underline-offset-2 hover:text-primary"
+        >
+          Start over
+        </button>
+      )}
+
       {result && (
-        <>
+        <div ref={resultsRef} className="space-y-4">
           {result.jssMonthly !== null && (
             <ResultCard
               label="Monthly savings for Junior Secondary"
@@ -166,7 +203,7 @@ export default function EducationSavingsCalculator() {
           <ShareResultButton
             message={`🎓 *My Kids' Education Savings Plan*\n\nCombined monthly savings needed: ${formatKES(result.combinedMonthly)}\n\nCalculate yours → jipangefinance.netlify.app/tools/education-savings`}
           />
-        </>
+        </div>
       )}
     </div>
   );

@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { calculateMoneyRunwayMonths } from "@/lib/runway";
+import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import HowItWorks from "./HowItWorks";
 import NumberField from "./NumberField";
 import ResultCard from "./ResultCard";
@@ -17,9 +18,18 @@ function formatDuration(months: number): string {
 }
 
 export default function MoneyRunwayCalculator() {
-  const [startingBalance, setStartingBalance] = useState("");
-  const [monthlyWithdrawal, setMonthlyWithdrawal] = useState("");
-  const [annualReturn, setAnnualReturn] = useState("6");
+  const [startingBalance, setStartingBalance] = useStickyState(
+    "jipange:tool:money-runway:startingBalance",
+    ""
+  );
+  const [monthlyWithdrawal, setMonthlyWithdrawal] = useStickyState(
+    "jipange:tool:money-runway:monthlyWithdrawal",
+    ""
+  );
+  const [annualReturn, setAnnualReturn] = useStickyState(
+    "jipange:tool:money-runway:annualReturn",
+    "6"
+  );
 
   const result = useMemo(() => {
     const balance = Number(startingBalance);
@@ -32,6 +42,16 @@ export default function MoneyRunwayCalculator() {
       annualReturnRate: Math.max(0, Number(annualReturn) || 0) / 100,
     });
   }, [startingBalance, monthlyWithdrawal, annualReturn]);
+
+  const resultsRef = useScrollIntoView<HTMLDivElement>(result !== null);
+
+  const isDirty = startingBalance !== "" || monthlyWithdrawal !== "" || annualReturn !== "6";
+
+  function handleReset() {
+    setStartingBalance("");
+    setMonthlyWithdrawal("");
+    setAnnualReturn("6");
+  }
 
   return (
     <div className="space-y-4">
@@ -56,9 +76,18 @@ export default function MoneyRunwayCalculator() {
         onChange={setAnnualReturn}
         suffix="%"
       />
+      {isDirty && (
+        <button
+          type="button"
+          onClick={handleReset}
+          className="text-xs text-[#9A8B80] underline underline-offset-2 hover:text-primary"
+        >
+          Start over
+        </button>
+      )}
 
       {result !== null && (
-        <>
+        <div ref={resultsRef} className="space-y-4">
           <ResultCard
             label="Your money will last"
             value={formatDuration(result)}
@@ -82,7 +111,7 @@ export default function MoneyRunwayCalculator() {
           <ShareResultButton
             message={`⏳ *My Money Runway*\n\nMy savings will last: ${formatDuration(result)}\n\nCalculate yours → jipangefinance.netlify.app/tools/money-runway`}
           />
-        </>
+        </div>
       )}
 
       <HowItWorks

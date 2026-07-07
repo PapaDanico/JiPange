@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import Link from "next/link";
 import {
   FIRE_ALLOCATION,
@@ -9,6 +9,7 @@ import {
   localizedFire,
 } from "@/lib/market-2026";
 import { formatKES } from "@/lib/budget";
+import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import NumberField from "./NumberField";
 import ResultCard from "./ResultCard";
@@ -20,9 +21,18 @@ import ShareResultButton from "./ShareResultButton";
  * the target in the shillings it will actually take at retirement.
  */
 export default function FireNumberCalculator() {
-  const [monthlyExpenses, setMonthlyExpenses] = useState("");
-  const [currentAge, setCurrentAge] = useState(30);
-  const [targetAge, setTargetAge] = useState(50);
+  const [monthlyExpenses, setMonthlyExpenses] = useStickyState(
+    "jipange:tool:fire-number:monthlyExpenses",
+    ""
+  );
+  const [currentAge, setCurrentAge] = useStickyState<number>(
+    "jipange:tool:fire-number:currentAge",
+    30
+  );
+  const [targetAge, setTargetAge] = useStickyState<number>(
+    "jipange:tool:fire-number:targetAge",
+    50
+  );
 
   const fire = useMemo(() => {
     const expenses = Number(monthlyExpenses);
@@ -33,6 +43,16 @@ export default function FireNumberCalculator() {
       targetRetirementAge: Math.max(currentAge, targetAge),
     });
   }, [monthlyExpenses, currentAge, targetAge]);
+
+  const resultsRef = useScrollIntoView<HTMLDivElement>(fire !== null);
+
+  const isDirty = monthlyExpenses !== "" || currentAge !== 30 || targetAge !== 50;
+
+  function handleReset() {
+    setMonthlyExpenses("");
+    setCurrentAge(30);
+    setTargetAge(50);
+  }
 
   return (
     <div className="space-y-4">
@@ -80,8 +100,18 @@ export default function FireNumberCalculator() {
         />
       </div>
 
+      {isDirty && (
+        <button
+          type="button"
+          onClick={handleReset}
+          className="text-xs text-[#9A8B80] underline underline-offset-2 hover:text-primary"
+        >
+          Start over
+        </button>
+      )}
+
       {fire && (
-        <>
+        <div ref={resultsRef} className="space-y-4">
           <ResultCard
             label={`Your FIRE number at age ${Math.max(currentAge, targetAge)} (nominal)`}
             value={formatKES(fire.nominalFutureFireNumber)}
@@ -139,7 +169,7 @@ export default function FireNumberCalculator() {
           >
             Map My Path to FIRE → Start My Plan (90 Seconds)
           </Link>
-        </>
+        </div>
       )}
     </div>
   );

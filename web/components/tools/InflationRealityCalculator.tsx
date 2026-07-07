@@ -1,16 +1,17 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { inflateToFutureCost, inflationAdjust } from "@/lib/projections";
 import { formatKES } from "@/lib/budget";
+import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import NumberField from "./NumberField";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
 
 export default function InflationRealityCalculator() {
-  const [salary, setSalary] = useState("");
-  const [years, setYears] = useState("5");
+  const [salary, setSalary] = useStickyState("jipange:tool:inflation-reality:salary", "");
+  const [years, setYears] = useStickyState("jipange:tool:inflation-reality:years", "5");
 
   const result = useMemo(() => {
     const salaryValue = Number(salary);
@@ -23,6 +24,15 @@ export default function InflationRealityCalculator() {
 
     return { salaryValue, yearsValue, realValue, salaryNeeded, purchasingPowerLost };
   }, [salary, years]);
+
+  const resultsRef = useScrollIntoView<HTMLDivElement>(result !== null);
+
+  const isDirty = salary !== "" || years !== "5";
+
+  function handleReset() {
+    setSalary("");
+    setYears("5");
+  }
 
   return (
     <div className="space-y-4">
@@ -40,9 +50,18 @@ export default function InflationRealityCalculator() {
         onChange={setYears}
         placeholder="e.g. 5"
       />
+      {isDirty && (
+        <button
+          type="button"
+          onClick={handleReset}
+          className="text-xs text-[#9A8B80] underline underline-offset-2 hover:text-primary"
+        >
+          Start over
+        </button>
+      )}
 
       {result && (
-        <>
+        <div ref={resultsRef} className="space-y-4">
           <ResultCard
             label="Your salary will feel like"
             value={formatKES(result.realValue)}
@@ -68,7 +87,7 @@ export default function InflationRealityCalculator() {
           <ShareResultButton
             message={`📉 *Inflation Reality Check*\n\nIn ${result.yearsValue} years, my ${formatKES(result.salaryValue)} salary will feel like ${formatKES(result.realValue)} today.\nTo keep up, I need my salary to reach ${formatKES(result.salaryNeeded)}.\n\nCalculate yours → jipangefinance.netlify.app/tools/inflation-reality`}
           />
-        </>
+        </div>
       )}
     </div>
   );

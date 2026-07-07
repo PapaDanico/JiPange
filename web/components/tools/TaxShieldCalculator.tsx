@@ -1,12 +1,13 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import {
   MAX_MONTHLY_MORTGAGE_EXEMPTION,
   MAX_MONTHLY_PENSION_EXEMPTION,
   taxShield,
 } from "@/lib/tax-shield";
 import { formatKES } from "@/lib/budget";
+import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import NumberField from "./NumberField";
 import ShareResultButton from "./ShareResultButton";
@@ -22,10 +23,10 @@ const PROVIDERS = [
  * PAYE the user pays every month that could be building their own wealth.
  */
 export default function TaxShieldCalculator() {
-  const [gross, setGross] = useState("");
-  const [pension, setPension] = useState("0");
-  const [mortgage, setMortgage] = useState("0");
-  const [insurance, setInsurance] = useState("0");
+  const [gross, setGross] = useStickyState("jipange:tool:tax-shield:gross", "");
+  const [pension, setPension] = useStickyState("jipange:tool:tax-shield:pension", "0");
+  const [mortgage, setMortgage] = useStickyState("jipange:tool:tax-shield:mortgage", "0");
+  const [insurance, setInsurance] = useStickyState("jipange:tool:tax-shield:insurance", "0");
 
   const parsedGross = Number(gross) || 0;
   const shield = useMemo(() => {
@@ -38,7 +39,18 @@ export default function TaxShieldCalculator() {
     });
   }, [parsedGross, pension, mortgage, insurance]);
 
+  const resultsRef = useScrollIntoView<HTMLDivElement>(shield !== null);
+
   const maxed = shield !== null && shield.totalMonthlyRecoverable < 1;
+
+  const isDirty = gross !== "" || pension !== "0" || mortgage !== "0" || insurance !== "0";
+
+  function handleReset() {
+    setGross("");
+    setPension("0");
+    setMortgage("0");
+    setInsurance("0");
+  }
 
   return (
     <div className="space-y-4">
@@ -80,8 +92,18 @@ export default function TaxShieldCalculator() {
         </div>
       ))}
 
+      {isDirty && (
+        <button
+          type="button"
+          onClick={handleReset}
+          className="text-xs text-[#9A8B80] underline underline-offset-2 hover:text-primary"
+        >
+          Start over
+        </button>
+      )}
+
       {shield && (
-        <>
+        <div ref={resultsRef} className="space-y-4">
           {/* The leak gauge */}
           <div className="rounded-2xl border-2 border-danger bg-[#FBEAEA] p-5">
             <h2 className="text-sm font-semibold uppercase tracking-wide text-danger">
@@ -163,7 +185,7 @@ export default function TaxShieldCalculator() {
           <ShareResultButton
             message={`🧾 *My KRA Tax Shield*\n\nI'm leaking ${formatKES(shield.totalMonthlyRecoverable)}/month to PAYE that I could legally redirect into my own pension and reliefs.\n\nCheck your leak → jipangefinance.netlify.app/tools/tax-shield`}
           />
-        </>
+        </div>
       )}
     </div>
   );
