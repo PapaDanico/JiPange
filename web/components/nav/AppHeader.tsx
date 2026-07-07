@@ -40,6 +40,7 @@ export default function AppHeader() {
             alt="JiPange"
             width={1131}
             height={609}
+            sizes="(max-width: 640px) 120px, 160px"
             className="h-9 w-auto"
             priority
           />
