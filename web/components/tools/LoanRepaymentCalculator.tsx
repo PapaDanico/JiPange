@@ -4,8 +4,30 @@ import { useMemo, useState } from "react";
 import { calculateLoanAmortization } from "@/lib/loans";
 import { formatKES } from "@/lib/budget";
 import NumberField from "./NumberField";
+import QuickFillChips from "./QuickFillChips";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
+
+const PRINCIPAL_CHIPS = [
+  { label: "50K", value: "50000" },
+  { label: "100K", value: "100000" },
+  { label: "300K", value: "300000" },
+  { label: "500K", value: "500000" },
+  { label: "1M", value: "1000000" },
+];
+
+const RATE_CHIPS = [
+  { label: "8% HELB", value: "8" },
+  { label: "13% SACCO", value: "13" },
+  { label: "18% bank", value: "18" },
+];
+
+const TERM_CHIPS = [
+  { label: "1 yr", value: "1" },
+  { label: "2 yr", value: "2" },
+  { label: "3 yr", value: "3" },
+  { label: "5 yr", value: "5" },
+];
 
 export default function LoanRepaymentCalculator() {
   const [principal, setPrincipal] = useState("");
@@ -26,27 +48,51 @@ export default function LoanRepaymentCalculator() {
 
   return (
     <div className="space-y-4">
-      <NumberField
-        id="principal"
-        label="Loan amount / HELB balance (KES)"
-        value={principal}
-        onChange={setPrincipal}
-        placeholder="e.g. 500000"
-      />
-      <NumberField
-        id="annualRate"
-        label="Annual interest rate"
-        value={annualRate}
-        onChange={setAnnualRate}
-        suffix="%"
-      />
-      <NumberField
-        id="termYears"
-        label="Repayment period (years)"
-        value={termYears}
-        onChange={setTermYears}
-        placeholder="e.g. 5"
-      />
+      <div>
+        <NumberField
+          id="principal"
+          label="Loan amount / HELB balance (KES)"
+          value={principal}
+          onChange={setPrincipal}
+          placeholder="e.g. 500000"
+        />
+        <QuickFillChips
+          label="Quick fill:"
+          options={PRINCIPAL_CHIPS}
+          onSelect={setPrincipal}
+          current={principal}
+        />
+      </div>
+      <div>
+        <NumberField
+          id="annualRate"
+          label="Annual interest rate"
+          value={annualRate}
+          onChange={setAnnualRate}
+          suffix="%"
+        />
+        <QuickFillChips
+          label="Common rates:"
+          options={RATE_CHIPS}
+          onSelect={setAnnualRate}
+          current={annualRate}
+        />
+      </div>
+      <div>
+        <NumberField
+          id="termYears"
+          label="Repayment period (years)"
+          value={termYears}
+          onChange={setTermYears}
+          placeholder="e.g. 5"
+        />
+        <QuickFillChips
+          label="Quick fill:"
+          options={TERM_CHIPS}
+          onSelect={setTermYears}
+          current={termYears}
+        />
+      </div>
 
       {result && (
         <>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -8,7 +8,12 @@ import {
   type AssetLocation,
   type JourneyAnswers,
 } from "@/lib/journey";
-import { setStoredJourneyAnswers } from "@/lib/storage";
+import {
+  clearJourneyDraft,
+  getJourneyDraft,
+  setJourneyDraft,
+  setStoredJourneyAnswers,
+} from "@/lib/storage";
 
 const TOTAL_STEPS = JOURNEY_QUESTIONS.length;
 
@@ -24,10 +29,20 @@ export default function JourneyWizard() {
   const [multiSelection, setMultiSelection] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
 
+  // Restore mid-abandonment draft on mount (step > 0 means real progress was made)
+  useEffect(() => {
+    const draft = getJourneyDraft();
+    if (draft && draft.step > 0) {
+      setStep(draft.step);
+      setAnswers(draft.answers);
+    }
+  }, []);
+
   const question = JOURNEY_QUESTIONS[step];
 
   function finish(finalAnswers: JourneyAnswers) {
     setSubmitting(true);
+    clearJourneyDraft();
     setStoredJourneyAnswers(finalAnswers);
     // Fire-and-forget: the dashboard recomputes from stored answers with the
     // identical pure engine, so the reveal moment never waits on the network.
@@ -42,8 +57,10 @@ export default function JourneyWizard() {
   function advance(patch: Partial<Record<keyof JourneyAnswers, unknown>>) {
     const next = { ...answers, ...patch };
     setAnswers(next);
+    const nextStep = step + 1;
     if (step < TOTAL_STEPS - 1) {
-      setStep(step + 1);
+      setJourneyDraft({ step: nextStep, answers: next });
+      setStep(nextStep);
     } else {
       finish(next as JourneyAnswers);
     }

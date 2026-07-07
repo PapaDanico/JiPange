@@ -93,6 +93,21 @@ export function removeStoredGoal(goalType: string): void {
 export const getStoredJourneyAnswers = () => read<JourneyAnswers>(JOURNEY_KEY);
 export const setStoredJourneyAnswers = (answers: JourneyAnswers) => write(JOURNEY_KEY, answers);
 
+/** Partial progress through the journey funnel — cleared on completion. */
+const JOURNEY_DRAFT_KEY = "jipange:journey-draft";
+
+export interface JourneyDraft {
+  step: number;
+  answers: Partial<Record<string, unknown>>;
+}
+
+export const getJourneyDraft = () => read<JourneyDraft>(JOURNEY_DRAFT_KEY);
+export const setJourneyDraft = (draft: JourneyDraft) => write(JOURNEY_DRAFT_KEY, draft);
+export function clearJourneyDraft(): void {
+  if (!isBrowser()) return;
+  window.localStorage.removeItem(JOURNEY_DRAFT_KEY);
+}
+
 export function clearStoredJourney(): void {
   if (!isBrowser()) return;
   window.localStorage.removeItem(PROFILE_KEY);
