@@ -1,5 +1,6 @@
 import Link from "next/link";
 import ToolInsights from "./ToolInsights";
+import ToolEnhancements from "./ToolEnhancements";
 
 interface Insight {
   icon: string;
@@ -31,6 +32,7 @@ export default function ToolLayout({
         {insights && <ToolInsights insights={insights} />}
       </div>
       <div className="mt-8 w-full max-w-md">{children}</div>
+      <ToolEnhancements />
       <div className="mt-8 w-full max-w-md rounded-2xl bg-white p-6 text-center shadow-sm print:hidden">
         <p className="text-sm font-medium text-primary">Want a full plan, not just one number?</p>
         <p className="mt-1 text-xs text-[#4B4238]">
