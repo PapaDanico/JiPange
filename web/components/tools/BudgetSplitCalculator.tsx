@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { calculate502525Split, formatKES } from "@/lib/budget";
+import { useStickyState } from "@/lib/hooks";
 import { calculateNetPay } from "@/lib/tax";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import NumberField from "./NumberField";
@@ -9,7 +10,10 @@ import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
 
 export default function BudgetSplitCalculator() {
-  const [grossMonthlySalary, setGrossMonthlySalary] = useState("");
+  const [grossMonthlySalary, setGrossMonthlySalary] = useStickyState(
+    "jipange:tool:budget-split:gross",
+    ""
+  );
 
   const result = useMemo(() => {
     const gross = Number(grossMonthlySalary);
@@ -29,13 +33,19 @@ export default function BudgetSplitCalculator() {
         onChange={setGrossMonthlySalary}
         placeholder="e.g. 80000"
       />
+      {grossMonthlySalary && (
+        <button
+          type="button"
+          onClick={() => setGrossMonthlySalary("")}
+          className="text-xs text-[#9A8B80] underline underline-offset-2 hover:text-primary"
+        >
+          Start over
+        </button>
+      )}
 
       {result && (
         <>
-          <ResultCard
-            label="Your monthly take-home pay"
-            value={formatKES(result.netMonthly)}
-          />
+          <ResultCard label="Your monthly take-home pay" value={formatKES(result.netMonthly)} />
           <ResultCard
             label="Household expenses (50%)"
             value={formatKES(result.split.household)}

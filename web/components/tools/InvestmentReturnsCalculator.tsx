@@ -1,8 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { futureValueWithStepUp, inflationAdjust } from "@/lib/projections";
 import { formatKES } from "@/lib/budget";
+import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import HowItWorks from "./HowItWorks";
 import NumberField from "./NumberField";
 import ResultCard from "./ResultCard";
@@ -15,11 +16,26 @@ const RATE_PRESETS = [
 ];
 
 export default function InvestmentReturnsCalculator() {
-  const [lumpSum, setLumpSum] = useState("0");
-  const [monthly, setMonthly] = useState("");
-  const [annualReturn, setAnnualReturn] = useState("10");
-  const [years, setYears] = useState("");
-  const [stepUp, setStepUp] = useState(0);
+  const [lumpSum, setLumpSum] = useStickyState(
+    "jipange:tool:investment-returns:lumpSum",
+    "0"
+  );
+  const [monthly, setMonthly] = useStickyState(
+    "jipange:tool:investment-returns:monthly",
+    ""
+  );
+  const [annualReturn, setAnnualReturn] = useStickyState(
+    "jipange:tool:investment-returns:annualReturn",
+    "10"
+  );
+  const [years, setYears] = useStickyState(
+    "jipange:tool:investment-returns:years",
+    ""
+  );
+  const [stepUp, setStepUp] = useStickyState<number>(
+    "jipange:tool:investment-returns:stepUp",
+    0
+  );
 
   const result = useMemo(() => {
     const yearsValue = Number(years);
@@ -41,11 +57,42 @@ export default function InvestmentReturnsCalculator() {
     };
   }, [lumpSum, monthly, annualReturn, years, stepUp]);
 
+  const resultsRef = useScrollIntoView<HTMLDivElement>(result !== null);
+
+  const isDirty =
+    lumpSum !== "0" || monthly !== "" || annualReturn !== "10" || years !== "" || stepUp !== 0;
+
+  function handleReset() {
+    setLumpSum("0");
+    setMonthly("");
+    setAnnualReturn("10");
+    setYears("");
+    setStepUp(0);
+  }
+
   return (
     <div className="space-y-4">
-      <NumberField id="lumpSum" label="Starting lump sum (KES)" value={lumpSum} onChange={setLumpSum} placeholder="0" />
-      <NumberField id="monthly" label="Monthly contribution (KES)" value={monthly} onChange={setMonthly} placeholder="e.g. 10000" />
-      <NumberField id="annualReturn" label="Expected annual return" value={annualReturn} onChange={setAnnualReturn} suffix="%" />
+      <NumberField
+        id="lumpSum"
+        label="Starting lump sum (KES)"
+        value={lumpSum}
+        onChange={setLumpSum}
+        placeholder="0"
+      />
+      <NumberField
+        id="monthly"
+        label="Monthly contribution (KES)"
+        value={monthly}
+        onChange={setMonthly}
+        placeholder="e.g. 10000"
+      />
+      <NumberField
+        id="annualReturn"
+        label="Expected annual return"
+        value={annualReturn}
+        onChange={setAnnualReturn}
+        suffix="%"
+      />
       <div className="flex flex-wrap gap-2">
         {RATE_PRESETS.map((preset) => (
           <button
@@ -63,7 +110,13 @@ export default function InvestmentReturnsCalculator() {
           </button>
         ))}
       </div>
-      <NumberField id="years" label="Investment period (years)" value={years} onChange={setYears} placeholder="e.g. 10" />
+      <NumberField
+        id="years"
+        label="Investment period (years)"
+        value={years}
+        onChange={setYears}
+        placeholder="e.g. 10"
+      />
 
       <div>
         <div className="flex items-center justify-between">
@@ -83,8 +136,18 @@ export default function InvestmentReturnsCalculator() {
         />
       </div>
 
+      {isDirty && (
+        <button
+          type="button"
+          onClick={handleReset}
+          className="text-xs text-[#9A8B80] underline underline-offset-2 hover:text-primary"
+        >
+          Start over
+        </button>
+      )}
+
       {result && (
-        <>
+        <div ref={resultsRef} className="space-y-4">
           <ResultCard
             label="Projected future value"
             value={formatKES(result.total)}
@@ -98,7 +161,7 @@ export default function InvestmentReturnsCalculator() {
           <ShareResultButton
             message={`📈 *My Investment Projection*\n\nIn ${years} years: ${formatKES(result.total)}\nGrowth earned: ${formatKES(result.growth)}\n\nCalculate yours → jipangefinance.netlify.app/tools/investment-returns`}
           />
-        </>
+        </div>
       )}
 
       <HowItWorks
