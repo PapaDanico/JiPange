@@ -5,7 +5,23 @@ import { compareLoanProducts, type LoanProductTier } from "@/lib/loan-comparison
 import { formatKES } from "@/lib/budget";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import NumberField from "./NumberField";
+import QuickFillChips from "./QuickFillChips";
 import ShareResultButton from "./ShareResultButton";
+
+const AMOUNT_CHIPS = [
+  { label: "50K", value: "50000" },
+  { label: "100K", value: "100000" },
+  { label: "200K", value: "200000" },
+  { label: "500K", value: "500000" },
+  { label: "1M", value: "1000000" },
+];
+
+const TERM_CHIPS = [
+  { label: "12 mo", value: "12" },
+  { label: "24 mo", value: "24" },
+  { label: "36 mo", value: "36" },
+  { label: "48 mo", value: "48" },
+];
 
 const TIER_CLASS: Record<LoanProductTier, string> = {
   green: "text-success",
@@ -26,20 +42,36 @@ export default function SaccoVsBankCalculator() {
 
   return (
     <div className="space-y-4">
-      <NumberField
-        id="amount"
-        label="Loan amount needed (KES)"
-        value={amount}
-        onChange={setAmount}
-        placeholder="e.g. 100000"
-      />
-      <NumberField
-        id="termMonths"
-        label="Repayment period (months)"
-        value={termMonths}
-        onChange={setTermMonths}
-        placeholder="e.g. 12"
-      />
+      <div>
+        <NumberField
+          id="amount"
+          label="Loan amount needed (KES)"
+          value={amount}
+          onChange={setAmount}
+          placeholder="e.g. 100000"
+        />
+        <QuickFillChips
+          label="Quick fill:"
+          options={AMOUNT_CHIPS}
+          onSelect={setAmount}
+          current={amount}
+        />
+      </div>
+      <div>
+        <NumberField
+          id="termMonths"
+          label="Repayment period (months)"
+          value={termMonths}
+          onChange={setTermMonths}
+          placeholder="e.g. 12"
+        />
+        <QuickFillChips
+          label="Quick fill:"
+          options={TERM_CHIPS}
+          onSelect={setTermMonths}
+          current={termMonths}
+        />
+      </div>
 
       {results && (
         <>
