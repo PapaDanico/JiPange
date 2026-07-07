@@ -1,0 +1,272 @@
+"use client";
+
+import { useMemo, useState } from "react";
+import {
+  calculateChamaInvestment,
+  calculateMerryGoRound,
+} from "@/lib/chama";
+import { formatKES } from "@/lib/budget";
+import CalculatorDisclaimer from "./CalculatorDisclaimer";
+import NumberField from "./NumberField";
+import QuickFillChips from "./QuickFillChips";
+import ResultCard from "./ResultCard";
+import ShareResultButton from "./ShareResultButton";
+
+const MEMBER_CHIPS = [
+  { label: "5", value: "5" },
+  { label: "10", value: "10" },
+  { label: "12", value: "12" },
+  { label: "20", value: "20" },
+  { label: "30", value: "30" },
+];
+
+const CONTRIB_CHIPS = [
+  { label: "500", value: "500" },
+  { label: "1K", value: "1000" },
+  { label: "2K", value: "2000" },
+  { label: "5K", value: "5000" },
+  { label: "10K", value: "10000" },
+];
+
+const RETURN_CHIPS = [
+  { label: "11% MMF", value: "11" },
+  { label: "13% SACCO", value: "13" },
+  { label: "16% IFB", value: "16" },
+];
+
+type Mode = "merry-go-round" | "investment";
+
+export default function ChamaGroupCalculator() {
+  const [mode, setMode] = useState<Mode>("merry-go-round");
+  const [members, setMembers] = useState("12");
+  const [contribution, setContribution] = useState("2000");
+  const [bufferPercent, setBufferPercent] = useState("5");
+  const [annualReturn, setAnnualReturn] = useState("11");
+
+  const mgr = useMemo(() => {
+    const m = Number(members);
+    const c = Number(contribution);
+    const b = Math.min(50, Math.max(0, Number(bufferPercent) || 0));
+    if (!m || m < 2 || !c || c <= 0) return null;
+    return calculateMerryGoRound(m, c, b);
+  }, [members, contribution, bufferPercent]);
+
+  const inv = useMemo(() => {
+    const m = Number(members);
+    const c = Number(contribution);
+    const r = Math.max(0, Number(annualReturn) || 0);
+    if (!m || m < 2 || !c || c <= 0) return null;
+    return calculateChamaInvestment(m, c, r);
+  }, [members, contribution, annualReturn]);
+
+  const result = mode === "merry-go-round" ? mgr : inv;
+
+  return (
+    <div className="space-y-4">
+      <div className="flex rounded-lg border border-[#E5E0D8] bg-white p-1">
+        <button
+          type="button"
+          onClick={() => setMode("merry-go-round")}
+          className={`flex-1 rounded-md py-2 text-sm font-medium transition-colors ${
+            mode === "merry-go-round"
+              ? "bg-primary text-white"
+              : "text-[#4B4238] hover:bg-[#F1ECE3]"
+          }`}
+        >
+          Merry-go-round
+        </button>
+        <button
+          type="button"
+          onClick={() => setMode("investment")}
+          className={`flex-1 rounded-md py-2 text-sm font-medium transition-colors ${
+            mode === "investment"
+              ? "bg-primary text-white"
+              : "text-[#4B4238] hover:bg-[#F1ECE3]"
+          }`}
+        >
+          Investment pool
+        </button>
+      </div>
+
+      <div>
+        <NumberField
+          id="members"
+          label="Number of chama members"
+          value={members}
+          onChange={setMembers}
+          placeholder="e.g. 12"
+        />
+        <QuickFillChips
+          label="Common sizes:"
+          options={MEMBER_CHIPS}
+          onSelect={setMembers}
+          current={members}
+        />
+      </div>
+
+      <div>
+        <NumberField
+          id="contribution"
+          label="Monthly contribution per member (KES)"
+          value={contribution}
+          onChange={setContribution}
+          placeholder="e.g. 2000"
+        />
+        <QuickFillChips
+          label="Quick fill:"
+          options={CONTRIB_CHIPS}
+          onSelect={setContribution}
+          current={contribution}
+        />
+      </div>
+
+      {mode === "merry-go-round" && (
+        <div>
+          <label htmlFor="bufferPercent" className="text-sm font-medium text-[#4B4238]">
+            Emergency/welfare buffer (% of monthly pool)
+          </label>
+          <div className="mt-1 flex items-center gap-3">
+            <input
+              id="bufferPercent"
+              type="range"
+              min={0}
+              max={20}
+              step={1}
+              value={bufferPercent}
+              onChange={(e) => setBufferPercent(e.target.value)}
+              className="flex-1 h-2 accent-primary"
+            />
+            <span className="w-10 text-right text-sm font-semibold text-primary">
+              {bufferPercent}%
+            </span>
+          </div>
+        </div>
+      )}
+
+      {mode === "investment" && (
+        <div>
+          <NumberField
+            id="annualReturn"
+            label="Expected annual return (%)"
+            value={annualReturn}
+            onChange={setAnnualReturn}
+            suffix="%"
+          />
+          <QuickFillChips
+            label="Common rates:"
+            options={RETURN_CHIPS}
+            onSelect={setAnnualReturn}
+            current={annualReturn}
+          />
+        </div>
+      )}
+
+      {result && mode === "merry-go-round" && mgr && (
+        <>
+          <ResultCard
+            label={`Monthly pool (${members} × ${formatKES(Number(contribution))})`}
+            value={formatKES(mgr.monthlyPool)}
+            tone="primary"
+          />
+          <ResultCard
+            label="Your rotation payout (when it's your turn)"
+            value={formatKES(mgr.rotationPayout)}
+            tone="success"
+            sublabel={`After the ${bufferPercent}% welfare buffer — paid in full, one month per cycle.`}
+          />
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <ResultCard
+              label="Cycle length"
+              value={`${mgr.cycleMonths} months`}
+              sublabel="Each member gets one turn"
+            />
+            <ResultCard
+              label="Group welfare fund per cycle"
+              value={formatKES(mgr.emergencyFundPerCycle)}
+              sublabel="Accumulated from monthly buffer"
+            />
+          </div>
+
+          <div className="rounded-2xl bg-[#F1ECE3] p-4 text-sm text-[#4B4238]">
+            <p className="font-semibold text-primary">How the math works</p>
+            <p className="mt-1">
+              <strong>First receiver</strong> (month 1): pays {formatKES(Number(contribution))}{" "}
+              once, receives {formatKES(mgr.rotationPayout)} —{" "}
+              <span className={mgr.netGainFirstReceiver >= 0 ? "text-success font-medium" : "text-danger font-medium"}>
+                net {mgr.netGainFirstReceiver >= 0 ? "+" : ""}
+                {formatKES(mgr.netGainFirstReceiver)}
+              </span>{" "}
+              (essentially an interest-free loan from the group).
+            </p>
+            <p className="mt-1">
+              <strong>Last receiver</strong> (month {mgr.cycleMonths}): pays{" "}
+              {formatKES(Number(contribution) * mgr.cycleMonths)} total across the cycle,
+              receives {formatKES(mgr.rotationPayout)} —{" "}
+              <span className="text-danger font-medium">
+                net {formatKES(mgr.netGainLastReceiver)}
+              </span>{" "}
+              (they effectively funded everyone else&apos;s rotation).
+            </p>
+            <p className="mt-2 text-xs text-[#6f6e69]">
+              The fairness mechanism: everyone gets to be &ldquo;first&rdquo; in future
+              cycles, and group savings discipline is the real return.
+            </p>
+          </div>
+
+          <ShareResultButton
+            message={`🤝 *Our Chama Rotation*\n\nMembers: ${members}\nMonthly contribution: ${formatKES(Number(contribution))} each\nMonthly pool: ${formatKES(mgr.monthlyPool)}\nRotation payout: ${formatKES(mgr.rotationPayout)}\nCycle: ${mgr.cycleMonths} months\n\nSimulate yours → jipangefinance.netlify.app/tools/chama`}
+          />
+        </>
+      )}
+
+      {result && mode === "investment" && inv && (
+        <>
+          <ResultCard
+            label={`Monthly pool invested (${members} × ${formatKES(Number(contribution))})`}
+            value={formatKES(inv.monthlyPool)}
+            tone="primary"
+          />
+          <div className="rounded-2xl bg-white p-4 shadow-sm">
+            <p className="text-sm font-semibold text-primary">Group pool value over time</p>
+            <div className="mt-3 space-y-3">
+              {[
+                { label: "After 1 year", total: inv.value1Yr, perMember: inv.perMemberShare1Yr },
+                { label: "After 3 years", total: inv.value3Yr, perMember: inv.perMemberShare3Yr },
+                { label: "After 5 years", total: inv.value5Yr, perMember: inv.perMemberShare5Yr },
+              ].map((row) => (
+                <div key={row.label} className="flex items-center justify-between gap-2 text-sm">
+                  <span className="text-[#4B4238]">{row.label}</span>
+                  <div className="text-right">
+                    <span className="font-semibold text-primary">{formatKES(row.total)}</span>
+                    <span className="block text-xs text-[#4B4238]">
+                      {formatKES(row.perMember)}/member
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <p className="text-xs text-[#4B4238]">
+            Returns assume regular monthly deposits compounding at{" "}
+            {annualReturn}% p.a. — achievable today via regulated MMFs (e.g. Cytonn, CIC, ICEA
+            Lion) or SACCO dividend accounts. Actual returns vary.
+          </p>
+
+          <ShareResultButton
+            message={`📈 *Our Chama Investment Pool*\n\n${members} members × ${formatKES(Number(contribution))}/month at ${annualReturn}% return:\n1 year: ${formatKES(inv.value1Yr)} (${formatKES(inv.perMemberShare1Yr)}/member)\n3 years: ${formatKES(inv.value3Yr)} (${formatKES(inv.perMemberShare3Yr)}/member)\n5 years: ${formatKES(inv.value5Yr)} (${formatKES(inv.perMemberShare5Yr)}/member)\n\nSimulate yours → jipangefinance.netlify.app/tools/chama`}
+          />
+        </>
+      )}
+
+      {result && (
+        <CalculatorDisclaimer
+          extraNotes={[
+            "Chama governance, rotation order, and emergency fund rules vary by group constitution.",
+            "Investment returns shown are estimates using a constant compounding rate — actual group MMF or SACCO returns fluctuate.",
+          ]}
+        />
+      )}
+    </div>
+  );
+}

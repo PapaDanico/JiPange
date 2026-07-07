@@ -30,6 +30,7 @@ const COLUMNS: { heading: string; links: { href: string; label: string }[] }[] =
       { href: "/profile", label: "Start my plan" },
       { href: "/picture", label: "My Pesa Picture" },
       { href: "/plan", label: "My action plan" },
+      { href: "/about", label: "About JiPange" },
     ],
   },
 ];
@@ -61,11 +62,14 @@ export default function Footer() {
           advice.
         </p>
         <div className="flex gap-4">
+          <Link href="/about" className="underline hover:text-primary">
+            About
+          </Link>
           <Link href="/terms" className="underline hover:text-primary">
-            Terms of Use
+            Terms
           </Link>
           <Link href="/privacy" className="underline hover:text-primary">
-            Privacy Policy
+            Privacy
           </Link>
         </div>
       </div>

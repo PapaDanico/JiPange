@@ -167,6 +167,14 @@ const CALCULATOR_GROUPS: ToolGroup[] = [
         insight: "Many Kenyans unknowingly have illegal deductions taken from their pay.",
         isNew: true,
       },
+      {
+        href: "/tools/chama",
+        icon: "🤝",
+        title: "Chama / Group Savings Optimizer",
+        description: "Simulate merry-go-round payouts, welfare fund size, or group investment returns over 1–5 years.",
+        insight: "11.4 million Kenyans save through chamas — model yours before the next meeting.",
+        isNew: true,
+      },
     ],
   },
 ];

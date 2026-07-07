@@ -114,6 +114,12 @@ export const TOOL_META: Record<string, ToolMeta> = {
     name: "1/3 Rule Checker",
     related: ["/tools/sacco-vs-bank", "/tools/loan-repayment", "/tools/guarantor-shield"],
   },
+  "/tools/chama": {
+    href: "/tools/chama",
+    icon: "🤝",
+    name: "Chama Group Savings",
+    related: ["/tools/savings-goal", "/tools/investment-returns", "/tools/sacco-vs-bank"],
+  },
   // Planners (for cross-linking targets)
   "/planners/emergency": { href: "/planners/emergency", icon: "🛡️", name: "Emergency Fund Planner", related: [] },
   "/planners/education": { href: "/planners/education", icon: "🎓", name: "School Fees Smoother", related: [] },
