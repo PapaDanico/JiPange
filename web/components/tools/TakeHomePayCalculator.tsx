@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useMemo, useState } from "react";
 import {
   calculateNetPay,
@@ -8,20 +9,32 @@ import {
   PENSION_RELIEF_CAP_MONTHLY,
 } from "@/lib/tax";
 import { formatKES } from "@/lib/budget";
+import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import DeductionRow from "./DeductionRow";
 import NumberField from "./NumberField";
-import PayBreakdownChart from "./PayBreakdownChart";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
 
+const PayBreakdownChart = dynamic(() => import("./PayBreakdownChart"), { ssr: false });
+
 export default function TakeHomePayCalculator() {
-  const [gross, setGross] = useState("");
+  const [gross, setGross] = useStickyState("jipange:tool:take-home-pay:gross", "");
+  const [pensionContribution, setPensionContribution] = useStickyState(
+    "jipange:tool:take-home-pay:pension",
+    "0"
+  );
+  const [mortgageInterest, setMortgageInterest] = useStickyState(
+    "jipange:tool:take-home-pay:mortgage",
+    "0"
+  );
+  const [insurancePremium, setInsurancePremium] = useStickyState(
+    "jipange:tool:take-home-pay:insurance",
+    "0"
+  );
   const [showReliefs, setShowReliefs] = useState(false);
-  const [pensionContribution, setPensionContribution] = useState("0");
-  const [mortgageInterest, setMortgageInterest] = useState("0");
-  const [insurancePremium, setInsurancePremium] = useState("0");
   const [showYearComparison, setShowYearComparison] = useState(false);
+  const [whatIfPercent, setWhatIfPercent] = useState(100);
 
   const reliefs = useMemo(
     () => ({
@@ -44,14 +57,42 @@ export default function TakeHomePayCalculator() {
     return calculateNetPay(value, reliefs, NSSF_PRIOR_YEAR_LIMITS);
   }, [gross, reliefs]);
 
+  const whatIfGrossValue = useMemo(
+    () => Math.round((Number(gross) * whatIfPercent) / 100),
+    [gross, whatIfPercent]
+  );
+  const whatIfNetPay = useMemo(() => {
+    if (!whatIfGrossValue) return null;
+    return calculateNetPay(whatIfGrossValue, reliefs).netMonthly;
+  }, [whatIfGrossValue, reliefs]);
+
   const pensionCapped = reliefs.pensionContribution > PENSION_RELIEF_CAP_MONTHLY;
   const mortgageCapped = reliefs.mortgageInterest > MORTGAGE_INTEREST_RELIEF_CAP_MONTHLY;
+
+  const resultsRef = useScrollIntoView<HTMLDivElement>(result !== null);
+
+  function handleReset() {
+    setGross("");
+    setPensionContribution("0");
+    setMortgageInterest("0");
+    setInsurancePremium("0");
+    setShowReliefs(false);
+    setShowYearComparison(false);
+    setWhatIfPercent(100);
+  }
 
   return (
     <div className="space-y-4">
       <div className="hidden print:block">
         <p className="text-lg font-semibold">JiPange — Take-Home Pay Estimate</p>
-        <p className="text-sm">Generated {new Date().toLocaleDateString("en-KE", { year: "numeric", month: "long", day: "numeric" })}</p>
+        <p className="text-sm">
+          Generated{" "}
+          {new Date().toLocaleDateString("en-KE", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })}
+        </p>
       </div>
 
       <div className="print:hidden">
@@ -62,6 +103,15 @@ export default function TakeHomePayCalculator() {
           onChange={setGross}
           placeholder="e.g. 80000"
         />
+        {gross && (
+          <button
+            type="button"
+            onClick={handleReset}
+            className="mt-2 text-xs text-[#9A8B80] underline underline-offset-2 hover:text-primary"
+          >
+            Start over
+          </button>
+        )}
       </div>
 
       <button
@@ -75,7 +125,10 @@ export default function TakeHomePayCalculator() {
       </button>
 
       {showReliefs && (
-        <div id="optional-tax-reliefs" className="space-y-3 rounded-2xl bg-white p-6 shadow-sm print:hidden">
+        <div
+          id="optional-tax-reliefs"
+          className="space-y-3 rounded-2xl bg-white p-6 shadow-sm print:hidden"
+        >
           <NumberField
             id="pensionContribution"
             label="Voluntary pension contribution (KES/month) — capped at Ksh 30,000"
@@ -111,16 +164,50 @@ export default function TakeHomePayCalculator() {
           <p className="text-xs text-[#4B4238]">
             Pension and mortgage relief reduce your taxable pay up to the KRA-capped limits.
             Insurance relief is 15% of premiums paid, up to Ksh 5,000/month. These reliefs lower
-            your PAYE if declared to your employer — this calculator doesn&apos;t separately
-            deduct the contribution, premium, or mortgage payment itself, since those are
-            typically paid outside payroll.
+            your PAYE if declared to your employer — this calculator doesn&apos;t separately deduct
+            the contribution, premium, or mortgage payment itself, since those are typically paid
+            outside payroll.
           </p>
         </div>
       )}
 
       {result && (
-        <>
+        <div ref={resultsRef} className="space-y-4">
           <ResultCard label="Take-home pay" value={formatKES(result.netMonthly)} tone="success" />
+
+          {/* Salary explorer — drag to preview take-home at any salary level */}
+          <div className="rounded-2xl bg-[#F1ECE3] p-5 print:hidden">
+            <p className="text-sm font-semibold text-primary">Salary explorer</p>
+            <p className="mt-0.5 text-xs text-[#4B4238]">
+              Drag to see your take-home at any salary
+            </p>
+            <div
+              aria-live="polite"
+              className="mt-3 flex items-baseline justify-between"
+            >
+              <span className="text-sm text-[#4B4238]">
+                KES {whatIfGrossValue.toLocaleString()} gross
+              </span>
+              <span className="text-base font-semibold text-success">
+                → {formatKES(whatIfNetPay ?? 0)}
+              </span>
+            </div>
+            <input
+              type="range"
+              min={50}
+              max={200}
+              step={5}
+              value={whatIfPercent}
+              onChange={(e) => setWhatIfPercent(Number(e.target.value))}
+              className="mt-2 h-2 w-full accent-primary"
+              aria-label={`Explore salary — currently at ${whatIfPercent}% of entered gross`}
+            />
+            <div className="mt-1 flex justify-between text-[10px] text-[#9A8B80]">
+              <span>50%</span>
+              <span>Your salary</span>
+              <span>200%</span>
+            </div>
+          </div>
 
           <div className="rounded-2xl bg-white p-6 shadow-sm">
             <DeductionRow label="Gross salary" value={formatKES(result.grossMonthly)} bold />
@@ -159,14 +246,20 @@ export default function TakeHomePayCalculator() {
               bold
               info="Your gross salary minus NSSF, SHIF, Housing Levy, and any pension or mortgage relief above. PAYE (income tax) is calculated on this smaller amount, not your full gross salary."
             />
-            <DeductionRow label="PAYE (before relief)" value={`(${formatKES(result.grossPaye)})`} />
+            <DeductionRow
+              label="PAYE (before relief)"
+              value={`(${formatKES(result.grossPaye)})`}
+            />
             <DeductionRow
               label="Less: Personal relief"
               value={formatKES(result.personalRelief)}
               info="A flat Ksh 2,400/month tax credit every formally employed Kenyan automatically gets, subtracted from your PAYE bill before you pay it — not something you need to apply for."
             />
             {result.insuranceRelief > 0 && (
-              <DeductionRow label="Less: Insurance relief" value={formatKES(result.insuranceRelief)} />
+              <DeductionRow
+                label="Less: Insurance relief"
+                value={formatKES(result.insuranceRelief)}
+              />
             )}
             <DeductionRow label="Net PAYE" value={`(${formatKES(result.paye)})`} />
             <hr className="my-2 border-[#E5E0D8]" />
@@ -200,11 +293,11 @@ export default function TakeHomePayCalculator() {
               {Math.round((result.netMonthly / result.grossMonthly) * 100)}%). Your employer
               actually pays <strong>{formatKES(result.employerCost.total)}</strong> total to keep
               you employed. Statutory deductions and tax take{" "}
-              <strong>
-                {formatKES(result.grossMonthly - result.netMonthly)}
-              </strong>{" "}
-              ({Math.round(((result.grossMonthly - result.netMonthly) / result.grossMonthly) * 100)}% of
-              your gross).
+              <strong>{formatKES(result.grossMonthly - result.netMonthly)}</strong> (
+              {Math.round(
+                ((result.grossMonthly - result.netMonthly) / result.grossMonthly) * 100
+              )}
+              % of your gross).
             </p>
           </div>
 
@@ -215,11 +308,16 @@ export default function TakeHomePayCalculator() {
             aria-controls="year-over-year-comparison"
             className="text-sm font-medium text-primary underline print:hidden"
           >
-            {showYearComparison ? "− Hide year-over-year comparison" : "+ Compare with last year's rates"}
+            {showYearComparison
+              ? "− Hide year-over-year comparison"
+              : "+ Compare with last year's rates"}
           </button>
 
           {showYearComparison && priorYearResult && (
-            <div id="year-over-year-comparison" className="rounded-2xl bg-white p-6 shadow-sm">
+            <div
+              id="year-over-year-comparison"
+              className="rounded-2xl bg-white p-6 shadow-sm"
+            >
               <p className="text-sm font-semibold text-primary">
                 NSSF Year 3 (2025) vs Year 4 (2026)
               </p>
@@ -266,8 +364,8 @@ export default function TakeHomePayCalculator() {
 
           <div className="hidden print:block">
             <p className="mt-4 text-xs text-[#4B4238]">
-              Estimate only, not a payslip or licensed financial advice — rates current as of
-              July 2026. Generated at jipangefinance.netlify.app/tools/take-home-pay
+              Estimate only, not a payslip or licensed financial advice — rates current as of July
+              2026. Generated at jipangefinance.netlify.app/tools/take-home-pay
             </p>
           </div>
 
@@ -284,7 +382,7 @@ export default function TakeHomePayCalculator() {
           >
             Print / Save as PDF
           </button>
-        </>
+        </div>
       )}
     </div>
   );
