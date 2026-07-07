@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
-  description: "How JiPange collects, uses, and protects your information.",
+  description: "JiPange collects no personal data. All calculations run in your browser.",
 };
 
 export default function PrivacyPage() {
@@ -10,130 +11,170 @@ export default function PrivacyPage() {
     <div className="flex flex-1 flex-col items-center px-6 py-12">
       <div className="w-full max-w-2xl">
         <h1 className="text-2xl font-semibold text-primary">Privacy Policy</h1>
-        <p className="mt-1 text-sm text-[#4B4238]">Last updated: 1 July 2026</p>
+        <p className="mt-1 text-sm text-[#4B4238]">Last updated: July 2026</p>
+
+        <div className="mt-4 rounded-2xl border border-[#CFE3CF] bg-[#f0f7f0] px-5 py-4 text-sm text-[#2b4a2b]">
+          <strong>Short version:</strong> JiPange does not collect, store, or transmit any
+          personal information. All calculations run in your browser. Anything you enter stays
+          on your device only.
+        </div>
 
         <div className="mt-8 space-y-6 text-sm leading-relaxed text-[#4B4238]">
           <section>
             <p>
-              This policy explains what information JiPange collects, why, and how it is
-              protected, in line with Kenya&apos;s Data Protection Act, 2019.
+              This policy explains JiPange&apos;s data practices, in line with Kenya&apos;s
+              Data Protection Act, 2019.
             </p>
           </section>
 
           <section>
-            <h2 className="text-base font-semibold text-primary">1. Information we collect</h2>
-            <p className="mt-2">If you use JiPange in guest mode, your inputs stay in your browser and are never sent to our servers.</p>
-            <p className="mt-2">If you create an account, we store:</p>
-            <ul className="mt-2 list-disc space-y-1 pl-5">
-              <li>Your email address (used for magic-link sign-in via Supabase Auth)</li>
+            <h2 className="text-base font-semibold text-primary">1. What information we collect</h2>
+            <p className="mt-2 font-medium">The short answer: none.</p>
+            <p className="mt-2">
+              JiPange has no accounts, no registration, no login, and no sign-up form. We do
+              not collect your name, email address, phone number, national ID, or any other
+              personal identifier.
+            </p>
+            <p className="mt-2">
+              All calculator inputs and results are computed entirely inside your browser. We
+              never receive them.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-base font-semibold text-primary">
+              2. What stays on your device (local storage)
+            </h2>
+            <p className="mt-2">
+              If you use the profile builder, goal planners, or the 5-question journey, your
+              inputs are saved in your browser&apos;s <code>localStorage</code> so you can
+              return to them. The following keys may be written to your device:
+            </p>
+            <ul className="mt-3 space-y-1.5 pl-5 list-disc">
               <li>
-                Your profile: full name, age, county, monthly gross salary, number of dependants,
-                and Chama/SACCO membership
+                <code>jipange:profile</code> — salary, age, county, dependants (what you
+                enter in the profile form)
               </li>
               <li>
-                Your generated plans: computed take-home pay, savings capacity, projected wealth
-                figures, and the AI-generated action plan text
+                <code>jipange:calculations</code> — computed take-home pay, budget split,
+                projections
               </li>
               <li>
-                Which channel you used to share a plan (e.g. WhatsApp) — we do not store the
-                content of what you shared
+                <code>jipange:plan</code> — your AI-generated action plan text
+              </li>
+              <li>
+                <code>jipange:journey</code> — answers to the 5-question journey
+              </li>
+              <li>
+                <code>jipange:goals</code> — goals you commit to from the planners
+              </li>
+              <li>
+                <code>jipange:journey-draft</code> — partial progress through the journey
+                (cleared on completion)
+              </li>
+              <li>
+                <code>jipange:recent-tools</code> — which calculators you recently visited
+              </li>
+            </ul>
+            <p className="mt-3">
+              None of this data leaves your device. You can delete it at any time by clearing
+              your browser&apos;s site data for jipangefinance.netlify.app.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-base font-semibold text-primary">
+              3. The AI action plan (the one server call)
+            </h2>
+            <p className="mt-2">
+              When you complete the 5-question journey or submit the profile form to request
+              an AI action plan, your answers — income range, savings situation, goals, with
+              no name, phone number, or any identifier — are sent to our server to generate
+              a personalised plan. These anonymous figures are passed to Anthropic&apos;s
+              Claude API to produce the plan text, which is then returned to your browser.
+            </p>
+            <p className="mt-2">
+              We do not log or persistently store these inputs or outputs. Anthropic and
+              Netlify may retain infrastructure-level logs for security and abuse monitoring
+              purposes (typically 30 days) — see their privacy policies for details.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-base font-semibold text-primary">4. Third parties</h2>
+            <ul className="mt-2 space-y-2 list-disc pl-5">
+              <li>
+                <strong>Anthropic</strong> — generates the AI action plan from the anonymous
+                inputs you provide.
+              </li>
+              <li>
+                <strong>Netlify</strong> — hosts the JiPange website and serverless
+                functions. Netlify may collect anonymous aggregate analytics (page views,
+                countries) as part of standard hosting telemetry.
               </li>
             </ul>
             <p className="mt-2">
-              We do not collect or store the inputs you enter into the standalone calculators
-              (e.g. loan amount, savings target) — those are computed entirely in your browser.
+              We do not use advertising networks, tracking pixels, or third-party analytics
+              SDKs.
             </p>
           </section>
 
           <section>
-            <h2 className="text-base font-semibold text-primary">2. How we use your information</h2>
-            <ul className="mt-2 list-disc space-y-1 pl-5">
-              <li>To calculate your take-home pay, budget split, and wealth projections</li>
-              <li>To generate your personalised AI action plan</li>
-              <li>To let you sign back in and see your saved plan</li>
-              <li>To monitor and improve the reliability of the Service (e.g. AI response quality and cost)</li>
-            </ul>
-            <p className="mt-2">We do not sell your personal information to third parties.</p>
-          </section>
-
-          <section>
-            <h2 className="text-base font-semibold text-primary">3. Third parties who process your data</h2>
-            <ul className="mt-2 list-disc space-y-1 pl-5">
-              <li>
-                <strong>Supabase</strong> — hosts our database and authentication. Your account
-                and profile data are stored with Supabase under access controls that ensure only
-                you can read or write your own records.
-              </li>
-              <li>
-                <strong>Anthropic</strong> — we send your profile figures (not your name or email)
-                to Anthropic&apos;s Claude API to generate your action plan text.
-              </li>
-              <li>
-                <strong>Netlify</strong> — hosts the JiPange website and application.
-              </li>
-            </ul>
-          </section>
-
-          <section>
-            <h2 className="text-base font-semibold text-primary">4. Data security</h2>
+            <h2 className="text-base font-semibold text-primary">5. Cookies</h2>
             <p className="mt-2">
-              Your account data is protected by row-level security policies that restrict access
-              to your own records only. Data is transmitted over encrypted (HTTPS) connections.
+              JiPange does not set any cookies. The <code>localStorage</code> entries in
+              section 2 are not cookies — they are device-local key-value storage that is
+              never transmitted in HTTP requests.
             </p>
           </section>
 
           <section>
-            <h2 className="text-base font-semibold text-primary">5. Your rights</h2>
+            <h2 className="text-base font-semibold text-primary">
+              6. Your rights under the Data Protection Act, 2019
+            </h2>
             <p className="mt-2">
-              Under the Data Protection Act, 2019, you have the right to access, correct, or
-              request deletion of your personal data. You can update your profile at any time from
-              within the app, or contact us to request full deletion of your account and
-              associated data.
+              Because we hold no personal data about you, there is nothing for us to provide,
+              correct, or delete on our end. To remove your local data, clear your
+              browser&apos;s site data for this site. If you have questions, contact us at{" "}
+              <a
+                href="mailto:hello@jipangefinance.app"
+                className="font-medium text-primary underline"
+              >
+                hello@jipangefinance.app
+              </a>
+              .
             </p>
           </section>
 
           <section>
-            <h2 className="text-base font-semibold text-primary">6. Data retention</h2>
+            <h2 className="text-base font-semibold text-primary">7. Children&apos;s privacy</h2>
             <p className="mt-2">
-              We retain your account data for as long as your account remains active. If you
-              delete your account, your profile and plan data are removed from our active
-              database.
+              JiPange is intended for users aged 18 and over. We do not knowingly collect
+              information from children — and by design, we collect no information from
+              anyone.
             </p>
           </section>
 
           <section>
-            <h2 className="text-base font-semibold text-primary">7. Local storage (guest mode)</h2>
+            <h2 className="text-base font-semibold text-primary">8. Changes to this policy</h2>
             <p className="mt-2">
-              In guest mode, your profile and calculation results are kept in your browser&apos;s
-              local storage so you can move between screens. This data never leaves your device
-              and is cleared if you clear your browser data.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-base font-semibold text-primary">8. Children&apos;s privacy</h2>
-            <p className="mt-2">
-              JiPange is intended for users aged 18 and over and does not knowingly collect
-              information from children.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-base font-semibold text-primary">9. Changes to this policy</h2>
-            <p className="mt-2">
-              We may update this policy from time to time. Material changes will be reflected by
-              updating the date at the top of this page.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-base font-semibold text-primary">10. Contact</h2>
-            <p className="mt-2">
-              Questions about this policy, or requests to access or delete your data, can be sent
-              to the contact address published on our website.
+              We may update this policy from time to time. Material changes will be reflected
+              by updating the date at the top of this page.
             </p>
           </section>
         </div>
+
+        <p className="mt-8 text-xs text-[#6f6e69]">
+          Questions?{" "}
+          <Link href="/about" className="underline hover:text-primary">
+            Learn more about JiPange
+          </Link>{" "}
+          or read our{" "}
+          <Link href="/terms" className="underline hover:text-primary">
+            Terms of Use
+          </Link>
+          .
+        </p>
       </div>
     </div>
   );

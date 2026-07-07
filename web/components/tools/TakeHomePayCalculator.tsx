@@ -11,6 +11,7 @@ import { formatKES } from "@/lib/budget";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import DeductionRow from "./DeductionRow";
 import NumberField from "./NumberField";
+import PayBreakdownChart from "./PayBreakdownChart";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
 
@@ -183,6 +184,14 @@ export default function TakeHomePayCalculator() {
               bold
             />
           </div>
+
+          <PayBreakdownChart
+            netMonthly={result.netMonthly}
+            paye={result.paye}
+            nssfTotal={result.nssf.total}
+            shif={result.shif}
+            ahl={result.ahl}
+          />
 
           <div className="rounded-2xl bg-[#F1ECE3] p-6">
             <p className="text-sm text-[#4B4238]">
