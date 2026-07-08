@@ -1,11 +1,12 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import {
   calculateChamaInvestment,
   calculateMerryGoRound,
 } from "@/lib/chama";
 import { formatKES } from "@/lib/budget";
+import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import NumberField from "./NumberField";
 import QuickFillChips from "./QuickFillChips";
@@ -37,11 +38,20 @@ const RETURN_CHIPS = [
 type Mode = "merry-go-round" | "investment";
 
 export default function ChamaGroupCalculator() {
-  const [mode, setMode] = useState<Mode>("merry-go-round");
-  const [members, setMembers] = useState("12");
-  const [contribution, setContribution] = useState("2000");
-  const [bufferPercent, setBufferPercent] = useState("5");
-  const [annualReturn, setAnnualReturn] = useState("11");
+  const [mode, setMode] = useStickyState<Mode>("jipange:tool:chama:mode", "merry-go-round");
+  const [members, setMembers] = useStickyState("jipange:tool:chama:members", "12");
+  const [contribution, setContribution] = useStickyState(
+    "jipange:tool:chama:contribution",
+    "2000"
+  );
+  const [bufferPercent, setBufferPercent] = useStickyState(
+    "jipange:tool:chama:bufferPercent",
+    "5"
+  );
+  const [annualReturn, setAnnualReturn] = useStickyState(
+    "jipange:tool:chama:annualReturn",
+    "11"
+  );
 
   const mgr = useMemo(() => {
     const m = Number(members);
@@ -61,12 +71,30 @@ export default function ChamaGroupCalculator() {
 
   const result = mode === "merry-go-round" ? mgr : inv;
 
+  const resultsRef = useScrollIntoView<HTMLDivElement>(result !== null);
+
+  const isDirty =
+    mode !== "merry-go-round" ||
+    members !== "12" ||
+    contribution !== "2000" ||
+    bufferPercent !== "5" ||
+    annualReturn !== "11";
+
+  function handleReset() {
+    setMode("merry-go-round");
+    setMembers("12");
+    setContribution("2000");
+    setBufferPercent("5");
+    setAnnualReturn("11");
+  }
+
   return (
     <div className="space-y-4">
       <div className="flex rounded-lg border border-[#E5E0D8] bg-white p-1">
         <button
           type="button"
           onClick={() => setMode("merry-go-round")}
+          aria-pressed={mode === "merry-go-round"}
           className={`flex-1 rounded-md py-2 text-sm font-medium transition-colors ${
             mode === "merry-go-round"
               ? "bg-primary text-white"
@@ -78,6 +106,7 @@ export default function ChamaGroupCalculator() {
         <button
           type="button"
           onClick={() => setMode("investment")}
+          aria-pressed={mode === "investment"}
           className={`flex-1 rounded-md py-2 text-sm font-medium transition-colors ${
             mode === "investment"
               ? "bg-primary text-white"
@@ -161,8 +190,18 @@ export default function ChamaGroupCalculator() {
         </div>
       )}
 
+      {isDirty && (
+        <button
+          type="button"
+          onClick={handleReset}
+          className="text-xs text-[#9A8B80] underline underline-offset-2 hover:text-primary"
+        >
+          Start over
+        </button>
+      )}
+
       {result && mode === "merry-go-round" && mgr && (
-        <>
+        <div ref={resultsRef} className="space-y-4">
           <ResultCard
             label={`Monthly pool (${members} × ${formatKES(Number(contribution))})`}
             value={formatKES(mgr.monthlyPool)}
@@ -216,11 +255,11 @@ export default function ChamaGroupCalculator() {
           <ShareResultButton
             message={`🤝 *Our Chama Rotation*\n\nMembers: ${members}\nMonthly contribution: ${formatKES(Number(contribution))} each\nMonthly pool: ${formatKES(mgr.monthlyPool)}\nRotation payout: ${formatKES(mgr.rotationPayout)}\nCycle: ${mgr.cycleMonths} months\n\nSimulate yours → jipangefinance.netlify.app/tools/chama`}
           />
-        </>
+        </div>
       )}
 
       {result && mode === "investment" && inv && (
-        <>
+        <div ref={resultsRef} className="space-y-4">
           <ResultCard
             label={`Monthly pool invested (${members} × ${formatKES(Number(contribution))})`}
             value={formatKES(inv.monthlyPool)}
@@ -256,7 +295,7 @@ export default function ChamaGroupCalculator() {
           <ShareResultButton
             message={`📈 *Our Chama Investment Pool*\n\n${members} members × ${formatKES(Number(contribution))}/month at ${annualReturn}% return:\n1 year: ${formatKES(inv.value1Yr)} (${formatKES(inv.perMemberShare1Yr)}/member)\n3 years: ${formatKES(inv.value3Yr)} (${formatKES(inv.perMemberShare3Yr)}/member)\n5 years: ${formatKES(inv.value5Yr)} (${formatKES(inv.perMemberShare5Yr)}/member)\n\nSimulate yours → jipangefinance.netlify.app/tools/chama`}
           />
-        </>
+        </div>
       )}
 
       {result && (

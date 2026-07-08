@@ -1,16 +1,17 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { calculateFulizaCost } from "@/lib/fuliza";
 import { formatKES } from "@/lib/budget";
+import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import NumberField from "./NumberField";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
 
 export default function FulizaCostCalculator() {
-  const [amount, setAmount] = useState("");
-  const [days, setDays] = useState("");
+  const [amount, setAmount] = useStickyState("jipange:tool:fuliza-cost:amount", "");
+  const [days, setDays] = useStickyState("jipange:tool:fuliza-cost:days", "");
 
   const result = useMemo(() => {
     const principal = Number(amount);
@@ -18,6 +19,15 @@ export default function FulizaCostCalculator() {
     if (!principal || principal <= 0 || !daysValue || daysValue <= 0) return null;
     return calculateFulizaCost(principal, daysValue);
   }, [amount, days]);
+
+  const resultsRef = useScrollIntoView<HTMLDivElement>(result !== null);
+
+  const isDirty = amount !== "" || days !== "";
+
+  function handleReset() {
+    setAmount("");
+    setDays("");
+  }
 
   return (
     <div className="space-y-4">
@@ -35,9 +45,18 @@ export default function FulizaCostCalculator() {
         onChange={setDays}
         placeholder="e.g. 7"
       />
+      {isDirty && (
+        <button
+          type="button"
+          onClick={handleReset}
+          className="text-xs text-[#9A8B80] underline underline-offset-2 hover:text-primary"
+        >
+          Start over
+        </button>
+      )}
 
       {result && (
-        <>
+        <div ref={resultsRef} className="space-y-4">
           <ResultCard
             label="Total cost of borrowing"
             value={formatKES(result.totalFee)}
@@ -65,7 +84,7 @@ export default function FulizaCostCalculator() {
           <ShareResultButton
             message={`📱 *True Cost of Fuliza*\n\nBorrowing ${formatKES(Number(amount))} for ${days} days costs ${formatKES(result.totalFee)} in fees.\nThat's about ${Math.round(result.annualisedApr * 100)}% APR.\n\nCalculate yours → jipangefinance.netlify.app/tools/fuliza-cost`}
           />
-        </>
+        </div>
       )}
     </div>
   );

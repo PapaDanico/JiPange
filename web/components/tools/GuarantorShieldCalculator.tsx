@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
 import { SACCO_LEVERAGE_MULTIPLIER } from "@/lib/market-2026";
 import { formatKES } from "@/lib/budget";
+import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import HowItWorks from "./HowItWorks";
 import NumberField from "./NumberField";
@@ -11,9 +11,15 @@ import ShareResultButton from "./ShareResultButton";
 
 /** Off-balance-sheet guarantorship: how much of your 3× Sacco leverage is actually free. */
 export default function GuarantorShieldCalculator() {
-  const [deposits, setDeposits] = useState("");
-  const [loans, setLoans] = useState("0");
-  const [guaranteed, setGuaranteed] = useState("0");
+  const [deposits, setDeposits] = useStickyState(
+    "jipange:tool:guarantor-shield:deposits",
+    ""
+  );
+  const [loans, setLoans] = useStickyState("jipange:tool:guarantor-shield:loans", "0");
+  const [guaranteed, setGuaranteed] = useStickyState(
+    "jipange:tool:guarantor-shield:guaranteed",
+    "0"
+  );
 
   const d = Number(deposits) || 0;
   const l = Math.max(0, Number(loans) || 0);
@@ -23,14 +29,33 @@ export default function GuarantorShieldCalculator() {
   const frozen = Math.max(0, gross - (available + l));
   const ratio = d > 0 ? Math.min(1, g / d) : 0;
 
+  const resultsRef = useScrollIntoView<HTMLDivElement>(d > 0);
+
+  const isDirty = deposits !== "" || loans !== "0" || guaranteed !== "0";
+
+  function handleReset() {
+    setDeposits("");
+    setLoans("0");
+    setGuaranteed("0");
+  }
+
   return (
     <div className="space-y-4">
       <NumberField id="shieldDeposits" label="Total Sacco deposits (KES)" value={deposits} onChange={setDeposits} placeholder="e.g. 500000" />
       <NumberField id="shieldLoans" label="Your active Sacco loans (KES)" value={loans} onChange={setLoans} placeholder="0" />
       <NumberField id="shieldGuaranteed" label="Total amount guaranteed for others (KES)" value={guaranteed} onChange={setGuaranteed} placeholder="0" />
+      {isDirty && (
+        <button
+          type="button"
+          onClick={handleReset}
+          className="text-xs text-[#9A8B80] underline underline-offset-2 hover:text-primary"
+        >
+          Start over
+        </button>
+      )}
 
       {d > 0 && (
-        <>
+        <div ref={resultsRef} className="space-y-4">
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <ResultCard label="True unencumbered borrowing power" value={formatKES(available)} tone="success" />
             <ResultCard label="Frozen borrowing capacity" value={formatKES(frozen)} sublabel={`of your ${SACCO_LEVERAGE_MULTIPLIER}× gross ${formatKES(gross)}`} tone={frozen > 0 ? "danger" : undefined} />
@@ -50,7 +75,7 @@ export default function GuarantorShieldCalculator() {
           )}
           <CalculatorDisclaimer extraNotes={["Multipliers and guarantor rules vary by Sacco — confirm yours before committing."]} />
           <ShareResultButton message={`🎯 *My Sacco Guarantor Shield*\n\nFree borrowing power: ${formatKES(available)}\nFrozen by guarantees: ${formatKES(frozen)}\n\nCheck yours → jipangefinance.netlify.app/tools/guarantor-shield`} />
-        </>
+        </div>
       )}
       <HowItWorks
         steps={[

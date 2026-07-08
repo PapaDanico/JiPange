@@ -1,8 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { calculateLoanAmortization } from "@/lib/loans";
 import { formatKES } from "@/lib/budget";
+import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import NumberField from "./NumberField";
 import QuickFillChips from "./QuickFillChips";
 import ResultCard from "./ResultCard";
@@ -30,9 +31,18 @@ const TERM_CHIPS = [
 ];
 
 export default function LoanRepaymentCalculator() {
-  const [principal, setPrincipal] = useState("");
-  const [annualRate, setAnnualRate] = useState("13");
-  const [termYears, setTermYears] = useState("");
+  const [principal, setPrincipal] = useStickyState(
+    "jipange:tool:loan-repayment:principal",
+    ""
+  );
+  const [annualRate, setAnnualRate] = useStickyState(
+    "jipange:tool:loan-repayment:annualRate",
+    "13"
+  );
+  const [termYears, setTermYears] = useStickyState(
+    "jipange:tool:loan-repayment:termYears",
+    ""
+  );
 
   const result = useMemo(() => {
     const principalValue = Number(principal);
@@ -45,6 +55,16 @@ export default function LoanRepaymentCalculator() {
       termMonths: Math.round(years * 12),
     });
   }, [principal, annualRate, termYears]);
+
+  const resultsRef = useScrollIntoView<HTMLDivElement>(result !== null);
+
+  const isDirty = principal !== "" || annualRate !== "13" || termYears !== "";
+
+  function handleReset() {
+    setPrincipal("");
+    setAnnualRate("13");
+    setTermYears("");
+  }
 
   return (
     <div className="space-y-4">
@@ -93,9 +113,18 @@ export default function LoanRepaymentCalculator() {
           current={termYears}
         />
       </div>
+      {isDirty && (
+        <button
+          type="button"
+          onClick={handleReset}
+          className="text-xs text-[#9A8B80] underline underline-offset-2 hover:text-primary"
+        >
+          Start over
+        </button>
+      )}
 
       {result && (
-        <>
+        <div ref={resultsRef} className="space-y-4">
           <ResultCard label="Monthly installment" value={formatKES(result.monthlyPayment)} tone="success" />
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <ResultCard label="Total interest paid" value={formatKES(result.totalInterest)} />
@@ -104,7 +133,7 @@ export default function LoanRepaymentCalculator() {
           <ShareResultButton
             message={`🏦 *My Loan Repayment*\n\nLoan amount: ${formatKES(Number(principal))}\nMonthly installment: ${formatKES(result.monthlyPayment)}\nTotal interest: ${formatKES(result.totalInterest)}\n\nCalculate yours → jipangefinance.netlify.app/tools/loan-repayment`}
           />
-        </>
+        </div>
       )}
     </div>
   );

@@ -1,9 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { solveGrossForTargetNet } from "@/lib/salary-negotiation";
 import { calculateNetPay } from "@/lib/tax";
 import { formatKES } from "@/lib/budget";
+import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import DeductionRow from "./DeductionRow";
 import NumberField from "./NumberField";
@@ -13,7 +14,10 @@ import ShareResultButton from "./ShareResultButton";
 const NEGOTIATION_BUFFER = 5_000;
 
 export default function SalaryNegotiationCalculator() {
-  const [targetNet, setTargetNet] = useState("");
+  const [targetNet, setTargetNet] = useStickyState(
+    "jipange:tool:salary-negotiation:targetNet",
+    ""
+  );
 
   const result = useMemo(() => {
     const target = Number(targetNet);
@@ -26,6 +30,8 @@ export default function SalaryNegotiationCalculator() {
     return { target, gross, breakdown, grossWithBuffer };
   }, [targetNet]);
 
+  const resultsRef = useScrollIntoView<HTMLDivElement>(result !== null);
+
   return (
     <div className="space-y-4">
       <NumberField
@@ -35,9 +41,18 @@ export default function SalaryNegotiationCalculator() {
         onChange={setTargetNet}
         placeholder="e.g. 100000"
       />
+      {targetNet && (
+        <button
+          type="button"
+          onClick={() => setTargetNet("")}
+          className="text-xs text-[#9A8B80] underline underline-offset-2 hover:text-primary"
+        >
+          Start over
+        </button>
+      )}
 
       {result && (
-        <>
+        <div ref={resultsRef} className="space-y-4">
           <ResultCard
             label="Negotiate for a gross salary of"
             value={formatKES(result.gross)}
@@ -61,7 +76,7 @@ export default function SalaryNegotiationCalculator() {
           <ShareResultButton
             message={`💼 *Salary Negotiation*\n\nTo take home ${formatKES(result.target)}/month, I need to negotiate a gross salary of ${formatKES(result.gross)}.\n\nCalculate yours → jipangefinance.netlify.app/tools/salary-negotiation`}
           />
-        </>
+        </div>
       )}
     </div>
   );

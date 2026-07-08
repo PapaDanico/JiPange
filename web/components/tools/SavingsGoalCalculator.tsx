@@ -1,8 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { solveMonthlyContribution } from "@/lib/savings-goal";
 import { formatKES } from "@/lib/budget";
+import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import HowItWorks from "./HowItWorks";
 import NumberField from "./NumberField";
 import ResultCard from "./ResultCard";
@@ -15,10 +16,16 @@ const RATE_PRESETS = [
 ];
 
 export default function SavingsGoalCalculator() {
-  const [target, setTarget] = useState("");
-  const [years, setYears] = useState("");
-  const [currentSavings, setCurrentSavings] = useState("0");
-  const [annualReturn, setAnnualReturn] = useState("10");
+  const [target, setTarget] = useStickyState("jipange:tool:savings-goal:target", "");
+  const [years, setYears] = useStickyState("jipange:tool:savings-goal:years", "");
+  const [currentSavings, setCurrentSavings] = useStickyState(
+    "jipange:tool:savings-goal:currentSavings",
+    "0"
+  );
+  const [annualReturn, setAnnualReturn] = useStickyState(
+    "jipange:tool:savings-goal:annualReturn",
+    "10"
+  );
 
   const result = useMemo(() => {
     const targetFutureValue = Number(target);
@@ -35,7 +42,6 @@ export default function SavingsGoalCalculator() {
     return Number.isFinite(monthly) ? monthly : null;
   }, [target, years, currentSavings, annualReturn]);
 
-  // Timeline sensitivity: what one year of patience (or urgency) costs.
   const sensitivity = useMemo(() => {
     const targetFutureValue = Number(target);
     const yearsValue = Number(years);
@@ -49,6 +55,18 @@ export default function SavingsGoalCalculator() {
       });
     return { faster: at(yearsValue - 1), slower: at(yearsValue + 1) };
   }, [target, years, currentSavings, annualReturn]);
+
+  const resultsRef = useScrollIntoView<HTMLDivElement>(result !== null);
+
+  const isDirty =
+    target !== "" || years !== "" || currentSavings !== "0" || annualReturn !== "10";
+
+  function handleReset() {
+    setTarget("");
+    setYears("");
+    setCurrentSavings("0");
+    setAnnualReturn("10");
+  }
 
   return (
     <div className="space-y-4">
@@ -85,9 +103,18 @@ export default function SavingsGoalCalculator() {
           </button>
         ))}
       </div>
+      {isDirty && (
+        <button
+          type="button"
+          onClick={handleReset}
+          className="text-xs text-[#9A8B80] underline underline-offset-2 hover:text-primary"
+        >
+          Start over
+        </button>
+      )}
 
       {result !== null && (
-        <>
+        <div ref={resultsRef} className="space-y-4">
           <ResultCard
             label="Monthly savings needed"
             value={formatKES(result)}
@@ -112,7 +139,7 @@ export default function SavingsGoalCalculator() {
           <ShareResultButton
             message={`🎯 *My Savings Goal*\n\nTarget: ${formatKES(Number(target))} in ${years} years\nMonthly savings needed: ${formatKES(result)}\n\nCalculate yours → jipangefinance.netlify.app/tools/savings-goal`}
           />
-        </>
+        </div>
       )}
 
       <HowItWorks

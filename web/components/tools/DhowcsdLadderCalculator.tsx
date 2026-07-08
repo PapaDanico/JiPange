@@ -1,12 +1,13 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import {
   BANK_SAVINGS_BASELINE,
   DHOWCSD_MINIMUM,
   dhowcsdLadder,
 } from "@/lib/market-2026";
 import { formatKES } from "@/lib/budget";
+import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import NumberField from "./NumberField";
 import ResultCard from "./ResultCard";
@@ -18,11 +19,13 @@ import ShareResultButton from "./ShareResultButton";
  * savings yields.
  */
 export default function DhowcsdLadderCalculator() {
-  const [capital, setCapital] = useState("");
+  const [capital, setCapital] = useStickyState("jipange:tool:dhowcsd:capital", "");
 
   const parsed = Number(capital) || 0;
   const belowMinimum = parsed > 0 && parsed < DHOWCSD_MINIMUM;
   const ladder = useMemo(() => (parsed >= DHOWCSD_MINIMUM ? dhowcsdLadder(parsed) : null), [parsed]);
+
+  const resultsRef = useScrollIntoView<HTMLDivElement>(ladder !== null);
 
   return (
     <div className="space-y-4">
@@ -33,6 +36,15 @@ export default function DhowcsdLadderCalculator() {
         onChange={setCapital}
         placeholder={`Minimum ${DHOWCSD_MINIMUM.toLocaleString("en-KE")}`}
       />
+      {capital && (
+        <button
+          type="button"
+          onClick={() => setCapital("")}
+          className="text-xs text-[#9A8B80] underline underline-offset-2 hover:text-primary"
+        >
+          Start over
+        </button>
+      )}
       {belowMinimum && (
         <p className="text-sm text-danger">
           DhowCSD T-Bill bids start at {formatKES(DHOWCSD_MINIMUM)} — park smaller amounts in an
@@ -41,7 +53,7 @@ export default function DhowcsdLadderCalculator() {
       )}
 
       {ladder && (
-        <>
+        <div ref={resultsRef} className="space-y-4">
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             {ladder.buckets.map((bucket) => (
               <div key={bucket.days} className="rounded-2xl border border-[#E5E0D8] bg-white p-4">
@@ -79,7 +91,7 @@ export default function DhowcsdLadderCalculator() {
           <ShareResultButton
             message={`🏦 *My DhowCSD T-Bill Ladder*\n\n${formatKES(parsed)} split across 91/182/364-day T-Bills earns ~${formatKES(ladder.ladderAnnualKes)}/yr (${(ladder.blendedYield * 100).toFixed(2)}% blended) — ${formatKES(ladder.advantageKes)} more than bank savings, with quarterly liquidity.\n\nBuild yours → jipangefinance.netlify.app/tools/dhowcsd`}
           />
-        </>
+        </div>
       )}
     </div>
   );

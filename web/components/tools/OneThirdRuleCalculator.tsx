@@ -1,17 +1,27 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { checkOneThirdRule } from "@/lib/one-third-rule";
 import { formatKES } from "@/lib/budget";
+import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import NumberField from "./NumberField";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
 
 export default function OneThirdRuleCalculator() {
-  const [basicSalary, setBasicSalary] = useState("");
-  const [saccoDeductions, setSaccoDeductions] = useState("0");
-  const [loanDeductions, setLoanDeductions] = useState("0");
+  const [basicSalary, setBasicSalary] = useStickyState(
+    "jipange:tool:one-third-rule:basicSalary",
+    ""
+  );
+  const [saccoDeductions, setSaccoDeductions] = useStickyState(
+    "jipange:tool:one-third-rule:saccoDeductions",
+    "0"
+  );
+  const [loanDeductions, setLoanDeductions] = useStickyState(
+    "jipange:tool:one-third-rule:loanDeductions",
+    "0"
+  );
 
   const result = useMemo(() => {
     const basic = Number(basicSalary);
@@ -23,6 +33,16 @@ export default function OneThirdRuleCalculator() {
       loanDeductions: Number(loanDeductions) || 0,
     });
   }, [basicSalary, saccoDeductions, loanDeductions]);
+
+  const resultsRef = useScrollIntoView<HTMLDivElement>(result !== null);
+
+  const isDirty = basicSalary !== "" || saccoDeductions !== "0" || loanDeductions !== "0";
+
+  function handleReset() {
+    setBasicSalary("");
+    setSaccoDeductions("0");
+    setLoanDeductions("0");
+  }
 
   return (
     <div className="space-y-4">
@@ -47,9 +67,18 @@ export default function OneThirdRuleCalculator() {
         onChange={setLoanDeductions}
         placeholder="0"
       />
+      {isDirty && (
+        <button
+          type="button"
+          onClick={handleReset}
+          className="text-xs text-[#9A8B80] underline underline-offset-2 hover:text-primary"
+        >
+          Start over
+        </button>
+      )}
 
       {result && (
-        <>
+        <div ref={resultsRef} className="space-y-4">
           {result.compliant ? (
             <ResultCard
               label="✓ Your deductions are within the legal limit"
@@ -95,7 +124,7 @@ export default function OneThirdRuleCalculator() {
                 : `My deductions may exceed Kenya's legal limit by ${formatKES(result.excessDeduction)}/month.`
             }\n\nCheck yours → jipangefinance.netlify.app/tools/one-third-rule`}
           />
-        </>
+        </div>
       )}
     </div>
   );

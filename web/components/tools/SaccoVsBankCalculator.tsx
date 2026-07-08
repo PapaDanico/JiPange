@@ -1,8 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { compareLoanProducts, type LoanProductTier } from "@/lib/loan-comparison";
 import { formatKES } from "@/lib/budget";
+import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import NumberField from "./NumberField";
 import QuickFillChips from "./QuickFillChips";
@@ -30,8 +31,11 @@ const TIER_CLASS: Record<LoanProductTier, string> = {
 };
 
 export default function SaccoVsBankCalculator() {
-  const [amount, setAmount] = useState("");
-  const [termMonths, setTermMonths] = useState("");
+  const [amount, setAmount] = useStickyState("jipange:tool:sacco-vs-bank:amount", "");
+  const [termMonths, setTermMonths] = useStickyState(
+    "jipange:tool:sacco-vs-bank:termMonths",
+    ""
+  );
 
   const results = useMemo(() => {
     const principal = Number(amount);
@@ -39,6 +43,15 @@ export default function SaccoVsBankCalculator() {
     if (!principal || principal <= 0 || !months || months <= 0) return null;
     return compareLoanProducts(principal, months);
   }, [amount, termMonths]);
+
+  const resultsRef = useScrollIntoView<HTMLDivElement>(results !== null);
+
+  const isDirty = amount !== "" || termMonths !== "";
+
+  function handleReset() {
+    setAmount("");
+    setTermMonths("");
+  }
 
   return (
     <div className="space-y-4">
@@ -72,9 +85,18 @@ export default function SaccoVsBankCalculator() {
           current={termMonths}
         />
       </div>
+      {isDirty && (
+        <button
+          type="button"
+          onClick={handleReset}
+          className="text-xs text-[#9A8B80] underline underline-offset-2 hover:text-primary"
+        >
+          Start over
+        </button>
+      )}
 
       {results && (
-        <>
+        <div ref={resultsRef} className="space-y-4">
           <div className="space-y-3">
             {results.map((product) => (
               <div key={product.name} className="rounded-2xl bg-white p-4 shadow-sm">
@@ -124,7 +146,7 @@ export default function SaccoVsBankCalculator() {
           <ShareResultButton
             message={`⚖️ *SACCO vs Bank*\n\nFor a ${formatKES(Number(amount))} loan over ${termMonths} months:\nSACCO: ${formatKES(results[0].totalRepaid)} total\nBank: ${formatKES(results[1].totalRepaid)} total\nDigital lender: ${formatKES(results[2].totalRepaid)} total\n\nCompare yours → jipangefinance.netlify.app/tools/sacco-vs-bank`}
           />
-        </>
+        </div>
       )}
     </div>
   );
