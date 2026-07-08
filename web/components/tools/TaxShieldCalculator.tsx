@@ -9,6 +9,7 @@ import {
 import { formatKES } from "@/lib/budget";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
+import ExportCardButton from "./ExportCardButton";
 import NumberField from "./NumberField";
 import ShareResultButton from "./ShareResultButton";
 
@@ -103,6 +104,7 @@ export default function TaxShieldCalculator() {
       )}
 
       {shield && (
+        <>
         <div ref={resultsRef} className="space-y-4">
           {/* The leak gauge */}
           <div className="rounded-2xl border-2 border-danger bg-[#FBEAEA] p-5">
@@ -186,6 +188,8 @@ export default function TaxShieldCalculator() {
             message={`🧾 *My KRA Tax Shield*\n\nI'm leaking ${formatKES(shield.totalMonthlyRecoverable)}/month to PAYE that I could legally redirect into my own pension and reliefs.\n\nCheck your leak → jipangefinance.netlify.app/tools/tax-shield`}
           />
         </div>
+        <ExportCardButton containerRef={resultsRef} filename="tax-shield" />
+        </>
       )}
     </div>
   );

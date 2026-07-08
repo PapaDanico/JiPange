@@ -5,6 +5,7 @@ import { checkOneThirdRule } from "@/lib/one-third-rule";
 import { formatKES } from "@/lib/budget";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
+import ExportCardButton from "./ExportCardButton";
 import NumberField from "./NumberField";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
@@ -78,7 +79,8 @@ export default function OneThirdRuleCalculator() {
       )}
 
       {result && (
-        <div ref={resultsRef} className="space-y-4">
+        <>
+          <div ref={resultsRef} className="space-y-4">
           {result.compliant ? (
             <ResultCard
               label="✓ Your deductions are within the legal limit"
@@ -124,7 +126,9 @@ export default function OneThirdRuleCalculator() {
                 : `My deductions may exceed Kenya's legal limit by ${formatKES(result.excessDeduction)}/month.`
             }\n\nCheck yours → jipangefinance.netlify.app/tools/one-third-rule`}
           />
-        </div>
+          </div>
+          <ExportCardButton containerRef={resultsRef} filename="one-third-rule" />
+        </>
       )}
     </div>
   );

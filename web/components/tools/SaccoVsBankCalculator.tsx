@@ -5,6 +5,7 @@ import { compareLoanProducts, type LoanProductTier } from "@/lib/loan-comparison
 import { formatKES } from "@/lib/budget";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
+import ExportCardButton from "./ExportCardButton";
 import NumberField from "./NumberField";
 import QuickFillChips from "./QuickFillChips";
 import ShareResultButton from "./ShareResultButton";
@@ -96,6 +97,7 @@ export default function SaccoVsBankCalculator() {
       )}
 
       {results && (
+        <>
         <div ref={resultsRef} className="space-y-4">
           <div className="space-y-3">
             {results.map((product) => (
@@ -147,6 +149,8 @@ export default function SaccoVsBankCalculator() {
             message={`⚖️ *SACCO vs Bank*\n\nFor a ${formatKES(Number(amount))} loan over ${termMonths} months:\nSACCO: ${formatKES(results[0].totalRepaid)} total\nBank: ${formatKES(results[1].totalRepaid)} total\nDigital lender: ${formatKES(results[2].totalRepaid)} total\n\nCompare yours → jipangefinance.netlify.app/tools/sacco-vs-bank`}
           />
         </div>
+        <ExportCardButton containerRef={resultsRef} filename="sacco-vs-bank" />
+        </>
       )}
     </div>
   );

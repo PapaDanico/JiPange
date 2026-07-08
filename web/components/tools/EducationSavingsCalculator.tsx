@@ -6,6 +6,7 @@ import { CBC_GRADES, getCbcGrade } from "@/lib/cbc-grades";
 import { solveMonthlyContribution } from "@/lib/savings-goal";
 import { formatKES } from "@/lib/budget";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
+import ExportCardButton from "./ExportCardButton";
 import NumberField from "./NumberField";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
@@ -179,6 +180,7 @@ export default function EducationSavingsCalculator() {
       )}
 
       {result && (
+        <>
         <div ref={resultsRef} className="space-y-4">
           {result.jssMonthly !== null && (
             <ResultCard
@@ -204,6 +206,8 @@ export default function EducationSavingsCalculator() {
             message={`🎓 *My Kids' Education Savings Plan*\n\nCombined monthly savings needed: ${formatKES(result.combinedMonthly)}\n\nCalculate yours → jipangefinance.netlify.app/tools/education-savings`}
           />
         </div>
+        <ExportCardButton containerRef={resultsRef} filename="education-savings" />
+        </>
       )}
     </div>
   );

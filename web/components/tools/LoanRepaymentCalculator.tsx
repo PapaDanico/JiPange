@@ -6,6 +6,7 @@ import { formatKES } from "@/lib/budget";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import NumberField from "./NumberField";
 import QuickFillChips from "./QuickFillChips";
+import ExportCardButton from "./ExportCardButton";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
 
@@ -124,16 +125,19 @@ export default function LoanRepaymentCalculator() {
       )}
 
       {result && (
-        <div ref={resultsRef} className="space-y-4">
-          <ResultCard label="Monthly installment" value={formatKES(result.monthlyPayment)} tone="success" />
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <ResultCard label="Total interest paid" value={formatKES(result.totalInterest)} />
-            <ResultCard label="Total repaid" value={formatKES(result.totalPaid)} />
+        <>
+          <div ref={resultsRef} className="space-y-4">
+            <ResultCard label="Monthly installment" value={formatKES(result.monthlyPayment)} tone="success" />
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <ResultCard label="Total interest paid" value={formatKES(result.totalInterest)} />
+              <ResultCard label="Total repaid" value={formatKES(result.totalPaid)} />
+            </div>
+            <ShareResultButton
+              message={`🏦 *My Loan Repayment*\n\nLoan amount: ${formatKES(Number(principal))}\nMonthly installment: ${formatKES(result.monthlyPayment)}\nTotal interest: ${formatKES(result.totalInterest)}\n\nCalculate yours → jipangefinance.netlify.app/tools/loan-repayment`}
+            />
           </div>
-          <ShareResultButton
-            message={`🏦 *My Loan Repayment*\n\nLoan amount: ${formatKES(Number(principal))}\nMonthly installment: ${formatKES(result.monthlyPayment)}\nTotal interest: ${formatKES(result.totalInterest)}\n\nCalculate yours → jipangefinance.netlify.app/tools/loan-repayment`}
-          />
-        </div>
+          <ExportCardButton containerRef={resultsRef} filename="loan-repayment" />
+        </>
       )}
     </div>
   );

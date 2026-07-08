@@ -5,6 +5,7 @@ import { inflateToFutureCost, inflationAdjust } from "@/lib/projections";
 import { formatKES } from "@/lib/budget";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
+import ExportCardButton from "./ExportCardButton";
 import NumberField from "./NumberField";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
@@ -61,33 +62,36 @@ export default function InflationRealityCalculator() {
       )}
 
       {result && (
-        <div ref={resultsRef} className="space-y-4">
-          <ResultCard
-            label="Your salary will feel like"
-            value={formatKES(result.realValue)}
-            sublabel={`If it never rises, in ${result.yearsValue} years your ${formatKES(result.salaryValue)} salary will only buy what ${formatKES(result.realValue)} buys today.`}
-            tone="warning"
-          />
-          <ResultCard
-            label="To maintain your standard of living, your salary needs to reach"
-            value={formatKES(result.salaryNeeded)}
-            tone="success"
-          />
-          <ResultCard
-            label="The raise you need just to keep up"
-            value={formatKES(result.purchasingPowerLost)}
-          />
-          <p className="text-xs text-[#4B4238]">
-            Kenya CPI has averaged 6.5% per annum — source: Kenya National Bureau of Statistics
-            (KNBS).
-          </p>
+        <>
+          <div ref={resultsRef} className="space-y-4">
+            <ResultCard
+              label="Your salary will feel like"
+              value={formatKES(result.realValue)}
+              sublabel={`If it never rises, in ${result.yearsValue} years your ${formatKES(result.salaryValue)} salary will only buy what ${formatKES(result.realValue)} buys today.`}
+              tone="warning"
+            />
+            <ResultCard
+              label="To maintain your standard of living, your salary needs to reach"
+              value={formatKES(result.salaryNeeded)}
+              tone="success"
+            />
+            <ResultCard
+              label="The raise you need just to keep up"
+              value={formatKES(result.purchasingPowerLost)}
+            />
+            <p className="text-xs text-[#4B4238]">
+              Kenya CPI has averaged 6.5% per annum — source: Kenya National Bureau of Statistics
+              (KNBS).
+            </p>
 
-          <CalculatorDisclaimer />
+            <CalculatorDisclaimer />
 
-          <ShareResultButton
-            message={`📉 *Inflation Reality Check*\n\nIn ${result.yearsValue} years, my ${formatKES(result.salaryValue)} salary will feel like ${formatKES(result.realValue)} today.\nTo keep up, I need my salary to reach ${formatKES(result.salaryNeeded)}.\n\nCalculate yours → jipangefinance.netlify.app/tools/inflation-reality`}
-          />
-        </div>
+            <ShareResultButton
+              message={`📉 *Inflation Reality Check*\n\nIn ${result.yearsValue} years, my ${formatKES(result.salaryValue)} salary will feel like ${formatKES(result.realValue)} today.\nTo keep up, I need my salary to reach ${formatKES(result.salaryNeeded)}.\n\nCalculate yours → jipangefinance.netlify.app/tools/inflation-reality`}
+            />
+          </div>
+          <ExportCardButton containerRef={resultsRef} filename="inflation-reality" />
+        </>
       )}
     </div>
   );

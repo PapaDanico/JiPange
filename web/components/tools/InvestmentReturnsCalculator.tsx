@@ -6,6 +6,7 @@ import { formatKES } from "@/lib/budget";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import HowItWorks from "./HowItWorks";
 import NumberField from "./NumberField";
+import ExportCardButton from "./ExportCardButton";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
 
@@ -147,21 +148,24 @@ export default function InvestmentReturnsCalculator() {
       )}
 
       {result && (
-        <div ref={resultsRef} className="space-y-4">
-          <ResultCard
-            label="Projected future value"
-            value={formatKES(result.total)}
-            sublabel={`Worth ${formatKES(result.realValue)} in today's shillings after inflation.`}
-            tone="success"
-          />
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <ResultCard label="Total contributed" value={formatKES(result.totalContributed)} />
-            <ResultCard label="Growth earned" value={formatKES(result.growth)} tone="success" />
+        <>
+          <div ref={resultsRef} className="space-y-4">
+            <ResultCard
+              label="Projected future value"
+              value={formatKES(result.total)}
+              sublabel={`Worth ${formatKES(result.realValue)} in today's shillings after inflation.`}
+              tone="success"
+            />
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <ResultCard label="Total contributed" value={formatKES(result.totalContributed)} />
+              <ResultCard label="Growth earned" value={formatKES(result.growth)} tone="success" />
+            </div>
+            <ShareResultButton
+              message={`📈 *My Investment Projection*\n\nIn ${years} years: ${formatKES(result.total)}\nGrowth earned: ${formatKES(result.growth)}\n\nCalculate yours → jipangefinance.netlify.app/tools/investment-returns`}
+            />
           </div>
-          <ShareResultButton
-            message={`📈 *My Investment Projection*\n\nIn ${years} years: ${formatKES(result.total)}\nGrowth earned: ${formatKES(result.growth)}\n\nCalculate yours → jipangefinance.netlify.app/tools/investment-returns`}
-          />
-        </div>
+          <ExportCardButton containerRef={resultsRef} filename="investment-returns" />
+        </>
       )}
 
       <HowItWorks

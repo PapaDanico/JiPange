@@ -4,6 +4,7 @@ import { SACCO_LEVERAGE_MULTIPLIER } from "@/lib/market-2026";
 import { formatKES } from "@/lib/budget";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
+import ExportCardButton from "./ExportCardButton";
 import HowItWorks from "./HowItWorks";
 import NumberField from "./NumberField";
 import ResultCard from "./ResultCard";
@@ -55,6 +56,7 @@ export default function GuarantorShieldCalculator() {
       )}
 
       {d > 0 && (
+        <>
         <div ref={resultsRef} className="space-y-4">
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <ResultCard label="True unencumbered borrowing power" value={formatKES(available)} tone="success" />
@@ -76,6 +78,8 @@ export default function GuarantorShieldCalculator() {
           <CalculatorDisclaimer extraNotes={["Multipliers and guarantor rules vary by Sacco — confirm yours before committing."]} />
           <ShareResultButton message={`🎯 *My Sacco Guarantor Shield*\n\nFree borrowing power: ${formatKES(available)}\nFrozen by guarantees: ${formatKES(frozen)}\n\nCheck yours → jipangefinance.netlify.app/tools/guarantor-shield`} />
         </div>
+        <ExportCardButton containerRef={resultsRef} filename="guarantor-shield" />
+        </>
       )}
       <HowItWorks
         steps={[
