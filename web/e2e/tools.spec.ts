@@ -5,9 +5,9 @@ import { test, expect } from "@playwright/test";
 test("tools index loads and lists calculators", async ({ page }) => {
   await page.goto("/tools");
   await expect(page.getByRole("heading", { name: /free financial calculators/i })).toBeVisible();
-  await expect(page.getByText("Plan for today")).toBeVisible();
-  await expect(page.getByText("Plan for the future")).toBeVisible();
-  await expect(page.getByText("Pesa realities")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Plan for today" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Plan for the future" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Pesa realities" })).toBeVisible();
   await expect(page.getByRole("link", { name: /take-home pay/i }).first()).toBeVisible();
 });
 
