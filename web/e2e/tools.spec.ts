@@ -205,6 +205,19 @@ test("education savings: shows monthly target", async ({ page }) => {
   await expect(page.getByText(/monthly|save|target/i).first()).toBeVisible();
 });
 
+// ─── Hustle Smoother ──────────────────────────────────────────────────────
+
+test("hustle smoother: shows smoothed salary for variable income", async ({ page }) => {
+  await page.goto("/tools/hustle-smoother");
+  await page.fill("#income-0", "40000");
+  await page.fill("#income-1", "25000");
+  await page.fill("#income-2", "55000");
+  await page.fill("#income-3", "30000");
+  await page.fill("#income-4", "60000");
+  await page.fill("#income-5", "20000");
+  await expect(page.getByText("Your smoothed monthly salary")).toBeVisible();
+});
+
 // ─── ToolEnhancements: related chips ────────────────────────────────────
 
 test("tool enhancements: shows Try next section with chips", async ({ page }) => {

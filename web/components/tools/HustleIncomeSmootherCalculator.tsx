@@ -1,0 +1,326 @@
+"use client";
+
+import { useMemo, useState, useEffect } from "react";
+import Link from "next/link";
+import { smoothIncomes } from "@/lib/hustle-smoother";
+import { TARGET_MMF_YIELD } from "@/lib/journey";
+import { formatKES } from "@/lib/budget";
+import { useStickyState, useScrollIntoView } from "@/lib/hooks";
+import ExportCardButton from "./ExportCardButton";
+import NumberField from "./NumberField";
+import QuickFillChips from "./QuickFillChips";
+import ResultCard from "./ResultCard";
+import ShareResultButton from "./ShareResultButton";
+
+const MONTH_CHIPS = [
+  { label: "3 mo", value: "3" },
+  { label: "6 mo", value: "6" },
+  { label: "9 mo", value: "9" },
+  { label: "12 mo", value: "12" },
+];
+
+const MONTH_NAMES = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December",
+];
+
+function buildMonthLabels(count: number): string[] {
+  const now = new Date().getMonth(); // 0 = Jan
+  return Array.from({ length: count }, (_, i) => {
+    const idx = ((now - count + 1 + i) + 12) % 12;
+    return MONTH_NAMES[idx];
+  });
+}
+
+export default function HustleIncomeSmootherCalculator() {
+  const [monthCount, setMonthCount] = useStickyState(
+    "jipange:tool:hustle-smoother:months",
+    "6"
+  );
+  const [drawPct, setDrawPct] = useStickyState(
+    "jipange:tool:hustle-smoother:drawPct",
+    "80"
+  );
+  const count = Math.max(3, Math.min(12, Number(monthCount) || 6));
+
+  const [incomes, setIncomes] = useState<string[]>(() => Array(count).fill(""));
+
+  useEffect(() => {
+    setIncomes((prev) => {
+      if (prev.length === count) return prev;
+      if (prev.length < count)
+        return [...prev, ...Array(count - prev.length).fill("")];
+      return prev.slice(0, count);
+    });
+  }, [count]);
+
+  const monthLabels = useMemo(() => buildMonthLabels(count), [count]);
+
+  const validIncomes = useMemo(
+    () => incomes.slice(0, count).map(Number).filter((v) => v > 0),
+    [incomes, count]
+  );
+
+  const result = useMemo(() => {
+    if (validIncomes.length < 2) return null;
+    return smoothIncomes(validIncomes, Number(drawPct) / 100);
+  }, [validIncomes, drawPct]);
+
+  const resultsRef = useScrollIntoView<HTMLDivElement>(result !== null);
+
+  const maxBar = result
+    ? Math.max(
+        ...incomes.slice(0, count).map(Number).filter((v) => v > 0),
+        result.monthlyDraw
+      )
+    : 0;
+
+  const isDirty =
+    monthCount !== "6" || drawPct !== "80" || incomes.some((v) => v !== "");
+
+  function handleReset() {
+    setMonthCount("6");
+    setDrawPct("80");
+    setIncomes(Array(6).fill(""));
+  }
+
+  function updateIncome(i: number, value: string) {
+    setIncomes((prev) => {
+      const next = [...prev];
+      next[i] = value;
+      return next;
+    });
+  }
+
+  return (
+    <div className="space-y-4">
+      <div>
+        <p className="text-sm font-medium text-[#4B4238]">
+          How many months of income to enter?
+        </p>
+        <QuickFillChips
+          label=""
+          options={MONTH_CHIPS}
+          onSelect={setMonthCount}
+          current={monthCount}
+        />
+      </div>
+
+      <div className="space-y-3">
+        {Array.from({ length: count }, (_, i) => (
+          <NumberField
+            key={i}
+            id={`income-${i}`}
+            label={`${monthLabels[i]} income (KES)`}
+            value={incomes[i] ?? ""}
+            onChange={(v) => updateIncome(i, v)}
+            placeholder="e.g. 35000"
+          />
+        ))}
+      </div>
+
+      {validIncomes.length >= 2 && (
+        <div>
+          <div className="flex items-center justify-between">
+            <label
+              htmlFor="hustle-drawPct"
+              className="text-sm font-medium text-[#4B4238]"
+            >
+              Pay yourself this % of your median income
+            </label>
+            <span className="text-sm font-semibold text-primary">{drawPct}%</span>
+          </div>
+          <input
+            id="hustle-drawPct"
+            type="range"
+            min={50}
+            max={100}
+            step={5}
+            value={drawPct}
+            onChange={(e) => setDrawPct(e.target.value)}
+            className="mt-2 h-2 w-full accent-primary"
+          />
+          <div className="mt-1 flex justify-between text-[10px] text-[#9A8B80]">
+            <span>50% (very conservative)</span>
+            <span>100% (median)</span>
+          </div>
+        </div>
+      )}
+
+      {isDirty && (
+        <button
+          type="button"
+          onClick={handleReset}
+          className="text-xs text-[#9A8B80] underline underline-offset-2 hover:text-primary"
+        >
+          Start over
+        </button>
+      )}
+
+      {result && (
+        <>
+          <div ref={resultsRef} className="space-y-4">
+            {/* Stats grid */}
+            <div className="grid grid-cols-2 gap-3">
+              <ResultCard label="Lowest month" value={formatKES(result.stats.min)} />
+              <ResultCard
+                label="Median month"
+                value={formatKES(result.stats.median)}
+              />
+              <ResultCard
+                label="Average month"
+                value={formatKES(result.stats.average)}
+              />
+              <ResultCard label="Best month" value={formatKES(result.stats.max)} />
+            </div>
+
+            {/* Main result */}
+            <ResultCard
+              label="Your smoothed monthly salary"
+              value={formatKES(result.monthlyDraw)}
+              sublabel={`${drawPct}% of your median — a steady draw you can count on even in lean months.`}
+              tone="success"
+            />
+
+            {/* Month-by-month bar chart */}
+            <div className="rounded-2xl bg-white p-4 shadow-sm">
+              <p className="text-sm font-semibold text-primary">
+                Month-by-month view
+              </p>
+              <p className="mt-0.5 text-xs text-[#4B4238]">
+                Bars = your income. Vertical line = your salary draw.
+              </p>
+              <div className="mt-3 space-y-2.5">
+                {incomes.slice(0, count).map((raw, i) => {
+                  const income = Number(raw) || 0;
+                  if (income <= 0) return null;
+                  const barPct = Math.round((income / maxBar) * 100);
+                  const linePct = Math.round((result.monthlyDraw / maxBar) * 100);
+                  const surplus = income - result.monthlyDraw;
+                  const isLean = surplus < 0;
+                  return (
+                    <div key={i}>
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="text-[#4B4238]">{monthLabels[i]}</span>
+                        <span
+                          className={`font-medium ${
+                            isLean ? "text-danger" : "text-success"
+                          }`}
+                        >
+                          {surplus >= 0 ? "+" : ""}
+                          {formatKES(surplus)}
+                        </span>
+                      </div>
+                      <div className="relative mt-1 h-4 overflow-hidden rounded-full bg-[#F1ECE3]">
+                        <div
+                          className={`h-full rounded-full ${
+                            isLean ? "bg-[#f5a9a9]" : "bg-[#86c99a]"
+                          }`}
+                          style={{ width: `${barPct}%` }}
+                        />
+                        {/* Salary draw line */}
+                        <div
+                          className="absolute inset-y-0 w-0.5 bg-primary"
+                          style={{ left: `${linePct}%` }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="mt-3 flex flex-wrap items-center gap-4 text-xs text-[#4B4238]">
+                <span className="flex items-center gap-1.5">
+                  <span className="inline-block h-2.5 w-2.5 rounded-full bg-[#86c99a]" />
+                  Surplus month
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <span className="inline-block h-2.5 w-2.5 rounded-full bg-[#f5a9a9]" />
+                  Lean month
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <span className="inline-block h-2.5 w-0.5 bg-primary" />
+                  Your salary
+                </span>
+              </div>
+            </div>
+
+            {/* Buffer outcome */}
+            {result.finalBuffer > 0 ? (
+              <div className="rounded-2xl bg-[#E9F5EC] p-4 text-sm text-[#2b4a2b]">
+                <p className="font-semibold">
+                  Buffer built:{" "}
+                  {formatKES(result.finalBuffer)} (
+                  {result.finalBufferMonths.toFixed(1)} months of salary)
+                </p>
+                <p className="mt-1 text-xs">
+                  Over {validIncomes.length} months, surplus drawdowns built this
+                  cushion — park it in an MMF at ~
+                  {(TARGET_MMF_YIELD * 100).toFixed(1)}% and it earns{" "}
+                  {formatKES(
+                    Math.round(result.finalBuffer * TARGET_MMF_YIELD)
+                  )}
+                  /year while it protects you.
+                </p>
+              </div>
+            ) : (
+              <div className="rounded-2xl border border-[#F0C06A] bg-[#FFF4DC] p-4 text-sm">
+                <p className="font-semibold text-warning">
+                  Your income is too variable for this draw level.
+                </p>
+                <p className="mt-1 text-xs text-[#4B4238]">
+                  Lean months drain your buffer before the next surplus arrives.
+                  Try lowering the draw % — 70% of median usually gives a safe
+                  margin even with volatile income.
+                </p>
+              </div>
+            )}
+
+            {result.shortMonths > 0 && (
+              <p className="text-xs text-[#4B4238]">
+                {result.shortMonths} of {validIncomes.length} months fell below your
+                salary draw — that&apos;s exactly what the buffer fund covers.
+              </p>
+            )}
+
+            {/* The three-step system */}
+            <div className="rounded-2xl bg-[#F1ECE3] p-4 text-sm text-[#4B4238]">
+              <p className="font-semibold text-primary">The three-step system</p>
+              <ol className="mt-2 list-decimal space-y-1 pl-5 text-xs">
+                <li>
+                  Every time income arrives, transfer the full amount to an MMF
+                  (Britam, CIC, ICEA Lion, Sanlam).
+                </li>
+                <li>
+                  Set a recurring M-Pesa withdrawal of exactly{" "}
+                  {formatKES(result.monthlyDraw)} on the 1st of every month — your
+                  salary, on time, regardless of that month&apos;s earnings.
+                </li>
+                <li>
+                  Leave the rest in the MMF — surplus months build the buffer; lean
+                  months draw from it automatically.
+                </li>
+              </ol>
+            </div>
+
+            <p className="text-xs text-[#4B4238]">
+              Running a cycle-based venture (poultry, horticulture, cash crops)?
+              Try the{" "}
+              <Link
+                href="/planners/hustle"
+                className="underline hover:text-primary"
+              >
+                Hustle Income Smoother planner
+              </Link>{" "}
+              — it handles lump-sum payouts and protects next-cycle seed capital.
+            </p>
+
+            <ShareResultButton
+              message={`🔄 *My Hustle Income Smoother*\n\n${validIncomes.length} months · Median: ${formatKES(result.stats.median)}\nSmoothed monthly salary: ${formatKES(result.monthlyDraw)}\nBuffer built: ${formatKES(Math.max(0, result.finalBuffer))} (${result.finalBufferMonths.toFixed(1)} months)\n\nSmooth yours → jipangefinance.netlify.app/tools/hustle-smoother`}
+            />
+          </div>
+          <ExportCardButton containerRef={resultsRef} filename="hustle-smoother" />
+        </>
+      )}
+    </div>
+  );
+}
