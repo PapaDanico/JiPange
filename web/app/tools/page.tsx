@@ -51,6 +51,14 @@ const CALCULATOR_GROUPS: ToolGroup[] = [
         isNew: true,
       },
       {
+        href: "/tools/20th-challenge",
+        icon: "🔥",
+        title: "20th-to-20th Savings Challenge",
+        description: "Commit to saving a fixed amount every month and build an unbroken streak with monthly check-ins.",
+        insight: "6 months is the habit-formation threshold. Check in between the 15th and 25th — the app keeps score.",
+        isNew: true,
+      },
+      {
         href: "/tools/payday-router",
         icon: "📱",
         title: "M-Pesa Payday Safety Router",

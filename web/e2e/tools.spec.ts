@@ -218,6 +218,15 @@ test("hustle smoother: shows smoothed salary for variable income", async ({ page
   await expect(page.getByText("Your smoothed monthly salary")).toBeVisible();
 });
 
+// ─── 20th challenge ───────────────────────────────────────────────────────
+
+test("20th challenge: setup screen loads and accepts a commitment", async ({ page }) => {
+  await page.goto("/tools/20th-challenge");
+  await expect(page.getByText(/monthly savings commitment/i).first()).toBeVisible();
+  await page.fill("#commitment", "5000");
+  await expect(page.getByText(/start the challenge/i)).toBeVisible();
+});
+
 // ─── ToolEnhancements: related chips ────────────────────────────────────
 
 test("tool enhancements: shows Try next section with chips", async ({ page }) => {
