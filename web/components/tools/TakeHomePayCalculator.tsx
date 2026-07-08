@@ -12,6 +12,7 @@ import { formatKES } from "@/lib/budget";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import DeductionRow from "./DeductionRow";
+import ExportCardButton from "./ExportCardButton";
 import NumberField from "./NumberField";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
@@ -172,6 +173,7 @@ export default function TakeHomePayCalculator() {
       )}
 
       {result && (
+        <>
         <div ref={resultsRef} className="space-y-4">
           <ResultCard label="Take-home pay" value={formatKES(result.netMonthly)} tone="success" />
 
@@ -383,6 +385,8 @@ export default function TakeHomePayCalculator() {
             Print / Save as PDF
           </button>
         </div>
+        <ExportCardButton containerRef={resultsRef} filename="take-home-pay" />
+        </>
       )}
     </div>
   );

@@ -8,6 +8,7 @@ import {
 import { formatKES } from "@/lib/budget";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
+import ExportCardButton from "./ExportCardButton";
 import NumberField from "./NumberField";
 import QuickFillChips from "./QuickFillChips";
 import ResultCard from "./ResultCard";
@@ -299,12 +300,15 @@ export default function ChamaGroupCalculator() {
       )}
 
       {result && (
-        <CalculatorDisclaimer
-          extraNotes={[
-            "Chama governance, rotation order, and emergency fund rules vary by group constitution.",
-            "Investment returns shown are estimates using a constant compounding rate — actual group MMF or SACCO returns fluctuate.",
-          ]}
-        />
+        <>
+          <ExportCardButton containerRef={resultsRef} filename="chama-calculator" />
+          <CalculatorDisclaimer
+            extraNotes={[
+              "Chama governance, rotation order, and emergency fund rules vary by group constitution.",
+              "Investment returns shown are estimates using a constant compounding rate — actual group MMF or SACCO returns fluctuate.",
+            ]}
+          />
+        </>
       )}
     </div>
   );

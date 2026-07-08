@@ -11,6 +11,7 @@ import {
 import { formatKES } from "@/lib/budget";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
+import ExportCardButton from "./ExportCardButton";
 import NumberField from "./NumberField";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
@@ -111,6 +112,7 @@ export default function FireNumberCalculator() {
       )}
 
       {fire && (
+        <>
         <div ref={resultsRef} className="space-y-4">
           <ResultCard
             label={`Your FIRE number at age ${Math.max(currentAge, targetAge)} (nominal)`}
@@ -170,6 +172,8 @@ export default function FireNumberCalculator() {
             Map My Path to FIRE → Start My Plan (90 Seconds)
           </Link>
         </div>
+        <ExportCardButton containerRef={resultsRef} filename="fire-number" />
+        </>
       )}
     </div>
   );

@@ -9,6 +9,7 @@ import {
 import { formatKES } from "@/lib/budget";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
+import ExportCardButton from "./ExportCardButton";
 import NumberField from "./NumberField";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
@@ -53,6 +54,7 @@ export default function DhowcsdLadderCalculator() {
       )}
 
       {ladder && (
+        <>
         <div ref={resultsRef} className="space-y-4">
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             {ladder.buckets.map((bucket) => (
@@ -92,6 +94,8 @@ export default function DhowcsdLadderCalculator() {
             message={`🏦 *My DhowCSD T-Bill Ladder*\n\n${formatKES(parsed)} split across 91/182/364-day T-Bills earns ~${formatKES(ladder.ladderAnnualKes)}/yr (${(ladder.blendedYield * 100).toFixed(2)}% blended) — ${formatKES(ladder.advantageKes)} more than bank savings, with quarterly liquidity.\n\nBuild yours → jipangefinance.netlify.app/tools/dhowcsd`}
           />
         </div>
+        <ExportCardButton containerRef={resultsRef} filename="dhowcsd-ladder" />
+        </>
       )}
     </div>
   );

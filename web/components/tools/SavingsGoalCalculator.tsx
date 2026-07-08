@@ -6,6 +6,7 @@ import { formatKES } from "@/lib/budget";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import HowItWorks from "./HowItWorks";
 import NumberField from "./NumberField";
+import ExportCardButton from "./ExportCardButton";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
 
@@ -114,32 +115,35 @@ export default function SavingsGoalCalculator() {
       )}
 
       {result !== null && (
-        <div ref={resultsRef} className="space-y-4">
-          <ResultCard
-            label="Monthly savings needed"
-            value={formatKES(result)}
-            sublabel="Assumes returns compound monthly at the rate above."
-            tone="success"
-          />
-          {sensitivity && (
-            <div className="grid grid-cols-2 gap-3" data-testid="goal-sensitivity">
-              <ResultCard
-                label={`In ${Number(years) - 1} years instead`}
-                value={formatKES(sensitivity.faster)}
-                sublabel="/month"
-              />
-              <ResultCard
-                label={`In ${Number(years) + 1} years instead`}
-                value={formatKES(sensitivity.slower)}
-                sublabel="/month"
-                tone="success"
-              />
-            </div>
-          )}
-          <ShareResultButton
-            message={`🎯 *My Savings Goal*\n\nTarget: ${formatKES(Number(target))} in ${years} years\nMonthly savings needed: ${formatKES(result)}\n\nCalculate yours → jipangefinance.netlify.app/tools/savings-goal`}
-          />
-        </div>
+        <>
+          <div ref={resultsRef} className="space-y-4">
+            <ResultCard
+              label="Monthly savings needed"
+              value={formatKES(result)}
+              sublabel="Assumes returns compound monthly at the rate above."
+              tone="success"
+            />
+            {sensitivity && (
+              <div className="grid grid-cols-2 gap-3" data-testid="goal-sensitivity">
+                <ResultCard
+                  label={`In ${Number(years) - 1} years instead`}
+                  value={formatKES(sensitivity.faster)}
+                  sublabel="/month"
+                />
+                <ResultCard
+                  label={`In ${Number(years) + 1} years instead`}
+                  value={formatKES(sensitivity.slower)}
+                  sublabel="/month"
+                  tone="success"
+                />
+              </div>
+            )}
+            <ShareResultButton
+              message={`🎯 *My Savings Goal*\n\nTarget: ${formatKES(Number(target))} in ${years} years\nMonthly savings needed: ${formatKES(result)}\n\nCalculate yours → jipangefinance.netlify.app/tools/savings-goal`}
+            />
+          </div>
+          <ExportCardButton containerRef={resultsRef} filename="savings-goal" />
+        </>
       )}
 
       <HowItWorks
