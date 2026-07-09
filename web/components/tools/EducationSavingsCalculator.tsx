@@ -8,8 +8,10 @@ import { formatKES } from "@/lib/budget";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import ExportCardButton from "./ExportCardButton";
 import NumberField from "./NumberField";
+import ProductLinks from "./ProductLinks";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
+import { MMF_LINKS } from "@/lib/affiliate-links";
 
 export default function EducationSavingsCalculator() {
   const [gradeValue, setGradeValue] = useStickyState(
@@ -207,6 +209,7 @@ export default function EducationSavingsCalculator() {
           />
         </div>
         <ExportCardButton containerRef={resultsRef} filename="education-savings" />
+        <ProductLinks products={MMF_LINKS.slice(0, 2)} heading="Start the fund in an MMF today" />
         </>
       )}
     </div>
