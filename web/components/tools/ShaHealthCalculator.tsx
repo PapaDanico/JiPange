@@ -8,6 +8,7 @@ import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import NumberField from "./NumberField";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
+import Toggle from "./Toggle";
 import { PENSION_LINKS } from "@/lib/affiliate-links";
 import ProductLinks from "./ProductLinks";
 
@@ -137,21 +138,11 @@ export default function ShaHealthCalculator() {
             SHA alone only covers accredited public facilities
           </p>
         </div>
-        <button
-          type="button"
-          role="switch"
-          aria-checked={wantsPrivate === "true"}
-          onClick={() => setWantsPrivate(wantsPrivate === "true" ? "false" : "true")}
-          className={`relative h-6 w-11 rounded-full transition-colors ${
-            wantsPrivate === "true" ? "bg-primary" : "bg-[#D4CEC5]"
-          }`}
-        >
-          <span
-            className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${
-              wantsPrivate === "true" ? "translate-x-5" : "translate-x-0.5"
-            }`}
-          />
-        </button>
+        <Toggle
+          checked={wantsPrivate === "true"}
+          onChange={() => setWantsPrivate(wantsPrivate === "true" ? "false" : "true")}
+          aria-label="Toggle private hospital access"
+        />
       </div>
 
       {isDirty && (
