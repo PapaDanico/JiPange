@@ -3,6 +3,7 @@
 import { SACCO_LEVERAGE_MULTIPLIER } from "@/lib/market-2026";
 import { formatKES } from "@/lib/budget";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
+import BehavioralInsightStrip from "./BehavioralInsightStrip";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import ExportCardButton from "./ExportCardButton";
 import HowItWorks from "./HowItWorks";
@@ -75,6 +76,9 @@ export default function GuarantorShieldCalculator() {
               contained — you retain clean leverage for plot, construction, or asset financing.
             </p>
           )}
+          <BehavioralInsightStrip
+            insight="Optimism bias makes us systematically underestimate the chance that people close to us will default. Research shows we treat signing as guarantor as a social act — not a financial one — yet the Sacco reads your deposits as collateral the same way it reads theirs. The frozen capacity above is not hypothetical: it is real money you cannot touch until a substitution is filed."
+          />
           <CalculatorDisclaimer extraNotes={["Multipliers and guarantor rules vary by Sacco — confirm yours before committing."]} />
           <ShareResultButton message={`🎯 *My Sacco Guarantor Shield*\n\nFree borrowing power: ${formatKES(available)}\nFrozen by guarantees: ${formatKES(frozen)}\n\nCheck yours → jipangefinance.netlify.app/tools/guarantor-shield`} />
         </div>
