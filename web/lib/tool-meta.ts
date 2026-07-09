@@ -120,6 +120,18 @@ export const TOOL_META: Record<string, ToolMeta> = {
     name: "Chama Group Savings",
     related: ["/tools/savings-goal", "/tools/investment-returns", "/tools/sacco-vs-bank"],
   },
+  "/tools/hustle-smoother": {
+    href: "/tools/hustle-smoother",
+    icon: "🔄",
+    name: "Hustle Income Smoother",
+    related: ["/tools/budget-split", "/tools/savings-goal", "/planners/hustle"],
+  },
+  "/tools/20th-challenge": {
+    href: "/tools/20th-challenge",
+    icon: "🔥",
+    name: "20th-to-20th Challenge",
+    related: ["/tools/savings-goal", "/tools/budget-split", "/tools/payday-router"],
+  },
   // Planners (for cross-linking targets)
   "/planners/emergency": { href: "/planners/emergency", icon: "🛡️", name: "Emergency Fund Planner", related: [] },
   "/planners/education": { href: "/planners/education", icon: "🎓", name: "School Fees Smoother", related: [] },

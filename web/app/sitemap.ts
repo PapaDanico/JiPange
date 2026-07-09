@@ -11,6 +11,7 @@ const ROUTES = [
     "tax-shield", "investment-returns", "fire-number", "dhowcsd", "money-runway",
     "education-savings", "salary-negotiation", "sacco-vs-bank", "inflation-reality",
     "kplc-optimizer", "fuliza-cost", "one-third-rule", "guarantor-shield",
+    "chama", "hustle-smoother", "20th-challenge",
   ].map((t) => `/tools/${t}`),
   "/terms", "/privacy",
 ];

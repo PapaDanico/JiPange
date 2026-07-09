@@ -78,12 +78,21 @@ export default function TermsPage() {
           </section>
 
           <section>
-            <h2 className="text-base font-semibold text-primary">7. Third-party services</h2>
+            <h2 className="text-base font-semibold text-primary">7. Third-party services and affiliate links</h2>
             <p className="mt-2">
               JiPange relies on third-party providers to operate, including Anthropic (to
               generate AI action plans from anonymous inputs) and Netlify (hosting). Your use
               of features that rely on these providers is also subject to their own terms and
               policies.
+            </p>
+            <p className="mt-2">
+              Some calculator result pages include links to regulated Kenyan financial products
+              — Money Market Funds, Treasury Bills (DhowCSD), and similar instruments. These
+              links may be affiliate referral links: JiPange may earn a small commission if you
+              open an account through them, at no extra cost to you. Each product card clearly
+              states whether it carries an affiliate relationship. We link only to
+              CMA- or CBK-regulated products; inclusion is not a guarantee of suitability for
+              your circumstances.
             </p>
           </section>
 

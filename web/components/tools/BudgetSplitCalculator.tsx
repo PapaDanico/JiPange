@@ -7,8 +7,10 @@ import { calculateNetPay } from "@/lib/tax";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import ExportCardButton from "./ExportCardButton";
 import NumberField from "./NumberField";
+import ProductLinks from "./ProductLinks";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
+import { MMF_AND_TBILL_LINKS } from "@/lib/affiliate-links";
 
 export default function BudgetSplitCalculator() {
   const [grossMonthlySalary, setGrossMonthlySalary] = useStickyState(
@@ -81,6 +83,7 @@ export default function BudgetSplitCalculator() {
             />
           </div>
           <ExportCardButton containerRef={exportRef} filename="budget-split" />
+          <ProductLinks products={MMF_AND_TBILL_LINKS} heading="Put your 25% investments slice to work" />
         </>
       )}
     </div>

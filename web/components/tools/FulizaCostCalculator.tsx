@@ -7,8 +7,10 @@ import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import ExportCardButton from "./ExportCardButton";
 import NumberField from "./NumberField";
+import ProductLinks from "./ProductLinks";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
+import { MMF_LINKS } from "@/lib/affiliate-links";
 
 export default function FulizaCostCalculator() {
   const [amount, setAmount] = useStickyState("jipange:tool:fuliza-cost:amount", "");
@@ -88,6 +90,7 @@ export default function FulizaCostCalculator() {
             />
           </div>
           <ExportCardButton containerRef={resultsRef} filename="fuliza-cost" />
+          <ProductLinks products={MMF_LINKS.slice(0, 2)} heading="Build an emergency float in an MMF instead" />
         </>
       )}
     </div>

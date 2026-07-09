@@ -205,6 +205,50 @@ test("education savings: shows monthly target", async ({ page }) => {
   await expect(page.getByText(/monthly|save|target/i).first()).toBeVisible();
 });
 
+// ─── Hustle Smoother ──────────────────────────────────────────────────────
+
+test("hustle smoother: shows smoothed salary for variable income", async ({ page }) => {
+  await page.goto("/tools/hustle-smoother");
+  await page.fill("#income-0", "40000");
+  await page.fill("#income-1", "25000");
+  await page.fill("#income-2", "55000");
+  await page.fill("#income-3", "30000");
+  await page.fill("#income-4", "60000");
+  await page.fill("#income-5", "20000");
+  await expect(page.getByText("Your smoothed monthly salary")).toBeVisible();
+});
+
+// ─── 20th challenge ───────────────────────────────────────────────────────
+
+test("20th challenge: setup screen loads and accepts a commitment", async ({ page }) => {
+  await page.goto("/tools/20th-challenge");
+  await expect(page.getByText(/monthly savings commitment/i).first()).toBeVisible();
+  await page.fill("#commitment", "5000");
+  await expect(page.getByText(/start the challenge/i)).toBeVisible();
+});
+
+// ─── Affiliate links / product links ─────────────────────────────────────
+
+test("affiliate links: savings goal shows MMF product cards", async ({ page }) => {
+  await page.goto("/tools/savings-goal");
+  const inputs = page.getByRole("spinbutton");
+  await inputs.nth(0).fill("500000");
+  await inputs.nth(1).fill("24");
+  await inputs.nth(2).fill("10");
+  await expect(page.getByText(/top mmfs for this goal/i)).toBeVisible();
+  await expect(page.getByText(/CIC MMF|Britam MMF/i).first()).toBeVisible();
+});
+
+test("affiliate links: /go/cic-mmf redirects externally", async ({ page }) => {
+  const response = await page.request.get("/go/cic-mmf", { maxRedirects: 0 });
+  expect([301, 302, 307, 308]).toContain(response.status());
+});
+
+test("affiliate links: /go/unknown-slug redirects to /tools", async ({ page }) => {
+  await page.goto("/go/this-slug-does-not-exist");
+  await expect(page).toHaveURL("/tools");
+});
+
 // ─── ToolEnhancements: related chips ────────────────────────────────────
 
 test("tool enhancements: shows Try next section with chips", async ({ page }) => {

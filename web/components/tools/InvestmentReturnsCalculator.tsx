@@ -7,8 +7,10 @@ import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import HowItWorks from "./HowItWorks";
 import NumberField from "./NumberField";
 import ExportCardButton from "./ExportCardButton";
+import ProductLinks from "./ProductLinks";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
+import { MMF_AND_TBILL_LINKS } from "@/lib/affiliate-links";
 
 const RATE_PRESETS = [
   { label: "Bank 3.23%", value: "3.23" },
@@ -165,6 +167,7 @@ export default function InvestmentReturnsCalculator() {
             />
           </div>
           <ExportCardButton containerRef={resultsRef} filename="investment-returns" />
+          <ProductLinks products={MMF_AND_TBILL_LINKS} heading="Where to invest this" />
         </>
       )}
 

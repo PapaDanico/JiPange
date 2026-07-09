@@ -13,8 +13,10 @@ import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import ExportCardButton from "./ExportCardButton";
 import NumberField from "./NumberField";
+import ProductLinks from "./ProductLinks";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
+import { MMF_AND_TBILL_LINKS } from "@/lib/affiliate-links";
 
 /**
  * Localized FIRE engine: replaces the Western 4%-rule (25×) with a 5% SWR
@@ -173,6 +175,7 @@ export default function FireNumberCalculator() {
           </Link>
         </div>
         <ExportCardButton containerRef={resultsRef} filename="fire-number" />
+        <ProductLinks products={MMF_AND_TBILL_LINKS} heading="Where to invest your FIRE portfolio" />
         </>
       )}
     </div>
