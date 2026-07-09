@@ -6,6 +6,7 @@ import { formatKES } from "@/lib/budget";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import NumberField from "./NumberField";
 import QuickFillChips from "./QuickFillChips";
+import BehavioralInsightStrip from "./BehavioralInsightStrip";
 import ExportCardButton from "./ExportCardButton";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
@@ -132,6 +133,9 @@ export default function LoanRepaymentCalculator() {
               <ResultCard label="Total interest paid" value={formatKES(result.totalInterest)} />
               <ResultCard label="Total repaid" value={formatKES(result.totalPaid)} />
             </div>
+            <BehavioralInsightStrip
+              insight={`Loss aversion means debt pain is felt more acutely than investment gains of the same amount feel good. That's useful here: at ${annualRate}% annual interest, paying down this loan early delivers a guaranteed, tax-free return equal to the rate — which very few savings products can beat. The total interest above is money already allocated to the lender; every extra payment reclaims a share of it.`}
+            />
             <ShareResultButton
               message={`🏦 *My Loan Repayment*\n\nLoan amount: ${formatKES(Number(principal))}\nMonthly installment: ${formatKES(result.monthlyPayment)}\nTotal interest: ${formatKES(result.totalInterest)}\n\nCalculate yours → jipangefinance.netlify.app/tools/loan-repayment`}
             />

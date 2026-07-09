@@ -8,6 +8,7 @@ import {
   mapJourney,
   microMilestoneTarget,
   type JourneyAnswers,
+  type PrimaryGoal,
   type Vehicle,
 } from "@/lib/journey";
 
@@ -250,7 +251,120 @@ function VendorBlueprint({ vehicleId }: { vehicleId: Vehicle["id"] }) {
   );
 }
 
-// ── Module 3: the viral "Share My Milestone" loop ──
+// ── Module 3: Life Capital Map ──
+
+type LifeCapitalDomain = "Security" | "Growth" | "Freedom" | "Legacy";
+
+const GOAL_TO_DOMAIN: Record<PrimaryGoal, LifeCapitalDomain> = {
+  emergency_fund: "Security",
+  clear_debt: "Security",
+  home_deposit: "Growth",
+  business_capital: "Growth",
+  education: "Legacy",
+};
+
+const DOMAIN_META: Record<
+  LifeCapitalDomain,
+  { emoji: string; textColor: string; bg: string; border: string; insight: string; next: string }
+> = {
+  Security: {
+    emoji: "🛡️",
+    textColor: "#2D7D46",
+    bg: "#E9F5EC",
+    border: "#A3D4AE",
+    insight:
+      "A liquidity buffer doesn't just protect against shocks — it eliminates decision-making under duress. Every financial choice looks different when you have breathing room.",
+    next: "Once you hold 3–6 months of expenses in a liquid MMF, shift allocation toward Growth capital.",
+  },
+  Growth: {
+    emoji: "🌳",
+    textColor: "#6B5B4D",
+    bg: "#F1ECE3",
+    border: "#C9BFB2",
+    insight:
+      "Growth capital works when you don't. Property equity and business ownership compound differently from savings rates — they build net worth, not just a balance.",
+    next: "As growth capital matures, allocate a share of yields toward Freedom capital: instruments that generate passive income.",
+  },
+  Freedom: {
+    emoji: "🕊️",
+    textColor: "#3A6B82",
+    bg: "#EEF5F9",
+    border: "#A0C5D8",
+    insight:
+      "The inflection point in personal finance is the month your passive income exceeds your baseline expenses. Every consistent monthly investment closes that gap.",
+    next: "Freedom capital is also the base from which Legacy capital is funded without strain.",
+  },
+  Legacy: {
+    emoji: "🎓",
+    textColor: "#B45309",
+    bg: "#FFF4DC",
+    border: "#F0C06A",
+    insight:
+      "Human capital invested in the next generation compounds across lifetimes. The research on education returns is clear: the gap between funded and unfunded children widens every decade.",
+    next: "Legacy capital and Security capital are not sequential — fund both in parallel if income permits.",
+  },
+};
+
+const DOMAIN_ORDER: LifeCapitalDomain[] = ["Security", "Growth", "Freedom", "Legacy"];
+
+function LifeCapitalMap({ goal }: { goal: PrimaryGoal }) {
+  const active = GOAL_TO_DOMAIN[goal];
+  const meta = DOMAIN_META[active];
+
+  return (
+    <section aria-label="Life Capital Map" className="rounded-2xl bg-white p-5 shadow-sm">
+      <h2 className="text-base font-semibold text-primary">Life Capital Map</h2>
+      <p className="mt-1 text-xs text-[#6f6e69]">
+        Every financial decision allocates one of four forms of capital. Your current focus:
+      </p>
+
+      {/* Domain rail */}
+      <div className="mt-4 flex gap-2">
+        {DOMAIN_ORDER.map((domain) => {
+          const dm = DOMAIN_META[domain];
+          const isActive = domain === active;
+          return (
+            <div
+              key={domain}
+              className="flex flex-1 flex-col items-center gap-1 rounded-xl border px-2 py-2.5 text-center transition-all"
+              style={
+                isActive
+                  ? { backgroundColor: dm.bg, borderColor: dm.border }
+                  : { backgroundColor: "#FAFAF8", borderColor: "#E5E0D8" }
+              }
+            >
+              <span className="text-lg" aria-hidden="true">
+                {dm.emoji}
+              </span>
+              <p
+                className="text-[10px] font-semibold leading-tight"
+                style={{ color: isActive ? dm.textColor : "#9A8B80" }}
+              >
+                {domain}
+              </p>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Active domain insight */}
+      <div
+        className="mt-4 rounded-xl border p-4"
+        style={{ backgroundColor: meta.bg, borderColor: meta.border }}
+      >
+        <p className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: meta.textColor }}>
+          {meta.emoji} {active} capital — your current focus
+        </p>
+        <p className="mt-1.5 text-xs leading-relaxed text-[#1E3A4A]">{meta.insight}</p>
+        <p className="mt-2 text-[11px] text-[#4B4238]">
+          <strong>After this milestone:</strong> {meta.next}
+        </p>
+      </div>
+    </section>
+  );
+}
+
+// ── Module 4: the viral "Share My Milestone" loop ──
 
 const SITE_ROOT = "https://jipangefinance.netlify.app";
 const SHARE_TEXT = `🔥 Yo! I just mapped my pesa in 90 seconds — anonymous, zero typing, and it showed me exactly where inflation is eating my savings. Jipange kabla pesa ikupange 😅 → ${SITE_ROOT}`;
@@ -300,7 +414,7 @@ function ViralShare() {
   );
 }
 
-/** The /plan roadmap for quiz-takers: milestone → execution steps → share loop. */
+/** The /plan roadmap for quiz-takers: milestone → execution steps → life capital → share loop. */
 export default function JourneyActionPlan({ answers }: { answers: JourneyAnswers }) {
   const model = mapJourney(answers);
 
@@ -308,6 +422,7 @@ export default function JourneyActionPlan({ answers }: { answers: JourneyAnswers
     <div className="w-full max-w-md space-y-6">
       <MicroMilestone answers={answers} />
       <VendorBlueprint vehicleId={model.match.id} />
+      <LifeCapitalMap goal={answers.primary_goal} />
       <ViralShare />
     </div>
   );
