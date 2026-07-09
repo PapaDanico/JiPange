@@ -11,7 +11,9 @@ import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import ExportCardButton from "./ExportCardButton";
 import NumberField from "./NumberField";
+import ProductLinks from "./ProductLinks";
 import ShareResultButton from "./ShareResultButton";
+import { MMF_LINKS } from "@/lib/affiliate-links";
 
 const PROVIDERS = [
   { name: "Britam", href: "https://britam.com" },
@@ -189,6 +191,7 @@ export default function TaxShieldCalculator() {
           />
         </div>
         <ExportCardButton containerRef={resultsRef} filename="tax-shield" />
+        <ProductLinks products={MMF_LINKS.slice(0, 2)} heading="Put your recovered tax saving to work" />
         </>
       )}
     </div>

@@ -10,9 +10,11 @@ import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import ExportCardButton from "./ExportCardButton";
 import NumberField from "./NumberField";
+import ProductLinks from "./ProductLinks";
 import QuickFillChips from "./QuickFillChips";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
+import { MMF_LINKS } from "@/lib/affiliate-links";
 
 const MEMBER_CHIPS = [
   { label: "5", value: "5" },
@@ -302,6 +304,7 @@ export default function ChamaGroupCalculator() {
       {result && (
         <>
           <ExportCardButton containerRef={resultsRef} filename="chama-calculator" />
+          <ProductLinks products={MMF_LINKS.slice(0, 2)} heading="Where to invest your chama savings" />
           <CalculatorDisclaimer
             extraNotes={[
               "Chama governance, rotation order, and emergency fund rules vary by group constitution.",

@@ -7,8 +7,10 @@ import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import ExportCardButton from "./ExportCardButton";
 import NumberField from "./NumberField";
+import ProductLinks from "./ProductLinks";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
+import { MMF_AND_TBILL_LINKS } from "@/lib/affiliate-links";
 
 export default function InflationRealityCalculator() {
   const [salary, setSalary] = useStickyState("jipange:tool:inflation-reality:salary", "");
@@ -91,6 +93,7 @@ export default function InflationRealityCalculator() {
             />
           </div>
           <ExportCardButton containerRef={resultsRef} filename="inflation-reality" />
+          <ProductLinks products={MMF_AND_TBILL_LINKS} heading="Outrun inflation with these instruments" />
         </>
       )}
     </div>
