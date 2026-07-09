@@ -120,6 +120,24 @@ export const TOOL_META: Record<string, ToolMeta> = {
     name: "Chama Group Savings",
     related: ["/tools/savings-goal", "/tools/investment-returns", "/tools/sacco-vs-bank"],
   },
+  "/tools/debt-escape": {
+    href: "/tools/debt-escape",
+    icon: "💸",
+    name: "Debt Stack Buster",
+    related: ["/tools/fuliza-cost", "/tools/payday-router", "/tools/budget-split"],
+  },
+  "/tools/sha-health": {
+    href: "/tools/sha-health",
+    icon: "🏥",
+    name: "SHA Health Gap",
+    related: ["/tools/take-home-pay", "/tools/tax-shield", "/tools/budget-split"],
+  },
+  "/tools/land-purchase": {
+    href: "/tools/land-purchase",
+    icon: "🏡",
+    name: "Land Purchase Cost",
+    related: ["/tools/loan-repayment", "/tools/savings-goal", "/tools/investment-returns"],
+  },
   "/tools/hustle-smoother": {
     href: "/tools/hustle-smoother",
     icon: "🔄",

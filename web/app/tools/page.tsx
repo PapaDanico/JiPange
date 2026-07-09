@@ -125,6 +125,35 @@ const CALCULATOR_GROUPS: ToolGroup[] = [
     ],
   },
   {
+    label: "Debt & protection",
+    calculators: [
+      {
+        href: "/tools/debt-escape",
+        icon: "💸",
+        title: "Debt Stack Buster",
+        description: "Enter your Fuliza, Tala, and mobile loans. The avalanche plan shows you the fastest, cheapest way to clear every shilling.",
+        insight: "Fuliza at 32%/month is the costliest debt most Kenyans carry — tackle it first.",
+        isNew: true,
+      },
+      {
+        href: "/tools/sha-health",
+        icon: "🏥",
+        title: "SHA Health Coverage Gap",
+        description: "See your exact SHIF contribution and the top-up cost needed to access private hospitals, dental, and optical.",
+        insight: "SHA covers public facilities only — know what it misses before you need it.",
+        isNew: true,
+      },
+      {
+        href: "/tools/land-purchase",
+        icon: "🏡",
+        title: "Land Purchase True Cost",
+        description: "The quoted plot price is only the start. See stamp duty, legal fees, valuation, title transfer, and survey costs before you sign.",
+        insight: "Transaction fees add 8–12% on top of the quoted price — budget this before negotiating.",
+        isNew: true,
+      },
+    ],
+  },
+  {
     label: "Pesa realities",
     calculators: [
       {
