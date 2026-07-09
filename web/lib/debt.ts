@@ -95,43 +95,62 @@ export function calculateDebtStack(
   while (states.some((s) => s.balance > 0.01) && month < MAX_MONTHS) {
     month++;
 
-    for (const s of states) {
-      if (s.balance <= 0) continue;
+    // Accrue interest on all active loans, tracking this month's amount per loan.
+    const accrued = states.map((s) => {
+      if (s.balance <= 0) return 0;
       const interest = s.balance * s.rate;
       s.balance += interest;
       s.interestPaid += interest;
       totalInterestPaid += interest;
-    }
+      return interest;
+    });
 
     let remaining = monthlyBudget;
-    for (const s of states) {
-      if (s.balance < 0.01) continue;
-      const payment = Math.min(remaining, s.balance);
-      s.balance -= payment;
-      remaining -= payment;
-      if (s.balance < 0.01) {
-        s.balance = 0;
-        if (s.clearedAtMonth === -1) s.clearedAtMonth = month;
+
+    // True avalanche: find the highest-rate active loan (target for surplus).
+    const targetIdx = states.findIndex((s) => s.balance > 0.01);
+
+    // Pay the minimum (just the interest accrued) on every non-target active loan
+    // so their balances stay flat while the target is being eliminated.
+    for (let i = 0; i < states.length; i++) {
+      if (i === targetIdx || states[i].balance < 0.01 || remaining <= 0) continue;
+      const minPay = Math.min(remaining, accrued[i], states[i].balance);
+      states[i].balance -= minPay;
+      remaining -= minPay;
+      if (states[i].balance < 0.01) {
+        states[i].balance = 0;
+        if (states[i].clearedAtMonth === -1) states[i].clearedAtMonth = month;
       }
-      if (remaining <= 0) break;
+    }
+
+    // Pour all remaining budget into the target loan.
+    if (targetIdx >= 0 && states[targetIdx].balance > 0.01 && remaining > 0) {
+      const pay = Math.min(remaining, states[targetIdx].balance);
+      states[targetIdx].balance -= pay;
+      if (states[targetIdx].balance < 0.01) {
+        states[targetIdx].balance = 0;
+        if (states[targetIdx].clearedAtMonth === -1) states[targetIdx].clearedAtMonth = month;
+      }
     }
   }
 
   if (states.some((s) => s.balance > 0.01)) return null;
 
-  // Compare vs "minimum only" (12 months of treading water, only paying interest).
-  const minOnlyCost12m = totalMonthlyInterest * 12;
-  const interestSavedVsMinOnly = Math.max(0, Math.round(minOnlyCost12m - totalInterestPaid));
+  // Interest saved vs paying only minimums (just interest, no principal) for the same N months.
+  // Paying exactly the monthly interest keeps balances flat, so cost = totalMonthlyInterest * N.
+  const minOnlyCostSamePeriod = Math.round(totalMonthlyInterest * month);
+  const interestSavedVsMinOnly = Math.max(0, minOnlyCostSamePeriod - Math.round(totalInterestPaid));
 
-  // What that saved interest compounds to in an MMF over 12 months.
-  const monthlySaved = interestSavedVsMinOnly / 12;
+  // What the repayment budget grows to in an MMF at 11.8% p.a. for 12 months post-debt-freedom.
   const r = MMF_ANNUAL_RATE / 12;
   const mmfValue12m =
-    r > 0 ? Math.round(monthlySaved * ((Math.pow(1 + r, 12) - 1) / r)) : Math.round(monthlySaved * 12);
+    r > 0
+      ? Math.round(monthlyBudget * ((Math.pow(1 + r, 12) - 1) / r))
+      : Math.round(monthlyBudget * 12);
 
-  const baseDate = new Date(2026, 6); // July 2026
-  const target = new Date(baseDate.getFullYear(), baseDate.getMonth() + month);
-  const debtFreeLabel = target.toLocaleDateString("en-KE", { month: "long", year: "numeric" });
+  const now = new Date();
+  const freeDate = new Date(now.getFullYear(), now.getMonth() + month);
+  const debtFreeLabel = freeDate.toLocaleDateString("en-KE", { month: "long", year: "numeric" });
 
   const loanDetails: LoanPayoffDetail[] = states.map((s) => {
     const input = valid.find((l) => l.id === s.id)!;

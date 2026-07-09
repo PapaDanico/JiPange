@@ -166,7 +166,7 @@ export default function LandPurchaseCalculator() {
           />
 
           {/* Cost breakdown table */}
-          <div className="rounded-2xl bg-white p-4 shadow-sm" ref={resultsRef}>
+          <div className="rounded-2xl bg-white p-4 shadow-sm">
             <p className="text-sm font-semibold text-primary">Full cost breakdown</p>
             <div className="mt-3 space-y-0">
               {/* Plot price row */}

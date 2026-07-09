@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { calculateDebtStack, PRESET_LENDERS } from "@/lib/debt";
 import { formatKES } from "@/lib/budget";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
@@ -17,13 +17,12 @@ interface LoanDraft {
   rate: string;
 }
 
-let nextId = 3;
-
 function emptyLoan(id: string): LoanDraft {
   return { id, name: "", balance: "", rate: "" };
 }
 
 export default function DebtEscapeCalculator() {
+  const nextIdRef = useRef(3);
   const [loans, setLoans] = useState<LoanDraft[]>(() => [
     { id: "1", name: "Fuliza M-PESA", balance: "", rate: "32" },
     { id: "2", name: "Tala", balance: "", rate: "13" },
@@ -48,11 +47,14 @@ export default function DebtEscapeCalculator() {
     [loanInputs, budget]
   );
 
-  const tooLow =
-    budget !== "" &&
-    Number(budget) > 0 &&
-    loanInputs.length > 0 &&
-    result === null;
+  const interestThreshold = useMemo(
+    () => loanInputs.reduce((s, l) => s + l.balance * (l.monthlyRatePct / 100), 0),
+    [loanInputs]
+  );
+
+  const hasInput = budget !== "" && Number(budget) > 0 && loanInputs.length > 0;
+  const tooLow = hasInput && Number(budget) <= interestThreshold;
+  const horizonExceeded = hasInput && !tooLow && result === null;
 
   const resultsRef = useScrollIntoView<HTMLDivElement>(result !== null);
 
@@ -79,7 +81,7 @@ export default function DebtEscapeCalculator() {
 
   function addLoan() {
     if (loans.length >= 5) return;
-    setLoans((prev) => [...prev, emptyLoan(String(nextId++))]);
+    setLoans((prev) => [...prev, emptyLoan(String(nextIdRef.current++))]);
   }
 
   function removeLoan(id: string) {
@@ -197,12 +199,14 @@ export default function DebtEscapeCalculator() {
         <div className="rounded-xl border border-danger bg-[#FDECEA] p-3 text-sm text-danger">
           Your monthly budget is less than the total interest accruing — the debt is
           growing faster than you can pay. Try increasing the monthly budget above{" "}
-          <strong>
-            {formatKES(
-              loanInputs.reduce((s, l) => s + l.balance * (l.monthlyRatePct / 100), 0)
-            )}
-          </strong>
-          .
+          <strong>{formatKES(interestThreshold)}</strong>.
+        </div>
+      )}
+
+      {horizonExceeded && (
+        <div className="rounded-xl border border-[#B45309] bg-[#FFF4DC] p-3 text-sm text-[#6B3A0A]">
+          At this budget, clearing all loans would take more than 10 years. Try increasing
+          your monthly repayment or reducing the outstanding balances first.
         </div>
       )}
 
@@ -244,7 +248,7 @@ export default function DebtEscapeCalculator() {
             />
             {result.interestSavedVsMinOnly > 0 && (
               <ResultCard
-                label="Saved vs 12 months of minimum-only payments"
+                label="Interest saved vs minimum-only payments (same period)"
                 value={formatKES(result.interestSavedVsMinOnly)}
                 tone="success"
               />
