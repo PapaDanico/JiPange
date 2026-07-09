@@ -6,8 +6,10 @@ import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import HowItWorks from "./HowItWorks";
 import NumberField from "./NumberField";
 import ExportCardButton from "./ExportCardButton";
+import ProductLinks from "./ProductLinks";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
+import { MMF_LINKS } from "@/lib/affiliate-links";
 
 function formatDuration(months: number): string {
   if (!Number.isFinite(months)) return "Forever — your balance keeps growing";
@@ -115,6 +117,7 @@ export default function MoneyRunwayCalculator() {
             />
           </div>
           <ExportCardButton containerRef={resultsRef} filename="money-runway" />
+          <ProductLinks products={MMF_LINKS.slice(0, 3)} heading="Park your runway fund in an MMF" />
         </>
       )}
 

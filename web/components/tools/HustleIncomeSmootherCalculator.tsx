@@ -8,9 +8,11 @@ import { formatKES } from "@/lib/budget";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import ExportCardButton from "./ExportCardButton";
 import NumberField from "./NumberField";
+import ProductLinks from "./ProductLinks";
 import QuickFillChips from "./QuickFillChips";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
+import { MMF_LINKS } from "@/lib/affiliate-links";
 
 const MONTH_CHIPS = [
   { label: "3 mo", value: "3" },
@@ -287,8 +289,7 @@ export default function HustleIncomeSmootherCalculator() {
               <p className="font-semibold text-primary">The three-step system</p>
               <ol className="mt-2 list-decimal space-y-1 pl-5 text-xs">
                 <li>
-                  Every time income arrives, transfer the full amount to an MMF
-                  (Britam, CIC, ICEA Lion, Sanlam).
+                  Every time income arrives, transfer the full amount to an MMF.
                 </li>
                 <li>
                   Set a recurring M-Pesa withdrawal of exactly{" "}
@@ -319,6 +320,7 @@ export default function HustleIncomeSmootherCalculator() {
             />
           </div>
           <ExportCardButton containerRef={resultsRef} filename="hustle-smoother" />
+          <ProductLinks products={MMF_LINKS.slice(0, 3)} heading="MMFs to route your income through" />
         </>
       )}
     </div>

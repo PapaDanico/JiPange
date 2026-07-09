@@ -11,8 +11,10 @@ import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import ExportCardButton from "./ExportCardButton";
 import NumberField from "./NumberField";
+import ProductLinks from "./ProductLinks";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
+import { TBILL_LINKS, MMF_LINKS } from "@/lib/affiliate-links";
 
 /**
  * DhowCSD T-Bill laddering: capital split evenly across the 91/182/364-day
@@ -47,10 +49,16 @@ export default function DhowcsdLadderCalculator() {
         </button>
       )}
       {belowMinimum && (
-        <p className="text-sm text-danger">
-          DhowCSD T-Bill bids start at {formatKES(DHOWCSD_MINIMUM)} — park smaller amounts in an
-          MMF until you cross the threshold.
-        </p>
+        <div className="space-y-3">
+          <p className="text-sm text-danger">
+            DhowCSD T-Bill bids start at {formatKES(DHOWCSD_MINIMUM)} — park smaller amounts in an
+            MMF until you cross the threshold.
+          </p>
+          <ProductLinks
+            products={MMF_LINKS.slice(0, 2)}
+            heading="MMFs to park in while building to KES 50,000"
+          />
+        </div>
       )}
 
       {ladder && (
@@ -86,8 +94,11 @@ export default function DhowcsdLadderCalculator() {
           <CalculatorDisclaimer
             extraNotes={[
               "T-Bill yields quoted are recent auction baselines — actual rates set at each CBK auction.",
-              "Register on CBK DhowCSD (app or web) with your ID and KRA PIN to bid.",
             ]}
+          />
+          <ProductLinks
+            products={TBILL_LINKS}
+            heading="Register on DhowCSD to start bidding"
           />
 
           <ShareResultButton

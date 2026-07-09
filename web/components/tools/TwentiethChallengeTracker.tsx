@@ -16,7 +16,9 @@ import {
 import { formatKES } from "@/lib/budget";
 import { useStickyState } from "@/lib/hooks";
 import NumberField from "./NumberField";
+import ProductLinks from "./ProductLinks";
 import ShareResultButton from "./ShareResultButton";
+import { MMF_LINKS } from "@/lib/affiliate-links";
 
 const MONTH_DISPLAY: Record<number, string> = {
   1: "Jan", 2: "Feb", 3: "Mar", 4: "Apr", 5: "May", 6: "Jun",
@@ -274,6 +276,9 @@ export default function TwentiethChallengeTracker() {
           {formatKES(commitmentNum)}/month
         </span>
       </div>
+
+      {/* MMF links — keep the commitment earning interest */}
+      <ProductLinks products={MMF_LINKS.slice(0, 2)} heading="Keep your savings in an MMF" />
 
       {/* Share */}
       {currentStreak > 0 && (

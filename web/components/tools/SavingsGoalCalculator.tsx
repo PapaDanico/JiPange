@@ -7,8 +7,10 @@ import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import HowItWorks from "./HowItWorks";
 import NumberField from "./NumberField";
 import ExportCardButton from "./ExportCardButton";
+import ProductLinks from "./ProductLinks";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
+import { MMF_LINKS } from "@/lib/affiliate-links";
 
 const RATE_PRESETS = [
   { label: "Bank 3.23%", value: "3.23" },
@@ -143,6 +145,7 @@ export default function SavingsGoalCalculator() {
             />
           </div>
           <ExportCardButton containerRef={resultsRef} filename="savings-goal" />
+          <ProductLinks products={MMF_LINKS.slice(0, 3)} heading="Top MMFs for this goal" />
         </>
       )}
 
