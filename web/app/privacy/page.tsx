@@ -75,6 +75,15 @@ export default function PrivacyPage() {
               <li>
                 <code>jipange:recent-tools</code> — which calculators you recently visited
               </li>
+              <li>
+                <code>jipange:20th-challenge</code> and <code>jipange:20th-challenge:checkins</code>{" "}
+                — your monthly savings commitment and check-in history for the 20th-to-20th
+                challenge (stored locally, never transmitted)
+              </li>
+              <li>
+                <code>jipange:tool:*</code> — individual calculator inputs (goal amount,
+                income, loan principal, etc.) preserved across page refreshes
+              </li>
             </ul>
             <p className="mt-3">
               None of this data leaves your device. You can delete it at any time by clearing
@@ -111,6 +120,14 @@ export default function PrivacyPage() {
                 <strong>Netlify</strong> — hosts the JiPange website and serverless
                 functions. Netlify may collect anonymous aggregate analytics (page views,
                 countries) as part of standard hosting telemetry.
+              </li>
+              <li>
+                <strong>Linked financial products</strong> — some calculator result pages
+                show links to regulated Kenyan financial products (Money Market Funds, Treasury
+                Bills via DhowCSD, etc.). These links go through our <code>/go/</code> redirect
+                route. When you click through, you leave JiPange and the destination site&apos;s
+                own privacy policy applies. JiPange may earn a small commission on referrals
+                where an affiliate relationship exists; this is disclosed on each product card.
               </li>
             </ul>
             <p className="mt-2">
