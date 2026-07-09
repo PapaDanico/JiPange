@@ -30,6 +30,7 @@ const COLUMNS: { heading: string; links: { href: string; label: string }[] }[] =
       { href: "/profile", label: "Start my plan" },
       { href: "/picture", label: "My Pesa Picture" },
       { href: "/plan", label: "My action plan" },
+      { href: "/partners", label: "Partners & products" },
       { href: "/about", label: "About JiPange" },
     ],
   },
