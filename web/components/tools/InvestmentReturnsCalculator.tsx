@@ -5,6 +5,7 @@ import { futureValueWithStepUp, inflationAdjust } from "@/lib/projections";
 import { formatKES } from "@/lib/budget";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
+import CompoundGrowthChart, { type GrowthDataPoint } from "./CompoundGrowthChart";
 import HowItWorks from "./HowItWorks";
 import NumberField from "./NumberField";
 import ExportCardButton from "./ExportCardButton";
@@ -59,6 +60,27 @@ export default function InvestmentReturnsCalculator() {
       growth: total - totalContributed,
       realValue: inflationAdjust(total, yearsValue),
     };
+  }, [lumpSum, monthly, annualReturn, years, stepUp]);
+
+  const chartData = useMemo((): GrowthDataPoint[] => {
+    const yearsValue = Number(years);
+    if (!yearsValue || yearsValue <= 0) return [];
+    const rate = Math.max(0, Number(annualReturn) || 0) / 100;
+    const pv = Number(lumpSum) || 0;
+    const mo = Number(monthly) || 0;
+    const su = stepUp / 100;
+    const step = Math.max(1, Math.ceil(yearsValue / 30));
+    const points: GrowthDataPoint[] = [];
+    for (let y = step; y <= yearsValue; y += step) {
+      const { total, totalContributed } = futureValueWithStepUp(pv, mo, rate, y, su);
+      points.push({ year: y, contributed: totalContributed, growth: Math.max(0, total - totalContributed) });
+    }
+    const last = yearsValue;
+    if (points.length === 0 || points[points.length - 1].year !== last) {
+      const { total, totalContributed } = futureValueWithStepUp(pv, mo, rate, last, su);
+      points.push({ year: last, contributed: totalContributed, growth: Math.max(0, total - totalContributed) });
+    }
+    return points;
   }, [lumpSum, monthly, annualReturn, years, stepUp]);
 
   const resultsRef = useScrollIntoView<HTMLDivElement>(result !== null);
@@ -159,6 +181,7 @@ export default function InvestmentReturnsCalculator() {
               sublabel={`At ${annualReturn}% annual return over ${years} years.`}
               tone="success"
             />
+            <CompoundGrowthChart data={chartData} />
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <ResultCard label="Total contributed" value={formatKES(result.totalContributed)} />
               <ResultCard label="Growth earned" value={formatKES(result.growth)} tone="success" />

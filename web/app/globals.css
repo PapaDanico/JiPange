@@ -19,18 +19,51 @@ body.has-fixed-bottom-bar {
 }
 
 @media print {
-  footer {
+  /* Hide interactive and chrome elements */
+  footer,
+  nav,
+  header,
+  .print\:hidden {
     display: none !important;
   }
 
-  /* Remove card shadows and ensure colors print as specified */
+  /* Force white page, remove shadows, keep brand colours */
+  body {
+    background: white !important;
+    color: #171717 !important;
+    font-size: 12pt;
+  }
+
   * {
     box-shadow: none !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
 
-  body {
-    background: white !important;
+  /* Result cards and charts should fit on one page */
+  .space-y-4 > * {
+    break-inside: avoid;
+  }
+
+  /* Expand content to full width for print */
+  .max-w-md {
+    max-width: 100% !important;
+  }
+
+  /* Recharts canvas prints better than SVG filters */
+  .recharts-wrapper svg {
+    overflow: visible;
+  }
+
+  /* Add a JiPange print footer */
+  body::after {
+    content: "JiPange · jipangefinance.netlify.app · Free financial tools for Kenya";
+    display: block;
+    margin-top: 2rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid #E5E0D8;
+    font-size: 9pt;
+    color: #9A8B80;
+    text-align: center;
   }
 }
