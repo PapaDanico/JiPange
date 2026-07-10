@@ -37,6 +37,11 @@ export default function NumberField({
           value={value}
           onBlur={() => setTouched(true)}
           onChange={(event) => onChange(event.target.value)}
+          onPaste={(e) => {
+            e.preventDefault();
+            const pasted = e.clipboardData.getData("text").replace(/,/g, "").replace(/[^\d.]/g, "");
+            if (pasted) onChange(pasted);
+          }}
           placeholder={placeholder}
           className={`h-12 w-full rounded-lg border bg-white px-4 text-base focus:outline-none focus:ring-1 ${
             hasError
