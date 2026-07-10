@@ -6,6 +6,7 @@ import { formatKES } from "@/lib/budget";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import BehavioralInsightStrip from "./BehavioralInsightStrip";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
+import ExportCardButton from "./ExportCardButton";
 import NumberField from "./NumberField";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
@@ -309,6 +310,7 @@ export default function DebtEscapeCalculator() {
               "The avalanche method minimises total interest paid. The snowball method (smallest balance first) builds psychological momentum but costs more overall.",
             ]}
           />
+          <ExportCardButton containerRef={resultsRef} filename="debt-escape" />
         </div>
       )}
     </div>

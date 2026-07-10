@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { solveMonthlyContribution } from "@/lib/savings-goal";
 import { formatKES } from "@/lib/budget";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
+import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import HowItWorks from "./HowItWorks";
 import NumberField from "./NumberField";
 import ExportCardButton from "./ExportCardButton";
@@ -145,6 +146,12 @@ export default function SavingsGoalCalculator() {
             />
           </div>
           <ExportCardButton containerRef={resultsRef} filename="savings-goal" />
+          <CalculatorDisclaimer
+            extraNotes={[
+              "Returns compound monthly at the rate entered. Actual MMF yields fluctuate daily — check your provider's current rate before setting contribution amounts.",
+              "This calculator assumes you contribute every month without interruption. A buffer month of missed contributions delays your goal.",
+            ]}
+          />
           <ProductLinks products={MMF_LINKS.slice(0, 3)} heading="Top MMFs for this goal" />
         </>
       )}

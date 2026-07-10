@@ -6,6 +6,7 @@ import { smoothIncomes } from "@/lib/hustle-smoother";
 import { TARGET_MMF_YIELD } from "@/lib/journey";
 import { formatKES } from "@/lib/budget";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
+import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import ExportCardButton from "./ExportCardButton";
 import NumberField from "./NumberField";
 import ProductLinks from "./ProductLinks";
@@ -320,6 +321,12 @@ export default function HustleIncomeSmootherCalculator() {
             />
           </div>
           <ExportCardButton containerRef={resultsRef} filename="hustle-smoother" />
+          <CalculatorDisclaimer
+            extraNotes={[
+              "This tool uses median income as the basis for your salary draw. Your actual median will shift as your income changes — re-run the smoother every 3–6 months.",
+              "The buffer calculation assumes surplus months fully replenish the fund before lean months draw from it. Irregular income timing may require a larger buffer than shown.",
+            ]}
+          />
           <ProductLinks products={MMF_LINKS.slice(0, 3)} heading="MMFs to route your income through" />
         </>
       )}

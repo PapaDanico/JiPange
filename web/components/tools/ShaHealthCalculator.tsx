@@ -5,6 +5,7 @@ import { calculateShaHealth, type EmploymentType } from "@/lib/sha";
 import { formatKES } from "@/lib/budget";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
+import ExportCardButton from "./ExportCardButton";
 import NumberField from "./NumberField";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
@@ -233,6 +234,7 @@ export default function ShaHealthCalculator() {
               "SHA accreditation status of private hospitals changes frequently. Always verify before seeking treatment.",
             ]}
           />
+          <ExportCardButton containerRef={resultsRef} filename="sha-health" />
         </div>
       )}
     </div>

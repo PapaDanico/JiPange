@@ -5,6 +5,8 @@
  * fund's interest quietly pays part of the bill.
  */
 
+import { futureValue } from "./projections";
+
 /** Serrari-style KES MMF average used for the fee-smoothing subsidy maths. */
 export const SMOOTHER_MMF_RATE = 0.12;
 
@@ -27,7 +29,6 @@ export function mmfFeeSubsidy(
 ): number {
   const monthly = termlyMonthlyTarget(annualFees, children);
   if (monthly <= 0) return 0;
-  const monthlyRate = rate / 12;
-  const futureValue = monthly * ((Math.pow(1 + monthlyRate, 12) - 1) / monthlyRate);
-  return Math.round(futureValue - monthly * 12);
+  const fv = futureValue(0, monthly, rate, 1);
+  return Math.round(fv - monthly * 12);
 }
