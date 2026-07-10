@@ -6,11 +6,17 @@ export interface ToolMeta {
 }
 
 export const TOOL_META: Record<string, ToolMeta> = {
+  "/tools/salary": {
+    href: "/tools/salary",
+    icon: "💰",
+    name: "Salary & Pay Hub",
+    related: ["/tools/savings-goal", "/tools/investment-returns", "/tools/money-runway"],
+  },
   "/tools/take-home-pay": {
     href: "/tools/take-home-pay",
     icon: "💰",
     name: "Take-Home Pay",
-    related: ["/tools/tax-shield", "/tools/salary-negotiation", "/tools/budget-split"],
+    related: ["/tools/salary", "/tools/savings-goal", "/tools/money-runway"],
   },
   "/tools/investment-returns": {
     href: "/tools/investment-returns",
@@ -94,19 +100,19 @@ export const TOOL_META: Record<string, ToolMeta> = {
     href: "/tools/salary-negotiation",
     icon: "💼",
     name: "Salary Negotiation",
-    related: ["/tools/take-home-pay", "/tools/tax-shield", "/tools/budget-split"],
+    related: ["/tools/salary", "/tools/savings-goal", "/tools/investment-returns"],
   },
   "/tools/tax-shield": {
     href: "/tools/tax-shield",
     icon: "🧾",
     name: "Tax Shield",
-    related: ["/tools/take-home-pay", "/tools/salary-negotiation", "/tools/fire-number"],
+    related: ["/tools/salary", "/tools/investment-returns", "/tools/fire-number"],
   },
   "/tools/payday-router": {
     href: "/tools/payday-router",
     icon: "📱",
     name: "Payday Router",
-    related: ["/tools/budget-split", "/tools/fuliza-cost", "/tools/savings-goal"],
+    related: ["/tools/salary", "/tools/fuliza-cost", "/tools/savings-goal"],
   },
   "/tools/one-third-rule": {
     href: "/tools/one-third-rule",
