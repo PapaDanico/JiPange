@@ -7,6 +7,7 @@ import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import NumberField from "./NumberField";
 import QuickFillChips from "./QuickFillChips";
 import BehavioralInsightStrip from "./BehavioralInsightStrip";
+import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import ExportCardButton from "./ExportCardButton";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
@@ -141,6 +142,12 @@ export default function LoanRepaymentCalculator() {
             />
           </div>
           <ExportCardButton containerRef={resultsRef} filename="loan-repayment" />
+          <CalculatorDisclaimer
+            extraNotes={[
+              "Interest rates shown are approximate. Verify the current rate in your loan agreement or lender app before making repayment decisions.",
+              "Early repayment penalties may apply — check your loan terms before making extra payments.",
+            ]}
+          />
         </>
       )}
     </div>

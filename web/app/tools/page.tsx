@@ -13,19 +13,12 @@ const CALCULATOR_GROUPS: ToolGroup[] = [
     label: "Plan for today",
     calculators: [
       {
-        href: "/tools/tax-shield",
-        icon: "🧾",
-        title: "KRA Tax Shield Optimizer",
-        description: "Find the PAYE you overpay monthly by leaving pension and relief headroom unused.",
-        insight: "Unused pension headroom at the 30% band is cash KRA keeps that your retirement fund could.",
-        isNew: true,
-      },
-      {
-        href: "/tools/take-home-pay",
+        href: "/tools/salary",
         icon: "💰",
-        title: "Take-Home Pay Calculator",
-        description: "See your exact net salary after PAYE, NSSF, SHIF, and the Housing Levy.",
-        insight: "Used by 1,200+ Kenyans this month.",
+        title: "Salary & Pay Hub",
+        description: "Take-home pay, 50/25/25 budget split, payday routing, KRA tax shield, and salary negotiation — all from one gross salary.",
+        insight: "≈37% of a Ksh 100,000 gross goes to deductions before you see a shilling. Model every angle here.",
+        isNew: true,
       },
       {
         href: "/tools/savings-goal",
@@ -33,14 +26,6 @@ const CALCULATOR_GROUPS: ToolGroup[] = [
         title: "Savings Goal Calculator",
         description: "Work out how much to save each month to hit a target amount.",
         insight: "Small, consistent amounts beat big, irregular ones.",
-      },
-      {
-        href: "/tools/budget-split",
-        icon: "🥧",
-        title: "50/25/25 Budget Split Calculator",
-        description: "Split your take-home pay: 50% household, 25% savings, 25% investments.",
-        insight: "A simpler alternative to the Kenya-calibrated split used in your Pesa Picture.",
-        isNew: true,
       },
       {
         href: "/tools/hustle-smoother",
@@ -56,14 +41,6 @@ const CALCULATOR_GROUPS: ToolGroup[] = [
         title: "20th-to-20th Savings Challenge",
         description: "Commit to saving a fixed amount every month and build an unbroken streak with monthly check-ins.",
         insight: "6 months is the habit-formation threshold. Check in between the 15th and 25th — the app keeps score.",
-        isNew: true,
-      },
-      {
-        href: "/tools/payday-router",
-        icon: "📱",
-        title: "M-Pesa Payday Safety Router",
-        description: "Your true weekly spend limit — and the surplus to move out of M-Pesa on payday.",
-        insight: "Money left floating in your main wallet gets spent; route the surplus out on day one.",
         isNew: true,
       },
       {
@@ -156,14 +133,6 @@ const CALCULATOR_GROUPS: ToolGroup[] = [
   {
     label: "Pesa realities",
     calculators: [
-      {
-        href: "/tools/salary-negotiation",
-        icon: "💼",
-        title: "Salary Negotiation Calculator",
-        description: "Work out the gross salary to negotiate for a target take-home pay.",
-        insight: "Every Kenyan starting a new job should run this before agreeing to a number.",
-        isNew: true,
-      },
       {
         href: "/tools/sacco-vs-bank",
         icon: "⚖️",

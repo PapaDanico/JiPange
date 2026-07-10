@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 import { calculateMoneyRunwayMonths } from "@/lib/runway";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
+import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import HowItWorks from "./HowItWorks";
 import NumberField from "./NumberField";
 import ExportCardButton from "./ExportCardButton";
@@ -117,6 +118,12 @@ export default function MoneyRunwayCalculator() {
             />
           </div>
           <ExportCardButton containerRef={resultsRef} filename="money-runway" />
+          <CalculatorDisclaimer
+            extraNotes={[
+              "Returns assumed in this calculator are not guaranteed. For an emergency fund stress test, set the return rate to 0%.",
+              "This runway assumes a constant monthly withdrawal. Actual spending varies — discretionary costs are often the first to cut.",
+            ]}
+          />
           <ProductLinks products={MMF_LINKS.slice(0, 3)} heading="Park your runway fund in an MMF" />
         </>
       )}

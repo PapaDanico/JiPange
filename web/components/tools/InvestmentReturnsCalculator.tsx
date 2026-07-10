@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { futureValueWithStepUp, inflationAdjust } from "@/lib/projections";
 import { formatKES } from "@/lib/budget";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
+import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import HowItWorks from "./HowItWorks";
 import NumberField from "./NumberField";
 import ExportCardButton from "./ExportCardButton";
@@ -155,18 +156,30 @@ export default function InvestmentReturnsCalculator() {
             <ResultCard
               label="Projected future value"
               value={formatKES(result.total)}
-              sublabel={`Worth ${formatKES(result.realValue)} in today's shillings after inflation.`}
+              sublabel={`At ${annualReturn}% annual return over ${years} years.`}
               tone="success"
             />
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <ResultCard label="Total contributed" value={formatKES(result.totalContributed)} />
               <ResultCard label="Growth earned" value={formatKES(result.growth)} tone="success" />
+              <ResultCard
+                label="Real value (today's shillings)"
+                value={formatKES(result.realValue)}
+                sublabel="After 6.5% Kenya CPI inflation"
+              />
             </div>
             <ShareResultButton
               message={`📈 *My Investment Projection*\n\nIn ${years} years: ${formatKES(result.total)}\nGrowth earned: ${formatKES(result.growth)}\n\nCalculate yours → jipangefinance.netlify.app/tools/investment-returns`}
             />
           </div>
           <ExportCardButton containerRef={resultsRef} filename="investment-returns" />
+          <CalculatorDisclaimer
+            extraNotes={[
+              "Returns shown are nominal and compound monthly. Actual returns vary with market conditions and are not guaranteed.",
+              "The inflation adjustment uses Kenya's long-run CPI average of ~6.5% p.a. Actual inflation will differ.",
+              "Past returns on T-Bills, MMFs, and SACCOs do not guarantee future performance. Rates change regularly.",
+            ]}
+          />
           <ProductLinks products={MMF_AND_TBILL_LINKS} heading="Where to invest this" />
         </>
       )}

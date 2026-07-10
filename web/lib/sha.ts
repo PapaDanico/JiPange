@@ -6,10 +6,11 @@
  * Rates and tariffs from SHA Act 2023 and the 2026 SHA Tariffs document.
  */
 
+import { SHIF_RATE } from "./tax";
+
 export type EmploymentType = "employed" | "self_employed" | "informal";
 
-/** 2.75% per SHA Act 2023 s.26(1). */
-export const SHIF_RATE = 0.0275;
+export { SHIF_RATE };
 export const MONTHLY_FLOOR = 300;
 
 export interface ShaInput {

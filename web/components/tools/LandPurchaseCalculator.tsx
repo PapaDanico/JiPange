@@ -11,6 +11,7 @@ import NumberField from "./NumberField";
 import QuickFillChips from "./QuickFillChips";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
+import Toggle from "./Toggle";
 
 const PRICE_CHIPS = [
   { label: "500K", value: "500000" },
@@ -122,21 +123,11 @@ export default function LandPurchaseCalculator() {
           <p className="text-sm font-medium text-[#4B4238]">Buying through a real estate agent</p>
           <p className="text-xs text-[#6f6e69]">Standard commission is 3% of the plot price</p>
         </div>
-        <button
-          type="button"
-          role="switch"
-          aria-checked={usesAgent === "true"}
-          onClick={() => setUsesAgent(usesAgent === "true" ? "false" : "true")}
-          className={`relative h-6 w-11 rounded-full transition-colors ${
-            usesAgent === "true" ? "bg-primary" : "bg-[#D4CEC5]"
-          }`}
-        >
-          <span
-            className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${
-              usesAgent === "true" ? "translate-x-5" : "translate-x-0.5"
-            }`}
-          />
-        </button>
+        <Toggle
+          checked={usesAgent === "true"}
+          onChange={() => setUsesAgent(usesAgent === "true" ? "false" : "true")}
+          aria-label="Toggle real estate agent"
+        />
       </div>
 
       {isDirty && (

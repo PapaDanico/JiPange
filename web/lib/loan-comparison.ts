@@ -15,7 +15,7 @@ export interface LoanProductComparison {
   estimated: boolean;
 }
 
-const SACCO_MONTHLY_RATE = 0.01; // 1% per month, reducing balance
+export const SACCO_MONTHLY_RATE = 0.01; // 1% per month, reducing balance
 const BANK_ANNUAL_RATE = 0.15; // ~15% p.a., reducing balance
 const MOBILE_LENDER_MONTHLY_FLAT_RATE = 0.15; // Tala/Branch-style: ~15% per month, flat (not reducing)
 const FULIZA_DAILY_RATE = 0.01083; // ~1.083% per day — Safaricom rates change; verify in-app before relying on this
@@ -76,7 +76,8 @@ export function compareLoanProducts(principal: number, termMonths: number): Loan
       monthlyPayment: round2(mobileTotalRepaid / termMonths),
       totalRepaid: mobileTotalRepaid,
       totalInterest: mobileTotalInterest,
-      apr: MOBILE_LENDER_MONTHLY_FLAT_RATE * 12,
+      // Reducing-balance equivalent of a flat-rate loan: 2·n·r_flat·12/(n+1)
+      apr: (2 * termMonths * MOBILE_LENDER_MONTHLY_FLAT_RATE * 12) / (termMonths + 1),
       tier: "red",
       estimated: true,
     },
