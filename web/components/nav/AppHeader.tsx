@@ -9,8 +9,6 @@ import { getStoredJourneyAnswers, getStoredProfile } from "@/lib/storage";
 const DESKTOP_LINKS = [
   { href: "/planners", label: "Planners" },
   { href: "/tools", label: "Calculators" },
-  { href: "/partners", label: "Partners" },
-  { href: "/about", label: "About" },
 ];
 
 export default function AppHeader() {
