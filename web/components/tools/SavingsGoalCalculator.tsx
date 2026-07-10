@@ -2,9 +2,11 @@
 
 import { useMemo } from "react";
 import { solveMonthlyContribution } from "@/lib/savings-goal";
+import { futureValue } from "@/lib/projections";
 import { formatKES } from "@/lib/budget";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
+import CompoundGrowthChart, { type GrowthDataPoint } from "./CompoundGrowthChart";
 import HowItWorks from "./HowItWorks";
 import NumberField from "./NumberField";
 import ExportCardButton from "./ExportCardButton";
@@ -59,6 +61,28 @@ export default function SavingsGoalCalculator() {
       });
     return { faster: at(yearsValue - 1), slower: at(yearsValue + 1) };
   }, [target, years, currentSavings, annualReturn]);
+
+  const chartData = useMemo((): GrowthDataPoint[] => {
+    const targetFutureValue = Number(target);
+    const yearsValue = Number(years);
+    if (!result || !targetFutureValue || yearsValue <= 0) return [];
+    const rate = Math.max(0, Number(annualReturn) || 0) / 100;
+    const pv = Number(currentSavings) || 0;
+    const step = Math.max(1, Math.ceil(yearsValue / 30));
+    const points: GrowthDataPoint[] = [];
+    for (let y = step; y <= yearsValue; y += step) {
+      const total = futureValue(pv, result, rate, y);
+      const contributed = pv + result * 12 * y;
+      points.push({ year: y, contributed: Math.min(contributed, total), growth: Math.max(0, total - contributed) });
+    }
+    const last = yearsValue;
+    if (points.length === 0 || points[points.length - 1].year !== last) {
+      const total = futureValue(pv, result, rate, last);
+      const contributed = pv + result * 12 * last;
+      points.push({ year: last, contributed: Math.min(contributed, total), growth: Math.max(0, total - contributed) });
+    }
+    return points;
+  }, [target, years, currentSavings, annualReturn, result]);
 
   const resultsRef = useScrollIntoView<HTMLDivElement>(result !== null);
 
@@ -126,6 +150,7 @@ export default function SavingsGoalCalculator() {
               sublabel="Assumes returns compound monthly at the rate above."
               tone="success"
             />
+            <CompoundGrowthChart data={chartData} />
             {sensitivity && (
               <div className="grid grid-cols-2 gap-3" data-testid="goal-sensitivity">
                 <ResultCard
