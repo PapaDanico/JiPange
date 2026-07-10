@@ -6,8 +6,11 @@ import { futureValue } from "@/lib/projections";
 import { formatKES } from "@/lib/budget";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
-import CompoundGrowthChart, { type GrowthDataPoint } from "./CompoundGrowthChart";
+import dynamic from "next/dynamic";
 import HowItWorks from "./HowItWorks";
+import { type GrowthDataPoint } from "./CompoundGrowthChart";
+
+const CompoundGrowthChart = dynamic(() => import("./CompoundGrowthChart"), { ssr: false });
 import NumberField from "./NumberField";
 import ExportCardButton from "./ExportCardButton";
 import ProductLinks from "./ProductLinks";

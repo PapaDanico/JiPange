@@ -9,7 +9,10 @@ import NumberField from "./NumberField";
 import ExportCardButton from "./ExportCardButton";
 import ProductLinks from "./ProductLinks";
 import ResultCard from "./ResultCard";
-import RunwayDeclineChart, { type RunwayDataPoint } from "./RunwayDeclineChart";
+import dynamic from "next/dynamic";
+import { type RunwayDataPoint } from "./RunwayDeclineChart";
+
+const RunwayDeclineChart = dynamic(() => import("./RunwayDeclineChart"), { ssr: false });
 import ShareResultButton from "./ShareResultButton";
 import { MMF_LINKS } from "@/lib/affiliate-links";
 
