@@ -23,11 +23,6 @@ import { PENSION_LINKS } from "@/lib/affiliate-links";
 const PayBreakdownChart = dynamic(() => import("./PayBreakdownChart"), { ssr: false });
 
 const NEGOTIATION_BUFFER = 5_000;
-const PROVIDERS = [
-  { name: "Britam", href: "https://britam.com" },
-  { name: "ICEA Lion", href: "https://icealion.co.ke" },
-  { name: "Sanlam", href: "https://www.sanlam.co.ke" },
-];
 
 type Tab = "takehome" | "allocate" | "route" | "shield" | "negotiate";
 
@@ -424,7 +419,7 @@ export default function SalaryPlannerHub() {
                   <div className="rounded-2xl bg-[#F1ECE3] p-4 text-sm text-[#4B4238]">
                     <p className="font-semibold text-primary">Payday action</p>
                     <p className="mt-1 text-xs">
-                      On the day you're paid, move{" "}
+                      On the day you&apos;re paid, move{" "}
                       <strong>{formatKES(routeSurplus)}</strong> out of your main M-Pesa wallet
                       into a locked pocket or MMF — before lifestyle creep handles it. Withdraw
                       only{" "}
@@ -459,7 +454,7 @@ export default function SalaryPlannerHub() {
                 <div className="rounded-2xl bg-[#E9F5EC] p-4 text-sm text-[#2b4a2b]">
                   <p className="font-semibold">Fully optimised — no unused headroom.</p>
                   <p className="mt-1 text-xs">
-                    You're already claiming all available pension, mortgage, and insurance relief.
+                    You&apos;re already claiming all available pension, mortgage, and insurance relief.
                   </p>
                 </div>
               ) : (
@@ -545,7 +540,7 @@ export default function SalaryPlannerHub() {
             placeholder="e.g. 80000"
           />
           <p className="text-xs text-[#4B4238]">
-            Enter what you need in your pocket — we'll work out the gross salary to negotiate for.
+            Enter what you need in your pocket — we&apos;ll work out the gross salary to negotiate for.
           </p>
           {negotiateResult && (
             <>
