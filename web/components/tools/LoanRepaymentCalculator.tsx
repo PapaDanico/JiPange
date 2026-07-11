@@ -11,6 +11,9 @@ import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import ExportCardButton from "./ExportCardButton";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
+import dynamic from "next/dynamic";
+
+const LoanAmortizationChart = dynamic(() => import("./LoanAmortizationChart"), { ssr: false });
 
 const PRINCIPAL_CHIPS = [
   { label: "50K", value: "50000" },
@@ -134,6 +137,11 @@ export default function LoanRepaymentCalculator() {
               <ResultCard label="Total interest paid" value={formatKES(result.totalInterest)} />
               <ResultCard label="Total repaid" value={formatKES(result.totalPaid)} />
             </div>
+            <LoanAmortizationChart
+              schedule={result.schedule}
+              termMonths={Math.round(Number(termYears) * 12)}
+              principal={Number(principal)}
+            />
             <BehavioralInsightStrip
               insight={`Loss aversion means debt pain is felt more acutely than investment gains of the same amount feel good. That's useful here: at ${annualRate}% annual interest, paying down this loan early delivers a guaranteed, tax-free return equal to the rate — which very few savings products can beat. The total interest above is money already allocated to the lender; every extra payment reclaims a share of it.`}
             />

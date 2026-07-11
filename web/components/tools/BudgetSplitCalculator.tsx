@@ -11,6 +11,9 @@ import ProductLinks from "./ProductLinks";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
 import { MMF_AND_TBILL_LINKS } from "@/lib/affiliate-links";
+import dynamic from "next/dynamic";
+
+const BudgetSplitChart = dynamic(() => import("./BudgetSplitChart"), { ssr: false });
 
 export default function BudgetSplitCalculator() {
   const [grossMonthlySalary, setGrossMonthlySalary] = useStickyState(
@@ -68,6 +71,12 @@ export default function BudgetSplitCalculator() {
               value={formatKES(result.split.investments)}
               sublabel="Building wealth for the long term — land, shares, business, retirement."
               tone="primary"
+            />
+
+            <BudgetSplitChart
+              household={result.split.household}
+              savingsEmergency={result.split.savingsEmergency}
+              investments={result.split.investments}
             />
 
             <p className="text-xs text-[#4B4238]">
