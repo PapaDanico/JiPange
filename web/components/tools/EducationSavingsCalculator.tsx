@@ -6,6 +6,7 @@ import { CBC_GRADES, getCbcGrade } from "@/lib/cbc-grades";
 import { solveMonthlyContribution } from "@/lib/savings-goal";
 import { formatKES } from "@/lib/budget";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
+import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import ExportCardButton from "./ExportCardButton";
 import NumberField from "./NumberField";
 import ProductLinks from "./ProductLinks";
@@ -209,6 +210,12 @@ export default function EducationSavingsCalculator() {
           />
         </div>
         <ExportCardButton containerRef={resultsRef} filename="education-savings" />
+        <CalculatorDisclaimer
+          extraNotes={[
+            "CBC fee structures are set by individual schools and reviewed annually. Re-run this calculator each January when your school publishes fees for the year.",
+            "The current savings input is applied toward whichever CBC transition comes first. The later transition is assumed to start from zero — the same shilling cannot be counted twice.",
+          ]}
+        />
         <ProductLinks products={MMF_LINKS.slice(0, 2)} heading="Start the fund in an MMF today" />
         </>
       )}

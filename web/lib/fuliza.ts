@@ -1,9 +1,9 @@
 import { calculateLoanAmortization } from "./loans";
 import { round2 } from "./money";
+import { SACCO_MONTHLY_RATE } from "./loan-comparison";
 
 /** ~1.083% per day — Safaricom's Fuliza rates change periodically; verify the current rate in-app. */
 export const FULIZA_DAILY_RATE = 0.01083;
-const SACCO_MONTHLY_RATE = 0.01;
 
 export interface FulizaCost {
   dailyFee: number;

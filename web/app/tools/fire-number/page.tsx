@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import ToolLayout from "@/components/tools/ToolLayout";
 import FireNumberCalculator from "@/components/tools/FireNumberCalculator";
 
@@ -31,6 +32,17 @@ export default function FireNumberPage() {
       ]}
     >
       <FireNumberCalculator />
+      <div className="mt-6 rounded-2xl bg-[#F1ECE3] p-4 text-sm text-[#4B4238]">
+        <p className="font-semibold text-primary">Ready to build toward this number?</p>
+        <p className="mt-1 text-xs">
+          Use the{" "}
+          <Link href="/planners" className="underline hover:text-primary">
+            Retirement Planner
+          </Link>{" "}
+          to model your monthly contributions, investment growth, and the exact year you reach
+          Financial Independence — with Kenya&apos;s MMF and T-Bill yields built in.
+        </p>
+      </div>
     </ToolLayout>
   );
 }

@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { calculateFulizaCost } from "@/lib/fuliza";
 import { formatKES } from "@/lib/budget";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
+import BehavioralInsightStrip from "./BehavioralInsightStrip";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import ExportCardButton from "./ExportCardButton";
 import NumberField from "./NumberField";
@@ -83,6 +84,9 @@ export default function FulizaCostCalculator() {
               relying on this figure.
             </p>
 
+            <BehavioralInsightStrip
+              insight="Each Fuliza fee feels small in isolation — that's the marginal cost trap. Behavioural economists call it the 'pennies-a-day' illusion: we evaluate each transaction individually and never sum the true annual toll. The APR figure above converts that illusion into a single number your brain can actually weigh."
+            />
             <CalculatorDisclaimer />
 
             <ShareResultButton

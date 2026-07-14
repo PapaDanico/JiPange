@@ -16,6 +16,7 @@ import {
 import { formatKES } from "@/lib/budget";
 import { useStickyState } from "@/lib/hooks";
 import NumberField from "./NumberField";
+import BehavioralInsightStrip from "./BehavioralInsightStrip";
 import CalendarReminderButton from "./CalendarReminderButton";
 import ProductLinks from "./ProductLinks";
 import ShareResultButton from "./ShareResultButton";
@@ -171,6 +172,10 @@ export default function TwentiethChallengeTracker() {
           </div>
         </div>
       </div>
+
+      <BehavioralInsightStrip
+        insight="Present bias is why most savings resolutions fail: the same amount feels more valuable now than next month. The 20th Challenge neutralises this by turning saving into a pre-committed act on a fixed date — research on commitment devices shows that scheduling a transfer in advance more than doubles follow-through compared to an open-ended intention."
+      />
 
       {/* Milestones */}
       <div className="flex gap-2 overflow-x-auto pb-1">

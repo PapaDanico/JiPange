@@ -11,6 +11,7 @@ import {
 } from "@/lib/school-fees";
 import { saveStoredGoal } from "@/lib/storage";
 import HowItWorks from "@/components/tools/HowItWorks";
+import Toggle from "@/components/tools/Toggle";
 
 const FEE_PRESETS = [50_000, 100_000, 250_000];
 const MAX_CHILDREN = 5;
@@ -246,21 +247,12 @@ export default function TermlyFeeSmoother() {
           <span className="text-sm font-medium text-[#4B4238]">
             Do you have children in the CBC system?
           </span>
-          <button
-            type="button"
-            role="switch"
-            aria-checked={cbc}
-            onClick={() => setCbc((v) => !v)}
-            className={`relative h-7 w-12 shrink-0 rounded-full transition-colors ${
-              cbc ? "bg-success" : "bg-[#C9BFB2]"
-            }`}
-          >
-            <span
-              className={`absolute top-1 h-5 w-5 rounded-full bg-white shadow transition-all ${
-                cbc ? "left-6" : "left-1"
-              }`}
-            />
-          </button>
+          <Toggle
+            checked={cbc}
+            onChange={() => setCbc((v) => !v)}
+            activeColor="success"
+            aria-label="Toggle CBC curriculum"
+          />
         </label>
         {cbc && (
           <div className="mt-4 rounded-xl border-2 border-accent bg-[#FFF8EA] p-4 text-sm text-[#4B4238]">

@@ -3,11 +3,13 @@
 import { useMemo } from "react";
 import { calculateMoneyRunwayMonths } from "@/lib/runway";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
+import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import HowItWorks from "./HowItWorks";
 import NumberField from "./NumberField";
 import ExportCardButton from "./ExportCardButton";
 import ProductLinks from "./ProductLinks";
 import ResultCard from "./ResultCard";
+import RunwayDeclineChart, { type RunwayDataPoint } from "./RunwayDeclineChart";
 import ShareResultButton from "./ShareResultButton";
 import { MMF_LINKS } from "@/lib/affiliate-links";
 
@@ -45,6 +47,31 @@ export default function MoneyRunwayCalculator() {
       annualReturnRate: Math.max(0, Number(annualReturn) || 0) / 100,
     });
   }, [startingBalance, monthlyWithdrawal, annualReturn]);
+
+  const chartData = useMemo((): RunwayDataPoint[] => {
+    const balance = Number(startingBalance);
+    const withdrawal = Number(monthlyWithdrawal);
+    if (!balance || balance <= 0 || !withdrawal || withdrawal <= 0 || result === null) return [];
+
+    const monthlyRate = Math.max(0, Number(annualReturn) || 0) / 100 / 12;
+    const isInfinite = !Number.isFinite(result);
+    const totalMonths = isInfinite ? 120 : Math.ceil(result);
+    const points = Math.min(24, totalMonths);
+    const step = Math.max(1, Math.ceil(totalMonths / points));
+    const data: RunwayDataPoint[] = [{ label: "Now", balance }];
+
+    let b = balance;
+    for (let m = step; m <= totalMonths; m += step) {
+      for (let i = 0; i < step; i++) {
+        b = b * (1 + monthlyRate) - withdrawal;
+      }
+      const yr = Math.floor(m / 12);
+      const mo = m % 12;
+      const label = yr > 0 ? (mo === 0 ? `Yr ${yr}` : `Yr ${yr}+${mo}m`) : `${m}m`;
+      data.push({ label, balance: Math.max(0, b) });
+    }
+    return data;
+  }, [startingBalance, monthlyWithdrawal, annualReturn, result]);
 
   const resultsRef = useScrollIntoView<HTMLDivElement>(result !== null);
 
@@ -98,6 +125,7 @@ export default function MoneyRunwayCalculator() {
               sublabel="Assumes the remaining balance keeps earning the return rate above."
               tone="success"
             />
+            <RunwayDeclineChart data={chartData} infinite={!Number.isFinite(result)} />
             {/* Survival triage: is this cushion thick enough to invest from? */}
             {result < 3 ? (
               <p data-testid="runway-triage" className="rounded-2xl border-2 border-danger bg-[#FBEAEA] p-4 text-sm text-[#4B4238]">
@@ -117,6 +145,12 @@ export default function MoneyRunwayCalculator() {
             />
           </div>
           <ExportCardButton containerRef={resultsRef} filename="money-runway" />
+          <CalculatorDisclaimer
+            extraNotes={[
+              "Returns assumed in this calculator are not guaranteed. For an emergency fund stress test, set the return rate to 0%.",
+              "This runway assumes a constant monthly withdrawal. Actual spending varies — discretionary costs are often the first to cut.",
+            ]}
+          />
           <ProductLinks products={MMF_LINKS.slice(0, 3)} heading="Park your runway fund in an MMF" />
         </>
       )}

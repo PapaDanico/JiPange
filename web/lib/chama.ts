@@ -1,3 +1,5 @@
+import { futureValue } from "./projections";
+
 export interface ChamaMerryGoRoundResult {
   mode: "merry-go-round";
   monthlyPool: number;
@@ -21,11 +23,6 @@ export interface ChamaInvestmentResult {
 
 export type ChamaResult = ChamaMerryGoRoundResult | ChamaInvestmentResult;
 
-function futureValueAnnuity(monthlyContrib: number, monthlyRate: number, months: number): number {
-  if (monthlyRate === 0) return monthlyContrib * months;
-  return monthlyContrib * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate);
-}
-
 /**
  * Merry-go-round (rotation) chama:
  * Every month, all members contribute. One member receives the full pool
@@ -43,12 +40,11 @@ export function calculateMerryGoRound(
   const cycleMonths = memberCount;
   const emergencyFundPerCycle = bufferAmount * cycleMonths;
 
-  // First receiver pays X once then receives: net gain = payout - X
-  const netGainFirstReceiver = rotationPayout - monthlyContributionPerMember;
-  // Last receiver pays X × N then receives: net gain = payout - (X × N) = -(N-1)×X + payout - X
-  // = rotationPayout - monthlyContributionPerMember × cycleMonths
-  const netGainLastReceiver =
-    rotationPayout - monthlyContributionPerMember * cycleMonths;
+  // Every member pays X for every month of the full cycle — the advantage of going
+  // first is timing (earlier access to cash), not a different cash gain.
+  // net = rotationPayout − X × N for both first and last receiver.
+  const netGainFirstReceiver = rotationPayout - monthlyContributionPerMember * cycleMonths;
+  const netGainLastReceiver = rotationPayout - monthlyContributionPerMember * cycleMonths;
 
   return {
     mode: "merry-go-round",
@@ -72,11 +68,10 @@ export function calculateChamaInvestment(
   annualReturnPercent: number
 ): ChamaInvestmentResult {
   const monthlyPool = memberCount * monthlyContributionPerMember;
-  const monthlyRate = annualReturnPercent / 100 / 12;
-
-  const value1Yr = futureValueAnnuity(monthlyPool, monthlyRate, 12);
-  const value3Yr = futureValueAnnuity(monthlyPool, monthlyRate, 36);
-  const value5Yr = futureValueAnnuity(monthlyPool, monthlyRate, 60);
+  const annualRate = annualReturnPercent / 100;
+  const value1Yr = futureValue(0, monthlyPool, annualRate, 1);
+  const value3Yr = futureValue(0, monthlyPool, annualRate, 3);
+  const value5Yr = futureValue(0, monthlyPool, annualRate, 5);
 
   return {
     mode: "investment",
