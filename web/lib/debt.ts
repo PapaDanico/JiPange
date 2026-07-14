@@ -46,6 +46,7 @@ export interface DebtStackResult {
   interestSavedVsMinOnly: number;
   mmfValue12m: number;
   debtFreeLabel: string;
+  timeline: Array<{ month: number; remaining: number }>;
 }
 
 export function calculateDebtStack(
@@ -91,6 +92,9 @@ export function calculateDebtStack(
 
   let month = 0;
   let totalInterestPaid = 0;
+  const timeline: Array<{ month: number; remaining: number }> = [
+    { month: 0, remaining: Math.round(totalBalance) },
+  ];
 
   while (states.some((s) => s.balance > 0.01) && month < MAX_MONTHS) {
     month++;
@@ -132,6 +136,11 @@ export function calculateDebtStack(
         if (states[targetIdx].clearedAtMonth === -1) states[targetIdx].clearedAtMonth = month;
       }
     }
+
+    timeline.push({
+      month,
+      remaining: Math.round(states.reduce((s, st) => s + Math.max(0, st.balance), 0)),
+    });
   }
 
   if (states.some((s) => s.balance > 0.01)) return null;
@@ -175,5 +184,6 @@ export function calculateDebtStack(
     interestSavedVsMinOnly,
     mmfValue12m,
     debtFreeLabel,
+    timeline,
   };
 }
