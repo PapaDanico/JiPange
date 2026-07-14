@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useMemo, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import { calculateDebtStack, PRESET_LENDERS } from "@/lib/debt";
 import { formatKES } from "@/lib/budget";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
@@ -10,6 +11,8 @@ import ExportCardButton from "./ExportCardButton";
 import NumberField from "./NumberField";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
+
+const DebtPayoffChart = dynamic(() => import("./DebtPayoffChart"), { ssr: false });
 
 interface LoanDraft {
   id: string;
@@ -293,6 +296,8 @@ export default function DebtEscapeCalculator() {
               ))}
             </div>
           </div>
+
+          <DebtPayoffChart timeline={result.timeline} totalBalance={result.totalBalance} />
 
           {result.mmfValue12m > 0 && (
             <BehavioralInsightStrip

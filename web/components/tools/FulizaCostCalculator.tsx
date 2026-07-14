@@ -78,6 +78,12 @@ export default function FulizaCostCalculator() {
                 tone="success"
               />
             </div>
+            <ResultCard
+              label="If you borrow like this 12 times this year"
+              value={formatKES(result.totalFee * 12)}
+              sublabel={`${Math.round((result.totalFee * 12 / Number(amount)) * 100)}% of your ${formatKES(Number(amount))} borrowing need — just in fees. Build an emergency float in an MMF and you'll never pay this again.`}
+              tone="danger"
+            />
             <p className="text-xs text-[#4B4238]">
               Fuliza and similar overdraft products are emergency tools, not personal finance tools —
               rates change periodically, so verify the current rate in your M-PESA app before
