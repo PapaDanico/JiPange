@@ -1,4 +1,4 @@
-import type { Calculations, Profile } from "./types";
+import type { Calculations } from "./types";
 import type { JourneyAnswers } from "./journey";
 
 export type IndicatorStatus = "strong" | "good" | "building" | "risk" | "unknown";
@@ -72,7 +72,7 @@ function savingsRateIndicator(calculations: Calculations | null): ReadinessIndic
   const label = "Savings Rate";
   if (!calculations) return { key, label, status: "unknown", statusLabel: "No data" };
 
-  const rate = Math.round(calculations.savingsRate);
+  const rate = Math.round(calculations.savingsRate * 100);
   if (rate >= 20) return { key, label, status: "strong", statusLabel: `${rate}%` };
   if (rate >= 10) return { key, label, status: "good", statusLabel: `${rate}%` };
   if (rate >= 5) {
@@ -109,7 +109,6 @@ function goalIndicator(journey: JourneyAnswers | null, hasGoals: boolean): Readi
 }
 
 export function computeReadiness(
-  _profile: Profile | null,
   calculations: Calculations | null,
   journey: JourneyAnswers | null,
   hasGoals: boolean,

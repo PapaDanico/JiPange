@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { computeReadiness, type IndicatorStatus, type ReadinessIndicator } from "@/lib/readiness";
-import { getStoredCalculations, getStoredGoals, getStoredJourneyAnswers, getStoredProfile } from "@/lib/storage";
+import { getStoredCalculations, getStoredGoals, getStoredJourneyAnswers } from "@/lib/storage";
 
 const STATUS_STYLES: Record<IndicatorStatus, string> = {
   strong: "bg-[#D1FAE5] text-[#2D7D46]",
@@ -22,6 +22,21 @@ const STATUS_ICONS: Record<IndicatorStatus, string> = {
 };
 
 function IndicatorCard({ indicator }: { indicator: ReadinessIndicator }) {
+  const hintNode = indicator.hint
+    ? indicator.href
+      ? (
+          <Link
+            href={indicator.href}
+            className="mt-1 block text-[10px] text-[#6B5B4D] underline underline-offset-2 hover:text-primary leading-snug"
+          >
+            {indicator.hint}
+          </Link>
+        )
+      : (
+          <p className="mt-1 text-[10px] text-[#9A8B80] leading-snug">{indicator.hint}</p>
+        )
+    : null;
+
   return (
     <div className="rounded-xl border border-[#E5E0D8] bg-[#FAFAF8] p-2.5">
       <p className="text-[11px] text-[#9A8B80]">{indicator.label}</p>
@@ -33,17 +48,7 @@ function IndicatorCard({ indicator }: { indicator: ReadinessIndicator }) {
           {indicator.statusLabel}
         </span>
       </div>
-      {indicator.hint && indicator.href && (
-        <Link
-          href={indicator.href}
-          className="mt-1 block text-[10px] text-[#6B5B4D] underline underline-offset-2 hover:text-primary leading-snug"
-        >
-          {indicator.hint}
-        </Link>
-      )}
-      {indicator.hint && !indicator.href && (
-        <p className="mt-1 text-[10px] text-[#9A8B80] leading-snug">{indicator.hint}</p>
-      )}
+      {hintNode}
     </div>
   );
 }
@@ -52,11 +57,10 @@ export default function ReadinessSnapshot() {
   const [data, setData] = useState<ReturnType<typeof computeReadiness>>(null);
 
   useEffect(() => {
-    const profile = getStoredProfile();
     const calculations = getStoredCalculations();
     const journey = getStoredJourneyAnswers();
     const goals = getStoredGoals();
-    setData(computeReadiness(profile, calculations, journey, goals.length > 0));
+    setData(computeReadiness(calculations, journey, goals.length > 0));
   }, []);
 
   if (!data) return null;
