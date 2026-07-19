@@ -171,7 +171,7 @@ export default function DebtEscapeCalculator() {
             </div>
             {loan.rate && Number(loan.rate) > 0 && (
               <p className="text-[11px] text-[#6f6e69]">
-                ≈ {Math.round(Number(loan.rate) * 12)}% APR — verify the current rate in
+                ≈ {Math.round((Math.pow(1 + Number(loan.rate) / 100, 12) - 1) * 100)}% effective APR — verify the current rate in
                 your lender&apos;s app.
               </p>
             )}

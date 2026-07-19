@@ -55,7 +55,7 @@ export function futureValueWithStepUp(
   annualStepUpRate: number
 ): { total: number; totalContributed: number } {
   let total = presentValue;
-  let totalContributed = 0;
+  let totalContributed = presentValue;
   let monthly = firstYearMonthly;
   for (let year = 0; year < Math.floor(years); year++) {
     total = futureValue(total, monthly, annualRate, 1);
