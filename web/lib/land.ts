@@ -91,7 +91,7 @@ export function calculateLandPurchase(input: LandPurchaseInput): LandCostBreakdo
     agentCommission;
 
   const grandTotal = price + totalTransactionCosts;
-  const hiddenCostPct = Math.round((totalTransactionCosts / price) * 1000) / 10;
+  const hiddenCostPct = price > 0 ? Math.round((totalTransactionCosts / price) * 1000) / 10 : 0;
 
   return {
     plotPrice: price,

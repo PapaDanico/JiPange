@@ -51,6 +51,12 @@ export function calculateLoanAmortization(params: {
     }
 
     balance = round2(balance - principalPaid);
+    if (balance <= 0) {
+      totalInterest = round2(totalInterest + interestPaid);
+      totalPaid = round2(totalPaid + payment);
+      schedule.push({ month, payment, principalPaid, interestPaid, remainingBalance: 0 });
+      break;
+    }
     totalInterest = round2(totalInterest + interestPaid);
     totalPaid = round2(totalPaid + payment);
 

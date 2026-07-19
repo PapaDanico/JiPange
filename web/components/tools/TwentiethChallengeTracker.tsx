@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   getMonthKey,
   getWindowStatus,
@@ -42,7 +42,11 @@ function formatMonthLabel(monthKey: string): string {
 }
 
 export default function TwentiethChallengeTracker() {
-  const today = useMemo(() => new Date(), []);
+  const [today, setToday] = useState(() => new Date());
+  useEffect(() => {
+    const id = setInterval(() => setToday(new Date()), 60_000);
+    return () => clearInterval(id);
+  }, []);
 
   const [savedCommitment, setSavedCommitment] = useStickyState(
     "jipange:20th-challenge",

@@ -127,13 +127,17 @@ export function calculateDebtStack(
       }
     }
 
-    // Pour all remaining budget into the target loan.
-    if (targetIdx >= 0 && states[targetIdx].balance > 0.01 && remaining > 0) {
-      const pay = Math.min(remaining, states[targetIdx].balance);
-      states[targetIdx].balance -= pay;
-      if (states[targetIdx].balance < 0.01) {
-        states[targetIdx].balance = 0;
-        if (states[targetIdx].clearedAtMonth === -1) states[targetIdx].clearedAtMonth = month;
+    // Pour all remaining budget into avalanche targets; cascade if a loan clears mid-month.
+    let surplus = remaining;
+    while (surplus > 0.005) {
+      const nextTarget = states.findIndex((s) => s.balance > 0.01);
+      if (nextTarget < 0) break;
+      const pay = Math.min(surplus, states[nextTarget].balance);
+      states[nextTarget].balance -= pay;
+      surplus -= pay;
+      if (states[nextTarget].balance < 0.01) {
+        states[nextTarget].balance = 0;
+        if (states[nextTarget].clearedAtMonth === -1) states[nextTarget].clearedAtMonth = month;
       }
     }
 
@@ -147,8 +151,7 @@ export function calculateDebtStack(
 
   // Interest saved vs paying only minimums (just interest, no principal) for the same N months.
   // Paying exactly the monthly interest keeps balances flat, so cost = totalMonthlyInterest * N.
-  const minOnlyCostSamePeriod = Math.round(totalMonthlyInterest * month);
-  const interestSavedVsMinOnly = Math.max(0, minOnlyCostSamePeriod - Math.round(totalInterestPaid));
+  const interestSavedVsMinOnly = Math.round(Math.max(0, totalMonthlyInterest * month - totalInterestPaid));
 
   // What the repayment budget grows to in an MMF at 11.8% p.a. for 12 months post-debt-freedom.
   const r = MMF_ANNUAL_RATE / 12;
@@ -168,7 +171,7 @@ export function calculateDebtStack(
       name: s.name,
       originalBalance: s.originalBalance,
       monthlyRatePct: input.monthlyRatePct,
-      aprPct: input.monthlyRatePct * 12,
+      aprPct: Math.round(((Math.pow(1 + input.monthlyRatePct / 100, 12) - 1) * 100) * 10) / 10,
       avalancheRank: s.rank,
       totalInterestPaid: Math.round(s.interestPaid),
       clearedAtMonth: s.clearedAtMonth,
