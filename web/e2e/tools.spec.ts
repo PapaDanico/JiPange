@@ -254,7 +254,7 @@ test("affiliate links: /go/unknown-slug redirects to /tools", async ({ page }) =
 test("tool enhancements: shows Try next section with chips", async ({ page }) => {
   await page.goto("/tools/take-home-pay");
   await expect(page.getByText(/try next/i)).toBeVisible();
-  await expect(page.getByRole("link", { name: "Tax Shield", exact: true })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Salary & Pay Hub", exact: true }).first()).toBeVisible();
 });
 
 test("tool enhancements: share button is present", async ({ page }) => {

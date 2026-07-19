@@ -4,9 +4,12 @@ import { useMemo } from "react";
 import { futureValueWithStepUp, inflationAdjust } from "@/lib/projections";
 import { formatKES } from "@/lib/budget";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
+import dynamic from "next/dynamic";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
-import CompoundGrowthChart, { type GrowthDataPoint } from "./CompoundGrowthChart";
+import { type GrowthDataPoint } from "./CompoundGrowthChart";
 import HowItWorks from "./HowItWorks";
+
+const CompoundGrowthChart = dynamic(() => import("./CompoundGrowthChart"), { ssr: false });
 import NumberField from "./NumberField";
 import ExportCardButton from "./ExportCardButton";
 import ProductLinks from "./ProductLinks";

@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo } from "react";
-import Link from "next/link";
 import {
   FIRE_ALLOCATION,
   KENYAN_INFLATION,
@@ -17,6 +16,9 @@ import ProductLinks from "./ProductLinks";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
 import { MMF_AND_TBILL_LINKS } from "@/lib/affiliate-links";
+import dynamic from "next/dynamic";
+
+const FirePathChart = dynamic(() => import("./FirePathChart"), { ssr: false });
 
 /**
  * Localized FIRE engine: replaces the Western 4%-rule (25×) with a 5% SWR
@@ -150,6 +152,12 @@ export default function FireNumberCalculator() {
             </ul>
           </div>
 
+          <FirePathChart
+            monthlyExpenses={Number(monthlyExpenses)}
+            currentAge={currentAge}
+            targetAge={Math.max(currentAge, targetAge)}
+          />
+
           <p className="text-xs text-[#4B4238]">
             Why 20× and not the Western 25×: Kenya&apos;s low-risk yields (11.5% MMF/bond
             baseline) sit far above the 6.4% inflation line, supporting a ~5% localized safe
@@ -166,13 +174,6 @@ export default function FireNumberCalculator() {
           <ShareResultButton
             message={`🔥 *My Kenya FIRE Number*\n\nTo retire at ${Math.max(currentAge, targetAge)} on ${formatKES(Number(monthlyExpenses))}/month (today's costs), I need ${formatKES(fire.nominalFutureFireNumber)} — inflation-adjusted, at a localized 5% withdrawal rate.\n\nFind yours → jipangefinance.netlify.app/tools/fire-number`}
           />
-
-          <Link
-            href="/profile"
-            className="flex h-12 w-full items-center justify-center rounded-full bg-accent text-base font-semibold text-[#171717] transition-colors hover:bg-[#d6961f]"
-          >
-            Map My Path to FIRE → Start My Plan (90 Seconds)
-          </Link>
         </div>
         <ExportCardButton containerRef={resultsRef} filename="fire-number" />
         <ProductLinks products={MMF_AND_TBILL_LINKS} heading="Where to invest your FIRE portfolio" />

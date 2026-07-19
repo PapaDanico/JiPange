@@ -1,6 +1,5 @@
 "use client";
 
-import { useId } from "react";
 import {
   AreaChart,
   Area,
@@ -23,8 +22,6 @@ function yFmt(v: number) {
 }
 
 export default function DebtPayoffChart({ timeline, totalBalance }: Props) {
-  const gradientId = useId();
-
   if (timeline.length < 2) return null;
 
   const lastMonth = timeline[timeline.length - 1].month;
@@ -44,7 +41,7 @@ export default function DebtPayoffChart({ timeline, totalBalance }: Props) {
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={timeline} margin={{ top: 4, right: 8, bottom: 0, left: 0 }}>
             <defs>
-              <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+              <linearGradient id="debtGradient" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#E87040" stopOpacity={0.25} />
                 <stop offset="95%" stopColor="#E87040" stopOpacity={0.03} />
               </linearGradient>
@@ -58,7 +55,7 @@ export default function DebtPayoffChart({ timeline, totalBalance }: Props) {
               interval={tickInterval - 1}
             />
             <YAxis
-              domain={[0, Math.round(totalBalance)]}
+              domain={[0, totalBalance]}
               tick={{ fontSize: 10, fill: "#9A8B80" }}
               tickLine={false}
               axisLine={false}
@@ -75,7 +72,7 @@ export default function DebtPayoffChart({ timeline, totalBalance }: Props) {
               dataKey="remaining"
               stroke="#E87040"
               strokeWidth={2}
-              fill={`url(#${gradientId})`}
+              fill="url(#debtGradient)"
               dot={false}
             />
           </AreaChart>
