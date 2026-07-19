@@ -22,7 +22,7 @@ export function calculateFulizaCost(principal: number, days: number): FulizaCost
       totalFee: 0,
       totalRepaid: 0,
       percentOfPrincipal: 0,
-      annualisedApr: FULIZA_DAILY_RATE * 365,
+      annualisedApr: Math.pow(1 + FULIZA_DAILY_RATE, 365) - 1,
       saccoComparisonTotalRepaid: 0,
     };
   }
@@ -43,7 +43,7 @@ export function calculateFulizaCost(principal: number, days: number): FulizaCost
     totalFee,
     totalRepaid,
     percentOfPrincipal,
-    annualisedApr: FULIZA_DAILY_RATE * 365,
+    annualisedApr: Math.pow(1 + FULIZA_DAILY_RATE, 365) - 1,
     saccoComparisonTotalRepaid: saccoEquivalent.totalPaid,
   };
 }

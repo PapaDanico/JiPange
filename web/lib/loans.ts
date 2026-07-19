@@ -61,6 +61,8 @@ export function calculateLoanAmortization(params: {
       interestPaid,
       remainingBalance: Math.max(0, balance),
     });
+
+    if (balance <= 0) break;
   }
 
   return {

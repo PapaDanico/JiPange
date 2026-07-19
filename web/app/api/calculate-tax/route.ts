@@ -3,7 +3,7 @@ import { z } from "zod";
 import { calculateNetPay } from "@/lib/tax";
 
 const requestSchema = z.object({
-  grossMonthlySalary: z.number().positive(),
+  grossMonthlySalary: z.number().positive().finite().max(10_000_000),
 });
 
 export async function POST(request: NextRequest) {

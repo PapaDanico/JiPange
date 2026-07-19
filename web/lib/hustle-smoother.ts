@@ -35,6 +35,17 @@ export function smoothIncomes(
   incomes: number[],
   drawFraction: number
 ): SmootherResult {
+  if (incomes.length === 0) {
+    return {
+      stats: { min: 0, max: 0, average: 0, median: 0, total: 0 },
+      monthlyDraw: 0,
+      points: [],
+      finalBuffer: 0,
+      finalBufferMonths: 0,
+      shortMonths: 0,
+    };
+  }
+
   const sorted = [...incomes].sort((a, b) => a - b);
   const n = sorted.length;
 

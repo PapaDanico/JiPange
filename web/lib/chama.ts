@@ -67,6 +67,19 @@ export function calculateChamaInvestment(
   monthlyContributionPerMember: number,
   annualReturnPercent: number
 ): ChamaInvestmentResult {
+  if (memberCount <= 0) {
+    return {
+      mode: "investment",
+      monthlyPool: 0,
+      value1Yr: 0,
+      value3Yr: 0,
+      value5Yr: 0,
+      perMemberShare1Yr: 0,
+      perMemberShare3Yr: 0,
+      perMemberShare5Yr: 0,
+    };
+  }
+
   const monthlyPool = memberCount * monthlyContributionPerMember;
   const annualRate = annualReturnPercent / 100;
   const value1Yr = futureValue(0, monthlyPool, annualRate, 1);

@@ -45,24 +45,21 @@ export async function aiErrorResponse(routeName: string, error: unknown): Promis
 
   if (error instanceof AiNotConfiguredError) {
     return NextResponse.json(
-      { error: "AI planning isn't set up on the server yet (missing API key)." },
+      { error: "AI planning is temporarily unavailable. Please try again later." },
       { status: 503 }
     );
   }
 
   if (error instanceof AiAuthError) {
     return NextResponse.json(
-      { error: "The server's AI credentials were rejected — the API key needs to be rotated." },
+      { error: "AI planning is temporarily unavailable. Please try again later." },
       { status: 502 }
     );
   }
 
   if (error instanceof AiBillingError) {
     return NextResponse.json(
-      {
-        error:
-          "The AI account has run out of credits — top up the Anthropic account, then try again.",
-      },
+      { error: "AI planning is temporarily unavailable. Please try again later." },
       { status: 502 }
     );
   }
