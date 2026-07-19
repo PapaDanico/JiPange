@@ -129,7 +129,7 @@ export function calculateDebtStack(
 
     // Pour all remaining budget into avalanche targets; cascade if a loan clears mid-month.
     let surplus = remaining;
-    while (surplus > 0.005) {
+    while (surplus > 0) {
       const nextTarget = states.findIndex((s) => s.balance > 0.01);
       if (nextTarget < 0) break;
       const pay = Math.min(surplus, states[nextTarget].balance);
