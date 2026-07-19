@@ -1,6 +1,12 @@
 import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 import ToolsIndexList, { type ToolGroup } from "@/components/tools/ToolsIndexList";
 import RecentToolsBar from "@/components/tools/RecentToolsBar";
+
+const ReadinessSnapshot = dynamic(
+  () => import("@/components/tools/ReadinessSnapshot"),
+  { ssr: false }
+);
 
 export const metadata: Metadata = {
   title: "Free Financial Calculators for Kenya",
@@ -202,6 +208,7 @@ export default function ToolsPage() {
           Quick tools for everyday Kenyan money decisions — no account needed.
         </p>
       </div>
+      <ReadinessSnapshot />
       <RecentToolsBar />
       <ToolsIndexList groups={CALCULATOR_GROUPS} />
     </div>
