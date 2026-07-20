@@ -7,6 +7,10 @@ const ReadinessSnapshot = dynamic(
   () => import("@/components/tools/ReadinessSnapshot"),
   { ssr: false }
 );
+const ContinueSessionBanner = dynamic(
+  () => import("@/components/tools/ContinueSessionBanner"),
+  { ssr: false }
+);
 
 export const metadata: Metadata = {
   title: "Free Financial Calculators for Kenya",
@@ -208,6 +212,7 @@ export default function ToolsPage() {
           Quick tools for everyday Kenyan money decisions — no account needed.
         </p>
       </div>
+      <ContinueSessionBanner />
       <ReadinessSnapshot />
       <RecentToolsBar />
       <ToolsIndexList groups={CALCULATOR_GROUPS} />

@@ -268,6 +268,10 @@ export default function DebtEscapeCalculator() {
               Pay minimums on all loans. Pour every spare shilling into Loan #1 until
               it&apos;s gone, then roll that payment to Loan #2.
             </p>
+            <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-[#FFF4DC] px-2.5 py-1 text-[11px] font-medium text-[#946213]">
+              💡 Ranked by effective cost — your priciest debt (often Fuliza) clears first, saving
+              the most interest
+            </span>
             <div className="mt-3 space-y-2">
               {result.loans.map((loan) => (
                 <div
@@ -298,6 +302,10 @@ export default function DebtEscapeCalculator() {
           </div>
 
           <DebtPayoffChart timeline={result.timeline} totalBalance={result.totalBalance} />
+
+          <BehavioralInsightStrip
+            insight="Move your avalanche payment the day your salary lands — most Kenyan payroll cycles pay out around the 25th–28th. Routing it within 24 hours of payday, before it blends into M-Pesa spending, is what actually makes this plan stick."
+          />
 
           {result.mmfValue12m > 0 && (
             <BehavioralInsightStrip

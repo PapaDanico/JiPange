@@ -35,6 +35,15 @@ export default function ToolEnhancements() {
 
   return (
     <div className="mt-8 w-full max-w-md space-y-4 print:hidden">
+      {meta.nextMove && (
+        <Link
+          href={meta.nextMove.href}
+          className="flex h-12 w-full items-center justify-center rounded-full bg-primary text-center text-sm font-semibold text-white transition-colors hover:bg-[#584a3e]"
+        >
+          {meta.nextMove.label}
+        </Link>
+      )}
+
       {related && related.length > 0 && (
         <div>
           <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-[#9A8B80]">

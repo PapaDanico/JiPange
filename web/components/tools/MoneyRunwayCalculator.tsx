@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { calculateMoneyRunwayMonths } from "@/lib/runway";
+import { formatKES } from "@/lib/budget";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import HowItWorks from "./HowItWorks";
@@ -78,6 +79,11 @@ export default function MoneyRunwayCalculator() {
 
   const resultsRef = useScrollIntoView<HTMLDivElement>(result !== null);
 
+  const withdrawalSliderMax = Math.max(
+    20_000,
+    Math.ceil(((Number(monthlyWithdrawal) || 0) * 1.5) / 500) * 500
+  );
+
   const isDirty = startingBalance !== "" || monthlyWithdrawal !== "" || annualReturn !== "6";
 
   function handleReset() {
@@ -102,6 +108,27 @@ export default function MoneyRunwayCalculator() {
         onChange={setMonthlyWithdrawal}
         placeholder="e.g. 50000"
       />
+      <div>
+        <div className="flex items-center justify-between">
+          <label htmlFor="withdrawal-slider" className="text-xs text-[#4B4238]">
+            Drag to see the runway change instantly
+          </label>
+          <span className="text-sm font-semibold text-primary">
+            {formatKES(Number(monthlyWithdrawal) || 0)}/mo
+          </span>
+        </div>
+        <input
+          id="withdrawal-slider"
+          type="range"
+          min={0}
+          max={withdrawalSliderMax}
+          step={500}
+          value={Math.min(Number(monthlyWithdrawal) || 0, withdrawalSliderMax)}
+          onChange={(event) => setMonthlyWithdrawal(event.target.value)}
+          className="mt-2 h-2 w-full accent-primary"
+          aria-label="Explore monthly withdrawal"
+        />
+      </div>
       <NumberField
         id="annualReturn"
         label="Expected annual return while drawing down"
