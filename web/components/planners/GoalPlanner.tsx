@@ -635,18 +635,32 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
       {/* ── Results ── */}
       {multi && (
         <div className="space-y-4">
+          {config.inflatesWithTime && nominalTarget > 0 && (
+            <div className="grid grid-cols-2 gap-3">
+              <ResultCard
+                label="You'll need (future cash)"
+                value={formatKES(nominalTarget)}
+                sublabel={`In ${formatYears(displayYears)}, at ~6.5% inflation`}
+              />
+              <ResultCard
+                label="Same buying power today"
+                value={formatKES(items.reduce((sum, item) => sum + item.todayValue, 0))}
+                tone="warning"
+              />
+            </div>
+          )}
           {config.inflatesWithTime && !isChildrenBuilder && nominalTarget > parsedAmount * 1.01 && (
             <p className="text-xs text-[#4B4238]">
               {formatKES(parsedAmount)} today will cost about{" "}
               <span className="font-semibold">{formatKES(nominalTarget)}</span> in{" "}
-              {formatYears(parsedYears)} at ~6.5% inflation — we plan against the real future
-              cost.
+              {formatYears(parsedYears)} — the gap is why your monthly saving rate has to rise
+              faster than a flat plan would suggest.
             </p>
           )}
-          {isChildrenBuilder && (
+          {config.inflatesWithTime && isChildrenBuilder && (
             <p className="text-xs text-[#4B4238]">
-              School costs inflate ~6.5% a year — each child&apos;s target is planned at the
-              price it will actually be when their fees start.
+              School costs inflate ~6.5% a year — each child&apos;s target above is already
+              planned at the price it will actually be when their fees start.
             </p>
           )}
 

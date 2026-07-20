@@ -88,6 +88,8 @@ export default function InvestmentReturnsCalculator() {
 
   const resultsRef = useScrollIntoView<HTMLDivElement>(result !== null);
 
+  const monthlySliderMax = Math.max(50_000, Math.ceil(((Number(monthly) || 0) * 1.5) / 1000) * 1000);
+
   const isDirty =
     lumpSum !== "0" || monthly !== "" || annualReturn !== "10" || years !== "" || stepUp !== 0;
 
@@ -115,6 +117,27 @@ export default function InvestmentReturnsCalculator() {
         onChange={setMonthly}
         placeholder="e.g. 10000"
       />
+      <div>
+        <div className="flex items-center justify-between">
+          <label htmlFor="monthly-slider" className="text-xs text-[#4B4238]">
+            Drag to explore instantly
+          </label>
+          <span className="text-sm font-semibold text-primary">
+            {formatKES(Number(monthly) || 0)}/mo
+          </span>
+        </div>
+        <input
+          id="monthly-slider"
+          type="range"
+          min={0}
+          max={monthlySliderMax}
+          step={500}
+          value={Math.min(Number(monthly) || 0, monthlySliderMax)}
+          onChange={(event) => setMonthly(event.target.value)}
+          className="mt-2 h-2 w-full accent-primary"
+          aria-label="Explore monthly contribution"
+        />
+      </div>
       <NumberField
         id="annualReturn"
         label="Expected annual return"
