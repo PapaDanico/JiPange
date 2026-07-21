@@ -148,7 +148,7 @@ export default function ToolsIndexList({ groups }: { groups: ToolGroup[] }) {
                 <Link
                   key={calc.href}
                   href={calc.href}
-                  className="flex items-start gap-3 rounded-2xl bg-white p-4 shadow-sm transition-colors hover:bg-[#F1ECE3] lg:h-full lg:flex-col"
+                  className="flex items-center gap-3 rounded-2xl bg-white p-4 shadow-sm transition-colors hover:bg-[#F1ECE3] lg:h-full lg:items-start lg:flex-col"
                 >
                   <span className="text-2xl">{calc.icon}</span>
                   <span className="flex-1">

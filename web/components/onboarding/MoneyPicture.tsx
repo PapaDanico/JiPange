@@ -103,7 +103,7 @@ export default function MoneyPicture() {
   const band = savingsRateBand(model === "kenya" ? financials.savingsRate : growthRate);
 
   return (
-    <div className="w-full max-w-md space-y-8">
+    <div className="w-full max-w-2xl space-y-8">
       <div className="rounded-2xl bg-white p-6 shadow-sm">
         <p className="text-sm text-[#4B4238]">Your monthly take-home pay</p>
         <p className="mt-1 text-3xl font-semibold text-primary">
