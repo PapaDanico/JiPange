@@ -29,7 +29,7 @@ export default function PlanView() {
   }
 
   return (
-    <div className="w-full max-w-md space-y-10">
+    <div className="w-full max-w-2xl space-y-10">
       {answers && <JourneyActionPlan answers={answers} />}
 
       {(hasProfile || !answers) && (

@@ -17,7 +17,7 @@ export default function ContinueSessionBanner() {
   if (!meta) return null;
 
   return (
-    <div className="mb-6 w-full max-w-md rounded-2xl border border-accent bg-[#FFF8EA] p-4">
+    <div className="mb-6 w-full rounded-2xl border border-accent bg-[#FFF8EA] p-4">
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
           <p className="text-sm font-semibold text-primary">Continue where you left off?</p>

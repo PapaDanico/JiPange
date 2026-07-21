@@ -57,82 +57,84 @@ export default function ToolsIndexList({ groups }: { groups: ToolGroup[] }) {
   }
 
   return (
-    <div className="mt-8 w-full max-w-md space-y-5">
-      {/* Search */}
-      <div className="relative">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9A8B80]"
-          aria-hidden="true"
-        >
-          <circle cx="11" cy="11" r="8" />
-          <path d="m21 21-4.35-4.35" />
-        </svg>
-        <input
-          ref={inputRef}
-          type="search"
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          placeholder="Search calculators…"
-          aria-label="Search calculators"
-          className="h-12 w-full rounded-lg border border-[#E5E0D8] bg-white pl-10 pr-10 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-        />
-        {query && (
-          <button
-            type="button"
-            onClick={clearSearch}
-            aria-label="Clear search"
-            className="absolute right-3 top-1/2 -translate-y-1/2 flex h-5 w-5 items-center justify-center rounded-full bg-[#E5E0D8] text-xs text-[#4B4238] hover:bg-[#D4CEC5]"
+    <div className="mt-8 w-full max-w-5xl space-y-5">
+      <div className="max-w-2xl space-y-5">
+        {/* Search */}
+        <div className="relative">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9A8B80]"
+            aria-hidden="true"
           >
-            ✕
-          </button>
-        )}
-      </div>
-
-      {/* Category chips */}
-      <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by category">
-        {categoryLabels.map((label) => (
-          <button
-            key={label}
-            type="button"
-            onClick={() => setActiveCategory(label)}
-            aria-pressed={activeCategory === label}
-            className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
-              activeCategory === label
-                ? "border-primary bg-primary text-white"
-                : "border-[#E5E0D8] bg-white text-[#4B4238] hover:bg-[#F1ECE3]"
-            }`}
-          >
-            {label}
-          </button>
-        ))}
-      </div>
-
-      {/* Result count when filtering */}
-      {isFiltered && (
-        <p className="text-xs text-[#9A8B80]">
-          {totalVisible === 0
-            ? `No calculators match — `
-            : `${totalVisible} of ${totalAll} calculators`}
-          {(query || activeCategory !== ALL_LABEL) && totalVisible === 0 && (
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.35-4.35" />
+          </svg>
+          <input
+            ref={inputRef}
+            type="search"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Search calculators…"
+            aria-label="Search calculators"
+            className="h-12 w-full rounded-lg border border-[#E5E0D8] bg-white pl-10 pr-10 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+          />
+          {query && (
             <button
               type="button"
-              onClick={() => { setQuery(""); setActiveCategory(ALL_LABEL); }}
-              className="underline hover:text-primary"
+              onClick={clearSearch}
+              aria-label="Clear search"
+              className="absolute right-3 top-1/2 -translate-y-1/2 flex h-5 w-5 items-center justify-center rounded-full bg-[#E5E0D8] text-xs text-[#4B4238] hover:bg-[#D4CEC5]"
             >
-              clear filters
+              ✕
             </button>
           )}
-        </p>
-      )}
+        </div>
+
+        {/* Category chips */}
+        <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by category">
+          {categoryLabels.map((label) => (
+            <button
+              key={label}
+              type="button"
+              onClick={() => setActiveCategory(label)}
+              aria-pressed={activeCategory === label}
+              className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
+                activeCategory === label
+                  ? "border-primary bg-primary text-white"
+                  : "border-[#E5E0D8] bg-white text-[#4B4238] hover:bg-[#F1ECE3]"
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+
+        {/* Result count when filtering */}
+        {isFiltered && (
+          <p className="text-xs text-[#9A8B80]">
+            {totalVisible === 0
+              ? `No calculators match — `
+              : `${totalVisible} of ${totalAll} calculators`}
+            {(query || activeCategory !== ALL_LABEL) && totalVisible === 0 && (
+              <button
+                type="button"
+                onClick={() => { setQuery(""); setActiveCategory(ALL_LABEL); }}
+                className="underline hover:text-primary"
+              >
+                clear filters
+              </button>
+            )}
+          </p>
+        )}
+      </div>
 
       {/* Tool groups */}
       <div className="space-y-8">
@@ -141,12 +143,12 @@ export default function ToolsIndexList({ groups }: { groups: ToolGroup[] }) {
             <h2 className="mb-3 text-xs font-semibold uppercase tracking-wide text-[#4B4238]">
               {group.label}
             </h2>
-            <div className="space-y-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {group.calculators.map((calc) => (
                 <Link
                   key={calc.href}
                   href={calc.href}
-                  className="flex items-center gap-3 rounded-2xl bg-white p-4 shadow-sm transition-colors hover:bg-[#F1ECE3]"
+                  className="flex items-center gap-3 rounded-2xl bg-white p-4 shadow-sm transition-colors hover:bg-[#F1ECE3] lg:h-full lg:items-start lg:flex-col"
                 >
                   <span className="text-2xl">{calc.icon}</span>
                   <span className="flex-1">
@@ -161,7 +163,7 @@ export default function ToolsIndexList({ groups }: { groups: ToolGroup[] }) {
                     <span className="block text-xs text-[#4B4238]">{calc.description}</span>
                     <span className="mt-1 block text-xs italic text-[#4B4238]">{calc.insight}</span>
                   </span>
-                  <span className="text-primary">→</span>
+                  <span className="text-primary lg:self-end">→</span>
                 </Link>
               ))}
             </div>

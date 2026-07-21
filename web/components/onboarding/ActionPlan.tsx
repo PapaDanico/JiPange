@@ -94,7 +94,7 @@ export default function ActionPlan() {
   // Invite them into the deep profile instead of bouncing them off the page.
   if (!profile || !calculations) {
     return (
-      <div className="w-full max-w-md rounded-2xl bg-white p-6 text-center shadow-sm">
+      <div className="w-full max-w-2xl rounded-2xl bg-white p-6 text-center shadow-sm">
         <p className="text-2xl" aria-hidden="true">
           🤖
         </p>
@@ -130,7 +130,7 @@ export default function ActionPlan() {
   });
 
   return (
-    <div className="w-full max-w-md space-y-6 pb-28">
+    <div className="w-full max-w-2xl space-y-6 pb-28">
       {loading && (
         <div className="space-y-4">
           <p className="text-center text-sm text-[#4B4238]">

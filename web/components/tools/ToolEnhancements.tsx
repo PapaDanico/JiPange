@@ -34,7 +34,7 @@ export default function ToolEnhancements() {
   if (!meta) return null;
 
   return (
-    <div className="mt-8 w-full max-w-md space-y-4 print:hidden">
+    <div className="w-full space-y-4 print:hidden">
       {meta.nextMove && (
         <Link
           href={meta.nextMove.href}

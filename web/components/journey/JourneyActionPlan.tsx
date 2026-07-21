@@ -419,7 +419,7 @@ export default function JourneyActionPlan({ answers }: { answers: JourneyAnswers
   const model = mapJourney(answers);
 
   return (
-    <div className="w-full max-w-md space-y-6">
+    <div className="w-full max-w-2xl space-y-6">
       <MicroMilestone answers={answers} />
       <VendorBlueprint vehicleId={model.match.id} />
       <LifeCapitalMap goal={answers.primary_goal} />

@@ -91,7 +91,7 @@ export default function DashboardView() {
   // No answers yet: invite, don't shove — and keep every explore path open.
   if (!model) {
     return (
-      <div className="w-full max-w-md rounded-2xl bg-white p-6 text-center shadow-sm">
+      <div className="w-full max-w-2xl rounded-2xl bg-white p-6 text-center shadow-sm">
         <p className="text-2xl" aria-hidden="true">
           📊
         </p>
@@ -125,7 +125,7 @@ export default function DashboardView() {
   const recovery = model.theme === "recovery";
 
   return (
-    <div className="w-full max-w-md space-y-6">
+    <div className="w-full max-w-2xl space-y-6">
       {/* Simple ↔ analytical view switch */}
       <div className="flex justify-end">
         <button

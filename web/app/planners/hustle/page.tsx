@@ -11,16 +11,16 @@ export const metadata: Metadata = {
 export default function HustlePlannerPage() {
   return (
     <div className="flex flex-1 flex-col items-center px-6 py-12">
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-3xl">
         <Link href="/planners" className="text-xs font-medium text-primary underline">
           ← All planners
         </Link>
-        <h1 className="mt-2 text-2xl font-semibold text-primary">🌾 Cycle Venture Planner</h1>
-        <p className="mt-1 text-sm text-[#4B4238]">
+        <h1 className="mt-2 text-2xl font-semibold text-primary lg:text-3xl">🌾 Cycle Venture Planner</h1>
+        <p className="mt-1 max-w-2xl text-sm text-[#4B4238] lg:text-base">
           Lumpy cycle payouts in, steady monthly salary out — seed capital protected for the next round.
         </p>
       </div>
-      <div className="mt-8 w-full max-w-md">
+      <div className="mt-8 w-full max-w-3xl">
         <HustleSmoother />
       </div>
     </div>

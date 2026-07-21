@@ -21,7 +21,7 @@ export default function ToolLayoutCTA() {
 
   if (state === "plan") {
     return (
-      <div className="mt-8 w-full max-w-md rounded-2xl bg-white p-6 text-center shadow-sm print:hidden">
+      <div className="w-full rounded-2xl bg-white p-6 text-center shadow-sm print:hidden">
         <p className="text-sm font-medium text-primary">Your financial picture is ready</p>
         <p className="mt-1 text-xs text-[#4B4238]">
           See how this calculator result fits into your full plan.
@@ -38,7 +38,7 @@ export default function ToolLayoutCTA() {
 
   if (state === "journey") {
     return (
-      <div className="mt-8 w-full max-w-md rounded-2xl bg-white p-6 text-center shadow-sm print:hidden">
+      <div className="w-full rounded-2xl bg-white p-6 text-center shadow-sm print:hidden">
         <p className="text-sm font-medium text-primary">You&apos;re almost there</p>
         <p className="mt-1 text-xs text-[#4B4238]">
           Finish your profile to get a personalised action plan built around your whole picture.
@@ -54,7 +54,7 @@ export default function ToolLayoutCTA() {
   }
 
   return (
-    <div className="mt-8 w-full max-w-md rounded-2xl bg-white p-6 text-center shadow-sm print:hidden">
+    <div className="w-full rounded-2xl bg-white p-6 text-center shadow-sm print:hidden">
       <p className="text-sm font-medium text-primary">Want a full plan, not just one number?</p>
       <p className="mt-1 text-xs text-[#4B4238]">
         Get a personalised 3-step action plan built around your whole financial picture.

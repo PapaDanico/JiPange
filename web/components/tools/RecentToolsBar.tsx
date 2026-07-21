@@ -17,7 +17,7 @@ export default function RecentToolsBar() {
   if (tools.length === 0) return null;
 
   return (
-    <div className="mb-6 w-full max-w-md">
+    <div className="mb-6 w-full max-w-2xl">
       <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-[#9A8B80]">
         Recently used
       </p>

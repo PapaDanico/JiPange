@@ -66,7 +66,7 @@ export default function ReadinessSnapshot() {
   if (!data) return null;
 
   return (
-    <div className="w-full max-w-md mt-4">
+    <div className="w-full max-w-2xl mt-4">
       <div className="rounded-2xl bg-white p-4 shadow-sm">
         <div className="flex items-baseline justify-between">
           <p className="text-sm font-semibold text-primary">Financial Readiness</p>
@@ -77,7 +77,7 @@ export default function ReadinessSnapshot() {
             Update
           </Link>
         </div>
-        <div className="mt-2.5 grid grid-cols-2 gap-2">
+        <div className="mt-2.5 grid grid-cols-2 gap-2 sm:grid-cols-4">
           {data.indicators.map((indicator) => (
             <IndicatorCard key={indicator.key} indicator={indicator} />
           ))}
