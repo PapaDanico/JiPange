@@ -34,7 +34,7 @@ export default function PictureView() {
 
   if (!answers && !hasProfile) {
     return (
-      <div className="w-full max-w-md space-y-6">
+      <div className="w-full max-w-2xl space-y-6">
         {hasGoals && <MyGoals savingsCapacity={0} />}
         <div className="rounded-2xl bg-white p-6 text-center shadow-sm">
         <p className="text-2xl" aria-hidden="true">
@@ -69,7 +69,7 @@ export default function PictureView() {
   }
 
   return (
-    <div className="w-full max-w-md space-y-10">
+    <div className="w-full max-w-2xl space-y-10">
       {answers && <PesaDiagnostic answers={answers} />}
       {hasProfile && (
         <div>

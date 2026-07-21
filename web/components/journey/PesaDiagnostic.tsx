@@ -69,7 +69,7 @@ export default function PesaDiagnostic({ answers }: { answers: JourneyAnswers })
   const gapPoints = ((CURRENT_INFLATION - ASSUMED_CURRENT_YIELD) * 100).toFixed(2);
 
   return (
-    <div className="w-full max-w-md space-y-6">
+    <div className="w-full max-w-2xl space-y-6">
       {/* ── Module 1: Survival Status header ── */}
       <section aria-label="Survival status" className={`rounded-2xl p-5 ${survival.className}`}>
         <h2 className={`text-base font-semibold ${survival.titleClass}`}>{survival.title}</h2>

@@ -11,15 +11,15 @@ export const metadata: Metadata = {
 export default function PlannersPage() {
   return (
     <div className="flex flex-1 flex-col items-center px-6 py-12">
-      <div className="w-full max-w-md">
-        <h1 className="text-2xl font-semibold text-primary">Goal Planners</h1>
-        <p className="mt-1 text-sm text-[#4B4238]">
+      <div className="w-full max-w-5xl">
+        <h1 className="text-2xl font-semibold text-primary lg:text-3xl">Goal Planners</h1>
+        <p className="mt-1 max-w-2xl text-sm text-[#4B4238] lg:text-base">
           Pick the goal. We reverse-engineer it into a monthly amount, check it against what you
           can actually afford, and show you where the money should live.
         </p>
       </div>
 
-      <div className="mt-8 w-full max-w-md space-y-4">
+      <div className="mt-8 grid w-full max-w-5xl grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {GOAL_TYPES.map((type) => {
           const config = GOAL_CONFIGS[type];
           return (
@@ -54,7 +54,7 @@ export default function PlannersPage() {
         </Link>
       </div>
 
-      <div className="mt-8 w-full max-w-md rounded-2xl bg-white p-6 text-center shadow-sm">
+      <div className="mt-8 w-full max-w-2xl rounded-2xl bg-white p-6 text-center shadow-sm">
         <p className="text-sm font-medium text-primary">Not sure where to start?</p>
         <p className="mt-1 text-xs text-[#4B4238]">
           Build your Pesa Picture first — it tells you how much you can put toward goals each

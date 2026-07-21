@@ -10,9 +10,9 @@ export const metadata: Metadata = {
 export default function DashboardPage() {
   return (
     <div className="flex flex-1 flex-col items-center px-6 py-12">
-      <div className="w-full max-w-md">
-        <h1 className="text-2xl font-semibold text-primary">Your Action Dashboard</h1>
-        <p className="mt-1 text-sm text-[#4B4238]">
+      <div className="w-full max-w-2xl">
+        <h1 className="text-2xl font-semibold text-primary lg:text-3xl">Your Action Dashboard</h1>
+        <p className="mt-1 text-sm text-[#4B4238] lg:text-base">
           Built from your five answers — anonymous, on your device.
         </p>
       </div>
