@@ -148,7 +148,7 @@ export default function ToolsIndexList({ groups }: { groups: ToolGroup[] }) {
                 <Link
                   key={calc.href}
                   href={calc.href}
-                  className="flex items-center gap-3 rounded-2xl bg-white p-4 shadow-sm transition-colors hover:bg-[#F1ECE3] lg:h-full lg:items-start lg:flex-col"
+                  className="group flex items-center gap-3 rounded-2xl border border-transparent bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-accent hover:shadow-md lg:h-full lg:items-start lg:flex-col"
                 >
                   <span className="text-2xl">{calc.icon}</span>
                   <span className="flex-1">
@@ -160,10 +160,9 @@ export default function ToolsIndexList({ groups }: { groups: ToolGroup[] }) {
                         </span>
                       )}
                     </span>
-                    <span className="block text-xs text-[#4B4238]">{calc.description}</span>
-                    <span className="mt-1 block text-xs italic text-[#4B4238]">{calc.insight}</span>
+                    <span className="mt-1 block text-xs leading-relaxed text-[#4B4238]">{calc.description}</span>
                   </span>
-                  <span className="text-primary lg:self-end">→</span>
+                  <span className="text-primary transition-transform group-hover:translate-x-0.5 lg:self-end">→</span>
                 </Link>
               ))}
             </div>

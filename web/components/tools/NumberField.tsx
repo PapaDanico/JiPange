@@ -9,6 +9,7 @@ export default function NumberField({
   onChange,
   placeholder,
   suffix,
+  currency,
   min = 0,
 }: {
   id: string;
@@ -17,11 +18,13 @@ export default function NumberField({
   onChange: (value: string) => void;
   placeholder?: string;
   suffix?: string;
+  currency?: boolean;
   min?: number;
 }) {
   const [touched, setTouched] = useState(false);
   const num = Number(value);
   const hasError = touched && value !== "" && num < min;
+  const showsCurrency = currency ?? /\((?:KES|KSh)(?:\/month)?\)/i.test(label);
 
   return (
     <div>
@@ -43,12 +46,17 @@ export default function NumberField({
             if (pasted) onChange(pasted);
           }}
           placeholder={placeholder}
-          className={`h-12 w-full rounded-lg border bg-white px-4 text-base focus:outline-none focus:ring-1 ${
+          className={`h-12 w-full rounded-lg border bg-white text-base focus:outline-none focus:ring-1 ${showsCurrency ? "pl-14" : "pl-4"} ${suffix ? "pr-16" : "pr-4"} ${
             hasError
               ? "border-danger focus:border-danger focus:ring-danger"
               : "border-[#E5E0D8] focus:border-primary focus:ring-primary"
           }`}
         />
+        {showsCurrency && (
+          <span className="pointer-events-none absolute inset-y-0 left-4 flex items-center text-sm font-semibold text-[#7A6B5E]">
+            KSh
+          </span>
+        )}
         {suffix && (
           <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-sm text-[#4B4238]">
             {suffix}

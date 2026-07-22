@@ -151,6 +151,30 @@ const PLANNERS = [
   { href: "/planners/business", emoji: "🚀", label: "Business capital" },
 ];
 
+const QUICK_STARTS = [
+  {
+    href: "/tools/take-home-pay",
+    eyebrow: "Keep more salary",
+    title: "Understand my payslip",
+    detail: "See PAYE, NSSF, SHIF and your exact take-home pay.",
+    icon: "💰",
+  },
+  {
+    href: "/tools/debt-escape",
+    eyebrow: "Clear expensive debt",
+    title: "Build my debt escape",
+    detail: "Turn balances and repayments into a clear payoff order.",
+    icon: "🧭",
+  },
+  {
+    href: "/tools/savings-goal",
+    eyebrow: "Make progress",
+    title: "Plan a savings goal",
+    detail: "Find the monthly amount that gets you there on time.",
+    icon: "🎯",
+  },
+];
+
 export default function Home() {
   return (
     <>
@@ -250,6 +274,38 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── Goal-based quick start ── */}
+      <section className="border-b border-[#E5E0D8] bg-[#FAFAF8] py-10 sm:py-12">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6">
+          <div className="mb-5 flex flex-wrap items-end justify-between gap-2">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-widest text-accent">Start with one win</p>
+              <h2 className="mt-1 text-xl font-extrabold tracking-tight text-primary sm:text-2xl">
+                What do you want your money to do better?
+              </h2>
+            </div>
+            <Link href="/tools" className="text-sm font-semibold text-primary underline underline-offset-4 hover:text-accent">
+              Browse every calculator →
+            </Link>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-3">
+            {QUICK_STARTS.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="group flex min-h-36 flex-col rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-accent hover:shadow-md"
+              >
+                <span aria-hidden="true" className="text-2xl">{item.icon}</span>
+                <span className="mt-4 text-[0.6875rem] font-bold uppercase tracking-widest text-accent">{item.eyebrow}</span>
+                <span className="mt-1 font-bold text-primary">{item.title}</span>
+                <span className="mt-1 text-sm leading-relaxed text-[#7A6B5E]">{item.detail}</span>
+                <span className="mt-auto pt-3 text-sm font-semibold text-primary group-hover:text-accent">Start here →</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── Reality band ── */}
       <section className="bg-[#3A2E26] py-14 sm:py-20">
         <div className="mx-auto max-w-5xl px-4 sm:px-6">
@@ -294,6 +350,19 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <details className="group/evidence bg-[#F1ECE3]">
+        <summary className="cursor-pointer list-none border-b border-[#E5E0D8] px-4 py-5 marker:content-none sm:px-6">
+          <span className="mx-auto flex max-w-5xl items-center justify-between gap-4">
+            <span>
+              <span className="block text-xs font-bold uppercase tracking-widest text-accent">Want the evidence?</span>
+              <span className="mt-1 block text-sm font-semibold text-primary sm:text-base">
+                Explore the research behind JiPange’s Kenya-first approach
+              </span>
+            </span>
+            <span aria-hidden="true" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#D4CEC5] bg-white text-xl text-primary transition-transform group-open/evidence:rotate-45">+</span>
+          </span>
+        </summary>
 
       {/* ── Research findings ── */}
       <section className="bg-[#F1ECE3] py-14 sm:py-20">
@@ -441,6 +510,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      </details>
 
       {/* ── How it works ── */}
       <section className="bg-[#F1ECE3] py-14 sm:py-20">
