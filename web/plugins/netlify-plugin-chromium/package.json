@@ -1,6 +1,0 @@
-{
-  "name": "netlify-plugin-chromium",
-  "version": "1.0.0",
-  "description": "Local plugin wrapper for netlify-plugin-chromium compatibility",
-  "main": "index.js"
-}

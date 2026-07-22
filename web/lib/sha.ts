@@ -32,7 +32,12 @@ export interface ShaResult {
 }
 
 export function calculateShaHealth(input: ShaInput): ShaResult {
-  const { grossMonthlyIncome, familySize, wantsPrivateCare } = input;
+  const { grossMonthlyIncome, wantsPrivateCare } = input;
+  // Guard against 0/negative family size reaching the tiers below — the UI's
+  // preset selector never sends this, but the exported function has no
+  // schema of its own, so a bad direct caller shouldn't get a nonsensical
+  // "0 members" label.
+  const familySize = Math.max(1, input.familySize);
 
   const computed = Math.round(grossMonthlyIncome * SHIF_RATE);
   const monthlyContribution = Math.max(computed, MONTHLY_FLOOR);

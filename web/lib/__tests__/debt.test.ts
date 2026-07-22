@@ -44,6 +44,23 @@ describe("calculateDebtStack", () => {
     expect(result!.interestSavedVsMinOnly).toBeGreaterThanOrEqual(0);
   });
 
+  it("includes a 0%-rate loan (e.g. interest-free from family) in the plan rather than dropping it", () => {
+    const loans = [
+      { id: "a", name: "Family loan", balance: 50_000, monthlyRatePct: 0 },
+      { id: "b", name: "Tala", balance: 5_000, monthlyRatePct: 13 },
+    ];
+    const result = calculateDebtStack(loans, 10_000);
+    expect(result).not.toBeNull();
+    expect(result!.totalBalance).toBe(55_000);
+    expect(result!.loans.map((l) => l.id).sort()).toEqual(["a", "b"]);
+    // The 0% loan accrues no interest and is deprioritized behind the
+    // interest-bearing loan under avalanche, but is still fully paid off.
+    const family = result!.loans.find((l) => l.id === "a")!;
+    const tala = result!.loans.find((l) => l.id === "b")!;
+    expect(family.totalInterestPaid).toBe(0);
+    expect(tala.clearedAtMonth).toBeLessThanOrEqual(family.clearedAtMonth);
+  });
+
   it("highest-rate loan is cleared before lower-rate loans", () => {
     const loans = [
       { id: "a", name: "Tala", balance: 5_000, monthlyRatePct: 13 },

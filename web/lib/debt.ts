@@ -53,7 +53,10 @@ export function calculateDebtStack(
   loans: LoanInput[],
   monthlyBudget: number
 ): DebtStackResult | null {
-  const valid = loans.filter((l) => l.balance > 0 && l.monthlyRatePct > 0);
+  // >= 0, not > 0 — a 0% loan (e.g. interest-free from family) still owes
+  // real money and belongs in the payoff plan; the avalanche loop below
+  // naturally deprioritizes it since it never accrues interest to target.
+  const valid = loans.filter((l) => l.balance > 0 && l.monthlyRatePct >= 0);
   if (valid.length === 0 || monthlyBudget <= 0) return null;
 
   const totalBalance = valid.reduce((s, l) => s + l.balance, 0);

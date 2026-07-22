@@ -145,4 +145,22 @@ describe("taxShield", () => {
     expect(shield.mortgageHeadroom).toBe(0);
     expect(shield.totalMonthlyRecoverable).toBe(0);
   });
+
+  it("prices headroom at the band the user's existing reliefs land them in, not raw gross", () => {
+    // Gross 850k taxed on raw gross alone lands just over 800k (35% band).
+    // But this earner already contributes 20k/mo to pension, which is
+    // deductible before PAYE bands apply — their real taxable pay is
+    // 787,395, still inside the 32.5% band. Pricing the remaining pension
+    // headroom at 35% instead of 32.5% overstates the tax saving on the
+    // next shilling of contribution.
+    const shield = taxShield({
+      grossMonthly: 850_000,
+      pensionContribution: 20_000,
+      mortgageInterestMonthly: 0,
+      insurancePremiumMonthly: 0,
+    });
+    expect(shield.marginalRate).toBe(0.325);
+    expect(shield.pensionHeadroom).toBe(10_000);
+    expect(shield.pensionTaxSavings).toBeCloseTo(10_000 * 0.325, 6);
+  });
 });
