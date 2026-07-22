@@ -35,6 +35,12 @@ export default function JourneyWizard() {
     if (draft && draft.step > 0) {
       setStep(draft.step);
       setAnswers(draft.answers);
+      // Restore multi-select state if we're resuming onto a multi-select question.
+      const restoredQuestion = JOURNEY_QUESTIONS[draft.step];
+      if (restoredQuestion?.multi) {
+        const saved = draft.answers[restoredQuestion.key];
+        setMultiSelection(Array.isArray(saved) ? (saved as string[]) : []);
+      }
     }
   }, []);
 
@@ -158,7 +164,18 @@ export default function JourneyWizard() {
         {step > 0 && (
           <button
             type="button"
-            onClick={() => setStep(step - 1)}
+            onClick={() => {
+              const prevStep = step - 1;
+              const prevQuestion = JOURNEY_QUESTIONS[prevStep];
+              if (prevQuestion?.multi) {
+                // Restore any previously committed multi-selection from answers.
+                const saved = answers[prevQuestion.key];
+                setMultiSelection(Array.isArray(saved) ? (saved as string[]) : []);
+              } else {
+                setMultiSelection([]);
+              }
+              setStep(prevStep);
+            }}
             className="h-[52px] rounded-lg border border-[#E5E0D8] bg-white px-6 text-base font-medium text-[#4B4238] transition-colors hover:bg-[#F1ECE3]"
           >
             ← Back

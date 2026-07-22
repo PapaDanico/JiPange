@@ -38,6 +38,7 @@ export default function ShareResultButton({ message }: { message: string }) {
         Share on WhatsApp
       </a>
       <button
+        type="button"
         onClick={handleCopy}
         className="h-11 rounded-full border border-[#E5E0D8] px-4 text-sm font-medium text-[#4B4238]"
       >

@@ -19,7 +19,7 @@ export default function Toggle({
       aria-checked={checked}
       aria-label={ariaLabel}
       onClick={onChange}
-      className={`relative h-6 w-11 shrink-0 rounded-full transition-colors ${
+      className={`relative h-6 w-11 shrink-0 rounded-full transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
         checked ? trackOn : "bg-[#D4CEC5]"
       }`}
     >

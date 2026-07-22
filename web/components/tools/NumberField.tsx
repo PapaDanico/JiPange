@@ -46,6 +46,8 @@ export default function NumberField({
             if (pasted) onChange(pasted);
           }}
           placeholder={placeholder}
+          aria-describedby={hasError ? `${id}-error` : undefined}
+          aria-invalid={hasError || undefined}
           className={`h-12 w-full rounded-lg border bg-white text-base focus:outline-none focus:ring-1 ${showsCurrency ? "pl-14" : "pl-4"} ${suffix ? "pr-16" : "pr-4"} ${
             hasError
               ? "border-danger focus:border-danger focus:ring-danger"
@@ -64,7 +66,7 @@ export default function NumberField({
         )}
       </div>
       {hasError && (
-        <p role="alert" className="mt-1 text-xs text-danger">
+        <p id={`${id}-error`} role="alert" className="mt-1 text-xs text-danger">
           {min > 0 ? `Must be at least ${min.toLocaleString()}` : "Enter a positive number"}
         </p>
       )}
