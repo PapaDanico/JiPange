@@ -4,13 +4,29 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { TOOL_META, findResumableTool } from "@/lib/tool-meta";
 
+const DISMISSED_KEY = "jipange:continue-banner-dismissed";
+
 export default function ContinueSessionBanner() {
   const [href, setHref] = useState<string | null>(null);
   const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
+    // Don't show the banner in the same browser session after the user dismissed it.
+    if (typeof sessionStorage !== "undefined" && sessionStorage.getItem(DISMISSED_KEY)) {
+      setDismissed(true);
+      return;
+    }
     setHref(findResumableTool());
   }, []);
+
+  function handleDismiss() {
+    try {
+      sessionStorage.setItem(DISMISSED_KEY, "1");
+    } catch {
+      // sessionStorage unavailable — no-op.
+    }
+    setDismissed(true);
+  }
 
   if (!href || dismissed) return null;
   const meta = TOOL_META[href];
@@ -34,7 +50,7 @@ export default function ContinueSessionBanner() {
           </Link>
           <button
             type="button"
-            onClick={() => setDismissed(true)}
+            onClick={handleDismiss}
             aria-label="Dismiss"
             className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-[#9A8B80] hover:text-primary"
           >

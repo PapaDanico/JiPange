@@ -30,7 +30,11 @@ export default function ExportCardButton({
       out.width = src.width + pad * 2;
       out.height = src.height + pad * 2 + footerH;
 
-      const ctx = out.getContext("2d")!;
+      const ctx = out.getContext("2d");
+      if (!ctx) {
+        setLoading(false);
+        return;
+      };
       ctx.fillStyle = "#FAFAF8";
       ctx.fillRect(0, 0, out.width, out.height);
       ctx.drawImage(src, pad, pad);
