@@ -22,7 +22,7 @@ function buildIcs(): string {
     `DTSTAMP:${stamp}`,
     "RRULE:FREQ=MONTHLY;BYMONTHDAY=15",
     "SUMMARY:JiPange 20th Challenge — check in now!",
-    "DESCRIPTION:Your monthly savings check-in window is open (15th–25th). Visit jipangefinance.netlify.app/tools/20th-challenge to log your save and keep your streak alive.",
+    "DESCRIPTION:Your monthly savings check-in window is open (15th–25th). Visit jipangefinance.org/tools/20th-challenge to log your save and keep your streak alive.",
     "BEGIN:VALARM",
     "TRIGGER:-PT0M",
     "ACTION:DISPLAY",
@@ -42,7 +42,7 @@ function buildGoogleUrl(): string {
     action: "TEMPLATE",
     text: "JiPange 20th Challenge — check in now!",
     details:
-      "Your monthly savings check-in window is open (15th–25th). Visit jipangefinance.netlify.app/tools/20th-challenge to log your save.",
+      "Your monthly savings check-in window is open (15th–25th). Visit jipangefinance.org/tools/20th-challenge to log your save.",
     dates: `${dateStr}/${dateStr}`,
     recur: "RRULE:FREQ=MONTHLY;BYMONTHDAY=15",
   });

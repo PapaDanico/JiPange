@@ -200,7 +200,7 @@ export default function LandPurchaseCalculator() {
           />
 
           <ShareResultButton
-            message={`🏡 *True Cost of My Land Purchase*\n\nPlot price: ${formatKES(result.plotPrice)}\nTransaction costs: ${formatKES(result.totalTransactionCosts)} (${result.hiddenCostPct}%)\nGrand total needed: ${formatKES(result.grandTotal)}\n\nCalculate yours → jipangefinance.netlify.app/tools/land-purchase`}
+            message={`🏡 *True Cost of My Land Purchase*\n\nPlot price: ${formatKES(result.plotPrice)}\nTransaction costs: ${formatKES(result.totalTransactionCosts)} (${result.hiddenCostPct}%)\nGrand total needed: ${formatKES(result.grandTotal)}\n\nCalculate yours → jipangefinance.org/tools/land-purchase`}
           />
 
           <ExportCardButton containerRef={resultsRef} filename="land-purchase-costs" />

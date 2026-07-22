@@ -87,7 +87,7 @@ export default function PrivacyPage() {
             </ul>
             <p className="mt-3">
               None of this data leaves your device. You can delete it at any time by clearing
-              your browser&apos;s site data for jipangefinance.netlify.app.
+              your browser&apos;s site data for jipangefinance.org.
             </p>
           </section>
 

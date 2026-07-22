@@ -5,6 +5,13 @@
   command = "npm run build"
   publish = ".next"
 
+[build.environment]
+  # Pin the Node.js version to match the CI matrix and Next.js 14 requirements.
+  NODE_VERSION = "22"
+  # Canonical public URL — override in Netlify site settings if the domain changes.
+  # This is used by the app for sitemap, robots.txt, OG images, and share links.
+  NEXT_PUBLIC_SITE_URL = "https://jipangefinance.org"
+
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 

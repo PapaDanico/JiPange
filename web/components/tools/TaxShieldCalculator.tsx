@@ -187,7 +187,7 @@ export default function TaxShieldCalculator() {
           <CalculatorDisclaimer />
 
           <ShareResultButton
-            message={`🧾 *My KRA Tax Shield*\n\nI'm leaking ${formatKES(shield.totalMonthlyRecoverable)}/month to PAYE that I could legally redirect into my own pension and reliefs.\n\nCheck your leak → jipangefinance.netlify.app/tools/tax-shield`}
+            message={`🧾 *My KRA Tax Shield*\n\nI'm leaking ${formatKES(shield.totalMonthlyRecoverable)}/month to PAYE that I could legally redirect into my own pension and reliefs.\n\nCheck your leak → jipangefinance.org/tools/tax-shield`}
           />
         </div>
         <ExportCardButton containerRef={resultsRef} filename="tax-shield" />

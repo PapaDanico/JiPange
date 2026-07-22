@@ -28,7 +28,7 @@ function buildShareMessage({ calculations, plan, projectedWealth60 }: WhatsAppSh
 2️⃣ ${second.title}: ${second.impact}
 3️⃣ ${third.title}: ${third.impact}
 
-Get your free plan → jipangefinance.netlify.app`;
+Get your free plan → jipangefinance.org`;
 }
 
 export default function WhatsAppShare(props: WhatsAppShareProps) {

@@ -80,7 +80,7 @@ export default function GuarantorShieldCalculator() {
             insight="Optimism bias makes us systematically underestimate the chance that people close to us will default. Research shows we treat signing as guarantor as a social act — not a financial one — yet the Sacco reads your deposits as collateral the same way it reads theirs. The frozen capacity above is not hypothetical: it is real money you cannot touch until a substitution is filed."
           />
           <CalculatorDisclaimer extraNotes={["Multipliers and guarantor rules vary by Sacco — confirm yours before committing."]} />
-          <ShareResultButton message={`🎯 *My Sacco Guarantor Shield*\n\nFree borrowing power: ${formatKES(available)}\nFrozen by guarantees: ${formatKES(frozen)}\n\nCheck yours → jipangefinance.netlify.app/tools/guarantor-shield`} />
+          <ShareResultButton message={`🎯 *My Sacco Guarantor Shield*\n\nFree borrowing power: ${formatKES(available)}\nFrozen by guarantees: ${formatKES(frozen)}\n\nCheck yours → jipangefinance.org/tools/guarantor-shield`} />
         </div>
         <ExportCardButton containerRef={resultsRef} filename="guarantor-shield" />
         </>

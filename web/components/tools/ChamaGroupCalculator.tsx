@@ -256,7 +256,7 @@ export default function ChamaGroupCalculator() {
           </div>
 
           <ShareResultButton
-            message={`🤝 *Our Chama Rotation*\n\nMembers: ${members}\nMonthly contribution: ${formatKES(Number(contribution))} each\nMonthly pool: ${formatKES(mgr.monthlyPool)}\nRotation payout: ${formatKES(mgr.rotationPayout)}\nCycle: ${mgr.cycleMonths} months\n\nSimulate yours → jipangefinance.netlify.app/tools/chama`}
+            message={`🤝 *Our Chama Rotation*\n\nMembers: ${members}\nMonthly contribution: ${formatKES(Number(contribution))} each\nMonthly pool: ${formatKES(mgr.monthlyPool)}\nRotation payout: ${formatKES(mgr.rotationPayout)}\nCycle: ${mgr.cycleMonths} months\n\nSimulate yours → jipangefinance.org/tools/chama`}
           />
         </div>
       )}
@@ -296,7 +296,7 @@ export default function ChamaGroupCalculator() {
           </p>
 
           <ShareResultButton
-            message={`📈 *Our Chama Investment Pool*\n\n${members} members × ${formatKES(Number(contribution))}/month at ${annualReturn}% return:\n1 year: ${formatKES(inv.value1Yr)} (${formatKES(inv.perMemberShare1Yr)}/member)\n3 years: ${formatKES(inv.value3Yr)} (${formatKES(inv.perMemberShare3Yr)}/member)\n5 years: ${formatKES(inv.value5Yr)} (${formatKES(inv.perMemberShare5Yr)}/member)\n\nSimulate yours → jipangefinance.netlify.app/tools/chama`}
+            message={`📈 *Our Chama Investment Pool*\n\n${members} members × ${formatKES(Number(contribution))}/month at ${annualReturn}% return:\n1 year: ${formatKES(inv.value1Yr)} (${formatKES(inv.perMemberShare1Yr)}/member)\n3 years: ${formatKES(inv.value3Yr)} (${formatKES(inv.perMemberShare3Yr)}/member)\n5 years: ${formatKES(inv.value5Yr)} (${formatKES(inv.perMemberShare5Yr)}/member)\n\nSimulate yours → jipangefinance.org/tools/chama`}
           />
         </div>
       )}

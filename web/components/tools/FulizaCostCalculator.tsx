@@ -96,7 +96,7 @@ export default function FulizaCostCalculator() {
             <CalculatorDisclaimer />
 
             <ShareResultButton
-              message={`📱 *True Cost of Fuliza*\n\nBorrowing ${formatKES(Number(amount))} for ${days} days costs ${formatKES(result.totalFee)} in fees.\nThat's about ${Math.round(result.annualisedApr * 100)}% APR.\n\nCalculate yours → jipangefinance.netlify.app/tools/fuliza-cost`}
+              message={`📱 *True Cost of Fuliza*\n\nBorrowing ${formatKES(Number(amount))} for ${days} days costs ${formatKES(result.totalFee)} in fees.\nThat's about ${Math.round(result.annualisedApr * 100)}% APR.\n\nCalculate yours → jipangefinance.org/tools/fuliza-cost`}
             />
           </div>
           <ExportCardButton containerRef={resultsRef} filename="fuliza-cost" />

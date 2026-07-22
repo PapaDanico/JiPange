@@ -314,7 +314,7 @@ export default function DebtEscapeCalculator() {
           )}
 
           <ShareResultButton
-            message={`💸 *My Debt Escape Plan*\n\nTotal debt: ${formatKES(result.totalBalance)}\nMonthly payment: ${formatKES(Number(budget))}\nDebt-free: ${result.debtFreeLabel} (${result.monthsToDebtFree} months)\nTotal interest: ${formatKES(result.totalInterestPaid)}\n\nPlan yours → jipangefinance.netlify.app/tools/debt-escape`}
+            message={`💸 *My Debt Escape Plan*\n\nTotal debt: ${formatKES(result.totalBalance)}\nMonthly payment: ${formatKES(Number(budget))}\nDebt-free: ${result.debtFreeLabel} (${result.monthsToDebtFree} months)\nTotal interest: ${formatKES(result.totalInterestPaid)}\n\nPlan yours → jipangefinance.org/tools/debt-escape`}
           />
 
           <CalculatorDisclaimer

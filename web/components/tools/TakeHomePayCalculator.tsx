@@ -367,13 +367,13 @@ export default function TakeHomePayCalculator() {
           <div className="hidden print:block">
             <p className="mt-4 text-xs text-[#4B4238]">
               Estimate only, not a payslip or licensed financial advice — rates current as of July
-              2026. Generated at jipangefinance.netlify.app/tools/take-home-pay
+              2026. Generated at jipangefinance.org/tools/take-home-pay
             </p>
           </div>
 
           <div className="print:hidden">
             <ShareResultButton
-              message={`🇰🇪 *My Take-Home Pay*\n\nGross salary: ${formatKES(Number(gross))}\nTake-home pay: ${formatKES(result.netMonthly)}/month\n\nCalculate yours → jipangefinance.netlify.app/tools/take-home-pay`}
+              message={`🇰🇪 *My Take-Home Pay*\n\nGross salary: ${formatKES(Number(gross))}\nTake-home pay: ${formatKES(result.netMonthly)}/month\n\nCalculate yours → jipangefinance.org/tools/take-home-pay`}
             />
           </div>
 

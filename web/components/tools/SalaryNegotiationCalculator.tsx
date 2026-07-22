@@ -76,7 +76,7 @@ export default function SalaryNegotiationCalculator() {
             <CalculatorDisclaimer />
 
             <ShareResultButton
-              message={`💼 *Salary Negotiation*\n\nTo take home ${formatKES(result.target)}/month, I need to negotiate a gross salary of ${formatKES(result.gross)}.\n\nCalculate yours → jipangefinance.netlify.app/tools/salary-negotiation`}
+              message={`💼 *Salary Negotiation*\n\nTo take home ${formatKES(result.target)}/month, I need to negotiate a gross salary of ${formatKES(result.gross)}.\n\nCalculate yours → jipangefinance.org/tools/salary-negotiation`}
             />
           </div>
           <ExportCardButton containerRef={resultsRef} filename="salary-negotiation" />

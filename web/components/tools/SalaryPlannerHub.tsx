@@ -326,7 +326,7 @@ export default function SalaryPlannerHub() {
                   ahl={taxResult.ahl}
                 />
                 <ShareResultButton
-                  message={`🇰🇪 *My Take-Home Pay*\n\nGross: ${formatKES(Number(gross))}\nTake-home: ${formatKES(taxResult.netMonthly)}/month\n\nCalculate yours → jipangefinance.netlify.app/tools/salary`}
+                  message={`🇰🇪 *My Take-Home Pay*\n\nGross: ${formatKES(Number(gross))}\nTake-home: ${formatKES(taxResult.netMonthly)}/month\n\nCalculate yours → jipangefinance.org/tools/salary`}
                 />
               </div>
               <ExportCardButton containerRef={resultsRef} filename="take-home-pay" />
@@ -372,7 +372,7 @@ export default function SalaryPlannerHub() {
                 />
               </div>
               <ShareResultButton
-                message={`🥧 *My 50/25/25 Budget Split*\n\nTake-home: ${formatKES(taxResult.netMonthly)}/month\nHousehold: ${formatKES(split.household)}\nSavings: ${formatKES(split.savingsEmergency)}\nInvestments: ${formatKES(split.investments)}\n\nCalculate yours → jipangefinance.netlify.app/tools/salary`}
+                message={`🥧 *My 50/25/25 Budget Split*\n\nTake-home: ${formatKES(taxResult.netMonthly)}/month\nHousehold: ${formatKES(split.household)}\nSavings: ${formatKES(split.savingsEmergency)}\nInvestments: ${formatKES(split.investments)}\n\nCalculate yours → jipangefinance.org/tools/salary`}
               />
               <CalculatorDisclaimer
                 extraNotes={[
@@ -430,7 +430,7 @@ export default function SalaryPlannerHub() {
                     </p>
                   </div>
                   <ShareResultButton
-                    message={`📱 *My Payday Router*\n\nSurplus to route: ${formatKES(routeSurplus)}\nWeekly limit: KSh ${Math.round(routeSurplus / 4.33).toLocaleString("en-KE")}\n\nRoute yours → jipangefinance.netlify.app/tools/salary`}
+                    message={`📱 *My Payday Router*\n\nSurplus to route: ${formatKES(routeSurplus)}\nWeekly limit: KSh ${Math.round(routeSurplus / 4.33).toLocaleString("en-KE")}\n\nRoute yours → jipangefinance.org/tools/salary`}
                   />
                 </>
               )}
@@ -511,7 +511,7 @@ export default function SalaryPlannerHub() {
               )}
 
               <ShareResultButton
-                message={`🛡️ *My KRA Tax Shield*\n\nMonthly PAYE recoverable: ${formatKES(shieldResult.totalMonthlyRecoverable)}\nAnnual: ${formatKES(shieldResult.totalMonthlyRecoverable * 12)}\n\nCheck yours → jipangefinance.netlify.app/tools/salary`}
+                message={`🛡️ *My KRA Tax Shield*\n\nMonthly PAYE recoverable: ${formatKES(shieldResult.totalMonthlyRecoverable)}\nAnnual: ${formatKES(shieldResult.totalMonthlyRecoverable * 12)}\n\nCheck yours → jipangefinance.org/tools/salary`}
               />
               <CalculatorDisclaimer
                 extraNotes={[
@@ -573,7 +573,7 @@ export default function SalaryPlannerHub() {
                 and switch to Take-Home to confirm the net pay.
               </p>
               <ShareResultButton
-                message={`💼 *My Salary Negotiation*\n\nTarget take-home: ${formatKES(Number(targetNet))}\nGross to negotiate: ${formatKES(negotiateResult.grossWithBuffer)}\n\nCalculate yours → jipangefinance.netlify.app/tools/salary`}
+                message={`💼 *My Salary Negotiation*\n\nTarget take-home: ${formatKES(Number(targetNet))}\nGross to negotiate: ${formatKES(negotiateResult.grossWithBuffer)}\n\nCalculate yours → jipangefinance.org/tools/salary`}
               />
               <CalculatorDisclaimer
                 extraNotes={[

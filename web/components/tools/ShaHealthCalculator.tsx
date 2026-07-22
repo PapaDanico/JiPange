@@ -219,7 +219,7 @@ export default function ShaHealthCalculator() {
           />
 
           <ShareResultButton
-            message={`🏥 *My SHA Health Coverage Gap*\n\nSHA contribution: ${formatKES(result.monthlyContribution)}/month\nRecommended top-up: ${formatKES(result.privateTopUpRange.low)}–${formatKES(result.privateTopUpRange.high)}/month\nTotal health budget: ${formatKES(result.totalMonthlyHealthBudget.low)}–${formatKES(result.totalMonthlyHealthBudget.high)}/month\n\nCheck yours → jipangefinance.netlify.app/tools/sha-health`}
+            message={`🏥 *My SHA Health Coverage Gap*\n\nSHA contribution: ${formatKES(result.monthlyContribution)}/month\nRecommended top-up: ${formatKES(result.privateTopUpRange.low)}–${formatKES(result.privateTopUpRange.high)}/month\nTotal health budget: ${formatKES(result.totalMonthlyHealthBudget.low)}–${formatKES(result.totalMonthlyHealthBudget.high)}/month\n\nCheck yours → jipangefinance.org/tools/sha-health`}
           />
 
           <ProductLinks
