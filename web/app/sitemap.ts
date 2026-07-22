@@ -1,6 +1,5 @@
 import type { MetadataRoute } from "next";
-
-const SITE_URL = "https://jipangefinance.netlify.app";
+import { SITE_URL } from "@/lib/site-config";
 
 const ROUTES = [
   "", "/profile", "/profile/full", "/picture", "/plan", "/dashboard", "/planners",

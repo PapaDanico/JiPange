@@ -170,7 +170,7 @@ export default function SavingsGoalCalculator() {
               </div>
             )}
             <ShareResultButton
-              message={`🎯 *My Savings Goal*\n\nTarget: ${formatKES(Number(target))} in ${years} years\nMonthly savings needed: ${formatKES(result)}\n\nCalculate yours → jipangefinance.netlify.app/tools/savings-goal`}
+              message={`🎯 *My Savings Goal*\n\nTarget: ${formatKES(Number(target))} in ${years} years\nMonthly savings needed: ${formatKES(result)}\n\nCalculate yours → jipangefinance.org/tools/savings-goal`}
             />
           </div>
           <ExportCardButton containerRef={resultsRef} filename="savings-goal" />

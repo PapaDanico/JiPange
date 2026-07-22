@@ -88,7 +88,7 @@ export default function BudgetSplitCalculator() {
             <CalculatorDisclaimer />
 
             <ShareResultButton
-              message={`💰 *My 50/25/25 Budget Split*\n\nTake-home pay: ${formatKES(result.netMonthly)}\n\nHousehold (50%): ${formatKES(result.split.household)}\nSavings/emergency (25%): ${formatKES(result.split.savingsEmergency)}\nInvestments (25%): ${formatKES(result.split.investments)}\n\nCalculate yours → jipangefinance.netlify.app/tools/budget-split`}
+              message={`💰 *My 50/25/25 Budget Split*\n\nTake-home pay: ${formatKES(result.netMonthly)}\n\nHousehold (50%): ${formatKES(result.split.household)}\nSavings/emergency (25%): ${formatKES(result.split.savingsEmergency)}\nInvestments (25%): ${formatKES(result.split.investments)}\n\nCalculate yours → jipangefinance.org/tools/budget-split`}
             />
           </div>
           <ExportCardButton containerRef={exportRef} filename="budget-split" />

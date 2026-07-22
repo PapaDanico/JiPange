@@ -172,7 +172,7 @@ export default function FireNumberCalculator() {
           />
 
           <ShareResultButton
-            message={`🔥 *My Kenya FIRE Number*\n\nTo retire at ${Math.max(currentAge, targetAge)} on ${formatKES(Number(monthlyExpenses))}/month (today's costs), I need ${formatKES(fire.nominalFutureFireNumber)} — inflation-adjusted, at a localized 5% withdrawal rate.\n\nFind yours → jipangefinance.netlify.app/tools/fire-number`}
+            message={`🔥 *My Kenya FIRE Number*\n\nTo retire at ${Math.max(currentAge, targetAge)} on ${formatKES(Number(monthlyExpenses))}/month (today's costs), I need ${formatKES(fire.nominalFutureFireNumber)} — inflation-adjusted, at a localized 5% withdrawal rate.\n\nFind yours → jipangefinance.org/tools/fire-number`}
           />
         </div>
         <ExportCardButton containerRef={resultsRef} filename="fire-number" />

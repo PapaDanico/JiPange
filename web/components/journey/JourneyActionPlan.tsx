@@ -366,7 +366,7 @@ function LifeCapitalMap({ goal }: { goal: PrimaryGoal }) {
 
 // ── Module 4: the viral "Share My Milestone" loop ──
 
-const SITE_ROOT = "https://jipangefinance.netlify.app";
+const SITE_ROOT = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ?? "https://jipangefinance.org";
 const SHARE_TEXT = `🔥 Yo! I just mapped my pesa in 90 seconds — anonymous, zero typing, and it showed me exactly where inflation is eating my savings. Jipange kabla pesa ikupange 😅 → ${SITE_ROOT}`;
 
 function ViralShare() {

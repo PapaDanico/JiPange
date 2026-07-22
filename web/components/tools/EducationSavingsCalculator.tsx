@@ -206,7 +206,7 @@ export default function EducationSavingsCalculator() {
             />
           )}
           <ShareResultButton
-            message={`🎓 *My Kids' Education Savings Plan*\n\nCombined monthly savings needed: ${formatKES(result.combinedMonthly)}\n\nCalculate yours → jipangefinance.netlify.app/tools/education-savings`}
+            message={`🎓 *My Kids' Education Savings Plan*\n\nCombined monthly savings needed: ${formatKES(result.combinedMonthly)}\n\nCalculate yours → jipangefinance.org/tools/education-savings`}
           />
         </div>
         <ExportCardButton containerRef={resultsRef} filename="education-savings" />

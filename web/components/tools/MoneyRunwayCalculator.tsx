@@ -171,7 +171,7 @@ export default function MoneyRunwayCalculator() {
               </p>
             )}
             <ShareResultButton
-              message={`⏳ *My Money Runway*\n\nMy savings will last: ${formatDuration(result)}\n\nCalculate yours → jipangefinance.netlify.app/tools/money-runway`}
+              message={`⏳ *My Money Runway*\n\nMy savings will last: ${formatDuration(result)}\n\nCalculate yours → jipangefinance.org/tools/money-runway`}
             />
           </div>
           <ExportCardButton containerRef={resultsRef} filename="money-runway" />

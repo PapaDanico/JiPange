@@ -124,7 +124,7 @@ export default function OneThirdRuleCalculator() {
               result.compliant
                 ? `My deductions are within Kenya's legal limit — I retain ${formatKES(result.netAfterDeductions)}/month.`
                 : `My deductions may exceed Kenya's legal limit by ${formatKES(result.excessDeduction)}/month.`
-            }\n\nCheck yours → jipangefinance.netlify.app/tools/one-third-rule`}
+            }\n\nCheck yours → jipangefinance.org/tools/one-third-rule`}
           />
           </div>
           <ExportCardButton containerRef={resultsRef} filename="one-third-rule" />

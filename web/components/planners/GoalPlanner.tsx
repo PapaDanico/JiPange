@@ -879,7 +879,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
                 {goalSaved ? "✓ Saved — see it on your Pesa Picture" : "Save this goal to my plan"}
               </button>
               <ShareResultButton
-                message={`${config.emoji} *My JiPange ${config.title.replace(" Planner", "")} Goal*\n\nTarget: ${formatKES(nominalTarget)} in ${formatYears(displayYears)}${buildContext() ? `\n(${buildContext()})` : ""}\nMonthly saving needed: ${formatKES(multi.totalRequiredMonthly)}${strategy ? `\nWhere it lives: ${strategy.vehicle}` : ""}\n\nPlan yours → jipangefinance.netlify.app/planners`}
+                message={`${config.emoji} *My JiPange ${config.title.replace(" Planner", "")} Goal*\n\nTarget: ${formatKES(nominalTarget)} in ${formatYears(displayYears)}${buildContext() ? `\n(${buildContext()})` : ""}\nMonthly saving needed: ${formatKES(multi.totalRequiredMonthly)}${strategy ? `\nWhere it lives: ${strategy.vehicle}` : ""}\n\nPlan yours → jipangefinance.org/planners`}
               />
             </>
           )}

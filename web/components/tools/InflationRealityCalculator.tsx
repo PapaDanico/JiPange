@@ -89,7 +89,7 @@ export default function InflationRealityCalculator() {
             <CalculatorDisclaimer />
 
             <ShareResultButton
-              message={`📉 *Inflation Reality Check*\n\nIn ${result.yearsValue} years, my ${formatKES(result.salaryValue)} salary will feel like ${formatKES(result.realValue)} today.\nTo keep up, I need my salary to reach ${formatKES(result.salaryNeeded)}.\n\nCalculate yours → jipangefinance.netlify.app/tools/inflation-reality`}
+              message={`📉 *Inflation Reality Check*\n\nIn ${result.yearsValue} years, my ${formatKES(result.salaryValue)} salary will feel like ${formatKES(result.realValue)} today.\nTo keep up, I need my salary to reach ${formatKES(result.salaryNeeded)}.\n\nCalculate yours → jipangefinance.org/tools/inflation-reality`}
             />
           </div>
           <ExportCardButton containerRef={resultsRef} filename="inflation-reality" />

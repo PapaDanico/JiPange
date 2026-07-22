@@ -317,7 +317,7 @@ export default function HustleIncomeSmootherCalculator() {
             </p>
 
             <ShareResultButton
-              message={`🔄 *My Hustle Income Smoother*\n\n${validIncomes.length} months · Median: ${formatKES(result.stats.median)}\nSmoothed monthly salary: ${formatKES(result.monthlyDraw)}\nBuffer built: ${formatKES(Math.max(0, result.finalBuffer))} (${result.finalBufferMonths.toFixed(1)} months)\n\nSmooth yours → jipangefinance.netlify.app/tools/hustle-smoother`}
+              message={`🔄 *My Hustle Income Smoother*\n\n${validIncomes.length} months · Median: ${formatKES(result.stats.median)}\nSmoothed monthly salary: ${formatKES(result.monthlyDraw)}\nBuffer built: ${formatKES(Math.max(0, result.finalBuffer))} (${result.finalBufferMonths.toFixed(1)} months)\n\nSmooth yours → jipangefinance.org/tools/hustle-smoother`}
             />
           </div>
           <ExportCardButton containerRef={resultsRef} filename="hustle-smoother" />

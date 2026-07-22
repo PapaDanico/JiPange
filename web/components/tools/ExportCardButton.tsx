@@ -51,7 +51,7 @@ export default function ExportCardButton({
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillText(
-        "JiPange · jipangefinance.netlify.app",
+        "JiPange · jipangefinance.org",
         out.width / 2,
         out.height - footerH / 2 - 2
       );

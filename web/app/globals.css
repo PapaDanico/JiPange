@@ -79,7 +79,7 @@ body.has-fixed-bottom-bar {
 
   /* Add a JiPange print footer */
   body::after {
-    content: "JiPange · jipangefinance.netlify.app · Free financial tools for Kenya";
+    content: "JiPange · jipangefinance.org · Free financial tools for Kenya";
     display: block;
     margin-top: 2rem;
     padding-top: 0.5rem;
