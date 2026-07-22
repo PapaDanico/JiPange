@@ -120,17 +120,19 @@ export default function ToolsIndexList({ groups }: { groups: ToolGroup[] }) {
         {/* Result count when filtering */}
         {isFiltered && (
           <p className="text-xs text-[#9A8B80]">
-            {totalVisible === 0
-              ? `No calculators match — `
-              : `${totalVisible} of ${totalAll} calculators`}
-            {(query || activeCategory !== ALL_LABEL) && totalVisible === 0 && (
-              <button
-                type="button"
-                onClick={() => { setQuery(""); setActiveCategory(ALL_LABEL); }}
-                className="underline hover:text-primary"
-              >
-                clear filters
-              </button>
+            {totalVisible === 0 ? (
+              <>
+                No calculators match —{" "}
+                <button
+                  type="button"
+                  onClick={() => { setQuery(""); setActiveCategory(ALL_LABEL); }}
+                  className="underline hover:text-primary"
+                >
+                  clear filters
+                </button>
+              </>
+            ) : (
+              `${totalVisible} of ${totalAll} calculators`
             )}
           </p>
         )}
