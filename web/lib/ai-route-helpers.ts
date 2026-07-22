@@ -7,6 +7,7 @@ import {
   AiUpstreamBusyError,
   type AiUsage,
 } from "./claude";
+import { RateLimitedError } from "./rate-limit";
 import { createServiceRoleClient } from "./supabase/server";
 
 export async function logAiCall(params: {
@@ -42,6 +43,13 @@ export async function aiErrorResponse(routeName: string, error: unknown): Promis
     success: false,
     errorMessage: error instanceof Error ? error.message : "Unknown error",
   });
+
+  if (error instanceof RateLimitedError) {
+    return NextResponse.json(
+      { error: "You've hit the request limit for this tool. Please try again in a bit." },
+      { status: 429, headers: { "Retry-After": String(error.retryAfterSeconds) } }
+    );
+  }
 
   if (error instanceof AiNotConfiguredError) {
     return NextResponse.json(
