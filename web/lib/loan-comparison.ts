@@ -1,5 +1,6 @@
 import { calculateLoanAmortization } from "./loans";
 import { round2 } from "./money";
+import { FULIZA_DAILY_RATE } from "./fuliza";
 
 export type LoanProductTier = "green" | "amber" | "red";
 
@@ -18,7 +19,6 @@ export interface LoanProductComparison {
 export const SACCO_MONTHLY_RATE = 0.01; // 1% per month, reducing balance
 const BANK_ANNUAL_RATE = 0.15; // ~15% p.a., reducing balance
 const MOBILE_LENDER_MONTHLY_FLAT_RATE = 0.15; // Tala/Branch-style: ~15% per month, flat (not reducing)
-const FULIZA_DAILY_RATE = 0.01083; // ~1.083% per day — Safaricom rates change; verify in-app before relying on this
 const MSHWARI_FACILITY_FEE_PER_CYCLE = 0.075; // 7.5% per 30-day cycle — Safaricom rates change; verify in-app
 
 /**

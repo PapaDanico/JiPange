@@ -36,7 +36,7 @@ export default function DebtEscapeCalculator() {
   const loanInputs = useMemo(
     () =>
       loans
-        .filter((l) => Number(l.balance) > 0 && Number(l.rate) > 0)
+        .filter((l) => Number(l.balance) > 0 && Number(l.rate) >= 0)
         .map((l) => ({
           id: l.id,
           name: l.name || l.id,
