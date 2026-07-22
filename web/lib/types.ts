@@ -6,7 +6,7 @@ export const profileSchema = z.object({
   age: z.number().int().min(18, "Must be 18 or older").max(80, "Must be 80 or younger"),
   county: z.enum([...KENYA_COUNTIES] as [string, ...string[]]),
   grossMonthlySalary: z.number().positive("Salary must be greater than zero").finite().max(10_000_000),
-  dependants: z.number().int().min(0),
+  dependants: z.number().int().min(0).max(20, "Must be 20 or fewer"),
   chamaMember: z.boolean(),
 });
 
