@@ -11,6 +11,7 @@ import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import ExportCardButton from "./ExportCardButton";
 import NumberField from "./NumberField";
+import ResetLink from "./ResetLink";
 import ProductLinks from "./ProductLinks";
 import ShareResultButton from "./ShareResultButton";
 import { MMF_LINKS } from "@/lib/affiliate-links";
@@ -95,19 +96,11 @@ export default function TaxShieldCalculator() {
         </div>
       ))}
 
-      {isDirty && (
-        <button
-          type="button"
-          onClick={handleReset}
-          className="text-xs text-[#9A8B80] underline underline-offset-2 hover:text-primary"
-        >
-          Start over
-        </button>
-      )}
+      <ResetLink show={isDirty} onReset={handleReset} />
 
       {shield && (
         <>
-        <div ref={resultsRef} className="space-y-4">
+        <div ref={resultsRef} className="space-y-4" aria-live="polite">
           {/* The leak gauge */}
           <div className="rounded-2xl border-2 border-danger bg-[#FBEAEA] p-5">
             <h2 className="text-sm font-semibold uppercase tracking-wide text-danger">

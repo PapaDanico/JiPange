@@ -88,7 +88,7 @@ function ProductCard({ product }: { product: ProductLink }) {
         {product.minKes !== undefined && (
           <div className="flex-1">
             <p className="font-semibold text-primary">
-              KES {product.minKes.toLocaleString()}
+              KES {product.minKes.toLocaleString("en-KE")}
             </p>
             <p>min entry</p>
           </div>

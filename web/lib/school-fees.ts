@@ -7,6 +7,10 @@
 
 import { futureValue } from "./projections";
 
+// Independently-set from lib/journey.ts's TARGET_MMF_YIELD (0.115) — both
+// quote a "Serrari-style" MMF baseline but for different calculators;
+// harmonizing them would change this tool's displayed subsidy numbers, so
+// that's a product call rather than a mechanical fix.
 /** Serrari-style KES MMF average used for the fee-smoothing subsidy maths. */
 export const SMOOTHER_MMF_RATE = 0.12;
 

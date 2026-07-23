@@ -94,7 +94,7 @@ export default function SalaryPlannerHub() {
   const mortgageCapped = reliefs.mortgageInterest > MORTGAGE_INTEREST_RELIEF_CAP_MONTHLY;
 
   const noGrossMsg = (
-    <p className="text-sm text-[#9A8B80]">Enter your gross salary above to see results.</p>
+    <p className="text-sm text-muted">Enter your gross salary above to see results.</p>
   );
 
   return (
@@ -140,7 +140,7 @@ export default function SalaryPlannerHub() {
               onChange={(e) => setPension(e.target.value)}
               className="mt-2 h-2 w-full accent-primary"
             />
-            <div className="mt-1 flex justify-between text-[10px] text-[#9A8B80]">
+            <div className="mt-1 flex justify-between text-[10px] text-muted">
               <span>0</span>
               <span>cap {formatKES(PENSION_RELIEF_CAP_MONTHLY)}</span>
             </div>
@@ -171,7 +171,7 @@ export default function SalaryPlannerHub() {
               onChange={(e) => setMortgage(e.target.value)}
               className="mt-2 h-2 w-full accent-primary"
             />
-            <div className="mt-1 flex justify-between text-[10px] text-[#9A8B80]">
+            <div className="mt-1 flex justify-between text-[10px] text-muted">
               <span>0</span>
               <span>cap {formatKES(MORTGAGE_INTEREST_RELIEF_CAP_MONTHLY)}</span>
             </div>
@@ -228,7 +228,7 @@ export default function SalaryPlannerHub() {
           {!taxResult && noGrossMsg}
           {taxResult && (
             <>
-              <div ref={resultsRef} className="space-y-4">
+              <div ref={resultsRef} className="space-y-4" aria-live="polite">
                 <ResultCard
                   label="Take-home pay"
                   value={formatKES(taxResult.netMonthly)}
@@ -412,7 +412,7 @@ export default function SalaryPlannerHub() {
                 <>
                   <ResultCard
                     label="Your true weekly spend limit"
-                    value={`KSh ${Math.round(routeSurplus / 4.33).toLocaleString("en-KE")}`}
+                    value={formatKES(Math.round(routeSurplus / 4.33))}
                     sublabel={`Floating surplus ${formatKES(routeSurplus)} ÷ 4.33 weeks`}
                     tone="success"
                   />
@@ -423,14 +423,12 @@ export default function SalaryPlannerHub() {
                       <strong>{formatKES(routeSurplus)}</strong> out of your main M-Pesa wallet
                       into a locked pocket or MMF — before lifestyle creep handles it. Withdraw
                       only{" "}
-                      <strong>
-                        KSh {Math.round(routeSurplus / 4.33).toLocaleString("en-KE")}
-                      </strong>{" "}
+                      <strong>{formatKES(Math.round(routeSurplus / 4.33))}</strong>{" "}
                       per week back into your spending wallet.
                     </p>
                   </div>
                   <ShareResultButton
-                    message={`📱 *My Payday Router*\n\nSurplus to route: ${formatKES(routeSurplus)}\nWeekly limit: KSh ${Math.round(routeSurplus / 4.33).toLocaleString("en-KE")}\n\nRoute yours → jipangefinance.org/tools/salary`}
+                    message={`📱 *My Payday Router*\n\nSurplus to route: ${formatKES(routeSurplus)}\nWeekly limit: ${formatKES(Math.round(routeSurplus / 4.33))}\n\nRoute yours → jipangefinance.org/tools/salary`}
                   />
                 </>
               )}
@@ -554,7 +552,7 @@ export default function SalaryPlannerHub() {
                 <ResultCard
                   label="Ask for this (with buffer)"
                   value={formatKES(negotiateResult.grossWithBuffer)}
-                  sublabel={`+ KSh ${NEGOTIATION_BUFFER.toLocaleString()} negotiation buffer — room to be talked down`}
+                  sublabel={`+ ${formatKES(NEGOTIATION_BUFFER)} negotiation buffer — room to be talked down`}
                   tone="primary"
                 />
               </div>

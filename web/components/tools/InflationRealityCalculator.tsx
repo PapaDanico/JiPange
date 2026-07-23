@@ -7,6 +7,7 @@ import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import ExportCardButton from "./ExportCardButton";
 import NumberField from "./NumberField";
+import ResetLink from "./ResetLink";
 import ProductLinks from "./ProductLinks";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
@@ -53,19 +54,11 @@ export default function InflationRealityCalculator() {
         onChange={setYears}
         placeholder="e.g. 5"
       />
-      {isDirty && (
-        <button
-          type="button"
-          onClick={handleReset}
-          className="text-xs text-[#9A8B80] underline underline-offset-2 hover:text-primary"
-        >
-          Start over
-        </button>
-      )}
+      <ResetLink show={isDirty} onReset={handleReset} />
 
       {result && (
         <>
-          <div ref={resultsRef} className="space-y-4">
+          <div ref={resultsRef} className="space-y-4" aria-live="polite">
             <ResultCard
               label="Your salary will feel like"
               value={formatKES(result.realValue)}

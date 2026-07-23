@@ -8,6 +8,7 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from "recharts";
+import { formatKES } from "@/lib/budget";
 
 interface Props {
   netMonthly: number;
@@ -24,10 +25,6 @@ const SLICES = [
   { key: "shif" as const, label: "SHIF", color: "#8B5CF6" },
   { key: "ahl" as const, label: "Housing Levy", color: "#6B5B4D" },
 ];
-
-function kes(v: number) {
-  return `KSh ${v.toLocaleString("en-KE", { maximumFractionDigits: 0 })}`;
-}
 
 export default function PayBreakdownChart({ netMonthly, paye, nssfTotal, shif, ahl }: Props) {
   const values: Record<string, number> = { netMonthly, paye, nssfTotal, shif, ahl };
@@ -58,7 +55,7 @@ export default function PayBreakdownChart({ netMonthly, paye, nssfTotal, shif, a
               ))}
             </Pie>
             <Tooltip
-              formatter={(value) => [kes(Number(value)), ""]}
+              formatter={(value) => [formatKES(Number(value)), ""]}
               contentStyle={{ fontSize: 12, borderRadius: 8, border: "1px solid #E5E0D8" }}
             />
             <Legend

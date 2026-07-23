@@ -8,6 +8,7 @@ import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import ExportCardButton from "./ExportCardButton";
 import HowItWorks from "./HowItWorks";
 import NumberField from "./NumberField";
+import ResetLink from "./ResetLink";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
 
@@ -46,19 +47,11 @@ export default function GuarantorShieldCalculator() {
       <NumberField id="shieldDeposits" label="Total Sacco deposits (KES)" value={deposits} onChange={setDeposits} placeholder="e.g. 500000" />
       <NumberField id="shieldLoans" label="Your active Sacco loans (KES)" value={loans} onChange={setLoans} placeholder="0" />
       <NumberField id="shieldGuaranteed" label="Total amount guaranteed for others (KES)" value={guaranteed} onChange={setGuaranteed} placeholder="0" />
-      {isDirty && (
-        <button
-          type="button"
-          onClick={handleReset}
-          className="text-xs text-[#9A8B80] underline underline-offset-2 hover:text-primary"
-        >
-          Start over
-        </button>
-      )}
+      <ResetLink show={isDirty} onReset={handleReset} />
 
       {d > 0 && (
         <>
-        <div ref={resultsRef} className="space-y-4">
+        <div ref={resultsRef} className="space-y-4" aria-live="polite">
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <ResultCard label="True unencumbered borrowing power" value={formatKES(available)} tone="success" />
             <ResultCard label="Frozen borrowing capacity" value={formatKES(frozen)} sublabel={`of your ${SACCO_LEVERAGE_MULTIPLIER}× gross ${formatKES(gross)}`} tone={frozen > 0 ? "danger" : undefined} />

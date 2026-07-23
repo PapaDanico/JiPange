@@ -1,17 +1,28 @@
-import { PAYE_BANDS, calculateNetPay } from "./tax";
+import {
+  INSURANCE_RELIEF_PREMIUM_CAP_MONTHLY,
+  INSURANCE_RELIEF_RATE,
+  MORTGAGE_INTEREST_RELIEF_CAP_MONTHLY,
+  PAYE_BANDS,
+  PENSION_RELIEF_CAP_MONTHLY,
+  calculateNetPay,
+} from "./tax";
 
 /**
  * The KRA tax shield: unused statutory-relief headroom is monthly PAYE the
  * user is paying that they could legally redirect into their own pension,
  * mortgage or insurance lines instead.
+ *
+ * These caps mirror lib/tax.ts's own relief constants exactly (same Income
+ * Tax Act provisions) — re-exported under this module's naming so a future
+ * Finance Act change only needs updating in one place.
  */
 
-export const MAX_MONTHLY_PENSION_EXEMPTION = 30_000;
-export const MAX_MONTHLY_MORTGAGE_EXEMPTION = 30_000;
-export const MAX_ANNUAL_INSURANCE_RELIEF = 60_000;
+export const MAX_MONTHLY_PENSION_EXEMPTION = PENSION_RELIEF_CAP_MONTHLY;
+export const MAX_MONTHLY_MORTGAGE_EXEMPTION = MORTGAGE_INTEREST_RELIEF_CAP_MONTHLY;
+export const MAX_ANNUAL_INSURANCE_RELIEF = INSURANCE_RELIEF_PREMIUM_CAP_MONTHLY * 12;
 /** 60k/yr cap at 15% ⇒ at most 5k/mo of premiums earn relief. */
-export const MAX_MONTHLY_INSURANCE_PREMIUM_RELIEVABLE = 5_000;
-export const INSURANCE_RELIEF_RATE = 0.15;
+export const MAX_MONTHLY_INSURANCE_PREMIUM_RELIEVABLE = INSURANCE_RELIEF_PREMIUM_CAP_MONTHLY;
+export { INSURANCE_RELIEF_RATE };
 
 /**
  * Marginal PAYE band rate for the user's *taxable* pay (gross less NSSF and

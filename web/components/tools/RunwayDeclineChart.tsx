@@ -10,6 +10,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { formatKES } from "@/lib/budget";
 
 export interface RunwayDataPoint {
   label: string;
@@ -60,10 +61,7 @@ export default function RunwayDeclineChart({
               tickLine={false}
             />
             <Tooltip
-              formatter={(value) => [
-                `KSh ${Number(value).toLocaleString("en-KE", { maximumFractionDigits: 0 })}`,
-                "Balance",
-              ]}
+              formatter={(value) => [formatKES(Number(value)), "Balance"]}
               contentStyle={{
                 fontSize: 12,
                 borderRadius: 8,

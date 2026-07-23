@@ -12,6 +12,7 @@ import { type GrowthDataPoint } from "./CompoundGrowthChart";
 
 const CompoundGrowthChart = dynamic(() => import("./CompoundGrowthChart"), { ssr: false });
 import NumberField from "./NumberField";
+import ResetLink from "./ResetLink";
 import ExportCardButton from "./ExportCardButton";
 import ProductLinks from "./ProductLinks";
 import ResultCard from "./ResultCard";
@@ -134,19 +135,11 @@ export default function SavingsGoalCalculator() {
           </button>
         ))}
       </div>
-      {isDirty && (
-        <button
-          type="button"
-          onClick={handleReset}
-          className="text-xs text-[#9A8B80] underline underline-offset-2 hover:text-primary"
-        >
-          Start over
-        </button>
-      )}
+      <ResetLink show={isDirty} onReset={handleReset} />
 
       {result !== null && (
         <>
-          <div ref={resultsRef} className="space-y-4">
+          <div ref={resultsRef} className="space-y-4" aria-live="polite">
             <ResultCard
               label="Monthly savings needed"
               value={formatKES(result)}

@@ -337,7 +337,7 @@ export default function TwentiethChallengeTracker() {
           <button
             type="button"
             onClick={() => setShowReset(true)}
-            className="text-xs text-[#9A8B80] underline underline-offset-2 hover:text-primary"
+            className="text-xs text-muted underline underline-offset-2 hover:text-primary"
           >
             Change commitment / reset challenge
           </button>

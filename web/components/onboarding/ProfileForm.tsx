@@ -366,6 +366,7 @@ export default function ProfileForm() {
               onBlur={() => validateField("age", Number(form.age))}
               aria-invalid={Boolean(errors.age)}
               aria-describedby={errors.age ? "age-error" : undefined}
+              autoFocus
               className="mt-2 h-2 w-full accent-primary"
             />
             {errors.age && (

@@ -102,7 +102,7 @@ export default function CalendarReminderButton() {
         <button
           type="button"
           onClick={() => setOpen(false)}
-          className="text-xs text-[#9A8B80]"
+          className="text-xs text-muted"
         >
           Cancel
         </button>

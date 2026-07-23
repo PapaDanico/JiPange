@@ -48,7 +48,7 @@ export default function SaveMyPlan() {
 
   if (status === "unavailable") {
     return (
-      <div className="rounded-2xl bg-[#F1ECE3] p-5 text-center text-sm text-[#4B4238]">
+      <div aria-live="polite" className="rounded-2xl bg-[#F1ECE3] p-5 text-center text-sm text-[#4B4238]">
         Your plan is saved on this device. Account sync is coming soon.
       </div>
     );
@@ -56,7 +56,7 @@ export default function SaveMyPlan() {
 
   if (status === "signed-in") {
     return (
-      <div className="rounded-2xl bg-[#E9F5EC] p-5 text-center text-sm text-success">
+      <div aria-live="polite" className="rounded-2xl bg-[#E9F5EC] p-5 text-center text-sm text-success">
         Your plan is saved. Come back anytime from any device.
       </div>
     );
@@ -64,14 +64,14 @@ export default function SaveMyPlan() {
 
   if (status === "sent") {
     return (
-      <div className="rounded-2xl bg-[#F1ECE3] p-5 text-center text-sm text-[#4B4238]">
+      <div aria-live="polite" className="rounded-2xl bg-[#F1ECE3] p-5 text-center text-sm text-[#4B4238]">
         Check your email for a magic link to finish saving your plan.
       </div>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit} className="rounded-2xl bg-white p-5 shadow-sm">
+    <form onSubmit={handleSubmit} className="rounded-2xl bg-white p-5 shadow-sm" aria-live="polite">
       <p className="text-sm font-medium text-primary">Save your plan</p>
       <p className="mt-1 text-xs text-[#4B4238]">
         Save your plan so you can access it from any device.

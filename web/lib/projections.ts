@@ -3,6 +3,10 @@
  * FV = PV × (1 + r)^n + PMT × ((1 + r)^n − 1) / r, compounded monthly.
  */
 
+// Independently-set from lib/journey.ts's CURRENT_INFLATION (0.067) and
+// lib/market-2026.ts's KENYAN_INFLATION (0.064) — a user-overridable default
+// for retirement-plan projections, not a displayed "current rate" claim, so
+// it's kept separate rather than merged with those two.
 export const DEFAULT_INFLATION_RATE = 0.065; // Kenya CPI average, per annum
 /**
  * Bengen (1994) 4% safe withdrawal rate. This was calibrated on US market

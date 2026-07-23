@@ -5,6 +5,7 @@ import { calculateLoanAmortization } from "@/lib/loans";
 import { formatKES } from "@/lib/budget";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import NumberField from "./NumberField";
+import ResetLink from "./ResetLink";
 import QuickFillChips from "./QuickFillChips";
 import BehavioralInsightStrip from "./BehavioralInsightStrip";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
@@ -119,19 +120,11 @@ export default function LoanRepaymentCalculator() {
           current={termYears}
         />
       </div>
-      {isDirty && (
-        <button
-          type="button"
-          onClick={handleReset}
-          className="text-xs text-[#9A8B80] underline underline-offset-2 hover:text-primary"
-        >
-          Start over
-        </button>
-      )}
+      <ResetLink show={isDirty} onReset={handleReset} />
 
       {result && (
         <>
-          <div ref={resultsRef} className="space-y-4">
+          <div ref={resultsRef} className="space-y-4" aria-live="polite">
             <ResultCard label="Monthly installment" value={formatKES(result.monthlyPayment)} tone="success" />
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <ResultCard label="Total interest paid" value={formatKES(result.totalInterest)} />

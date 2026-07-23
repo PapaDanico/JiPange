@@ -16,6 +16,9 @@ export const PRESET_LENDERS: { name: string; monthlyRatePct: number }[] = [
   { name: "Other mobile lender", monthlyRatePct: 10 },
 ];
 
+// Independently-set from lib/journey.ts's TARGET_MMF_YIELD (0.115) — this
+// tool's own MMF assumption for the post-payoff projection; harmonizing it
+// is a product call, not a mechanical fix.
 const MMF_ANNUAL_RATE = 0.118;
 const MAX_MONTHS = 120;
 
@@ -168,13 +171,13 @@ export function calculateDebtStack(
   const debtFreeLabel = freeDate.toLocaleDateString("en-KE", { month: "long", year: "numeric" });
 
   const loanDetails: LoanPayoffDetail[] = states.map((s) => {
-    const input = valid.find((l) => l.id === s.id)!;
+    const monthlyRatePct = s.rate * 100;
     return {
       id: s.id,
       name: s.name,
       originalBalance: s.originalBalance,
-      monthlyRatePct: input.monthlyRatePct,
-      aprPct: Math.round(((Math.pow(1 + input.monthlyRatePct / 100, 12) - 1) * 100) * 10) / 10,
+      monthlyRatePct,
+      aprPct: Math.round(((Math.pow(1 + s.rate, 12) - 1) * 100) * 10) / 10,
       avalancheRank: s.rank,
       totalInterestPaid: Math.round(s.interestPaid),
       clearedAtMonth: s.clearedAtMonth,

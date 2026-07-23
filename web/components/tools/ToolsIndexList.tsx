@@ -71,7 +71,7 @@ export default function ToolsIndexList({ groups }: { groups: ToolGroup[] }) {
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9A8B80]"
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted"
             aria-hidden="true"
           >
             <circle cx="11" cy="11" r="8" />
@@ -119,7 +119,7 @@ export default function ToolsIndexList({ groups }: { groups: ToolGroup[] }) {
 
         {/* Result count when filtering */}
         {isFiltered && (
-          <p className="text-xs text-[#9A8B80]">
+          <p className="text-xs text-muted">
             {totalVisible === 0 ? (
               <>
                 No calculators match —{" "}

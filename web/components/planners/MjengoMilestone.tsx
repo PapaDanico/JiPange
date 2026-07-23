@@ -76,7 +76,12 @@ export default function MjengoMilestone() {
         />
       </div>
 
-      <div className="relative mt-3">
+      <div className="mt-3">
+        <label htmlFor="mjengo-contribution" className="text-sm font-medium text-[#4B4238]">
+          Monthly contribution
+        </label>
+      </div>
+      <div className="relative mt-1">
         <input
           id="mjengo-contribution"
           type="number"

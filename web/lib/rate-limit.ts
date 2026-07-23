@@ -51,14 +51,14 @@ export async function enforceRateLimit(request: Request, routeName: string): Pro
 
   const count = existing && existing.windowStart === currentWindowStart ? existing.count + 1 : 1;
 
-  if (count > MAX_REQUESTS_PER_WINDOW) {
-    const windowEndMs = (currentWindowStart + 1) * WINDOW_MS;
-    throw new RateLimitedError(Math.ceil((windowEndMs - now) / 1000));
-  }
-
   try {
     await store.setJSON(key, { windowStart: currentWindowStart, count });
   } catch (error) {
     console.error(`rate-limit write failed for ${routeName}, failing open:`, error);
+  }
+
+  if (count > MAX_REQUESTS_PER_WINDOW) {
+    const windowEndMs = (currentWindowStart + 1) * WINDOW_MS;
+    throw new RateLimitedError(Math.ceil((windowEndMs - now) / 1000));
   }
 }

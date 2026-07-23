@@ -9,6 +9,7 @@ import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import ExportCardButton from "./ExportCardButton";
 import NumberField from "./NumberField";
+import ResetLink from "./ResetLink";
 import ProductLinks from "./ProductLinks";
 import QuickFillChips from "./QuickFillChips";
 import ResultCard from "./ResultCard";
@@ -148,26 +149,18 @@ export default function HustleIncomeSmootherCalculator() {
             onChange={(e) => setDrawPct(e.target.value)}
             className="mt-2 h-2 w-full accent-primary"
           />
-          <div className="mt-1 flex justify-between text-[10px] text-[#9A8B80]">
+          <div className="mt-1 flex justify-between text-[10px] text-muted">
             <span>50% (very conservative)</span>
             <span>100% (median)</span>
           </div>
         </div>
       )}
 
-      {isDirty && (
-        <button
-          type="button"
-          onClick={handleReset}
-          className="text-xs text-[#9A8B80] underline underline-offset-2 hover:text-primary"
-        >
-          Start over
-        </button>
-      )}
+      <ResetLink show={isDirty} onReset={handleReset} />
 
       {result && (
         <>
-          <div ref={resultsRef} className="space-y-4">
+          <div ref={resultsRef} className="space-y-4" aria-live="polite">
             {/* Stats grid */}
             <div className="grid grid-cols-2 gap-3">
               <ResultCard label="Lowest month" value={formatKES(result.stats.min)} />

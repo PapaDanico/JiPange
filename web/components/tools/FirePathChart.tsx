@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import {
   CartesianGrid,
   Line,
@@ -11,16 +12,13 @@ import {
   YAxis,
 } from "recharts";
 import { localizedFire, KENYAN_INFLATION } from "@/lib/market-2026";
+import { formatKES } from "@/lib/budget";
 
 function fmtY(value: number) {
   if (value >= 1_000_000_000) return `${(value / 1_000_000_000).toFixed(1)}B`;
   if (value >= 1_000_000) return `${(value / 1_000_000).toFixed(1)}M`;
   if (value >= 100_000) return `${(value / 1_000).toFixed(0)}K`;
   return value.toFixed(0);
-}
-
-function fmtKES(value: number) {
-  return `KSh ${value.toLocaleString("en-KE", { maximumFractionDigits: 0 })}`;
 }
 
 export default function FirePathChart({
@@ -32,20 +30,25 @@ export default function FirePathChart({
   currentAge: number;
   targetAge: number;
 }) {
-  if (!monthlyExpenses || monthlyExpenses <= 0) return null;
+  const data = useMemo(() => {
+    if (!monthlyExpenses || monthlyExpenses <= 0) return null;
 
-  const rangeStart = Math.max(currentAge + 1, 30);
-  const rangeEnd = Math.max(targetAge + 10, rangeStart + 5);
+    const rangeStart = Math.max(currentAge + 1, 30);
+    const rangeEnd = Math.max(targetAge + 10, rangeStart + 5);
 
-  const data = [];
-  for (let age = rangeStart; age <= rangeEnd; age++) {
-    const { nominalFutureFireNumber } = localizedFire({
-      currentMonthlyExpenses: monthlyExpenses,
-      currentAge,
-      targetRetirementAge: age,
-    });
-    data.push({ age, fireNumber: Math.round(nominalFutureFireNumber) });
-  }
+    const points = [];
+    for (let age = rangeStart; age <= rangeEnd; age++) {
+      const { nominalFutureFireNumber } = localizedFire({
+        currentMonthlyExpenses: monthlyExpenses,
+        currentAge,
+        targetRetirementAge: age,
+      });
+      points.push({ age, fireNumber: Math.round(nominalFutureFireNumber) });
+    }
+    return points;
+  }, [monthlyExpenses, currentAge, targetAge]);
+
+  if (!data) return null;
 
   return (
     <div
@@ -55,7 +58,7 @@ export default function FirePathChart({
     >
       <div className="mb-3 flex items-center justify-between">
         <p className="text-sm font-semibold text-primary">FIRE target by retirement age</p>
-        <span className="text-[10px] text-[#9A8B80]">
+        <span className="text-[10px] text-muted">
           {(KENYAN_INFLATION * 100).toFixed(1)}% inflation applied
         </span>
       </div>
@@ -78,7 +81,7 @@ export default function FirePathChart({
               tickLine={false}
             />
             <Tooltip
-              formatter={(value) => [fmtKES(Number(value)), "FIRE target"]}
+              formatter={(value) => [formatKES(Number(value)), "FIRE target"]}
               labelFormatter={(label) => `Retire at age ${label}`}
               contentStyle={{
                 fontSize: 12,
@@ -109,7 +112,7 @@ export default function FirePathChart({
           </LineChart>
         </ResponsiveContainer>
       </div>
-      <p className="mt-2 text-[10px] text-[#9A8B80]">
+      <p className="mt-2 text-[10px] text-muted">
         The curve rises with inflation — retiring 5 years later means a materially larger target.
         Earlier retirement locks the clock in your favour.
       </p>

@@ -7,6 +7,7 @@ import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import ExportCardButton from "./ExportCardButton";
 import NumberField from "./NumberField";
+import ResetLink from "./ResetLink";
 import QuickFillChips from "./QuickFillChips";
 import ShareResultButton from "./ShareResultButton";
 
@@ -86,19 +87,11 @@ export default function SaccoVsBankCalculator() {
           current={termMonths}
         />
       </div>
-      {isDirty && (
-        <button
-          type="button"
-          onClick={handleReset}
-          className="text-xs text-[#9A8B80] underline underline-offset-2 hover:text-primary"
-        >
-          Start over
-        </button>
-      )}
+      <ResetLink show={isDirty} onReset={handleReset} />
 
       {results && (
         <>
-        <div ref={resultsRef} className="space-y-4">
+        <div ref={resultsRef} className="space-y-4" aria-live="polite">
           <div className="space-y-3">
             {results.map((product) => (
               <div key={product.name} className="rounded-2xl bg-white p-4 shadow-sm">

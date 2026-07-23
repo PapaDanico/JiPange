@@ -10,6 +10,7 @@ import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import ExportCardButton from "./ExportCardButton";
 import NumberField from "./NumberField";
+import ResetLink from "./ResetLink";
 import ProductLinks from "./ProductLinks";
 import QuickFillChips from "./QuickFillChips";
 import ResultCard from "./ResultCard";
@@ -59,7 +60,9 @@ export default function ChamaGroupCalculator() {
   const mgr = useMemo(() => {
     const m = Number(members);
     const c = Number(contribution);
-    const b = Math.min(50, Math.max(0, Number(bufferPercent) || 0));
+    // Clamp matches the slider's 0-20 range below — the slider is the only
+    // way to set this value, so the two must agree.
+    const b = Math.min(20, Math.max(0, Number(bufferPercent) || 0));
     if (!m || m < 2 || !c || c <= 0) return null;
     return calculateMerryGoRound(m, c, b);
   }, [members, contribution, bufferPercent]);
@@ -193,18 +196,10 @@ export default function ChamaGroupCalculator() {
         </div>
       )}
 
-      {isDirty && (
-        <button
-          type="button"
-          onClick={handleReset}
-          className="text-xs text-[#9A8B80] underline underline-offset-2 hover:text-primary"
-        >
-          Start over
-        </button>
-      )}
+      <ResetLink show={isDirty} onReset={handleReset} />
 
       {result && mode === "merry-go-round" && mgr && (
-        <div ref={resultsRef} className="space-y-4">
+        <div ref={resultsRef} className="space-y-4" aria-live="polite">
           <ResultCard
             label={`Monthly pool (${members} × ${formatKES(Number(contribution))})`}
             value={formatKES(mgr.monthlyPool)}
@@ -262,7 +257,7 @@ export default function ChamaGroupCalculator() {
       )}
 
       {result && mode === "investment" && inv && (
-        <div ref={resultsRef} className="space-y-4">
+        <div ref={resultsRef} className="space-y-4" aria-live="polite">
           <ResultCard
             label={`Monthly pool invested (${members} × ${formatKES(Number(contribution))})`}
             value={formatKES(inv.monthlyPool)}

@@ -7,6 +7,7 @@ import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import HowItWorks from "./HowItWorks";
 import NumberField from "./NumberField";
+import ResetLink from "./ResetLink";
 import ExportCardButton from "./ExportCardButton";
 import ProductLinks from "./ProductLinks";
 import ResultCard from "./ResultCard";
@@ -136,19 +137,11 @@ export default function MoneyRunwayCalculator() {
         onChange={setAnnualReturn}
         suffix="%"
       />
-      {isDirty && (
-        <button
-          type="button"
-          onClick={handleReset}
-          className="text-xs text-[#9A8B80] underline underline-offset-2 hover:text-primary"
-        >
-          Start over
-        </button>
-      )}
+      <ResetLink show={isDirty} onReset={handleReset} />
 
       {result !== null && (
         <>
-          <div ref={resultsRef} className="space-y-4">
+          <div ref={resultsRef} className="space-y-4" aria-live="polite">
             <ResultCard
               label="Your money will last"
               value={formatDuration(result)}

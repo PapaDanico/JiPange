@@ -28,7 +28,7 @@ export default function DeductionRow({
               onClick={() => setOpen((prev) => !prev)}
               aria-expanded={open}
               aria-label={`What is ${label}?`}
-              className="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-[#C9BFB2] text-[10px] font-semibold leading-none text-[#4B4238] focus:outline-none focus:ring-1 focus:ring-primary"
+              className="relative inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-[#C9BFB2] text-[10px] font-semibold leading-none text-[#4B4238] before:absolute before:-inset-3.5 before:content-[''] focus:outline-none focus:ring-1 focus:ring-primary"
             >
               i
             </button>
