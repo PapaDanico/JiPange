@@ -7,15 +7,16 @@ import MjengoMilestone from "@/components/planners/MjengoMilestone";
 import { GOAL_CONFIGS, GOAL_TYPES, type GoalType } from "@/lib/goal-planner";
 
 interface PageProps {
-  params: { goal: string };
+  params: Promise<{ goal: string }>;
 }
 
 export function generateStaticParams() {
   return GOAL_TYPES.map((goal) => ({ goal }));
 }
 
-export function generateMetadata({ params }: PageProps): Metadata {
-  const config = GOAL_CONFIGS[params.goal as GoalType];
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { goal } = await params;
+  const config = GOAL_CONFIGS[goal as GoalType];
   if (!config) return {};
   return {
     title: `${config.title} — JiPange`,
@@ -23,8 +24,9 @@ export function generateMetadata({ params }: PageProps): Metadata {
   };
 }
 
-export default function GoalPlannerPage({ params }: PageProps) {
-  const config = GOAL_CONFIGS[params.goal as GoalType];
+export default async function GoalPlannerPage({ params }: PageProps) {
+  const { goal } = await params;
+  const config = GOAL_CONFIGS[goal as GoalType];
   if (!config) notFound();
 
   return (
