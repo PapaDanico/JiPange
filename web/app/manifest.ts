@@ -6,10 +6,14 @@ export default function manifest(): MetadataRoute.Manifest {
     short_name: "JiPange",
     description:
       "Free Kenya financial calculators, goal planners, and your Pesa Picture. No signup. No fees. Works offline.",
+    id: "/",
     start_url: "/tools",
     display: "standalone",
-    background_color: "#FAF8F5",
-    theme_color: "#171717",
+    // Match the app's real surfaces: paper background, brand-brown chrome
+    // (previously #FAF8F5/#171717, which matched neither globals.css nor
+    // the viewport themeColor).
+    background_color: "#fafaf8",
+    theme_color: "#6b5b4d",
     orientation: "portrait",
     categories: ["finance", "productivity"],
     lang: "en",
@@ -20,10 +24,17 @@ export default function manifest(): MetadataRoute.Manifest {
         type: "image/png",
       },
       {
-        src: "/apple-icon.png",
-        sizes: "180x180",
+        src: "/icon-512.png",
+        sizes: "512x512",
         type: "image/png",
-        purpose: "any",
+      },
+      {
+        // Full-bleed safe-zone variant so Android launchers can crop to
+        // any mask shape without clipping the shield.
+        src: "/icon-maskable-512.png",
+        sizes: "512x512",
+        type: "image/png",
+        purpose: "maskable",
       },
     ],
     shortcuts: [
