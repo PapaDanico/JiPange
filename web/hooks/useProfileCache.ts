@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import { getProfileDraft, getStoredProfile } from "@/lib/storage";
+import { useStorageValue } from "@/lib/hooks";
 
 /**
  * Surfaces an in-progress deep-wizard draft (auto-saved to localStorage on
@@ -10,16 +11,13 @@ import { getProfileDraft, getStoredProfile } from "@/lib/storage";
  * already covers that case.
  */
 export function useProfileCache() {
-  const [draft, setDraft] = useState<{ step: number } | null>(null);
+  const hasProfile = useStorageValue(() => Boolean(getStoredProfile()), () => false);
+  const draft = useStorageValue(getProfileDraft, () => null);
 
-  useEffect(() => {
-    if (getStoredProfile()) return;
-    const stored = getProfileDraft();
-    if (!stored) return;
+  return useMemo(() => {
+    if (hasProfile || !draft) return null;
     const step =
-      typeof stored.currentStep === "number" && stored.currentStep >= 1 ? stored.currentStep : 1;
-    setDraft({ step });
-  }, []);
-
-  return draft;
+      typeof draft.currentStep === "number" && draft.currentStep >= 1 ? draft.currentStep : 1;
+    return { step };
+  }, [hasProfile, draft]);
 }

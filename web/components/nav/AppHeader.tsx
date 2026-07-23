@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { getStoredJourneyAnswers, getStoredProfile } from "@/lib/storage";
+import { useStorageValue } from "@/lib/hooks";
 
 const DESKTOP_LINKS = [
   { href: "/planners", label: "Planners" },
@@ -13,14 +13,12 @@ const DESKTOP_LINKS = [
 
 export default function AppHeader() {
   const pathname = usePathname();
-  // Read after mount so the server render matches the client's first paint.
-  const [hasProfile, setHasProfile] = useState(false);
-  const [hasJourney, setHasJourney] = useState(false);
-
-  useEffect(() => {
-    setHasProfile(Boolean(getStoredProfile()));
-    setHasJourney(Boolean(getStoredJourneyAnswers()));
-  }, [pathname]);
+  // The server render and the client's first paint both see `false` (via
+  // getServerSnapshot); the real value swaps in once mounted, and stays
+  // live afterward — e.g. right after the profile form saves, with no
+  // separate reload or pathname-keyed re-check needed.
+  const hasProfile = useStorageValue(() => Boolean(getStoredProfile()), () => false);
+  const hasJourney = useStorageValue(() => Boolean(getStoredJourneyAnswers()), () => false);
 
   const cta = hasProfile
     ? { href: "/picture", label: "My plan" }

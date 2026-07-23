@@ -1,25 +1,21 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import { formatKES } from "@/lib/budget";
-import { getStoredGoals, removeStoredGoal, type SavedGoal } from "@/lib/storage";
+import { EMPTY_GOALS, getStoredGoals, removeStoredGoal } from "@/lib/storage";
+import { useStorageValue } from "@/lib/hooks";
 
 /**
  * Saved goals from the planners, shown on the Pesa Picture so the monthly
  * commitments live next to the savings capacity they draw from.
  */
 export default function MyGoals({ savingsCapacity }: { savingsCapacity: number }) {
-  const [goals, setGoals] = useState<SavedGoal[]>([]);
+  const goals = useStorageValue(getStoredGoals, () => EMPTY_GOALS);
 
-  // Read after mount — localStorage isn't available during SSR.
-  useEffect(() => {
-    setGoals(getStoredGoals());
-  }, []);
-
+  // removeStoredGoal's write already notifies subscribers, so `goals` above
+  // re-renders with the fresh list on its own — no manual re-fetch needed.
   function handleRemove(goalType: string) {
     removeStoredGoal(goalType);
-    setGoals(getStoredGoals());
   }
 
   if (goals.length === 0) {

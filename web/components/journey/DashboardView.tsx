@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import {
   ASSUMED_CURRENT_YIELD,
@@ -11,6 +11,7 @@ import {
 } from "@/lib/journey";
 import { FULIZA_DAILY_RATE } from "@/lib/fuliza";
 import { getStoredJourneyAnswers } from "@/lib/storage";
+import { useStorageValue } from "@/lib/hooks";
 import DebtFreedomTracker from "./DebtFreedomTracker";
 import FulizaTaxCounter from "./FulizaTaxCounter";
 import InflationDragCard from "./InflationDragCard";
@@ -74,19 +75,12 @@ function AnalystCard({ model }: { model: DashboardModel }) {
 }
 
 export default function DashboardView() {
-  const [model, setModel] = useState<DashboardModel | null>(null);
-  const [checked, setChecked] = useState(false);
   const [analytical, setAnalytical] = useState(false);
-
-  useEffect(() => {
-    const answers = getStoredJourneyAnswers();
-    if (answers) setModel(mapJourney(answers));
-    setChecked(true);
-  }, []);
-
-  if (!checked) {
-    return <p className="text-center text-[#4B4238]">Building your dashboard...</p>;
-  }
+  const answers = useStorageValue(getStoredJourneyAnswers, () => null);
+  const model = useMemo<DashboardModel | null>(
+    () => (answers ? mapJourney(answers) : null),
+    [answers]
+  );
 
   // No answers yet: invite, don't shove — and keep every explore path open.
   if (!model) {

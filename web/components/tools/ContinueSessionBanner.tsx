@@ -3,20 +3,27 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { TOOL_META, findResumableTool } from "@/lib/tool-meta";
+import { useStorageValue } from "@/lib/hooks";
 
 const DISMISSED_KEY = "jipange:continue-banner-dismissed";
 
 export default function ContinueSessionBanner() {
-  const [href, setHref] = useState<string | null>(null);
-  const [dismissed, setDismissed] = useState(false);
+  const href = useStorageValue(findResumableTool, () => null);
 
+  // Session-dismissal is a one-directional, click-driven flag (it only ever
+  // goes false → true, never back) scoped to this component instance, not
+  // something other components need to react to — unlike `href` above,
+  // this doesn't fit useSyncExternalStore's "continuously synced" model.
+  // Still needs a mount effect to read it without a hydration mismatch
+  // (sessionStorage doesn't exist during SSR).
+  const [dismissed, setDismissed] = useState(false);
   useEffect(() => {
-    // Don't show the banner in the same browser session after the user dismissed it.
-    if (typeof sessionStorage !== "undefined" && sessionStorage.getItem(DISMISSED_KEY)) {
-      setDismissed(true);
-      return;
+    try {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time, one-directional mount check; see comment above
+      if (sessionStorage.getItem(DISMISSED_KEY)) setDismissed(true);
+    } catch {
+      // sessionStorage unavailable — no-op.
     }
-    setHref(findResumableTool());
   }, []);
 
   function handleDismiss() {

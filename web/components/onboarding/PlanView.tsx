@@ -1,9 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
-import type { JourneyAnswers } from "@/lib/journey";
 import { getStoredJourneyAnswers, getStoredProfile } from "@/lib/storage";
+import { useStorageValue } from "@/lib/hooks";
 import JourneyActionPlan from "@/components/journey/JourneyActionPlan";
 import ActionPlan from "./ActionPlan";
 import OnboardingStepIndicator from "./OnboardingStepIndicator";
@@ -14,19 +13,8 @@ import OnboardingStepIndicator from "./OnboardingStepIndicator";
  * neither → ActionPlan's own invitation (never a redirect).
  */
 export default function PlanView() {
-  const [answers, setAnswers] = useState<JourneyAnswers | null>(null);
-  const [hasProfile, setHasProfile] = useState(false);
-  const [checked, setChecked] = useState(false);
-
-  useEffect(() => {
-    setAnswers(getStoredJourneyAnswers());
-    setHasProfile(Boolean(getStoredProfile()));
-    setChecked(true);
-  }, []);
-
-  if (!checked) {
-    return <p className="text-center text-[#4B4238]">Loading...</p>;
-  }
+  const answers = useStorageValue(getStoredJourneyAnswers, () => null);
+  const hasProfile = useStorageValue(() => Boolean(getStoredProfile()), () => false);
 
   return (
     <div className="w-full max-w-2xl space-y-10">

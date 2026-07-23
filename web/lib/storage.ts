@@ -144,7 +144,7 @@ export interface SavedGoal {
   savedAt: string;
 }
 
-const EMPTY_GOALS: SavedGoal[] = [];
+export const EMPTY_GOALS: SavedGoal[] = [];
 export const getStoredGoals = () => read<SavedGoal[]>(GOALS_KEY) ?? EMPTY_GOALS;
 
 /** Saves a goal, replacing any existing goal of the same type. */

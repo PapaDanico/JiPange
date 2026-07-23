@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { smoothIncomes } from "@/lib/hustle-smoother";
 import { TARGET_MMF_YIELD } from "@/lib/journey";
@@ -48,14 +48,19 @@ export default function HustleIncomeSmootherCalculator() {
 
   const [incomes, setIncomes] = useState<string[]>(() => Array(count).fill(""));
 
-  useEffect(() => {
-    setIncomes((prev) => {
-      if (prev.length === count) return prev;
-      if (prev.length < count)
-        return [...prev, ...Array(count - prev.length).fill("")];
-      return prev.slice(0, count);
-    });
-  }, [count]);
+  // Resize the incomes array when `count` changes, following React's own
+  // "adjust state when a prop changes" pattern — setState during render is
+  // safe (React re-renders before committing), so this doesn't need an
+  // effect at all. https://react.dev/learn/you-might-not-need-an-effect
+  const [lastCount, setLastCount] = useState(count);
+  if (count !== lastCount) {
+    setLastCount(count);
+    setIncomes(
+      incomes.length < count
+        ? [...incomes, ...Array(count - incomes.length).fill("")]
+        : incomes.slice(0, count)
+    );
+  }
 
   const monthLabels = useMemo(() => buildMonthLabels(count), [count]);
 

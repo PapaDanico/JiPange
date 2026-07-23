@@ -1,23 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
 import { getStoredProfile, getStoredJourneyAnswers } from "@/lib/storage";
+import { useStorageValue } from "@/lib/hooks";
+
+function computeState(): "new" | "journey" | "plan" {
+  if (getStoredProfile()) return "plan";
+  if (getStoredJourneyAnswers()) return "journey";
+  return "new";
+}
 
 export default function ToolLayoutCTA() {
-  const pathname = usePathname();
-  const [state, setState] = useState<"new" | "journey" | "plan">("new");
-
-  useEffect(() => {
-    if (getStoredProfile()) {
-      setState("plan");
-    } else if (getStoredJourneyAnswers()) {
-      setState("journey");
-    } else {
-      setState("new");
-    }
-  }, [pathname]);
+  const state = useStorageValue(computeState, () => "new" as const);
 
   if (state === "plan") {
     return (

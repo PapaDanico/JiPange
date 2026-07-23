@@ -1,15 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import { TOOL_META, getRecentTools } from "@/lib/tool-meta";
+import { useStorageValue } from "@/lib/hooks";
+
+const EMPTY_RECENTS: string[] = [];
 
 export default function RecentToolsBar() {
-  const [recents, setRecents] = useState<string[]>([]);
-
-  useEffect(() => {
-    setRecents(getRecentTools());
-  }, []);
+  const recents = useStorageValue(getRecentTools, () => EMPTY_RECENTS);
 
   if (recents.length === 0) return null;
 
