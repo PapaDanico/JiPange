@@ -58,7 +58,7 @@ export default function PayBreakdownChart({ netMonthly, paye, nssfTotal, shif, a
               ))}
             </Pie>
             <Tooltip
-              formatter={(value: number) => [kes(value), ""]}
+              formatter={(value) => [kes(Number(value)), ""]}
               contentStyle={{ fontSize: 12, borderRadius: 8, border: "1px solid #E5E0D8" }}
             />
             <Legend

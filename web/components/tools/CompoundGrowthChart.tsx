@@ -64,8 +64,8 @@ export default function CompoundGrowthChart({ data }: { data: GrowthDataPoint[] 
               tickLine={false}
             />
             <Tooltip
-              formatter={(value: number, name: string) => [
-                fmtKES(value),
+              formatter={(value, name) => [
+                fmtKES(Number(value)),
                 name === "contributed" ? "Contributed" : "Growth",
               ]}
               labelFormatter={(label) => `Year ${label}`}

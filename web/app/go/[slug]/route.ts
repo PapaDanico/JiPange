@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
 import { getProductLink } from "@/lib/affiliate-links";
 
-export function GET(
+export async function GET(
   req: Request,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
-  const product = getProductLink(params.slug);
+  const { slug } = await params;
+  const product = getProductLink(slug);
   if (!product) {
     const fallback = new URL(req.url);
     fallback.pathname = "/tools";

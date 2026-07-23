@@ -11,7 +11,7 @@ export async function GET(request: Request) {
       ? rawNext
       : "/plan";
 
-  const supabase = createClient();
+  const supabase = await createClient();
   if (code && supabase) {
     await supabase.auth.exchangeCodeForSession(code);
   }

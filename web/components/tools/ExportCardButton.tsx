@@ -6,7 +6,7 @@ export default function ExportCardButton({
   containerRef,
   filename = "jipange-result",
 }: {
-  containerRef: RefObject<HTMLDivElement>;
+  containerRef: RefObject<HTMLDivElement | null>;
   filename?: string;
 }) {
   const [loading, setLoading] = useState(false);

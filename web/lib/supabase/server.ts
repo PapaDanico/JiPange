@@ -8,10 +8,10 @@ import { isSupabaseConfigured } from "./config";
  * URL/key is malformed — either way callers must handle the guest-mode case
  * rather than the whole route throwing.
  */
-export function createClient() {
+export async function createClient() {
   if (!isSupabaseConfigured()) return null;
 
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
 
   try {
     return createServerClient(
