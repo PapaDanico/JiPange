@@ -16,7 +16,7 @@ export function useCountUp(target: number | null, durationMs = 700): number {
   const [value, setValue] = useState(0);
   const valueRef = useRef(0);
   const hasAdoptedRealValue = useRef(false);
-  const rafId = useRef<number>();
+  const rafId = useRef<number | undefined>(undefined);
 
   const setAnimatedValue = (next: number) => {
     valueRef.current = next;

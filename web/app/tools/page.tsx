@@ -1,16 +1,7 @@
 import type { Metadata } from "next";
-import dynamic from "next/dynamic";
 import ToolsIndexList, { type ToolGroup } from "@/components/tools/ToolsIndexList";
 import RecentToolsBar from "@/components/tools/RecentToolsBar";
-
-const ReadinessSnapshot = dynamic(
-  () => import("@/components/tools/ReadinessSnapshot"),
-  { ssr: false }
-);
-const ContinueSessionBanner = dynamic(
-  () => import("@/components/tools/ContinueSessionBanner"),
-  { ssr: false }
-);
+import { ReadinessSnapshot, ContinueSessionBanner } from "@/components/tools/ToolsPageDynamics";
 
 export const metadata: Metadata = {
   title: "Free Financial Calculators for Kenya",
