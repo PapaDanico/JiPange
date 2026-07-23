@@ -11,16 +11,13 @@ import {
   YAxis,
 } from "recharts";
 import { localizedFire, KENYAN_INFLATION } from "@/lib/market-2026";
+import { formatKES } from "@/lib/budget";
 
 function fmtY(value: number) {
   if (value >= 1_000_000_000) return `${(value / 1_000_000_000).toFixed(1)}B`;
   if (value >= 1_000_000) return `${(value / 1_000_000).toFixed(1)}M`;
   if (value >= 100_000) return `${(value / 1_000).toFixed(0)}K`;
   return value.toFixed(0);
-}
-
-function fmtKES(value: number) {
-  return `KSh ${value.toLocaleString("en-KE", { maximumFractionDigits: 0 })}`;
 }
 
 export default function FirePathChart({
@@ -78,7 +75,7 @@ export default function FirePathChart({
               tickLine={false}
             />
             <Tooltip
-              formatter={(value) => [fmtKES(Number(value)), "FIRE target"]}
+              formatter={(value) => [formatKES(Number(value)), "FIRE target"]}
               labelFormatter={(label) => `Retire at age ${label}`}
               contentStyle={{
                 fontSize: 12,

@@ -3,8 +3,7 @@
 import { useState } from "react";
 import HowItWorks from "./HowItWorks";
 import NumberField from "./NumberField";
-
-const kes = (n: number) => `KSh ${Math.round(n).toLocaleString("en-KE")}`;
+import { formatKES as kes } from "@/lib/budget";
 
 const LUMP_RATE = 19.9; // KSh/kWh average, single lump-sum buy
 const STAGGERED_RATE = 16.45; // KSh/kWh average when split buys stay in lower tariff bands

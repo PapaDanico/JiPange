@@ -42,8 +42,12 @@ describe("enforceRateLimit", () => {
     await expect(enforceRateLimit(requestFromIp("1.2.3.4"), "generate-plan")).rejects.toThrow(
       RateLimitedError
     );
-    // Should not record the rejected attempt as a new count.
-    expect(mockSetJSON).not.toHaveBeenCalled();
+    // The rejected attempt is still persisted, so the count keeps reflecting
+    // real traffic instead of freezing at the cap for the rest of the window.
+    expect(mockSetJSON).toHaveBeenCalledWith(
+      "generate-plan:1.2.3.4",
+      expect.objectContaining({ count: 11 })
+    );
   });
 
   it("resets the count once the stored window has rolled over", async () => {

@@ -9,6 +9,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { formatKES } from "@/lib/budget";
 
 export interface GrowthDataPoint {
   year: number;
@@ -21,10 +22,6 @@ function fmtY(value: number) {
   if (value >= 100_000) return `${(value / 1_000).toFixed(0)}K`;
   if (value >= 1_000) return `${(value / 1_000).toFixed(1)}K`;
   return value.toFixed(0);
-}
-
-function fmtKES(value: number) {
-  return `KSh ${value.toLocaleString("en-KE", { maximumFractionDigits: 0 })}`;
 }
 
 export default function CompoundGrowthChart({ data }: { data: GrowthDataPoint[] }) {
@@ -65,7 +62,7 @@ export default function CompoundGrowthChart({ data }: { data: GrowthDataPoint[] 
             />
             <Tooltip
               formatter={(value, name) => [
-                fmtKES(Number(value)),
+                formatKES(Number(value)),
                 name === "contributed" ? "Contributed" : "Growth",
               ]}
               labelFormatter={(label) => `Year ${label}`}

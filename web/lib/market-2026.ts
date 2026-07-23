@@ -1,11 +1,20 @@
 import { solveYearsToTarget } from "./goal-planner";
+import { TARGET_MMF_YIELD } from "./journey";
 
 /**
  * 2026 Kenyan macro benchmarks (product-spec constants). These are quoted
  * baselines, not promises — every consuming UI says "check current rates".
  */
+// Independently-set from the journey funnel's own inflation assumption
+// (lib/journey.ts CURRENT_INFLATION, 0.067) — both are "quoted baseline,
+// check current rates" estimates rather than a single tracked figure, so
+// they aren't merged here; harmonizing them is a product call, not a
+// mechanical fix.
 export const KENYAN_INFLATION = 0.064; // KNBS baseline
-export const NOMINAL_RETIREMENT_YIELD = 0.115; // leading MMF/bond low-risk compounding
+// Same real-world assumption as lib/journey.ts's TARGET_MMF_YIELD — kept as
+// one shared constant so the FIRE calculator and the journey funnel never
+// silently disagree on the MMF baseline they're both quoting.
+export const NOMINAL_RETIREMENT_YIELD = TARGET_MMF_YIELD;
 export const LOCAL_SAFE_WITHDRAWAL_RATE = 0.05; // localized SWR (net real return)
 export const SACCO_LEVERAGE_MULTIPLIER = 3.0;
 export const MAX_SALARY_DEBT_LIMIT = 0.33; // one-third gross pay rule

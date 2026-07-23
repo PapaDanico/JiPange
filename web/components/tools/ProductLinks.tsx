@@ -23,7 +23,7 @@ function ProductCard({ product }: { product: ProductLink }) {
             <span className="text-xs text-success font-medium">~{product.yieldPct}% p.a.</span>
           )}
           {product.minKes !== undefined && (
-            <span className="text-xs text-[#9A8B80]">from KES {product.minKes.toLocaleString()}</span>
+            <span className="text-xs text-[#9A8B80]">from KES {product.minKes.toLocaleString("en-KE")}</span>
           )}
         </div>
       </div>

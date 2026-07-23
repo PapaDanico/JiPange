@@ -11,16 +11,13 @@ import {
   YAxis,
 } from "recharts";
 import { type AmortizationEntry } from "@/lib/loans";
+import { formatKES } from "@/lib/budget";
 
 function fmtY(value: number) {
   if (value >= 1_000_000) return `${(value / 1_000_000).toFixed(1)}M`;
   if (value >= 100_000) return `${(value / 1_000).toFixed(0)}K`;
   if (value >= 1_000) return `${(value / 1_000).toFixed(1)}K`;
   return value.toFixed(0);
-}
-
-function fmtKES(value: number) {
-  return `KSh ${value.toLocaleString("en-KE", { maximumFractionDigits: 0 })}`;
 }
 
 interface DataPoint {
@@ -126,7 +123,7 @@ export default function LoanAmortizationChart({
             />
             <Tooltip
               formatter={(value, name) => [
-                fmtKES(Number(value)),
+                formatKES(Number(value)),
                 name === "principal" ? "Principal repaid" : "Interest paid",
               ]}
               contentStyle={{
@@ -170,7 +167,7 @@ export default function LoanAmortizationChart({
       {principal > 0 && (
         <p className="mt-2 text-[10px] text-[#9A8B80]">
           The interest band is money paid to the lender on top of the original{" "}
-          {fmtKES(principal)} — every extra payment shrinks it from the right.
+          {formatKES(principal)} — every extra payment shrinks it from the right.
         </p>
       )}
     </div>

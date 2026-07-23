@@ -59,7 +59,9 @@ export default function ChamaGroupCalculator() {
   const mgr = useMemo(() => {
     const m = Number(members);
     const c = Number(contribution);
-    const b = Math.min(50, Math.max(0, Number(bufferPercent) || 0));
+    // Clamp matches the slider's 0-20 range below — the slider is the only
+    // way to set this value, so the two must agree.
+    const b = Math.min(20, Math.max(0, Number(bufferPercent) || 0));
     if (!m || m < 2 || !c || c <= 0) return null;
     return calculateMerryGoRound(m, c, b);
   }, [members, contribution, bufferPercent]);

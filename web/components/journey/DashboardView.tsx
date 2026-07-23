@@ -12,6 +12,7 @@ import {
 import { FULIZA_DAILY_RATE } from "@/lib/fuliza";
 import { getStoredJourneyAnswers } from "@/lib/storage";
 import { useStorageValue } from "@/lib/hooks";
+import { formatKES as kes } from "@/lib/budget";
 import DebtFreedomTracker from "./DebtFreedomTracker";
 import FulizaTaxCounter from "./FulizaTaxCounter";
 import InflationDragCard from "./InflationDragCard";
@@ -22,7 +23,6 @@ import YieldMatchmaker from "./YieldMatchmaker";
  * with the same pure engine the API uses — nothing is persisted server-side.
  */
 const pctOf = (rate: number) => `${parseFloat((rate * 100).toFixed(2))}%`;
-const kes = (n: number) => `KSh ${Math.round(n).toLocaleString("en-KE")}`;
 
 /** Analyst mode: the constants and rule outcomes behind every card, in the open. */
 function AnalystCard({ model }: { model: DashboardModel }) {

@@ -101,6 +101,9 @@ export const JOURNEY_QUESTIONS: JourneyQuestion[] = [
 
 export const ASSUMED_CURRENT_YIELD = 0.0323; // bank savings average
 export const TARGET_MMF_YIELD = 0.115; // local index baseline
+// Independently-set from lib/market-2026.ts's KENYAN_INFLATION (0.064) — both
+// are "quoted baseline, check current rates" estimates rather than a single
+// tracked figure; see the comment there before assuming this is a typo.
 export const CURRENT_INFLATION = 0.067;
 // Spec states "+8.2%"; 11.5 − 3.23 = 8.27, truncated (not rounded) to match.
 export const YIELD_UPSIDE_POINTS = Math.floor((TARGET_MMF_YIELD - ASSUMED_CURRENT_YIELD) * 1000) / 10; // 8.2
@@ -359,7 +362,7 @@ export function deriveSurvivalState(leak: LiquidityLeak): SurvivalState {
 // ── Micro-milestone (the /plan first-target generator) ──
 
 /** Yield assumption for the milestone slider (Serrari KES MMF leaders baseline). */
-export const MILESTONE_YIELD = 0.115;
+export const MILESTONE_YIELD = TARGET_MMF_YIELD;
 
 const MILESTONE_BASE: Record<PrimaryGoal, number> = {
   home_deposit: 100_000,
