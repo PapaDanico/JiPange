@@ -23,7 +23,7 @@ export default function BudgetSplitChart({
 
   return (
     <div
-      className="rounded-2xl bg-white p-4 shadow-sm"
+      className="print:hidden rounded-2xl bg-white p-4 shadow-sm"
       role="img"
       aria-label="Donut chart showing the 50/25/25 budget split across household, savings, and investments"
     >

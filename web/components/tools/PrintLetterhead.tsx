@@ -17,6 +17,7 @@ export default function PrintLetterhead({ title }: { title: string }) {
               alt=""
               width={973}
               height={833}
+              loading="eager"
               className="h-7 w-auto"
             />
             <span className="text-sm font-semibold tracking-wide text-primary">

@@ -34,7 +34,7 @@ export default function DebtPayoffChart({ timeline, totalBalance }: Props) {
     <div
       role="img"
       aria-label="Area chart showing total debt balance declining to zero over the repayment period"
-      className="rounded-2xl bg-white p-4 shadow-sm"
+      className="print:hidden rounded-2xl bg-white p-4 shadow-sm"
     >
       <p className="text-sm font-semibold text-primary">Debt payoff curve</p>
       <p className="mt-0.5 text-xs text-ink-soft">

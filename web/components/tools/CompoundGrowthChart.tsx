@@ -28,7 +28,7 @@ export default function CompoundGrowthChart({ data }: { data: GrowthDataPoint[] 
   if (data.length < 2) return null;
 
   return (
-    <div className="rounded-2xl bg-white p-4 shadow-sm" role="img" aria-label="Stacked area chart showing contributed amount and investment growth over time">
+    <div className="print:hidden rounded-2xl bg-white p-4 shadow-sm" role="img" aria-label="Stacked area chart showing contributed amount and investment growth over time">
       <div className="mb-3 flex items-center justify-between">
         <p className="text-sm font-semibold text-primary">Growth over time</p>
         <div className="flex items-center gap-3 text-[10px] text-ink-soft">

@@ -64,12 +64,20 @@ export default function ToolEnhancements() {
         </div>
       )}
 
-      <button
-        onClick={handleShare}
-        className="inline-flex items-center gap-1.5 text-xs font-medium text-muted underline underline-offset-2 hover:text-primary"
-      >
-        {copied ? "Link copied!" : "Share this calculator"}
-      </button>
+      <div className="flex items-center gap-4">
+        <button
+          onClick={handleShare}
+          className="inline-flex items-center gap-1.5 text-xs font-medium text-muted underline underline-offset-2 hover:text-primary"
+        >
+          {copied ? "Link copied!" : "Share this calculator"}
+        </button>
+        <button
+          onClick={() => window.print()}
+          className="inline-flex items-center gap-1.5 text-xs font-medium text-muted underline underline-offset-2 hover:text-primary"
+        >
+          Print / Save as PDF
+        </button>
+      </div>
     </div>
   );
 }

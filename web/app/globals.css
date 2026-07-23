@@ -115,10 +115,16 @@ body.has-fixed-bottom-bar {
     margin: 13mm 15mm;
   }
 
-  /* Hide interactive and chrome elements */
+  /* Hide interactive and chrome elements. A report has no controls:
+     buttons, inputs, selects and sliders never print — this catches every
+     calculator's bespoke toggles and range sliders without per-file work. */
   footer,
   nav,
   header,
+  button,
+  input,
+  select,
+  textarea,
   .print\:hidden {
     display: none !important;
   }

@@ -14,7 +14,6 @@ import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import DeductionRow from "./DeductionRow";
 import ExportCardButton from "./ExportCardButton";
 import NumberField from "./NumberField";
-import PrintLetterhead from "./PrintLetterhead";
 import ResetLink from "./ResetLink";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
@@ -87,8 +86,6 @@ export default function TakeHomePayCalculator() {
 
   return (
     <div className="space-y-4">
-      <PrintLetterhead title="Take-Home Pay Estimate" />
-
       <div className="print:hidden">
         <NumberField
           id="gross"

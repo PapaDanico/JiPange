@@ -1,4 +1,5 @@
 import Link from "next/link";
+import PrintLetterhead from "./PrintLetterhead";
 import ToolInsights from "./ToolInsights";
 import ToolEnhancements from "./ToolEnhancements";
 import ToolLayoutCTA from "./ToolLayoutCTA";
@@ -24,6 +25,10 @@ export default function ToolLayout({
 }) {
   return (
     <div className="flex flex-1 flex-col items-center px-6 py-12">
+      {/* Every calculator prints as a letterheaded one-page report. */}
+      <div className="w-full max-w-5xl">
+        <PrintLetterhead title={title} />
+      </div>
       <div className="w-full max-w-5xl print:hidden">
         <Link href="/tools" className="text-xs font-medium text-primary underline">
           ← All calculators

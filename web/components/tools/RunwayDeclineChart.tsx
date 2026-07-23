@@ -34,7 +34,7 @@ export default function RunwayDeclineChart({
   if (data.length < 2) return null;
 
   return (
-    <div className="rounded-2xl bg-white p-4 shadow-sm" role="img" aria-label="Line chart showing account balance declining over time">
+    <div className="print:hidden rounded-2xl bg-white p-4 shadow-sm" role="img" aria-label="Line chart showing account balance declining over time">
       <div className="mb-3 flex items-center justify-between">
         <p className="text-sm font-semibold text-primary">Balance over time</p>
         {infinite && (
