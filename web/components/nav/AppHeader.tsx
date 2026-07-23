@@ -40,9 +40,7 @@ export default function AppHeader() {
             height={609}
             sizes="(max-width: 640px) 120px, 160px"
             className="h-9 w-auto"
-            // The homepage's own hero image is the LCP candidate there — don't
-            // split fetchpriority between two images on that one route.
-            priority={pathname !== "/"}
+            priority
           />
         </Link>
 
