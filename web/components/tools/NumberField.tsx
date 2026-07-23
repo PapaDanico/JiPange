@@ -27,7 +27,7 @@ export default function NumberField({
   const showsCurrency = currency ?? /\((?:KES|KSh)(?:\/month)?\)/i.test(label);
 
   return (
-    <div>
+    <div className="print:hidden">
       <label htmlFor={id} className="block text-sm font-medium text-ink-soft">
         {label}
       </label>

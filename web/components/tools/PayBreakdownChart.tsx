@@ -35,7 +35,7 @@ export default function PayBreakdownChart({ netMonthly, paye, nssfTotal, shif, a
   }));
 
   return (
-    <div className="rounded-2xl bg-white p-4 shadow-sm">
+    <div className="print:hidden rounded-2xl bg-white p-4 shadow-sm">
       <p className="text-sm font-semibold text-primary">Where your salary goes</p>
       <div style={{ height: 260 }}>
         <ResponsiveContainer width="100%" height="100%">

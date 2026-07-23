@@ -1,4 +1,5 @@
 import Link from "next/link";
+import PrintLetterhead from "./PrintLetterhead";
 import ToolInsights from "./ToolInsights";
 import ToolEnhancements from "./ToolEnhancements";
 import ToolLayoutCTA from "./ToolLayoutCTA";
@@ -24,6 +25,10 @@ export default function ToolLayout({
 }) {
   return (
     <div className="flex flex-1 flex-col items-center px-6 py-12">
+      {/* Every calculator prints as a letterheaded one-page report. */}
+      <div className="w-full max-w-5xl">
+        <PrintLetterhead title={title} />
+      </div>
       <div className="w-full max-w-5xl print:hidden">
         <Link href="/tools" className="text-xs font-medium text-primary underline">
           ← All calculators
@@ -40,7 +45,7 @@ export default function ToolLayout({
       {/* Single column up to lg; calculator + sticky sidebar (Next Move, share, plan upsell) beyond it. */}
       <div className="mt-8 grid w-full max-w-5xl gap-8 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start lg:gap-12">
         <div className="mx-auto w-full max-w-2xl lg:mx-0 lg:max-w-none">{children}</div>
-        <aside className="mx-auto w-full max-w-2xl space-y-6 lg:sticky lg:top-20 lg:mx-0 lg:max-w-none">
+        <aside className="mx-auto w-full max-w-2xl space-y-6 print:hidden lg:sticky lg:top-20 lg:mx-0 lg:max-w-none">
           <ToolEnhancements />
           <ToolLayoutCTA />
         </aside>

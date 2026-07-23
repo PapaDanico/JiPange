@@ -7,7 +7,7 @@ interface Props {
 
 export default function QuickFillChips({ label, options, onSelect, current }: Props) {
   return (
-    <div className="mb-1">
+    <div className="mb-1 print:hidden">
       <p className="mb-1.5 text-xs text-muted">{label}</p>
       <div className="flex flex-wrap gap-1.5">
         {options.map((opt) => (

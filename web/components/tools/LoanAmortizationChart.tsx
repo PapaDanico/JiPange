@@ -87,7 +87,7 @@ export default function LoanAmortizationChart({
 
   return (
     <div
-      className="rounded-2xl bg-white p-4 shadow-sm"
+      className="print:hidden rounded-2xl bg-white p-4 shadow-sm"
       role="img"
       aria-label="Stacked area chart showing cumulative principal paid versus cumulative interest paid over the loan term"
     >

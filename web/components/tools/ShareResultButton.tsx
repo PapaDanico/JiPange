@@ -23,7 +23,7 @@ export default function ShareResultButton({ message }: { message: string }) {
   }
 
   return (
-    <div className="flex gap-3">
+    <div className="flex gap-3 print:hidden">
       <a
         href={whatsappUrl}
         target="_blank"

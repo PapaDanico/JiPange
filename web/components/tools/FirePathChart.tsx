@@ -52,7 +52,7 @@ export default function FirePathChart({
 
   return (
     <div
-      className="rounded-2xl bg-white p-4 shadow-sm"
+      className="print:hidden rounded-2xl bg-white p-4 shadow-sm"
       role="img"
       aria-label="Line chart showing how your FIRE target changes at different retirement ages"
     >
