@@ -9,6 +9,7 @@ import BehavioralInsightStrip from "./BehavioralInsightStrip";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import ExportCardButton from "./ExportCardButton";
 import NumberField from "./NumberField";
+import ResetLink from "./ResetLink";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
 
@@ -214,15 +215,7 @@ export default function DebtEscapeCalculator() {
         </div>
       )}
 
-      {anyFilled && (
-        <button
-          type="button"
-          onClick={handleReset}
-          className="text-xs text-muted underline underline-offset-2 hover:text-primary"
-        >
-          Start over
-        </button>
-      )}
+      <ResetLink show={anyFilled} onReset={handleReset} />
 
       {result && (
         <div ref={resultsRef} className="space-y-4" aria-live="polite">

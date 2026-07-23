@@ -12,6 +12,7 @@ import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import ExportCardButton from "./ExportCardButton";
 import NumberField from "./NumberField";
 import ProductLinks from "./ProductLinks";
+import ResetLink from "./ResetLink";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
 import { TBILL_LINKS, MMF_LINKS } from "@/lib/affiliate-links";
@@ -39,15 +40,7 @@ export default function DhowcsdLadderCalculator() {
         onChange={setCapital}
         placeholder={`Minimum ${DHOWCSD_MINIMUM.toLocaleString("en-KE")}`}
       />
-      {capital && (
-        <button
-          type="button"
-          onClick={() => setCapital("")}
-          className="text-xs text-muted underline underline-offset-2 hover:text-primary"
-        >
-          Start over
-        </button>
-      )}
+      <ResetLink show={Boolean(capital)} onReset={() => setCapital("")} />
       {belowMinimum && (
         <div className="space-y-3">
           <p className="text-sm text-danger">

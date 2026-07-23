@@ -9,6 +9,7 @@ import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import ExportCardButton from "./ExportCardButton";
 import NumberField from "./NumberField";
+import ResetLink from "./ResetLink";
 import ProductLinks from "./ProductLinks";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
@@ -172,15 +173,7 @@ export default function EducationSavingsCalculator() {
         </>
       )}
 
-      {isDirty && (
-        <button
-          type="button"
-          onClick={handleReset}
-          className="text-xs text-muted underline underline-offset-2 hover:text-primary"
-        >
-          Start over
-        </button>
-      )}
+      <ResetLink show={isDirty} onReset={handleReset} />
 
       {result && (
         <>

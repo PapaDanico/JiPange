@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import {
   CartesianGrid,
   Line,
@@ -29,20 +30,25 @@ export default function FirePathChart({
   currentAge: number;
   targetAge: number;
 }) {
-  if (!monthlyExpenses || monthlyExpenses <= 0) return null;
+  const data = useMemo(() => {
+    if (!monthlyExpenses || monthlyExpenses <= 0) return null;
 
-  const rangeStart = Math.max(currentAge + 1, 30);
-  const rangeEnd = Math.max(targetAge + 10, rangeStart + 5);
+    const rangeStart = Math.max(currentAge + 1, 30);
+    const rangeEnd = Math.max(targetAge + 10, rangeStart + 5);
 
-  const data = [];
-  for (let age = rangeStart; age <= rangeEnd; age++) {
-    const { nominalFutureFireNumber } = localizedFire({
-      currentMonthlyExpenses: monthlyExpenses,
-      currentAge,
-      targetRetirementAge: age,
-    });
-    data.push({ age, fireNumber: Math.round(nominalFutureFireNumber) });
-  }
+    const points = [];
+    for (let age = rangeStart; age <= rangeEnd; age++) {
+      const { nominalFutureFireNumber } = localizedFire({
+        currentMonthlyExpenses: monthlyExpenses,
+        currentAge,
+        targetRetirementAge: age,
+      });
+      points.push({ age, fireNumber: Math.round(nominalFutureFireNumber) });
+    }
+    return points;
+  }, [monthlyExpenses, currentAge, targetAge]);
+
+  if (!data) return null;
 
   return (
     <div

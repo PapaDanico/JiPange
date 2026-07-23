@@ -5,6 +5,7 @@ import { calculateLoanAmortization } from "@/lib/loans";
 import { formatKES } from "@/lib/budget";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import NumberField from "./NumberField";
+import ResetLink from "./ResetLink";
 import QuickFillChips from "./QuickFillChips";
 import BehavioralInsightStrip from "./BehavioralInsightStrip";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
@@ -119,15 +120,7 @@ export default function LoanRepaymentCalculator() {
           current={termYears}
         />
       </div>
-      {isDirty && (
-        <button
-          type="button"
-          onClick={handleReset}
-          className="text-xs text-muted underline underline-offset-2 hover:text-primary"
-        >
-          Start over
-        </button>
-      )}
+      <ResetLink show={isDirty} onReset={handleReset} />
 
       {result && (
         <>

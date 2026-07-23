@@ -245,6 +245,7 @@ export default function Home() {
                 width={973}
                 height={833}
                 priority
+                sizes="(max-width: 640px) 176px, 224px"
                 className="w-44 sm:w-56 h-auto"
               />
               <div

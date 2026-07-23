@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
+import dynamic from "next/dynamic";
 import { getStoredProfile, setStoredCalculations } from "@/lib/storage";
 import { useStorageValue } from "@/lib/hooks";
 import { calculate502525Split, calculateFinancials, formatKES, savingsRateBand } from "@/lib/budget";
@@ -12,6 +12,11 @@ import type { BudgetModel } from "@/lib/types";
 import { useCountUp } from "@/hooks/useCountUp";
 import MyGoals from "./MyGoals";
 
+const BudgetSplitPieChart = dynamic(() => import("./BudgetSplitPieChart"), { ssr: false });
+
+// Duplicated from BudgetSplitPieChart.tsx (rather than imported) so this
+// legend list — plain markup, no recharts dependency — doesn't pull the
+// dynamically-loaded chart module into this component's own bundle.
 const SLICE_COLORS: Record<string, string> = {
   Needs: "#6B5B4D",
   "Social obligations": "#E8A838",
@@ -21,6 +26,11 @@ const SLICE_COLORS: Record<string, string> = {
   "Savings (emergency)": "#2D7D46",
   Investments: "#3B6FA0",
 };
+
+/** Isolates useCountUp's per-animation-frame re-renders to this leaf alone. */
+function AnimatedKES({ target }: { target: number | null }) {
+  return <>{formatKES(useCountUp(target))}</>;
+}
 
 const BAND_COLOR: Record<"green" | "amber" | "red", string> = {
   green: "text-success",
@@ -70,13 +80,6 @@ export default function MoneyPicture() {
       ? financials?.savingsCapacity ?? 0
       : (split502525 ? split502525.savingsEmergency + split502525.investments : 0);
 
-  const animatedNetMonthly = useCountUp(financials ? financials.netMonthly : null);
-  const animatedGrowthCapacity = useCountUp(financials ? growthCapacity : null);
-  const animatedCurrentTrajectory = useCountUp(
-    retirement ? retirement.currentTrajectory.nominalWealth : null
-  );
-  const animatedWithPlan = useCountUp(retirement ? retirement.withPlan.nominalWealth : null);
-
   if (!profile || !financials || !retirement || !split502525) {
     return <p className="text-center text-[#4B4238]">Loading your Pesa Picture...</p>;
   }
@@ -103,7 +106,7 @@ export default function MoneyPicture() {
       <div className="rounded-2xl bg-white p-6 shadow-sm">
         <p className="text-sm text-[#4B4238]">Your monthly take-home pay</p>
         <p className="mt-1 text-3xl font-semibold text-primary">
-          {formatKES(animatedNetMonthly)}
+          <AnimatedKES target={financials.netMonthly} />
         </p>
       </div>
 
@@ -147,24 +150,7 @@ export default function MoneyPicture() {
             .join(", ")}`}
         >
           <div aria-hidden="true" className="h-full w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart accessibilityLayer={false}>
-                <Pie
-                  data={chartData}
-                  dataKey="value"
-                  nameKey="name"
-                  innerRadius={55}
-                  outerRadius={85}
-                  paddingAngle={2}
-                  rootTabIndex={-1}
-                >
-                  {chartData.map((entry) => (
-                    <Cell key={entry.name} fill={SLICE_COLORS[entry.name]} />
-                  ))}
-                </Pie>
-                <Tooltip formatter={(value) => formatKES(Number(value))} />
-              </PieChart>
-            </ResponsiveContainer>
+            <BudgetSplitPieChart data={chartData} />
           </div>
         </div>
         <ul className="mt-2 space-y-1 text-sm">
@@ -201,7 +187,7 @@ export default function MoneyPicture() {
           {model === "kenya" ? "Your savings capacity" : "Your savings + investing capacity"}
         </h2>
         <p className={`mt-1 text-2xl font-semibold ${BAND_COLOR[band]}`}>
-          {formatKES(animatedGrowthCapacity)}
+          <AnimatedKES target={growthCapacity} />
           <span className="ml-2 text-base font-normal">({(growthRate * 100).toFixed(0)}%)</span>
         </p>
         {model === "fiftyTwentyFiveTwentyFive" && (
@@ -220,13 +206,13 @@ export default function MoneyPicture() {
           <div className="rounded-xl bg-[#FBEAEA] p-4">
             <p className="text-xs text-[#4B4238]">Current trajectory</p>
             <p className="mt-1 whitespace-nowrap text-lg font-semibold text-danger">
-              {formatKES(animatedCurrentTrajectory)}
+              <AnimatedKES target={retirement.currentTrajectory.nominalWealth} />
             </p>
           </div>
           <div className="rounded-xl bg-[#E9F5EC] p-4">
             <p className="text-xs text-[#4B4238]">With a plan</p>
             <p className="mt-1 whitespace-nowrap text-lg font-semibold text-success">
-              {formatKES(animatedWithPlan)}
+              <AnimatedKES target={retirement.withPlan.nominalWealth} />
             </p>
           </div>
         </div>

@@ -8,6 +8,7 @@ import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import ExportCardButton from "./ExportCardButton";
 import NumberField from "./NumberField";
 import ProductLinks from "./ProductLinks";
+import ResetLink from "./ResetLink";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
 import { MMF_AND_TBILL_LINKS } from "@/lib/affiliate-links";
@@ -41,15 +42,7 @@ export default function BudgetSplitCalculator() {
         onChange={setGrossMonthlySalary}
         placeholder="e.g. 80000"
       />
-      {grossMonthlySalary && (
-        <button
-          type="button"
-          onClick={() => setGrossMonthlySalary("")}
-          className="text-xs text-muted underline underline-offset-2 hover:text-primary"
-        >
-          Start over
-        </button>
-      )}
+      <ResetLink show={Boolean(grossMonthlySalary)} onReset={() => setGrossMonthlySalary("")} />
 
       {result && (
         <>

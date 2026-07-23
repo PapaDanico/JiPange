@@ -14,6 +14,7 @@ import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import DeductionRow from "./DeductionRow";
 import ExportCardButton from "./ExportCardButton";
 import NumberField from "./NumberField";
+import ResetLink from "./ResetLink";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
 
@@ -53,10 +54,11 @@ export default function TakeHomePayCalculator() {
   }, [gross, reliefs]);
 
   const priorYearResult = useMemo(() => {
+    if (!showYearComparison) return null;
     const value = Number(gross);
     if (!value || value <= 0) return null;
     return calculateNetPay(value, reliefs, NSSF_PRIOR_YEAR_LIMITS);
-  }, [gross, reliefs]);
+  }, [showYearComparison, gross, reliefs]);
 
   const whatIfGrossValue = useMemo(
     () => Math.round((Number(gross) * whatIfPercent) / 100),
@@ -104,15 +106,7 @@ export default function TakeHomePayCalculator() {
           onChange={setGross}
           placeholder="e.g. 80000"
         />
-        {gross && (
-          <button
-            type="button"
-            onClick={handleReset}
-            className="mt-2 text-xs text-muted underline underline-offset-2 hover:text-primary"
-          >
-            Start over
-          </button>
-        )}
+        <ResetLink show={Boolean(gross)} onReset={handleReset} className="mt-2" />
       </div>
 
       <button

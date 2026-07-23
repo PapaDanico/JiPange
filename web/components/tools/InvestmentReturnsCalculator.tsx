@@ -11,6 +11,7 @@ import HowItWorks from "./HowItWorks";
 
 const CompoundGrowthChart = dynamic(() => import("./CompoundGrowthChart"), { ssr: false });
 import NumberField from "./NumberField";
+import ResetLink from "./ResetLink";
 import ExportCardButton from "./ExportCardButton";
 import ProductLinks from "./ProductLinks";
 import ResultCard from "./ResultCard";
@@ -188,15 +189,7 @@ export default function InvestmentReturnsCalculator() {
         />
       </div>
 
-      {isDirty && (
-        <button
-          type="button"
-          onClick={handleReset}
-          className="text-xs text-muted underline underline-offset-2 hover:text-primary"
-        >
-          Start over
-        </button>
-      )}
+      <ResetLink show={isDirty} onReset={handleReset} />
 
       {result && (
         <>

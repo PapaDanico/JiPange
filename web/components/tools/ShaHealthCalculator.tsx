@@ -7,6 +7,7 @@ import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import ExportCardButton from "./ExportCardButton";
 import NumberField from "./NumberField";
+import ResetLink from "./ResetLink";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
 import Toggle from "./Toggle";
@@ -146,15 +147,7 @@ export default function ShaHealthCalculator() {
         />
       </div>
 
-      {isDirty && (
-        <button
-          type="button"
-          onClick={handleReset}
-          className="text-xs text-muted underline underline-offset-2 hover:text-primary"
-        >
-          Start over
-        </button>
-      )}
+      <ResetLink show={isDirty} onReset={handleReset} />
 
       {result && (
         <div ref={resultsRef} className="space-y-4" aria-live="polite">

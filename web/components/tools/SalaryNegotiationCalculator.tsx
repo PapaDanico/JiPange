@@ -9,6 +9,7 @@ import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import DeductionRow from "./DeductionRow";
 import ExportCardButton from "./ExportCardButton";
 import NumberField from "./NumberField";
+import ResetLink from "./ResetLink";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
 
@@ -42,15 +43,7 @@ export default function SalaryNegotiationCalculator() {
         onChange={setTargetNet}
         placeholder="e.g. 100000"
       />
-      {targetNet && (
-        <button
-          type="button"
-          onClick={() => setTargetNet("")}
-          className="text-xs text-muted underline underline-offset-2 hover:text-primary"
-        >
-          Start over
-        </button>
-      )}
+      <ResetLink show={Boolean(targetNet)} onReset={() => setTargetNet("")} />
 
       {result && (
         <>
