@@ -46,7 +46,7 @@ export default function BudgetSplitChart({
               ))}
             </Pie>
             <Tooltip
-              formatter={(value: number, name: string) => [formatKES(value), name]}
+              formatter={(value, name) => [formatKES(Number(value)), String(name)]}
               contentStyle={{
                 fontSize: 12,
                 borderRadius: 8,

@@ -166,7 +166,7 @@ export default function MoneyPicture() {
                     <Cell key={entry.name} fill={SLICE_COLORS[entry.name]} />
                   ))}
                 </Pie>
-                <Tooltip formatter={(value: number) => formatKES(value)} />
+                <Tooltip formatter={(value) => formatKES(Number(value))} />
               </PieChart>
             </ResponsiveContainer>
           </div>

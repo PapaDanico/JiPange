@@ -66,7 +66,7 @@ export default function DebtPayoffChart({ timeline, totalBalance }: Props) {
               width={36}
             />
             <Tooltip
-              formatter={(value: number) => [formatKES(value), "Remaining debt"]}
+              formatter={(value) => [formatKES(Number(value)), "Remaining debt"]}
               labelFormatter={(label) => `Month ${label}`}
               contentStyle={{ fontSize: 12, borderRadius: 8, borderColor: "#E5E0D8" }}
             />

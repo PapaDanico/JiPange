@@ -60,8 +60,8 @@ export default function RunwayDeclineChart({
               tickLine={false}
             />
             <Tooltip
-              formatter={(value: number) => [
-                `KSh ${value.toLocaleString("en-KE", { maximumFractionDigits: 0 })}`,
+              formatter={(value) => [
+                `KSh ${Number(value).toLocaleString("en-KE", { maximumFractionDigits: 0 })}`,
                 "Balance",
               ]}
               contentStyle={{

@@ -78,7 +78,7 @@ export default function FirePathChart({
               tickLine={false}
             />
             <Tooltip
-              formatter={(value: number) => [fmtKES(value), "FIRE target"]}
+              formatter={(value) => [fmtKES(Number(value)), "FIRE target"]}
               labelFormatter={(label) => `Retire at age ${label}`}
               contentStyle={{
                 fontSize: 12,

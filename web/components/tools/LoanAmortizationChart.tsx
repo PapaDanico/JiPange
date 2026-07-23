@@ -125,8 +125,8 @@ export default function LoanAmortizationChart({
               tickLine={false}
             />
             <Tooltip
-              formatter={(value: number, name: string) => [
-                fmtKES(value),
+              formatter={(value, name) => [
+                fmtKES(Number(value)),
                 name === "principal" ? "Principal repaid" : "Interest paid",
               ]}
               contentStyle={{
