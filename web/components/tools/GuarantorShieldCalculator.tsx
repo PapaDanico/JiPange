@@ -51,7 +51,7 @@ export default function GuarantorShieldCalculator() {
 
       {d > 0 && (
         <>
-        <div ref={resultsRef} className="space-y-4" aria-live="polite">
+        <div ref={resultsRef} className="animate-rise space-y-4" aria-live="polite">
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <ResultCard label="True unencumbered borrowing power" value={formatKES(available)} tone="success" />
             <ResultCard label="Frozen borrowing capacity" value={formatKES(frozen)} sublabel={`of your ${SACCO_LEVERAGE_MULTIPLIER}× gross ${formatKES(gross)}`} tone={frozen > 0 ? "danger" : undefined} />

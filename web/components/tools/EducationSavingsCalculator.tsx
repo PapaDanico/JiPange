@@ -177,7 +177,7 @@ export default function EducationSavingsCalculator() {
 
       {result && (
         <>
-        <div ref={resultsRef} className="space-y-4" aria-live="polite">
+        <div ref={resultsRef} className="animate-rise space-y-4" aria-live="polite">
           {result.jssMonthly !== null && (
             <ResultCard
               label="Monthly savings for Junior Secondary"

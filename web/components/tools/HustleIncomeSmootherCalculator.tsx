@@ -160,7 +160,7 @@ export default function HustleIncomeSmootherCalculator() {
 
       {result && (
         <>
-          <div ref={resultsRef} className="space-y-4" aria-live="polite">
+          <div ref={resultsRef} className="animate-rise space-y-4" aria-live="polite">
             {/* Stats grid */}
             <div className="grid grid-cols-2 gap-3">
               <ResultCard label="Lowest month" value={formatKES(result.stats.min)} />

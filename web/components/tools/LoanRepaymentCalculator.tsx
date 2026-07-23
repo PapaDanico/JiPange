@@ -124,7 +124,7 @@ export default function LoanRepaymentCalculator() {
 
       {result && (
         <>
-          <div ref={resultsRef} className="space-y-4" aria-live="polite">
+          <div ref={resultsRef} className="animate-rise space-y-4" aria-live="polite">
             <ResultCard label="Monthly installment" value={formatKES(result.monthlyPayment)} tone="success" />
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <ResultCard label="Total interest paid" value={formatKES(result.totalInterest)} />

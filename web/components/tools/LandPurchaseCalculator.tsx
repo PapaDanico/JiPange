@@ -134,7 +134,7 @@ export default function LandPurchaseCalculator() {
       <ResetLink show={isDirty} onReset={handleReset} />
 
       {result && (
-        <div ref={resultsRef} className="space-y-4" aria-live="polite">
+        <div ref={resultsRef} className="animate-rise space-y-4" aria-live="polite">
           {/* Headline numbers */}
           <ResultCard
             label="Grand total — what you actually need"

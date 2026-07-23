@@ -139,7 +139,7 @@ export default function SavingsGoalCalculator() {
 
       {result !== null && (
         <>
-          <div ref={resultsRef} className="space-y-4" aria-live="polite">
+          <div ref={resultsRef} className="animate-rise space-y-4" aria-live="polite">
             <ResultCard
               label="Monthly savings needed"
               value={formatKES(result)}

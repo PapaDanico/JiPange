@@ -218,7 +218,7 @@ export default function DebtEscapeCalculator() {
       <ResetLink show={anyFilled} onReset={handleReset} />
 
       {result && (
-        <div ref={resultsRef} className="space-y-4" aria-live="polite">
+        <div ref={resultsRef} className="animate-rise space-y-4" aria-live="polite">
           {/* Hero result */}
           <ResultCard
             label="Debt-free by"

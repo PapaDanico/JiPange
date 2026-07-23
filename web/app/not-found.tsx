@@ -7,8 +7,10 @@ export const metadata: Metadata = {
 
 export default function NotFound() {
   return (
-    <div className="flex flex-1 flex-col items-center justify-center px-6 py-24 text-center">
-      <p className="text-5xl">🔍</p>
+    <div className="flex flex-1 animate-rise flex-col items-center justify-center px-6 py-24 text-center">
+      <p aria-hidden="true" className="font-display text-8xl font-semibold tabular-nums text-border-strong">
+        404
+      </p>
       <h1 className="mt-4 text-2xl font-semibold text-primary">Page not found</h1>
       <p className="mt-2 max-w-xs text-sm text-ink-soft">
         That link doesn&apos;t exist. Try one of the calculators below.

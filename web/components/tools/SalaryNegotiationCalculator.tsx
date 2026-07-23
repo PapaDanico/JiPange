@@ -47,7 +47,7 @@ export default function SalaryNegotiationCalculator() {
 
       {result && (
         <>
-          <div ref={resultsRef} className="space-y-4" aria-live="polite">
+          <div ref={resultsRef} className="animate-rise space-y-4" aria-live="polite">
             <ResultCard
               label="Negotiate for a gross salary of"
               value={formatKES(result.gross)}

@@ -91,7 +91,7 @@ export default function SaccoVsBankCalculator() {
 
       {results && (
         <>
-        <div ref={resultsRef} className="space-y-4" aria-live="polite">
+        <div ref={resultsRef} className="animate-rise space-y-4" aria-live="polite">
           <div className="space-y-3">
             {results.map((product) => (
               <div key={product.name} className="rounded-2xl bg-white p-4 shadow-sm">

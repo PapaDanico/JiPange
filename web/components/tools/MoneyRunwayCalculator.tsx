@@ -141,7 +141,7 @@ export default function MoneyRunwayCalculator() {
 
       {result !== null && (
         <>
-          <div ref={resultsRef} className="space-y-4" aria-live="polite">
+          <div ref={resultsRef} className="animate-rise space-y-4" aria-live="polite">
             <ResultCard
               label="Your money will last"
               value={formatDuration(result)}

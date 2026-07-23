@@ -100,7 +100,7 @@ export default function TaxShieldCalculator() {
 
       {shield && (
         <>
-        <div ref={resultsRef} className="space-y-4" aria-live="polite">
+        <div ref={resultsRef} className="animate-rise space-y-4" aria-live="polite">
           {/* The leak gauge */}
           <div className="rounded-2xl border-2 border-danger bg-danger-soft p-5">
             <h2 className="text-sm font-semibold uppercase tracking-wide text-danger">
