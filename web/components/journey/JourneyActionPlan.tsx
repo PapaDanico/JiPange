@@ -191,8 +191,13 @@ function VendorBlueprint({ vehicleId }: { vehicleId: Vehicle["id"] }) {
   const [done, setDone] = useState<boolean[]>(() => blueprint.steps.map(() => false));
 
   useEffect(() => {
+    // One-time seed into `done`, which the user then edits independently via
+    // toggle() — not a continuous mirror of storage, so this doesn't fit
+    // useSyncExternalStore (that would overwrite in-progress toggles on any
+    // other write to the same key).
     try {
       const stored = window.localStorage.getItem(storageKey);
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time restore into independently-edited state; see comment above
       if (stored) setDone(JSON.parse(stored));
     } catch {
       // Corrupt state — start fresh.

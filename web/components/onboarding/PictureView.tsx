@@ -1,9 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
-import type { JourneyAnswers } from "@/lib/journey";
 import { getStoredGoals, getStoredJourneyAnswers, getStoredProfile } from "@/lib/storage";
+import { useStorageValue } from "@/lib/hooks";
 import PesaDiagnostic from "@/components/journey/PesaDiagnostic";
 import MoneyPicture from "./MoneyPicture";
 import MyGoals from "./MyGoals";
@@ -16,21 +15,9 @@ import OnboardingStepIndicator from "./OnboardingStepIndicator";
  * (never a forced redirect).
  */
 export default function PictureView() {
-  const [answers, setAnswers] = useState<JourneyAnswers | null>(null);
-  const [hasProfile, setHasProfile] = useState(false);
-  const [hasGoals, setHasGoals] = useState(false);
-  const [checked, setChecked] = useState(false);
-
-  useEffect(() => {
-    setAnswers(getStoredJourneyAnswers());
-    setHasProfile(Boolean(getStoredProfile()));
-    setHasGoals(getStoredGoals().length > 0);
-    setChecked(true);
-  }, []);
-
-  if (!checked) {
-    return <p className="text-center text-[#4B4238]">Loading your Pesa Picture...</p>;
-  }
+  const answers = useStorageValue(getStoredJourneyAnswers, () => null);
+  const hasProfile = useStorageValue(() => Boolean(getStoredProfile()), () => false);
+  const hasGoals = useStorageValue(() => getStoredGoals().length > 0, () => false);
 
   if (!answers && !hasProfile) {
     return (

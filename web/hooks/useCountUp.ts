@@ -34,6 +34,9 @@ export function useCountUp(target: number | null, durationMs = 700): number {
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     if (prefersReducedMotion) {
+      // Skips the animation outright — genuinely effect-only, since
+      // matchMedia is a browser API unavailable during render/SSR.
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- browser-only media query check, not a storage mirror; see comment above
       setValue(target);
       return;
     }

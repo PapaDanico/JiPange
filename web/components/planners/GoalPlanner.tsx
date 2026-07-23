@@ -84,10 +84,13 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
   const [strategyError, setStrategyError] = useState<string | null>(null);
   const [goalSaved, setGoalSaved] = useState(false);
 
-  // Prefill from the onboarding journey when it exists.
+  // Prefill from the onboarding journey when it exists. One-time seed into
+  // hand-editable fields — every value here can be typed over afterward, so
+  // this doesn't fit useSyncExternalStore's continuous-mirror model.
   useEffect(() => {
     const stored = getStoredCalculations();
     if (stored && stored.savingsCapacity > 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time prefill into hand-editable fields; see comment above
       setCapacity(String(Math.round(stored.savingsCapacity)));
       setCapacityFromProfile(true);
     }
@@ -199,11 +202,17 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
 
   // A strategy is grounded in the numbers it was generated for — clear it
   // when those numbers change so we never show advice for a different goal.
-  // Bumping the sequence also invalidates any request still in flight.
+  // Bumping the sequence also invalidates any request still in flight. The
+  // ref bump has to happen here (mutating a ref during render isn't safe —
+  // a render can be discarded and retried without committing), and the
+  // state resets have to land in the same tick as the bump or a resolving
+  // in-flight request could apply a stale result before it's invalidated —
+  // so this stays a single effect rather than an in-render reset.
   const strategyRequestSeq = useRef(0);
   const itemsKey = items.map((i) => `${i.todayValue}:${i.years}`).join("|");
   useEffect(() => {
     strategyRequestSeq.current++;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- must run in the same tick as the ref bump above; see comment above
     setStrategy(null);
     setStrategyError(null);
     setStrategyLoading(false);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import {
   PRODUCT_LINKS,
@@ -12,6 +12,7 @@ import {
   type ProductType,
 } from "@/lib/affiliate-links";
 import { getStoredJourneyAnswers } from "@/lib/storage";
+import { useStorageValue } from "@/lib/hooks";
 import type { VehicleId } from "@/lib/journey";
 
 // ── Filter tabs ──────────────────────────────────────────────────────────────
@@ -154,24 +155,18 @@ function RecommendedStrip({ vehicleId }: { vehicleId: VehicleId }) {
 
 export default function PartnersView() {
   const [activeTab, setActiveTab] = useState<FilterTab>("all");
-  const [recommendedVehicle, setRecommendedVehicle] = useState<VehicleId | null>(null);
-
-  useEffect(() => {
-    const answers = getStoredJourneyAnswers();
-    if (!answers) return;
+  const answers = useStorageValue(getStoredJourneyAnswers, () => null);
+  const recommendedVehicle = useMemo<VehicleId | null>(() => {
+    if (!answers) return null;
     // Mirror the matchVehicle logic to surface the right type.
     const { primary_goal, timeline, liquidity_leak } = answers;
     const recovery = liquidity_leak === "mobile_loans";
-    let vid: VehicleId;
     if (primary_goal === "emergency_fund" || primary_goal === "clear_debt" || timeline === "short_term" || recovery) {
-      vid = "mmf";
-    } else if (timeline === "mid_term") {
-      vid = "sacco";
-    } else {
-      vid = "ifb";
+      return "mmf";
     }
-    setRecommendedVehicle(vid);
-  }, []);
+    if (timeline === "mid_term") return "sacco";
+    return "ifb";
+  }, [answers]);
 
   const visibleProducts =
     activeTab === "all"

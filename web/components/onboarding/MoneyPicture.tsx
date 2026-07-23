@@ -5,9 +5,10 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import { getStoredProfile, setStoredCalculations } from "@/lib/storage";
+import { useStorageValue } from "@/lib/hooks";
 import { calculate502525Split, calculateFinancials, formatKES, savingsRateBand } from "@/lib/budget";
 import { buildRetirementComparison } from "@/lib/projections";
-import type { BudgetModel, Profile } from "@/lib/types";
+import type { BudgetModel } from "@/lib/types";
 import { useCountUp } from "@/hooks/useCountUp";
 import MyGoals from "./MyGoals";
 
@@ -34,17 +35,12 @@ const MODEL_GROWTH_RATE: Record<BudgetModel, number> = {
 
 export default function MoneyPicture() {
   const router = useRouter();
-  const [profile, setProfile] = useState<Profile | null>(null);
+  const profile = useStorageValue(getStoredProfile, () => null);
   const [model, setModel] = useState<BudgetModel>("kenya");
 
   useEffect(() => {
-    const stored = getStoredProfile();
-    if (!stored) {
-      router.replace("/profile/full");
-      return;
-    }
-    setProfile(stored);
-  }, [router]);
+    if (!profile) router.replace("/profile/full");
+  }, [profile, router]);
 
   const financials = useMemo(
     () => (profile ? calculateFinancials(profile.grossMonthlySalary) : null),

@@ -26,21 +26,90 @@ function isBrowser(): boolean {
   return typeof window !== "undefined";
 }
 
-function read<T>(key: string): T | null {
-  if (!isBrowser()) return null;
-  const raw = window.localStorage.getItem(key);
-  if (!raw) return null;
-  try {
-    return JSON.parse(raw) as T;
-  } catch {
-    return null;
-  }
+// ── Change notification ──
+//
+// Components read this module's data via useSyncExternalStore (see
+// lib/hooks.ts's useStorageValue/useStickyState). The native `storage` event
+// only fires in *other* tabs, never the tab that made the change, so writes
+// here also dispatch a same-tab custom event — that's how a write in one
+// component is reflected immediately in another subscribed to the same data.
+
+const STORAGE_CHANGE_EVENT = "jipange:storage-change";
+
+function notifyChange(): void {
+  if (!isBrowser()) return;
+  window.dispatchEvent(new Event(STORAGE_CHANGE_EVENT));
 }
 
-function write<T>(key: string, value: T): void {
-  if (!isBrowser()) return;
-  window.localStorage.setItem(key, JSON.stringify(value));
+/**
+ * Subscribes to both same-tab writes (via this module's helpers) and
+ * cross-tab writes (the native `storage` event). Pass directly as
+ * useSyncExternalStore's `subscribe` argument.
+ */
+export function subscribeToStorage(onChange: () => void): () => void {
+  if (!isBrowser()) return () => {};
+  window.addEventListener("storage", onChange);
+  window.addEventListener(STORAGE_CHANGE_EVENT, onChange);
+  return () => {
+    window.removeEventListener("storage", onChange);
+    window.removeEventListener(STORAGE_CHANGE_EVENT, onChange);
+  };
 }
+
+// ── Cached read/write ──
+//
+// useSyncExternalStore requires getSnapshot() to return a referentially
+// stable value when nothing has changed (required for object/array values —
+// primitives compare by value regardless). Caching the parsed result against
+// the raw stored string means repeated reads between writes return the same
+// reference instead of a fresh JSON.parse() each time.
+
+interface CacheEntry {
+  raw: string | null;
+  parsed: unknown;
+}
+
+const readCache = new Map<string, CacheEntry>();
+
+/** Generic cached, JSON-parsed localStorage read. Exported for callers with
+ *  their own dynamic keys (e.g. useStickyState's per-field tool inputs). */
+export function readAny<T>(key: string): T | null {
+  if (!isBrowser()) return null;
+  const raw = window.localStorage.getItem(key);
+  const cached = readCache.get(key);
+  if (cached && cached.raw === raw) return cached.parsed as T | null;
+  let parsed: T | null = null;
+  if (raw !== null) {
+    try {
+      parsed = JSON.parse(raw) as T;
+    } catch {
+      parsed = null;
+    }
+  }
+  readCache.set(key, { raw, parsed });
+  return parsed;
+}
+
+/** Generic cached localStorage write — updates the read cache immediately
+ *  (avoiding an unnecessary re-parse) and notifies subscribers. */
+export function writeAny<T>(key: string, value: T): void {
+  if (!isBrowser()) return;
+  const raw = JSON.stringify(value);
+  window.localStorage.setItem(key, raw);
+  readCache.set(key, { raw, parsed: value });
+  notifyChange();
+}
+
+/** Removes a key, invalidates its cache entry, and notifies subscribers. */
+export function removeAny(key: string): void {
+  if (!isBrowser()) return;
+  window.localStorage.removeItem(key);
+  readCache.delete(key);
+  notifyChange();
+}
+
+const read = readAny;
+const write = writeAny;
 
 export const getStoredProfile = () => read<Profile>(PROFILE_KEY);
 export const setStoredProfile = (profile: Profile) => write(PROFILE_KEY, profile);
@@ -55,8 +124,7 @@ export const setStoredPlan = (plan: ActionPlan) => write(PLAN_KEY, plan);
 export const getProfileDraft = () => read<ProfileDraft>(PROFILE_DRAFT_KEY);
 export const setProfileDraft = (draft: ProfileDraft) => write(PROFILE_DRAFT_KEY, draft);
 export function clearProfileDraft(): void {
-  if (!isBrowser()) return;
-  window.localStorage.removeItem(PROFILE_DRAFT_KEY);
+  removeAny(PROFILE_DRAFT_KEY);
 }
 
 export const getStoredWhatsAppNumber = () => read<string>(WHATSAPP_NUMBER_KEY);
@@ -76,7 +144,8 @@ export interface SavedGoal {
   savedAt: string;
 }
 
-export const getStoredGoals = () => read<SavedGoal[]>(GOALS_KEY) ?? [];
+export const EMPTY_GOALS: SavedGoal[] = [];
+export const getStoredGoals = () => read<SavedGoal[]>(GOALS_KEY) ?? EMPTY_GOALS;
 
 /** Saves a goal, replacing any existing goal of the same type. */
 export function saveStoredGoal(goal: SavedGoal): void {
@@ -104,15 +173,13 @@ export interface JourneyDraft {
 export const getJourneyDraft = () => read<JourneyDraft>(JOURNEY_DRAFT_KEY);
 export const setJourneyDraft = (draft: JourneyDraft) => write(JOURNEY_DRAFT_KEY, draft);
 export function clearJourneyDraft(): void {
-  if (!isBrowser()) return;
-  window.localStorage.removeItem(JOURNEY_DRAFT_KEY);
+  removeAny(JOURNEY_DRAFT_KEY);
 }
 
 export function clearStoredJourney(): void {
-  if (!isBrowser()) return;
-  window.localStorage.removeItem(PROFILE_KEY);
-  window.localStorage.removeItem(CALCULATIONS_KEY);
-  window.localStorage.removeItem(PLAN_KEY);
-  window.localStorage.removeItem(PROFILE_DRAFT_KEY);
-  window.localStorage.removeItem(WHATSAPP_NUMBER_KEY);
+  removeAny(PROFILE_KEY);
+  removeAny(CALCULATIONS_KEY);
+  removeAny(PLAN_KEY);
+  removeAny(PROFILE_DRAFT_KEY);
+  removeAny(WHATSAPP_NUMBER_KEY);
 }

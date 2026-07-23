@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import Link from "next/link";
 import { computeReadiness, type IndicatorStatus, type ReadinessIndicator } from "@/lib/readiness";
 import { getStoredCalculations, getStoredGoals, getStoredJourneyAnswers } from "@/lib/storage";
+import { useStorageValue } from "@/lib/hooks";
 
 const STATUS_STYLES: Record<IndicatorStatus, string> = {
   strong: "bg-[#D1FAE5] text-[#2D7D46]",
@@ -54,14 +55,18 @@ function IndicatorCard({ indicator }: { indicator: ReadinessIndicator }) {
 }
 
 export default function ReadinessSnapshot() {
-  const [data, setData] = useState<ReturnType<typeof computeReadiness>>(null);
-
-  useEffect(() => {
-    const calculations = getStoredCalculations();
-    const journey = getStoredJourneyAnswers();
-    const goals = getStoredGoals();
-    setData(computeReadiness(calculations, journey, goals.length > 0));
-  }, []);
+  // Read each underlying store independently (each already returns a stable
+  // reference when unchanged, via lib/storage.ts's cache) and derive the
+  // combined result with useMemo, rather than computing it inside
+  // getSnapshot — computeReadiness returns a fresh object every call, which
+  // useSyncExternalStore requires getSnapshot not to do.
+  const calculations = useStorageValue(getStoredCalculations, () => null);
+  const journey = useStorageValue(getStoredJourneyAnswers, () => null);
+  const hasGoals = useStorageValue(() => getStoredGoals().length > 0, () => false);
+  const data = useMemo(
+    () => computeReadiness(calculations, journey, hasGoals),
+    [calculations, journey, hasGoals]
+  );
 
   if (!data) return null;
 

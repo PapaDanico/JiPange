@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { getStoredJourneyAnswers, getStoredProfile } from "@/lib/storage";
+import { useStorageValue } from "@/lib/hooks";
 
 /**
  * Mobile-only bottom tab bar — the navigation pattern Kenyan users already
@@ -12,13 +12,8 @@ import { getStoredJourneyAnswers, getStoredProfile } from "@/lib/storage";
  */
 export default function BottomNav() {
   const pathname = usePathname();
-  const [hasProfile, setHasProfile] = useState(false);
-  const [hasJourney, setHasJourney] = useState(false);
-
-  useEffect(() => {
-    setHasProfile(Boolean(getStoredProfile()));
-    setHasJourney(Boolean(getStoredJourneyAnswers()));
-  }, [pathname]);
+  const hasProfile = useStorageValue(() => Boolean(getStoredProfile()), () => false);
+  const hasJourney = useStorageValue(() => Boolean(getStoredJourneyAnswers()), () => false);
 
   const planTab = hasProfile
     ? { href: "/picture", label: "My Plan" }

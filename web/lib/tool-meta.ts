@@ -1,3 +1,5 @@
+import { readAny, writeAny } from "./storage";
+
 export interface NextMove {
   label: string;
   href: string;
@@ -226,26 +228,16 @@ export const TOOL_META: Record<string, ToolMeta> = {
 export const RECENT_TOOLS_KEY = "jipange_recent_tools";
 export const MAX_RECENT = 3;
 
+const EMPTY_RECENT: string[] = [];
+
 export function recordToolVisit(href: string): void {
-  if (typeof window === "undefined") return;
-  try {
-    const raw = localStorage.getItem(RECENT_TOOLS_KEY);
-    const existing: string[] = raw ? JSON.parse(raw) : [];
-    const updated = [href, ...existing.filter((h) => h !== href)].slice(0, MAX_RECENT);
-    localStorage.setItem(RECENT_TOOLS_KEY, JSON.stringify(updated));
-  } catch {
-    // localStorage unavailable — silent fail
-  }
+  const existing = getRecentTools();
+  const updated = [href, ...existing.filter((h) => h !== href)].slice(0, MAX_RECENT);
+  writeAny(RECENT_TOOLS_KEY, updated);
 }
 
 export function getRecentTools(): string[] {
-  if (typeof window === "undefined") return [];
-  try {
-    const raw = localStorage.getItem(RECENT_TOOLS_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    return [];
-  }
+  return readAny<string[]>(RECENT_TOOLS_KEY) ?? EMPTY_RECENT;
 }
 
 /** True if a stored value is worth resuming — a non-empty string, a non-zero number, or a non-empty array/object. */

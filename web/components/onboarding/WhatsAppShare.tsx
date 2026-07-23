@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import type { ActionPlan, Calculations, Profile } from "@/lib/types";
 import { formatKES } from "@/lib/budget";
 import { getStoredWhatsAppNumber } from "@/lib/storage";
+import { useStorageValue } from "@/lib/hooks";
 
 interface WhatsAppShareProps {
   profile: Profile;
@@ -34,13 +35,7 @@ Get your free plan → jipangefinance.org`;
 export default function WhatsAppShare(props: WhatsAppShareProps) {
   const [copied, setCopied] = useState(false);
   const message = buildShareMessage(props);
-  // Read after mount (not during render) so the server-rendered href matches
-  // the client's first render — localStorage isn't available during SSR.
-  const [whatsappNumber, setWhatsappNumber] = useState<string | null>(null);
-
-  useEffect(() => {
-    setWhatsappNumber(getStoredWhatsAppNumber());
-  }, []);
+  const whatsappNumber = useStorageValue(getStoredWhatsAppNumber, () => null);
 
   const whatsappUrl = whatsappNumber
     ? `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`

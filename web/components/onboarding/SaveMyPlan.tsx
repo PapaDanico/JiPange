@@ -11,8 +11,13 @@ export default function SaveMyPlan() {
   const [status, setStatus] = useState<Status>("idle");
 
   useEffect(() => {
+    // One-time mount check of environment availability and auth state — not
+    // a storage mirror (createClient()/getUser() aren't a subscribable
+    // store), and the sign-in branch below is already async, so this doesn't
+    // fit useSyncExternalStore.
     const supabase = createClient();
     if (!supabase) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time mount check; see comment above
       setStatus("unavailable");
       return;
     }
