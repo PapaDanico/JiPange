@@ -183,7 +183,7 @@ export default function Home() {
       <LandingInteractivity />
 
       {/* ── Hero ── */}
-      <section className="bg-white border-b border-[#E5E0D8] py-14 sm:py-24">
+      <section className="bg-white border-b border-border py-14 sm:py-24">
         <div className="mx-auto max-w-5xl px-4 sm:px-6">
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:items-center lg:gap-16">
 
@@ -192,7 +192,7 @@ export default function Home() {
               <p className="mb-5 inline-block rounded-full border border-[#F0D08A] bg-[#FFF8E8] px-3 py-1.5 text-xs font-bold uppercase tracking-widest text-accent">
                 Free · Anonymous · Built for Kenya 🇰🇪
               </p>
-              <p className="mb-2 text-base italic font-medium text-[#7A6B5E]">
+              <p className="mb-2 text-base italic font-medium text-muted">
                 Jipange kabla pesa ikupange.
               </p>
               <h1
@@ -205,7 +205,7 @@ export default function Home() {
                   <em className="not-italic text-accent">for you.</em>
                 </span>
               </h1>
-              <p className="mb-8 max-w-prose text-base leading-relaxed text-[#4B4238]">
+              <p className="mb-8 max-w-prose text-base leading-relaxed text-ink-soft">
                 Inflation quietly erodes your savings. Fuliza bridges the gap for{" "}
                 {FULIZA_USERS_MILLIONS} million Kenyans borrowing for food and rent. And{" "}
                 {RBA_NO_PENSION_PCT}% of Kenya&apos;s workforce has no pension plan. JiPange
@@ -214,13 +214,13 @@ export default function Home() {
               <div className="mb-6 flex flex-wrap gap-3">
                 <Link
                   href="/profile"
-                  className="inline-flex h-12 items-center justify-center rounded-full bg-accent px-6 text-base font-bold text-[#1A0D06] shadow-[0_2px_14px_rgba(232,160,32,0.30)] transition-colors hover:bg-[#d6961f]"
+                  className="inline-flex h-12 items-center justify-center rounded-full bg-accent px-6 text-base font-bold text-[#1A0D06] shadow-[0_2px_14px_rgba(232,160,32,0.30)] transition-colors hover:bg-accent-deep"
                 >
                   Start my plan — 90 seconds ›
                 </Link>
                 <Link
                   href="/tools"
-                  className="inline-flex h-12 items-center justify-center rounded-full border-[1.5px] border-[#E5E0D8] bg-[#F1ECE3] px-6 text-base font-semibold text-primary transition-colors hover:border-primary hover:bg-[#E6D9CA]"
+                  className="inline-flex h-12 items-center justify-center rounded-full border-[1.5px] border-border bg-canvas px-6 text-base font-semibold text-primary transition-colors hover:border-primary hover:bg-[#E6D9CA]"
                 >
                   Explore calculators
                 </Link>
@@ -229,7 +229,7 @@ export default function Home() {
                 {TRUST_CHIPS.map((chip) => (
                   <span
                     key={chip}
-                    className="rounded-full border border-[#E5E0D8] bg-[#F1ECE3] px-3 py-1.5 text-[0.8125rem] font-medium text-[#7A6B5E]"
+                    className="rounded-full border border-border bg-canvas px-3 py-1.5 text-[0.8125rem] font-medium text-muted"
                   >
                     {chip}
                   </span>
@@ -250,10 +250,10 @@ export default function Home() {
               />
               <div
                 data-reveal
-                className="w-full max-w-xs rounded-2xl border border-[#E5E0D8] bg-[#F1ECE3] px-6 py-5 text-center"
+                className="w-full max-w-xs rounded-2xl border border-border bg-canvas px-6 py-5 text-center"
               >
                 <p
-                  className="text-4xl font-black tracking-tighter text-[#9B2C1E]"
+                  className="text-4xl font-black tracking-tighter text-danger-deep"
                   style={{ fontVariantNumeric: "tabular-nums" }}
                   data-count={FINACCESS_LITERACY_FAIL_PCT}
                   data-suffix="%"
@@ -261,7 +261,7 @@ export default function Home() {
                 >
                   {FINACCESS_LITERACY_FAIL_PCT}%
                 </p>
-                <p className="mt-1.5 text-[0.8125rem] text-[#7A6B5E]">
+                <p className="mt-1.5 text-[0.8125rem] text-muted">
                   of Kenyans cannot pass a basic financial literacy test
                   <br />
                   <span className="mt-1 block text-[0.7rem] text-muted">
@@ -276,7 +276,7 @@ export default function Home() {
       </section>
 
       {/* ── Goal-based quick start ── */}
-      <section className="border-b border-[#E5E0D8] bg-[#FAFAF8] py-10 sm:py-12">
+      <section className="border-b border-border bg-background py-10 sm:py-12">
         <div className="mx-auto max-w-5xl px-4 sm:px-6">
           <div className="mb-5 flex flex-wrap items-end justify-between gap-2">
             <div>
@@ -294,12 +294,12 @@ export default function Home() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="group flex min-h-36 flex-col rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-accent hover:shadow-md"
+                className="group flex min-h-36 flex-col rounded-2xl border border-border bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-accent hover:shadow-md"
               >
                 <span aria-hidden="true" className="text-2xl">{item.icon}</span>
                 <span className="mt-4 text-[0.6875rem] font-bold uppercase tracking-widest text-accent">{item.eyebrow}</span>
                 <span className="mt-1 font-bold text-primary">{item.title}</span>
-                <span className="mt-1 text-sm leading-relaxed text-[#7A6B5E]">{item.detail}</span>
+                <span className="mt-1 text-sm leading-relaxed text-muted">{item.detail}</span>
                 <span className="mt-auto pt-3 text-sm font-semibold text-primary group-hover:text-accent">Start here →</span>
               </Link>
             ))}
@@ -352,8 +352,8 @@ export default function Home() {
         </div>
       </section>
 
-      <details className="group/evidence bg-[#F1ECE3]">
-        <summary className="cursor-pointer list-none border-b border-[#E5E0D8] px-4 py-5 marker:content-none sm:px-6">
+      <details className="group/evidence bg-canvas">
+        <summary className="cursor-pointer list-none border-b border-border px-4 py-5 marker:content-none sm:px-6">
           <span className="mx-auto flex max-w-5xl items-center justify-between gap-4">
             <span>
               <span className="block text-xs font-bold uppercase tracking-widest text-accent">Want the evidence?</span>
@@ -366,7 +366,7 @@ export default function Home() {
         </summary>
 
       {/* ── Research findings ── */}
-      <section className="bg-[#F1ECE3] py-14 sm:py-20">
+      <section className="bg-canvas py-14 sm:py-20">
         <div className="mx-auto max-w-5xl px-4 sm:px-6">
           <div data-reveal className="mb-6">
             <p className="mb-1.5 text-xs font-bold uppercase tracking-widest text-accent">
@@ -378,7 +378,7 @@ export default function Home() {
             >
               The problem is structural, not personal
             </h2>
-            <p className="mt-2 max-w-prose text-[0.9375rem] text-[#4B4238]">
+            <p className="mt-2 max-w-prose text-[0.9375rem] text-ink-soft">
               These are not individual failures. They are system-wide gaps that JiPange is designed
               to help you navigate.
             </p>
@@ -390,11 +390,11 @@ export default function Home() {
                 key={card.label}
                 data-reveal
                 data-delay={i % 2 === 1 ? "1" : undefined}
-                className="rounded-2xl border border-[#E5E0D8] bg-white p-6 shadow-sm"
+                className="rounded-2xl border border-border bg-white p-6 shadow-sm"
               >
                 <p
                   className={`text-4xl font-black leading-none tracking-tighter ${
-                    card.tone === "danger" ? "text-[#9B2C1E]" : "text-[#2b4a2b]"
+                    card.tone === "danger" ? "text-danger-deep" : "text-success-deep"
                   }`}
                   style={{ fontVariantNumeric: "tabular-nums" }}
                   data-count={card.dataCount}
@@ -403,8 +403,8 @@ export default function Home() {
                   {card.figure}
                 </p>
                 <p className="mt-2 text-[0.9375rem] font-bold text-primary">{card.label}</p>
-                <p className="mt-1.5 text-[0.875rem] leading-relaxed text-[#7A6B5E]">{card.body}</p>
-                <p className="mt-3 border-t border-[#E5E0D8] pt-3 text-[0.6875rem] italic text-[#7A6B5E]">
+                <p className="mt-1.5 text-[0.875rem] leading-relaxed text-muted">{card.body}</p>
+                <p className="mt-3 border-t border-border pt-3 text-[0.6875rem] italic text-muted">
                   {card.cite}
                 </p>
               </div>
@@ -414,7 +414,7 @@ export default function Home() {
       </section>
 
       {/* ── Narrative ── */}
-      <section className="border-y border-[#E5E0D8] bg-white py-14 sm:py-20">
+      <section className="border-y border-border bg-white py-14 sm:py-20">
         <div className="mx-auto max-w-5xl px-4 sm:px-6">
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-[5fr_4fr] lg:items-start lg:gap-16">
 
@@ -430,20 +430,20 @@ export default function Home() {
                 <br />
                 The money is there. The plan is missing.&rdquo;
               </p>
-              <p data-reveal data-delay="1" className="mb-4 text-[0.9375rem] leading-loose text-[#4B4238]">
+              <p data-reveal data-delay="1" className="mb-4 text-[0.9375rem] leading-loose text-ink-soft">
                 You earn a salary. PAYE, NSSF, SHIF and Housing Levy leave before you touch it.
                 Rent on the first. School fees in January, April, September. Fuliza at the end of
                 the month when the calculation doesn&apos;t balance. A Sacco loan you&apos;re
                 guaranteeing for three colleagues. Your financial life is genuinely complex — and it
                 was never designed with a Kenya-specific plan in mind.
               </p>
-              <p data-reveal data-delay="2" className="mb-5 text-[0.9375rem] leading-loose text-[#4B4238]">
+              <p data-reveal data-delay="2" className="mb-5 text-[0.9375rem] leading-loose text-ink-soft">
                 JiPange is the only calculator suite built specifically for this reality. Every
                 number is grounded in Kenya&apos;s actual tax bands, real MMF yields, the NSSF Act
                 2013 phased rollout, SHIF contributions, and Sacco mechanics — not a US retirement
                 spreadsheet with a KES sign dropped in.
               </p>
-              <p data-reveal data-delay="2" className="text-[0.9375rem] leading-loose text-[#4B4238]">
+              <p data-reveal data-delay="2" className="text-[0.9375rem] leading-loose text-ink-soft">
                 <strong className="text-primary">No black box. No selling. No accounts.</strong>
                 <br />
                 JiPange shows you the maths, names the vehicle, and hands you the M-Pesa paybill.
@@ -455,27 +455,27 @@ export default function Home() {
             <div className="flex flex-col gap-4">
               <div
                 data-reveal
-                className="rounded-2xl border border-[#F5C8C4] bg-[#FBEAEA] p-6"
+                className="rounded-2xl border border-[#F5C8C4] bg-danger-soft p-6"
               >
-                <p className="mb-3 text-xs font-bold uppercase tracking-widest text-[#9B2C1E]">
+                <p className="mb-3 text-xs font-bold uppercase tracking-widest text-danger-deep">
                   ⚠️ Fuliza reality check
                 </p>
                 <p
-                  className="text-4xl font-black leading-none tracking-tighter text-[#9B2C1E]"
+                  className="text-4xl font-black leading-none tracking-tighter text-danger-deep"
                   style={{ fontVariantNumeric: "tabular-nums" }}
                 >
                   ≈400%
                 </p>
-                <p className="mt-1.5 mb-3 text-[0.875rem] font-semibold text-[#4B4238]">
+                <p className="mt-1.5 mb-3 text-[0.875rem] font-semibold text-ink-soft">
                   Real annualised cost of Fuliza
                 </p>
-                <p className="text-[0.8125rem] leading-relaxed text-[#7A6B5E]">
+                <p className="text-[0.8125rem] leading-relaxed text-muted">
                   KSh 6.75/day on KSh 600 feels like loose change. Annualised, it&apos;s the most
                   expensive credit product most Kenyans ever use — more than bank overdrafts, more
                   than credit cards. Kenyans borrowed KSh 1.46 trillion through Fuliza in the year
                   to March 2026.
                 </p>
-                <p className="mt-3 text-[0.6875rem] italic text-[#9B2C1E]">
+                <p className="mt-3 text-[0.6875rem] italic text-danger-deep">
                   Safaricom FY2026 · Techweez · Nation Africa
                 </p>
               </div>
@@ -483,26 +483,26 @@ export default function Home() {
               <div
                 data-reveal
                 data-delay="1"
-                className="rounded-2xl border border-[#C5E8CC] bg-[#E9F5EC] p-6"
+                className="rounded-2xl border border-[#C5E8CC] bg-success-soft p-6"
               >
-                <p className="mb-3 text-xs font-bold uppercase tracking-widest text-[#2b4a2b]">
+                <p className="mb-3 text-xs font-bold uppercase tracking-widest text-success-deep">
                   💡 The opportunity
                 </p>
                 <p
-                  className="text-4xl font-black leading-none tracking-tighter text-[#2b4a2b]"
+                  className="text-4xl font-black leading-none tracking-tighter text-success-deep"
                   style={{ fontVariantNumeric: "tabular-nums" }}
                 >
                   KSh 4.6T
                 </p>
-                <p className="mt-1.5 mb-3 text-[0.875rem] font-semibold text-[#4B4238]">
+                <p className="mt-1.5 mb-3 text-[0.875rem] font-semibold text-ink-soft">
                   in bank accounts earning below inflation
                 </p>
-                <p className="text-[0.8125rem] leading-relaxed text-[#7A6B5E]">
+                <p className="text-[0.8125rem] leading-relaxed text-muted">
                   Of KSh 5 trillion in Kenyan bank savings, only KSh 370 billion is in money market
                   funds — earning 9–12% vs. bank rates of {pct(ASSUMED_CURRENT_YIELD)}. The
                   difference at KSh 100,000 over 5 years is over KSh 50,000 earned or lost.
                 </p>
-                <p className="mt-3 text-[0.6875rem] italic text-[#2b4a2b]">
+                <p className="mt-3 text-[0.6875rem] italic text-success-deep">
                   CMA 2026 · Business Daily Africa
                 </p>
               </div>
@@ -515,7 +515,7 @@ export default function Home() {
       </details>
 
       {/* ── How it works ── */}
-      <section className="bg-[#F1ECE3] py-14 sm:py-20">
+      <section className="bg-canvas py-14 sm:py-20">
         <div className="mx-auto max-w-5xl px-4 sm:px-6">
           <div className="mb-8">
             <p className="mb-1.5 text-xs font-bold uppercase tracking-widest text-accent">
@@ -527,7 +527,7 @@ export default function Home() {
             >
               From &ldquo;pesa inaisha&rdquo; to a plan — in three steps
             </h2>
-            <p className="mt-2 max-w-prose text-[0.9375rem] text-[#4B4238]">
+            <p className="mt-2 max-w-prose text-[0.9375rem] text-ink-soft">
               No spreadsheets. No financial jargon. No signup. Just the honest picture and the next
               move.
             </p>
@@ -539,13 +539,13 @@ export default function Home() {
                 key={step.num}
                 data-reveal
                 data-delay={i > 0 ? String(i) : undefined}
-                className="rounded-2xl border border-[#E5E0D8] bg-white p-7"
+                className="rounded-2xl border border-border bg-white p-7"
               >
                 <div className="mb-4 flex h-9 w-9 items-center justify-center rounded-full bg-accent text-sm font-black text-[#1A0D06]" aria-hidden="true">
                   {step.num}
                 </div>
                 <h3 className="mb-1.5 text-base font-extrabold text-primary">{step.title}</h3>
-                <p className="text-sm leading-relaxed text-[#4B4238]">{step.body}</p>
+                <p className="text-sm leading-relaxed text-ink-soft">{step.body}</p>
               </li>
             ))}
           </ol>
@@ -553,7 +553,7 @@ export default function Home() {
       </section>
 
       {/* ── Popular tools ── */}
-      <section className="border-t border-[#E5E0D8] bg-white py-14 sm:py-20">
+      <section className="border-t border-border bg-white py-14 sm:py-20">
         <div className="mx-auto max-w-5xl px-4 sm:px-6">
           <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
             <div>
@@ -579,16 +579,16 @@ export default function Home() {
                 href={tool.href}
                 data-reveal
                 data-delay={i % 2 === 1 ? "1" : undefined}
-                className="group flex items-center gap-3.5 rounded-xl border border-[#E5E0D8] bg-[#F1ECE3] p-4 transition-all hover:-translate-y-0.5 hover:border-accent hover:shadow-[0_3px_12px_rgba(232,160,32,0.12)]"
+                className="group flex items-center gap-3.5 rounded-xl border border-border bg-canvas p-4 transition-all hover:-translate-y-0.5 hover:border-accent hover:shadow-[0_3px_12px_rgba(232,160,32,0.12)]"
               >
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-[#E5E0D8] bg-white text-lg">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-border bg-white text-lg">
                   {tool.emoji}
                 </div>
                 <div className="min-w-0">
                   <p className="text-[0.9rem] font-bold text-primary">{tool.name}</p>
-                  <p className="text-[0.8rem] text-[#7A6B5E]">{tool.hook}</p>
+                  <p className="text-[0.8rem] text-muted">{tool.hook}</p>
                 </div>
-                <span className="ml-auto shrink-0 text-[#E5E0D8] transition-colors group-hover:text-accent">
+                <span className="ml-auto shrink-0 text-border transition-colors group-hover:text-accent">
                   ›
                 </span>
               </Link>
@@ -598,7 +598,7 @@ export default function Home() {
       </section>
 
       {/* ── Goal planners ── */}
-      <section className="border-t border-[#E5E0D8] bg-[#F1ECE3] py-14 sm:py-20">
+      <section className="border-t border-border bg-canvas py-14 sm:py-20">
         <div className="mx-auto max-w-5xl px-4 sm:px-6">
           <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
             <div>
@@ -618,7 +618,7 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:items-start">
-            <div data-reveal className="space-y-3 text-[0.9375rem] leading-loose text-[#4B4238]">
+            <div data-reveal className="space-y-3 text-[0.9375rem] leading-loose text-ink-soft">
               <p>
                 Six planners that reverse-engineer exactly what you need to do{" "}
                 <strong className="text-primary">this month</strong> to hit your goal — whether
@@ -637,7 +637,7 @@ export default function Home() {
                 <Link
                   key={planner.href}
                   href={planner.href}
-                  className="inline-flex items-center gap-1.5 rounded-full border-[1.5px] border-[#E5E0D8] bg-white px-4 py-2.5 text-sm font-semibold text-[#4B4238] transition-colors hover:border-primary hover:text-primary"
+                  className="inline-flex items-center gap-1.5 rounded-full border-[1.5px] border-border bg-white px-4 py-2.5 text-sm font-semibold text-ink-soft transition-colors hover:border-primary hover:text-primary"
                 >
                   <span>{planner.emoji}</span>
                   {planner.label}
@@ -653,7 +653,7 @@ export default function Home() {
         <div className="mx-auto max-w-5xl px-4 sm:px-6 text-center">
           <div data-reveal>
             <h2
-              className="mb-3 text-3xl font-black leading-tight tracking-tight text-[#F1ECE3] sm:text-4xl"
+              className="mb-3 text-3xl font-black leading-tight tracking-tight text-canvas sm:text-4xl"
               style={{ textWrap: "balance" } as React.CSSProperties}
             >
               Your honest Pesa Picture.{" "}
@@ -665,7 +665,7 @@ export default function Home() {
             </p>
             <Link
               href="/profile"
-              className="inline-flex h-14 items-center justify-center rounded-full bg-accent px-10 text-base font-extrabold text-[#1A0D06] shadow-[0_4px_18px_rgba(232,160,32,0.35)] transition-all hover:bg-[#d6961f] hover:-translate-y-0.5"
+              className="inline-flex h-14 items-center justify-center rounded-full bg-accent px-10 text-base font-extrabold text-[#1A0D06] shadow-[0_4px_18px_rgba(232,160,32,0.35)] transition-all hover:bg-accent-deep hover:-translate-y-0.5"
             >
               Start my plan — it&apos;s free ›
             </Link>

@@ -48,7 +48,7 @@ export default function BottomNav() {
   return (
     <nav
       aria-label="Main"
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-[#E5E0D8] bg-white pb-[env(safe-area-inset-bottom)] sm:hidden print:hidden"
+      className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-white pb-[env(safe-area-inset-bottom)] sm:hidden print:hidden"
     >
       <div className="mx-auto flex h-16 max-w-md items-stretch">
         {tabs.map((tab) => {
@@ -59,7 +59,7 @@ export default function BottomNav() {
               href={tab.href}
               aria-current={active ? "page" : undefined}
               className={`flex flex-1 flex-col items-center justify-center gap-0.5 text-[11px] font-medium transition-colors ${
-                active ? "text-primary" : "text-[#6f6e69]"
+                active ? "text-primary" : "text-faint"
               }`}
             >
               <span aria-hidden="true" className={`text-xl ${active ? "" : "grayscale opacity-70"}`}>

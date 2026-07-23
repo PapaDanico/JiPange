@@ -11,14 +11,14 @@ export default function ResumeToast() {
   return (
     <div
       data-testid="resume-toast"
-      className="mb-6 flex w-full max-w-md items-center justify-between gap-3 rounded-2xl border border-accent bg-[#FFF8EA] p-4 shadow-sm"
+      className="mb-6 flex w-full max-w-md items-center justify-between gap-3 rounded-2xl border border-accent bg-accent-soft p-4 shadow-sm"
     >
-      <p className="text-sm text-[#4B4238]">
+      <p className="text-sm text-ink-soft">
         🔄 Resume your custom financial roadmap where you left off (step {draft.step} of 6).
       </p>
       <Link
         href="/profile/full"
-        className="inline-flex h-10 shrink-0 items-center justify-center rounded-full bg-primary px-5 text-sm font-medium text-white transition-colors hover:bg-[#584a3e]"
+        className="inline-flex h-10 shrink-0 items-center justify-center rounded-full bg-primary px-5 text-sm font-medium text-white transition-colors hover:bg-primary-deep"
       >
         Resume
       </Link>

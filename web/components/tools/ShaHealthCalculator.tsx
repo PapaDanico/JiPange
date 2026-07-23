@@ -70,7 +70,7 @@ export default function ShaHealthCalculator() {
     <div className="space-y-4">
       {/* Employment type */}
       <div>
-        <p className="text-sm font-medium text-[#4B4238]">Employment type</p>
+        <p className="text-sm font-medium text-ink-soft">Employment type</p>
         <div className="mt-1 space-y-2">
           {EMPLOYMENT_OPTIONS.map((opt) => (
             <button
@@ -80,18 +80,18 @@ export default function ShaHealthCalculator() {
               aria-pressed={employmentType === opt.id}
               className={`w-full rounded-lg border px-4 py-2.5 text-left transition-colors ${
                 employmentType === opt.id
-                  ? "border-primary bg-[#F1ECE3]"
-                  : "border-[#E5E0D8] bg-white hover:bg-[#FAF8F5]"
+                  ? "border-primary bg-canvas"
+                  : "border-border bg-white hover:bg-[#FAF8F5]"
               }`}
             >
               <p
                 className={`text-sm font-medium ${
-                  employmentType === opt.id ? "text-primary" : "text-[#4B4238]"
+                  employmentType === opt.id ? "text-primary" : "text-ink-soft"
                 }`}
               >
                 {opt.label}
               </p>
-              <p className="text-xs text-[#6f6e69]">{opt.sub}</p>
+              <p className="text-xs text-faint">{opt.sub}</p>
             </button>
           ))}
         </div>
@@ -113,14 +113,14 @@ export default function ShaHealthCalculator() {
 
       {/* Family size */}
       <div>
-        <label htmlFor="family-size" className="block text-sm font-medium text-[#4B4238]">
+        <label htmlFor="family-size" className="block text-sm font-medium text-ink-soft">
           Who are you covering?
         </label>
         <select
           id="family-size"
           value={familySize}
           onChange={(e) => setFamilySize(e.target.value)}
-          className="mt-1 h-12 w-full rounded-lg border border-[#E5E0D8] bg-white px-4 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+          className="mt-1 h-12 w-full rounded-lg border border-border bg-white px-4 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
         >
           {FAMILY_OPTIONS.map((o) => (
             <option key={o.value} value={String(o.value)}>
@@ -131,12 +131,12 @@ export default function ShaHealthCalculator() {
       </div>
 
       {/* Private care toggle */}
-      <div className="flex items-center justify-between rounded-lg border border-[#E5E0D8] bg-white px-4 py-3">
+      <div className="flex items-center justify-between rounded-lg border border-border bg-white px-4 py-3">
         <div>
-          <p className="text-sm font-medium text-[#4B4238]">
+          <p className="text-sm font-medium text-ink-soft">
             I want to access private hospitals
           </p>
-          <p className="text-xs text-[#6f6e69]">
+          <p className="text-xs text-faint">
             SHA alone only covers accredited public facilities
           </p>
         </div>
@@ -171,8 +171,8 @@ export default function ShaHealthCalculator() {
           </div>
 
           {/* Coverage summary */}
-          <div className="rounded-2xl bg-[#E9F5EC] p-4">
-            <p className="text-xs font-semibold uppercase tracking-wider text-[#2D7D46]">
+          <div className="rounded-2xl bg-success-soft p-4">
+            <p className="text-xs font-semibold uppercase tracking-wider text-success">
               What SHA covers
             </p>
             <ul className="mt-2 space-y-1 text-xs text-[#1A4A28]">
@@ -186,8 +186,8 @@ export default function ShaHealthCalculator() {
           </div>
 
           {/* Gaps */}
-          <div className="rounded-2xl bg-[#FFF4DC] p-4">
-            <p className="text-xs font-semibold uppercase tracking-wider text-[#B45309]">
+          <div className="rounded-2xl bg-accent-wash p-4">
+            <p className="text-xs font-semibold uppercase tracking-wider text-warning">
               SHA gaps to plug with a top-up plan
             </p>
             <ul className="mt-2 space-y-1 text-xs text-[#6B3A0A]">

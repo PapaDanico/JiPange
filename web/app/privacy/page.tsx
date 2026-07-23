@@ -11,15 +11,15 @@ export default function PrivacyPage() {
     <div className="flex flex-1 flex-col items-center px-6 py-12">
       <div className="w-full max-w-2xl">
         <h1 className="text-2xl font-semibold text-primary">Privacy Policy</h1>
-        <p className="mt-1 text-sm text-[#4B4238]">Last updated: July 2026</p>
+        <p className="mt-1 text-sm text-ink-soft">Last updated: July 2026</p>
 
-        <div className="mt-4 rounded-2xl border border-[#CFE3CF] bg-[#f0f7f0] px-5 py-4 text-sm text-[#2b4a2b]">
+        <div className="mt-4 rounded-2xl border border-[#CFE3CF] bg-[#f0f7f0] px-5 py-4 text-sm text-success-deep">
           <strong>Short version:</strong> JiPange does not collect, store, or transmit any
           personal information. All calculations run in your browser. Anything you enter stays
           on your device only.
         </div>
 
-        <div className="mt-8 space-y-6 text-sm leading-relaxed text-[#4B4238]">
+        <div className="mt-8 space-y-6 text-sm leading-relaxed text-ink-soft">
           <section>
             <p>
               This policy explains JiPange&apos;s data practices, in line with Kenya&apos;s
@@ -181,7 +181,7 @@ export default function PrivacyPage() {
           </section>
         </div>
 
-        <p className="mt-8 text-xs text-[#6f6e69]">
+        <p className="mt-8 text-xs text-faint">
           Questions?{" "}
           <Link href="/about" className="underline hover:text-primary">
             Learn more about JiPange

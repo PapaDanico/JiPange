@@ -102,7 +102,7 @@ export default function JourneyWizard() {
   return (
     <div className="w-full max-w-md">
       {/* Privacy guard — prominent, at the very top of the funnel. */}
-      <div className="rounded-xl border border-[#CFE3CF] bg-[#f0f7f0] px-4 py-3 text-[13px] leading-relaxed text-[#2b4a2b]">
+      <div className="rounded-xl border border-[#CFE3CF] bg-[#f0f7f0] px-4 py-3 text-[13px] leading-relaxed text-success-deep">
         <span aria-hidden="true">🔒 </span>
         <strong>Privacy-First:</strong> JiPange is completely anonymous. We do not link your
         financial metrics to your legal identity, phone number, or bank accounts. Your data is
@@ -119,17 +119,17 @@ export default function JourneyWizard() {
                   i < step
                     ? "bg-success text-white"
                     : i === step
-                      ? "bg-accent text-[#171717]"
-                      : "border border-[#C9BFB2] text-[#6f6e69]"
+                      ? "bg-accent text-ink"
+                      : "border border-border-strong text-faint"
                 }`}
               >
                 {i + 1}
               </span>
-              {i < TOTAL_STEPS - 1 && <span className="h-px w-3 bg-[#C9BFB2]" aria-hidden="true" />}
+              {i < TOTAL_STEPS - 1 && <span className="h-px w-3 bg-border-strong" aria-hidden="true" />}
             </span>
           ))}
         </div>
-        <p className="mt-2 text-center text-xs font-medium text-[#4B4238]">
+        <p className="mt-2 text-center text-xs font-medium text-ink-soft">
           Question {step + 1} of {TOTAL_STEPS}
         </p>
       </div>
@@ -138,7 +138,7 @@ export default function JourneyWizard() {
         {question.title}
       </h2>
       {question.multi && (
-        <p className="mt-1 text-sm text-[#4B4238]">Tap all that apply, then continue.</p>
+        <p className="mt-1 text-sm text-ink-soft">Tap all that apply, then continue.</p>
       )}
 
       <div className="mt-4 space-y-3">
@@ -156,8 +156,8 @@ export default function JourneyWizard() {
               aria-pressed={selected}
               className={`flex min-h-[60px] w-full items-center gap-3 rounded-xl border px-4 py-3 text-left text-[15px] font-medium transition-colors ${
                 selected
-                  ? "border-accent bg-[#FFF8EA] text-primary"
-                  : "border-[#E5E0D8] bg-white text-[#4B4238] hover:bg-[#F1ECE3]"
+                  ? "border-accent bg-accent-soft text-primary"
+                  : "border-border bg-white text-ink-soft hover:bg-canvas"
               }`}
             >
               <span className="text-2xl" aria-hidden="true">
@@ -190,7 +190,7 @@ export default function JourneyWizard() {
               }
               setStep(prevStep);
             }}
-            className="h-[52px] rounded-lg border border-[#E5E0D8] bg-white px-6 text-base font-medium text-[#4B4238] transition-colors hover:bg-[#F1ECE3]"
+            className="h-[52px] rounded-lg border border-border bg-white px-6 text-base font-medium text-ink-soft transition-colors hover:bg-canvas"
           >
             ← Back
           </button>
@@ -200,7 +200,7 @@ export default function JourneyWizard() {
             type="button"
             onClick={confirmMulti}
             disabled={multiSelection.length === 0 || submitting}
-            className="min-h-[52px] flex-1 rounded-lg bg-primary text-base font-semibold text-white transition-colors hover:bg-[#584a3e] disabled:opacity-50"
+            className="min-h-[52px] flex-1 rounded-lg bg-primary text-base font-semibold text-white transition-colors hover:bg-primary-deep disabled:opacity-50"
           >
             {submitting ? "Building your dashboard..." : "Continue →"}
           </button>
@@ -208,10 +208,10 @@ export default function JourneyWizard() {
       </div>
 
       {submitting && !question.multi && (
-        <p className="mt-4 text-center text-sm text-[#4B4238]">Building your dashboard...</p>
+        <p className="mt-4 text-center text-sm text-ink-soft">Building your dashboard...</p>
       )}
 
-      <p className="mt-8 text-center text-xs text-[#6f6e69]">
+      <p className="mt-8 text-center text-xs text-faint">
         Just exploring?{" "}
         <Link href="/tools" className="font-medium text-primary underline">
           Try the free calculators

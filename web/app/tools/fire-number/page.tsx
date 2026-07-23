@@ -32,7 +32,7 @@ export default function FireNumberPage() {
       ]}
     >
       <FireNumberCalculator />
-      <div className="mt-6 rounded-2xl bg-[#F1ECE3] p-4 text-sm text-[#4B4238]">
+      <div className="mt-6 rounded-2xl bg-canvas p-4 text-sm text-ink-soft">
         <p className="font-semibold text-primary">Ready to build toward this number?</p>
         <p className="mt-1 text-xs">
           Use the{" "}

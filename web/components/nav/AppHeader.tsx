@@ -30,7 +30,7 @@ export default function AppHeader() {
   const underPath = (base: string) => pathname === base || pathname.startsWith(`${base}/`);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[#E5E0D8] bg-background/95 backdrop-blur print:hidden">
+    <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur print:hidden">
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4 sm:px-6">
         <Link href="/" className="flex items-center" aria-label="JiPange home">
           <Image
@@ -53,7 +53,7 @@ export default function AppHeader() {
               className={`hidden text-sm font-medium sm:block ${
                 underPath(link.href)
                   ? "text-primary underline underline-offset-4"
-                  : "text-[#4B4238] hover:text-primary"
+                  : "text-ink-soft hover:text-primary"
               }`}
             >
               {link.label}
@@ -61,7 +61,7 @@ export default function AppHeader() {
           ))}
           <Link
             href={cta.href}
-            className="inline-flex h-9 items-center justify-center rounded-full bg-accent px-4 text-sm font-medium text-[#171717] transition-colors hover:bg-[#d6961f]"
+            className="inline-flex h-9 items-center justify-center rounded-full bg-accent px-4 text-sm font-medium text-ink transition-colors hover:bg-accent-deep"
           >
             {cta.label}
           </Link>

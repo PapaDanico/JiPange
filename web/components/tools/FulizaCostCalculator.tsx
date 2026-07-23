@@ -77,7 +77,7 @@ export default function FulizaCostCalculator() {
               sublabel={`${Math.round((result.totalFee * 12 / Number(amount)) * 100)}% of your ${formatKES(Number(amount))} borrowing need — just in fees. Build an emergency float in an MMF and you'll never pay this again.`}
               tone="danger"
             />
-            <p className="text-xs text-[#4B4238]">
+            <p className="text-xs text-ink-soft">
               Fuliza and similar overdraft products are emergency tools, not personal finance tools —
               rates change periodically, so verify the current rate in your M-PESA app before
               relying on this figure.

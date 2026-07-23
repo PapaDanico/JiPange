@@ -101,7 +101,7 @@ export default function SaccoVsBankCalculator() {
                     ~{Math.round(product.apr * 100)}% APR
                   </p>
                 </div>
-                <div className="mt-2 grid grid-cols-2 gap-2 text-xs text-[#4B4238]">
+                <div className="mt-2 grid grid-cols-2 gap-2 text-xs text-ink-soft">
                   <p>
                     Monthly payment:{" "}
                     <span className="font-medium text-primary">
@@ -114,19 +114,19 @@ export default function SaccoVsBankCalculator() {
                   </p>
                 </div>
                 {product.estimated && (
-                  <p className="mt-1 text-xs text-[#4B4238]">Estimated — check app for current rate.</p>
+                  <p className="mt-1 text-xs text-ink-soft">Estimated — check app for current rate.</p>
                 )}
               </div>
             ))}
           </div>
 
-          <p className="text-xs text-[#4B4238]">
+          <p className="text-xs text-ink-soft">
             Fuliza and M-Shwari are emergency tools, not personal finance tools — their rows above
             are scaled to the same term for comparison only and will cost far more than shown if
             repeatedly rolled over.
           </p>
 
-          <details className="rounded-2xl bg-white p-4 shadow-sm text-sm text-[#4B4238]">
+          <details className="rounded-2xl bg-white p-4 shadow-sm text-sm text-ink-soft">
             <summary className="cursor-pointer font-semibold text-primary">How to join a SACCO</summary>
             <ol className="mt-2 list-decimal space-y-1 pl-5">
               <li>Find a SACCO open to you — many are tied to your employer, profession, or county (e.g. teachers, boda boda riders, matatu saccos).</li>

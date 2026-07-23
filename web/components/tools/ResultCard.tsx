@@ -33,9 +33,9 @@ export default function ResultCard({
   }
 
   return (
-    <div className="break-inside-avoid rounded-2xl bg-white p-4 shadow-sm sm:p-6 print:rounded-lg print:border print:border-[#E5E0D8] print:shadow-none">
+    <div className="break-inside-avoid rounded-2xl bg-white p-4 shadow-sm sm:p-6 print:rounded-lg print:border print:border-border print:shadow-none">
       <div className="flex items-start justify-between gap-2">
-        <p className="text-sm text-[#4B4238]">{label}</p>
+        <p className="text-sm text-ink-soft">{label}</p>
         <button
           type="button"
           onClick={handleCopy}
@@ -64,8 +64,8 @@ export default function ResultCard({
           )}
         </button>
       </div>
-      <p className={`mt-1 break-words text-2xl font-semibold sm:text-3xl ${toneClass}`}>{value}</p>
-      {sublabel && <p className="mt-1 text-xs text-[#4B4238]">{sublabel}</p>}
+      <p className={`mt-1 break-words font-display text-2xl font-semibold tabular-nums sm:text-3xl ${toneClass}`}>{value}</p>
+      {sublabel && <p className="mt-1 text-xs text-ink-soft">{sublabel}</p>}
     </div>
   );
 }

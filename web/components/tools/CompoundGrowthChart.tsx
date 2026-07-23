@@ -31,9 +31,9 @@ export default function CompoundGrowthChart({ data }: { data: GrowthDataPoint[] 
     <div className="rounded-2xl bg-white p-4 shadow-sm" role="img" aria-label="Stacked area chart showing contributed amount and investment growth over time">
       <div className="mb-3 flex items-center justify-between">
         <p className="text-sm font-semibold text-primary">Growth over time</p>
-        <div className="flex items-center gap-3 text-[10px] text-[#4B4238]">
+        <div className="flex items-center gap-3 text-[10px] text-ink-soft">
           <span className="flex items-center gap-1">
-            <span className="inline-block h-2.5 w-2.5 rounded-sm bg-[#F1ECE3] border border-[#E5E0D8]" />
+            <span className="inline-block h-2.5 w-2.5 rounded-sm bg-canvas border border-border" />
             Contributed
           </span>
           <span className="flex items-center gap-1">

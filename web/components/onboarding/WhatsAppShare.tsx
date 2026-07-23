@@ -59,7 +59,7 @@ export default function WhatsAppShare(props: WhatsAppShareProps) {
   }
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-10 border-t border-[#E5E0D8] bg-white p-4">
+    <div className="fixed inset-x-0 bottom-0 z-10 border-t border-border bg-white p-4">
       <div className="mx-auto flex max-w-md gap-3">
         <a
           href={whatsappUrl}
@@ -71,7 +71,7 @@ export default function WhatsAppShare(props: WhatsAppShareProps) {
         </a>
         <button
           onClick={handleCopy}
-          className="h-12 rounded-full border border-[#E5E0D8] px-4 text-sm font-medium text-[#4B4238]"
+          className="h-12 rounded-full border border-border px-4 text-sm font-medium text-ink-soft"
         >
           {copied ? "Copied!" : "Copy"}
         </button>

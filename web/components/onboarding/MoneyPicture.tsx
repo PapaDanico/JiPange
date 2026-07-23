@@ -81,7 +81,7 @@ export default function MoneyPicture() {
       : (split502525 ? split502525.savingsEmergency + split502525.investments : 0);
 
   if (!profile || !financials || !retirement || !split502525) {
-    return <p className="text-center text-[#4B4238]">Loading your Pesa Picture...</p>;
+    return <p className="text-center text-ink-soft">Loading your Pesa Picture...</p>;
   }
 
   const chartData =
@@ -104,19 +104,19 @@ export default function MoneyPicture() {
   return (
     <div className="w-full max-w-2xl space-y-8">
       <div className="rounded-2xl bg-white p-6 shadow-sm">
-        <p className="text-sm text-[#4B4238]">Your monthly take-home pay</p>
-        <p className="mt-1 text-3xl font-semibold text-primary">
+        <p className="text-sm text-ink-soft">Your monthly take-home pay</p>
+        <p className="mt-1 font-display text-3xl font-semibold tabular-nums text-primary">
           <AnimatedKES target={financials.netMonthly} />
         </p>
       </div>
 
-      <div className="flex rounded-full bg-[#F1ECE3] p-1 text-sm font-medium">
+      <div className="flex rounded-full bg-canvas p-1 text-sm font-medium">
         <button
           type="button"
           onClick={() => setModel("kenya")}
           aria-pressed={model === "kenya"}
           className={`flex-1 rounded-full py-2 transition-colors ${
-            model === "kenya" ? "bg-white text-primary shadow-sm" : "text-[#4B4238]"
+            model === "kenya" ? "bg-white text-primary shadow-sm" : "text-ink-soft"
           }`}
         >
           Kenya-calibrated
@@ -126,7 +126,7 @@ export default function MoneyPicture() {
           onClick={() => setModel("fiftyTwentyFiveTwentyFive")}
           aria-pressed={model === "fiftyTwentyFiveTwentyFive"}
           className={`flex-1 rounded-full py-2 transition-colors ${
-            model === "fiftyTwentyFiveTwentyFive" ? "bg-white text-primary shadow-sm" : "text-[#4B4238]"
+            model === "fiftyTwentyFiveTwentyFive" ? "bg-white text-primary shadow-sm" : "text-ink-soft"
           }`}
         >
           50/25/25
@@ -134,7 +134,7 @@ export default function MoneyPicture() {
       </div>
 
       {model === "fiftyTwentyFiveTwentyFive" && (
-        <p className="-mt-4 text-xs text-[#4B4238]">
+        <p className="-mt-4 text-xs text-ink-soft">
           A simpler 3-way split: 50% for daily living, 25% for a stability/emergency fund, 25%
           for investing in future projects.
         </p>
@@ -170,11 +170,11 @@ export default function MoneyPicture() {
       </div>
 
       {model === "kenya" && (
-        <div className="rounded-2xl border-2 border-accent bg-[#FFF8EA] p-6">
-          <h3 className="text-sm font-semibold uppercase tracking-wide text-[#946213]">
+        <div className="rounded-2xl border-2 border-accent bg-accent-soft p-6">
+          <h3 className="text-sm font-semibold uppercase tracking-wide text-accent-ink">
             What most apps ignore
           </h3>
-          <p className="mt-2 text-sm text-[#4B4238]">
+          <p className="mt-2 text-sm text-ink-soft">
             {formatKES(financials.budgetSplit.socialObligations)}/month set aside for your real
             Kenyan obligations — Harambee, tithe, upcountry family support, and Chama
             contributions.
@@ -191,7 +191,7 @@ export default function MoneyPicture() {
           <span className="ml-2 text-base font-normal">({(growthRate * 100).toFixed(0)}%)</span>
         </p>
         {model === "fiftyTwentyFiveTwentyFive" && (
-          <p className="mt-1 text-xs text-[#4B4238]">
+          <p className="mt-1 text-xs text-ink-soft">
             {formatKES(split502525.savingsEmergency)} stability/emergency fund +{" "}
             {formatKES(split502525.investments)} investments
           </p>
@@ -203,20 +203,20 @@ export default function MoneyPicture() {
       <div className="rounded-2xl bg-white p-6 shadow-sm">
         <h2 className="text-base font-semibold text-primary">Wealth at age 60</h2>
         <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div className="rounded-xl bg-[#FBEAEA] p-4">
-            <p className="text-xs text-[#4B4238]">Current trajectory</p>
+          <div className="rounded-xl bg-danger-soft p-4">
+            <p className="text-xs text-ink-soft">Current trajectory</p>
             <p className="mt-1 whitespace-nowrap text-lg font-semibold text-danger">
               <AnimatedKES target={retirement.currentTrajectory.nominalWealth} />
             </p>
           </div>
-          <div className="rounded-xl bg-[#E9F5EC] p-4">
-            <p className="text-xs text-[#4B4238]">With a plan</p>
+          <div className="rounded-xl bg-success-soft p-4">
+            <p className="text-xs text-ink-soft">With a plan</p>
             <p className="mt-1 whitespace-nowrap text-lg font-semibold text-success">
               <AnimatedKES target={retirement.withPlan.nominalWealth} />
             </p>
           </div>
         </div>
-        <p className="mt-3 text-xs text-[#4B4238]">
+        <p className="mt-3 text-xs text-ink-soft">
           Assumes a {(growthRate * 100).toFixed(0)}% savings rate at 10% annual return over{" "}
           {retirement.yearsToRetirement} years. Figures are nominal KES — inflation will reduce
           real purchasing power.
@@ -225,7 +225,7 @@ export default function MoneyPicture() {
 
       <Link
         href="/plan"
-        className="flex h-12 w-full items-center justify-center rounded-full bg-primary text-base font-medium text-white transition-colors hover:bg-[#584a3e]"
+        className="flex h-12 w-full items-center justify-center rounded-full bg-primary text-base font-medium text-white transition-colors hover:bg-primary-deep"
       >
         Continue to your action plan →
       </Link>

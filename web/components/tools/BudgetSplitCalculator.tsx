@@ -72,7 +72,7 @@ export default function BudgetSplitCalculator() {
               investments={result.split.investments}
             />
 
-            <p className="text-xs text-[#4B4238]">
+            <p className="text-xs text-ink-soft">
               A simpler alternative to the Kenya-calibrated 50/15/15/20 split used elsewhere in
               JiPange: 50% for daily living, 25% for a stability/emergency fund, 25% for investing
               in future projects.

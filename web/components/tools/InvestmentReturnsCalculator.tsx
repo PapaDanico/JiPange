@@ -120,7 +120,7 @@ export default function InvestmentReturnsCalculator() {
       />
       <div>
         <div className="flex items-center justify-between">
-          <label htmlFor="monthly-slider" className="text-xs text-[#4B4238]">
+          <label htmlFor="monthly-slider" className="text-xs text-ink-soft">
             Drag to explore instantly
           </label>
           <span className="text-sm font-semibold text-primary">
@@ -155,8 +155,8 @@ export default function InvestmentReturnsCalculator() {
             aria-pressed={annualReturn === preset.value}
             className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
               annualReturn === preset.value
-                ? "border-accent bg-accent text-[#171717]"
-                : "border-[#E5E0D8] bg-white text-[#4B4238] hover:bg-[#F1ECE3]"
+                ? "border-accent bg-accent text-ink"
+                : "border-border bg-white text-ink-soft hover:bg-canvas"
             }`}
           >
             {preset.label}
@@ -173,7 +173,7 @@ export default function InvestmentReturnsCalculator() {
 
       <div>
         <div className="flex items-center justify-between">
-          <label htmlFor="stepUp" className="text-sm font-medium text-[#4B4238]">
+          <label htmlFor="stepUp" className="text-sm font-medium text-ink-soft">
             Increase contribution each year (as income grows)
           </label>
           <span className="text-sm font-semibold text-primary">+{stepUp}%/yr</span>

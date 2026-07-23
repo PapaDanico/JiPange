@@ -21,13 +21,13 @@ export default function ToolInsights({ insights }: { insights: [Insight, Insight
           <p className="mb-1 text-lg leading-none">{ins.icon}</p>
           <p
             className={`text-2xl font-black leading-none tracking-tighter ${
-              ins.tone === "caution" ? "text-[#9B2C1E]" : "text-[#1A5C28]"
+              ins.tone === "caution" ? "text-danger-deep" : "text-[#1A5C28]"
             }`}
             style={{ fontVariantNumeric: "tabular-nums" }}
           >
             {ins.stat}
           </p>
-          <p className="mt-1 text-[0.8125rem] leading-snug text-[#4B4238]">{ins.label}</p>
+          <p className="mt-1 text-[0.8125rem] leading-snug text-ink-soft">{ins.label}</p>
           {ins.source && (
             <p className="mt-2 text-[0.6875rem] italic text-muted">{ins.source}</p>
           )}

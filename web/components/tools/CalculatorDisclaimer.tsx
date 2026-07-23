@@ -1,6 +1,6 @@
 export default function CalculatorDisclaimer({ extraNotes }: { extraNotes?: string[] }) {
   return (
-    <div className="space-y-1 text-xs text-[#4B4238]">
+    <div className="space-y-1 text-xs text-ink-soft">
       <p>Rates current as of July 2026.</p>
       <p>
         Sources: PAYE bands — KRA Finance Act 2025/26 · NSSF — NSSF Act 2013 (Year 4, 2026) ·

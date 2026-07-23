@@ -57,7 +57,7 @@ export default function BudgetSplitChart({
           </PieChart>
         </ResponsiveContainer>
       </div>
-      <div className="flex flex-wrap justify-center gap-3 text-[11px] text-[#4B4238]">
+      <div className="flex flex-wrap justify-center gap-3 text-[11px] text-ink-soft">
         {SLICES.map((s) => (
           <span key={s.key} className="flex items-center gap-1">
             <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ background: s.color }} />

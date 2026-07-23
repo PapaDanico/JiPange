@@ -37,7 +37,7 @@ export default function DebtPayoffChart({ timeline, totalBalance }: Props) {
       className="rounded-2xl bg-white p-4 shadow-sm"
     >
       <p className="text-sm font-semibold text-primary">Debt payoff curve</p>
-      <p className="mt-0.5 text-xs text-[#4B4238]">
+      <p className="mt-0.5 text-xs text-ink-soft">
         Every extra payment shrinks this from the right.
       </p>
       <div className="mt-3 h-44">

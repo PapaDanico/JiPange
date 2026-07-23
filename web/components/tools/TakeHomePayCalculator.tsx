@@ -156,7 +156,7 @@ export default function TakeHomePayCalculator() {
             onChange={setInsurancePremium}
             placeholder="0"
           />
-          <p className="text-xs text-[#4B4238]">
+          <p className="text-xs text-ink-soft">
             Pension and mortgage relief reduce your taxable pay up to the KRA-capped limits.
             Insurance relief is 15% of premiums paid, up to Ksh 5,000/month. These reliefs lower
             your PAYE if declared to your employer — this calculator doesn&apos;t separately deduct
@@ -172,16 +172,16 @@ export default function TakeHomePayCalculator() {
           <ResultCard label="Take-home pay" value={formatKES(result.netMonthly)} tone="success" />
 
           {/* Salary explorer — drag to preview take-home at any salary level */}
-          <div className="rounded-2xl bg-[#F1ECE3] p-5 print:hidden">
+          <div className="rounded-2xl bg-canvas p-5 print:hidden">
             <p className="text-sm font-semibold text-primary">Salary explorer</p>
-            <p className="mt-0.5 text-xs text-[#4B4238]">
+            <p className="mt-0.5 text-xs text-ink-soft">
               Drag to see your take-home at any salary
             </p>
             <div
               aria-live="polite"
               className="mt-3 flex items-baseline justify-between"
             >
-              <span className="text-sm text-[#4B4238]">
+              <span className="text-sm text-ink-soft">
                 KES {whatIfGrossValue.toLocaleString("en-KE")} gross
               </span>
               <span className="text-base font-semibold text-success">
@@ -235,7 +235,7 @@ export default function TakeHomePayCalculator() {
                 value={`(${formatKES(result.mortgageRelief)})`}
               />
             )}
-            <hr className="my-2 border-[#E5E0D8]" />
+            <hr className="my-2 border-border" />
             <DeductionRow
               label="Taxable pay"
               value={formatKES(result.taxablePay)}
@@ -258,7 +258,7 @@ export default function TakeHomePayCalculator() {
               />
             )}
             <DeductionRow label="Net PAYE" value={`(${formatKES(result.paye)})`} />
-            <hr className="my-2 border-[#E5E0D8]" />
+            <hr className="my-2 border-border" />
             <DeductionRow label="Net take-home pay" value={formatKES(result.netMonthly)} bold />
           </div>
 
@@ -266,7 +266,7 @@ export default function TakeHomePayCalculator() {
             <p className="text-sm font-semibold text-primary">Employer also pays</p>
             <DeductionRow label="NSSF match" value={formatKES(result.employerCost.nssf)} />
             <DeductionRow label="Housing Levy match" value={formatKES(result.employerCost.ahl)} />
-            <hr className="my-2 border-[#E5E0D8]" />
+            <hr className="my-2 border-border" />
             <DeductionRow
               label="Your total cost to employer"
               value={formatKES(result.employerCost.total)}
@@ -282,8 +282,8 @@ export default function TakeHomePayCalculator() {
             ahl={result.ahl}
           />
 
-          <div className="rounded-2xl bg-[#F1ECE3] p-6">
-            <p className="text-sm text-[#4B4238]">
+          <div className="rounded-2xl bg-canvas p-6">
+            <p className="text-sm text-ink-soft">
               You take home <strong>{formatKES(result.netMonthly)}</strong> of your{" "}
               <strong>{formatKES(result.grossMonthly)}</strong> gross salary (
               {Math.round((result.netMonthly / result.grossMonthly) * 100)}%). Your employer
@@ -317,12 +317,12 @@ export default function TakeHomePayCalculator() {
               <p className="text-sm font-semibold text-primary">
                 NSSF Year 3 (2025) vs Year 4 (2026)
               </p>
-              <p className="mt-1 text-xs text-[#4B4238]">
+              <p className="mt-1 text-xs text-ink-soft">
                 The NSSF Act 2013&apos;s phased rollout raised the earnings limits in early 2026
                 (Year 4) — this shows how that change alone affects your take-home pay, holding
                 your gross salary and any reliefs above constant.
               </p>
-              <hr className="my-2 border-[#E5E0D8]" />
+              <hr className="my-2 border-border" />
               <DeductionRow
                 label="NSSF deduction — 2025 rates"
                 value={formatKES(priorYearResult.nssf.total)}
@@ -332,7 +332,7 @@ export default function TakeHomePayCalculator() {
                 value={formatKES(result.nssf.total)}
                 bold
               />
-              <hr className="my-2 border-[#E5E0D8]" />
+              <hr className="my-2 border-border" />
               <DeductionRow
                 label="Take-home pay — 2025 rates"
                 value={formatKES(priorYearResult.netMonthly)}
@@ -342,7 +342,7 @@ export default function TakeHomePayCalculator() {
                 value={formatKES(result.netMonthly)}
                 bold
               />
-              <p className="mt-2 text-xs text-[#4B4238]">
+              <p className="mt-2 text-xs text-ink-soft">
                 {result.netMonthly < priorYearResult.netMonthly
                   ? `Your take-home pay is ${formatKES(priorYearResult.netMonthly - result.netMonthly)}/month lower under the current rates.`
                   : `Your take-home pay is ${formatKES(result.netMonthly - priorYearResult.netMonthly)}/month higher under the current rates.`}
@@ -359,7 +359,7 @@ export default function TakeHomePayCalculator() {
           </div>
 
           <div className="hidden print:block">
-            <p className="mt-4 text-xs text-[#4B4238]">
+            <p className="mt-4 text-xs text-ink-soft">
               Estimate only, not a payslip or licensed financial advice — rates current as of July
               2026. Generated at jipangefinance.org/tools/take-home-pay
             </p>
@@ -374,7 +374,7 @@ export default function TakeHomePayCalculator() {
           <button
             type="button"
             onClick={() => window.print()}
-            className="h-11 w-full rounded-full border border-[#E5E0D8] text-sm font-medium text-[#4B4238] print:hidden"
+            className="h-11 w-full rounded-full border border-border text-sm font-medium text-ink-soft print:hidden"
           >
             Print / Save as PDF
           </button>

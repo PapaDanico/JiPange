@@ -23,7 +23,7 @@ export default function PlanView() {
       {(hasProfile || !answers) && (
         <div>
           {answers && hasProfile && (
-            <div className="mb-4 border-t border-[#E5E0D8] pt-8">
+            <div className="mb-4 border-t border-border pt-8">
               <div className="flex items-center justify-between">
                 <h2 className="text-lg font-semibold text-primary">Your AI action plan</h2>
                 <Link

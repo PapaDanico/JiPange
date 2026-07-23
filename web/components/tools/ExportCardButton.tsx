@@ -70,7 +70,7 @@ export default function ExportCardButton({
       type="button"
       onClick={handleExport}
       disabled={loading}
-      className="flex w-full items-center justify-center gap-2 rounded-2xl border border-[#E5E0D8] bg-white px-4 py-3 text-sm font-medium text-[#4B4238] shadow-sm transition-colors hover:bg-[#F1ECE3] disabled:opacity-50 print:hidden"
+      className="flex w-full items-center justify-center gap-2 rounded-2xl border border-border bg-white px-4 py-3 text-sm font-medium text-ink-soft shadow-sm transition-colors hover:bg-canvas disabled:opacity-50 print:hidden"
     >
       {loading ? (
         "Generating image…"

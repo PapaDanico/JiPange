@@ -84,14 +84,14 @@ export default function ToolsIndexList({ groups }: { groups: ToolGroup[] }) {
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search calculators…"
             aria-label="Search calculators"
-            className="h-12 w-full rounded-lg border border-[#E5E0D8] bg-white pl-10 pr-10 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+            className="h-12 w-full rounded-lg border border-border bg-white pl-10 pr-10 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
           />
           {query && (
             <button
               type="button"
               onClick={clearSearch}
               aria-label="Clear search"
-              className="absolute right-3 top-1/2 -translate-y-1/2 flex h-5 w-5 items-center justify-center rounded-full bg-[#E5E0D8] text-xs text-[#4B4238] hover:bg-[#D4CEC5]"
+              className="absolute right-3 top-1/2 -translate-y-1/2 flex h-5 w-5 items-center justify-center rounded-full bg-border text-xs text-ink-soft hover:bg-[#D4CEC5]"
             >
               ✕
             </button>
@@ -109,7 +109,7 @@ export default function ToolsIndexList({ groups }: { groups: ToolGroup[] }) {
               className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
                 activeCategory === label
                   ? "border-primary bg-primary text-white"
-                  : "border-[#E5E0D8] bg-white text-[#4B4238] hover:bg-[#F1ECE3]"
+                  : "border-border bg-white text-ink-soft hover:bg-canvas"
               }`}
             >
               {label}
@@ -142,7 +142,7 @@ export default function ToolsIndexList({ groups }: { groups: ToolGroup[] }) {
       <div className="space-y-8">
         {filteredGroups.map((group) => (
           <div key={group.label}>
-            <h2 className="mb-3 text-xs font-semibold uppercase tracking-wide text-[#4B4238]">
+            <h2 className="mb-3 text-xs font-semibold uppercase tracking-wide text-ink-soft">
               {group.label}
             </h2>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -157,12 +157,12 @@ export default function ToolsIndexList({ groups }: { groups: ToolGroup[] }) {
                     <span className="flex items-center gap-2">
                       <span className="block text-sm font-semibold text-primary">{calc.title}</span>
                       {calc.isNew && (
-                        <span className="rounded-full bg-accent px-2 py-0.5 text-[10px] font-semibold uppercase text-[#171717]">
+                        <span className="rounded-full bg-accent px-2 py-0.5 text-[10px] font-semibold uppercase text-ink">
                           New
                         </span>
                       )}
                     </span>
-                    <span className="mt-1 block text-xs leading-relaxed text-[#4B4238]">{calc.description}</span>
+                    <span className="mt-1 block text-xs leading-relaxed text-ink-soft">{calc.description}</span>
                   </span>
                   <span className="text-primary transition-transform group-hover:translate-x-0.5 lg:self-end">→</span>
                 </Link>

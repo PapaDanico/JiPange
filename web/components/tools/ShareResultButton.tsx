@@ -36,7 +36,7 @@ export default function ShareResultButton({ message }: { message: string }) {
         type="button"
         onClick={handleCopy}
         aria-live="polite"
-        className="h-11 rounded-full border border-[#E5E0D8] px-4 text-sm font-medium text-[#4B4238]"
+        className="h-11 rounded-full border border-border px-4 text-sm font-medium text-ink-soft"
       >
         {copied ? "Copied!" : "Copy"}
       </button>

@@ -12,9 +12,9 @@ export default function AboutPage() {
     <div className="flex flex-1 flex-col items-center px-6 py-12">
       <div className="w-full max-w-2xl">
         <h1 className="text-2xl font-semibold text-primary">About JiPange</h1>
-        <p className="mt-1 text-sm text-[#4B4238]">Built in Nairobi. Free forever.</p>
+        <p className="mt-1 text-sm text-ink-soft">Built in Nairobi. Free forever.</p>
 
-        <div className="mt-10 space-y-10 text-sm leading-relaxed text-[#4B4238]">
+        <div className="mt-10 space-y-10 text-sm leading-relaxed text-ink-soft">
           <section>
             <h2 className="text-base font-semibold text-primary">Why we built this</h2>
             <p className="mt-2">
@@ -109,22 +109,22 @@ export default function AboutPage() {
           </section>
 
           <section className="rounded-2xl border border-[#CFE3CF] bg-[#f0f7f0] px-5 py-5">
-            <h2 className="text-base font-semibold text-[#2b4a2b]">
+            <h2 className="text-base font-semibold text-success-deep">
               <span aria-hidden="true">🔒 </span>Privacy by design
             </h2>
-            <p className="mt-2 text-[#2b4a2b]">
+            <p className="mt-2 text-success-deep">
               JiPange is completely anonymous. Your calculations run in your browser. Any
               profile data you enter stays in your browser&apos;s local storage — never on our
               servers. Clear your browser data and it&apos;s gone, with nothing held anywhere
               else.
             </p>
-            <p className="mt-2 text-[#2b4a2b]">
+            <p className="mt-2 text-success-deep">
               The only time data touches a server is the AI-powered journey: anonymous answers
               (no name, no phone, no ID) are sent to generate your action plan. That&apos;s
               the full extent of our data footprint.
             </p>
             <p className="mt-2">
-              <Link href="/privacy" className="font-medium text-[#2b4a2b] underline">
+              <Link href="/privacy" className="font-medium text-success-deep underline">
                 Read our full privacy policy →
               </Link>
             </p>
@@ -167,13 +167,13 @@ export default function AboutPage() {
           <div className="flex flex-col gap-3 sm:flex-row">
             <Link
               href="/tools"
-              className="flex h-12 items-center justify-center rounded-full bg-primary px-6 text-sm font-semibold text-white transition-colors hover:bg-[#584a3e]"
+              className="flex h-12 items-center justify-center rounded-full bg-primary px-6 text-sm font-semibold text-white transition-colors hover:bg-primary-deep"
             >
               Explore the calculators →
             </Link>
             <Link
               href="/profile"
-              className="flex h-12 items-center justify-center rounded-full border border-primary px-6 text-sm font-semibold text-primary transition-colors hover:bg-[#F1ECE3]"
+              className="flex h-12 items-center justify-center rounded-full border border-primary px-6 text-sm font-semibold text-primary transition-colors hover:bg-canvas"
             >
               Start my 5-question journey
             </Link>

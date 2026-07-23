@@ -107,11 +107,11 @@ export default function DebtEscapeCalculator() {
     <div className="space-y-5">
       {/* Loans */}
       <div className="space-y-3">
-        <p className="text-sm font-medium text-[#4B4238]">Your active mobile loans</p>
+        <p className="text-sm font-medium text-ink-soft">Your active mobile loans</p>
         {loans.map((loan, i) => (
           <div
             key={loan.id}
-            className="rounded-xl border border-[#E5E0D8] bg-white p-3.5 space-y-3"
+            className="rounded-xl border border-border bg-white p-3.5 space-y-3"
           >
             <div className="flex items-center justify-between gap-2">
               <span className="text-xs font-semibold text-primary">Loan {i + 1}</span>
@@ -131,7 +131,7 @@ export default function DebtEscapeCalculator() {
             <div>
               <label
                 htmlFor={`lender-${loan.id}`}
-                className="block text-sm font-medium text-[#4B4238]"
+                className="block text-sm font-medium text-ink-soft"
               >
                 Lender
               </label>
@@ -142,7 +142,7 @@ export default function DebtEscapeCalculator() {
                 value={loan.name}
                 onChange={(e) => setLoanName(loan.id, e.target.value)}
                 placeholder="e.g. Fuliza M-PESA"
-                className="mt-1 h-12 w-full rounded-lg border border-[#E5E0D8] bg-white px-4 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                className="mt-1 h-12 w-full rounded-lg border border-border bg-white px-4 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
               />
               <datalist id={`presets-${loan.id}`}>
                 {PRESET_LENDERS.map((p) => (
@@ -171,7 +171,7 @@ export default function DebtEscapeCalculator() {
               />
             </div>
             {loan.rate && Number(loan.rate) > 0 && (
-              <p className="text-[11px] text-[#6f6e69]">
+              <p className="text-[11px] text-faint">
                 ≈ {Math.round((Math.pow(1 + Number(loan.rate) / 100, 12) - 1) * 100)}% effective APR — verify the current rate in
                 your lender&apos;s app.
               </p>
@@ -183,7 +183,7 @@ export default function DebtEscapeCalculator() {
           <button
             type="button"
             onClick={addLoan}
-            className="flex items-center gap-1.5 text-sm font-medium text-primary underline underline-offset-2 hover:text-[#4B4238]"
+            className="flex items-center gap-1.5 text-sm font-medium text-primary underline underline-offset-2 hover:text-ink-soft"
           >
             + Add another loan
           </button>
@@ -209,7 +209,7 @@ export default function DebtEscapeCalculator() {
       )}
 
       {horizonExceeded && (
-        <div className="rounded-xl border border-[#B45309] bg-[#FFF4DC] p-3 text-sm text-[#6B3A0A]">
+        <div className="rounded-xl border border-warning bg-accent-wash p-3 text-sm text-[#6B3A0A]">
           At this budget, clearing all loans would take more than 10 years. Try increasing
           your monthly repayment or reducing the outstanding balances first.
         </div>
@@ -257,11 +257,11 @@ export default function DebtEscapeCalculator() {
             <p className="text-sm font-semibold text-primary">
               Avalanche payoff order (highest rate first)
             </p>
-            <p className="mt-0.5 text-xs text-[#6f6e69]">
+            <p className="mt-0.5 text-xs text-faint">
               Pay minimums on all loans. Pour every spare shilling into Loan #1 until
               it&apos;s gone, then roll that payment to Loan #2.
             </p>
-            <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-[#FFF4DC] px-2.5 py-1 text-[11px] font-medium text-[#946213]">
+            <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-accent-wash px-2.5 py-1 text-[11px] font-medium text-accent-ink">
               💡 Ranked by effective cost — your priciest debt (often Fuliza) clears first, saving
               the most interest
             </span>
@@ -269,14 +269,14 @@ export default function DebtEscapeCalculator() {
               {result.loans.map((loan) => (
                 <div
                   key={loan.id}
-                  className="flex items-center gap-3 rounded-lg border border-[#E5E0D8] p-2.5"
+                  className="flex items-center gap-3 rounded-lg border border-border p-2.5"
                 >
                   <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-white">
                     {loan.avalancheRank}
                   </span>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-primary truncate">{loan.name}</p>
-                    <p className="text-xs text-[#6f6e69]">
+                    <p className="text-xs text-faint">
                       {formatKES(loan.originalBalance)} @ {loan.monthlyRatePct}%/month
                       {" · "}cleared month {loan.clearedAtMonth}
                     </p>
@@ -285,7 +285,7 @@ export default function DebtEscapeCalculator() {
                     <p className="text-xs font-semibold text-danger">
                       {loan.aprPct}% APR
                     </p>
-                    <p className="text-[11px] text-[#6f6e69]">
+                    <p className="text-[11px] text-faint">
                       {formatKES(loan.totalInterestPaid)} total interest
                     </p>
                   </div>

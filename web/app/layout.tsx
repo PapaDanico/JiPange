@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { Figtree, Source_Serif_4 } from "next/font/google";
 import Footer from "@/components/Footer";
 import AppHeader from "@/components/nav/AppHeader";
 import BottomNav from "@/components/nav/BottomNav";
@@ -26,15 +27,30 @@ export const viewport: Viewport = {
   themeColor: "#6B5B4D",
 };
 
+// Signature pairing: a Tiempos-class serif for display type over a clean
+// humanist sans for UI. Self-hosted by next/font (zero external requests,
+// size-adjusted fallbacks against CLS); globals.css maps the variables to
+// --font-sans / --font-display.
+const figtree = Figtree({
+  subsets: ["latin"],
+  variable: "--font-figtree",
+  display: "swap",
+});
+const sourceSerif = Source_Serif_4({
+  subsets: ["latin"],
+  variable: "--font-source-serif",
+  display: "swap",
+});
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full">
+    <html lang="en" className={`h-full ${figtree.variable} ${sourceSerif.variable}`}>
       {/* pb-16 clears the fixed mobile bottom nav; sm:pb-0 removes it where the bar is hidden. */}
-      <body className="min-h-full flex flex-col bg-background pb-16 text-[#171717] antialiased sm:pb-0 print:pb-0">
+      <body className="min-h-full flex flex-col bg-background pb-16 font-sans text-ink antialiased sm:pb-0 print:pb-0">
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-primary focus:px-4 focus:py-2 focus:text-sm focus:text-white"

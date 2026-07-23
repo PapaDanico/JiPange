@@ -26,7 +26,7 @@ export function KplcOptimizer() {
             className={`rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
               active === b
                 ? "border-primary bg-primary text-white"
-                : "border-[#E5E0D8] bg-white text-[#4B4238] hover:bg-[#F1ECE3]"
+                : "border-border bg-white text-ink-soft hover:bg-canvas"
             }`}
           >
             KSh {b.toLocaleString("en-KE")}
@@ -40,7 +40,7 @@ export function KplcOptimizer() {
         onChange={setCustom}
         placeholder="e.g. 3500"
       />
-      <p className="rounded-2xl bg-[#FFF8EA] p-4 text-sm text-[#4B4238]">
+      <p className="rounded-2xl bg-accent-soft p-4 text-sm text-ink-soft">
         💡 <em>Don&apos;t buy all at once!</em> Split your {kes(active)}{" "}
         budget into two half-month token purchases. This strategy keeps you locked in a lower
         tariff band, gaining you an extra{" "}
@@ -71,13 +71,13 @@ export function PaydayRouter() {
       <NumberField id="routerBills" label="Fixed bills (KES)" value={bills} onChange={setBills} placeholder="e.g. 10000" />
       {Number(salary) > 0 && surplus > 0 && (
         <div className="rounded-2xl bg-white p-5 shadow-sm">
-          <p className="text-sm text-[#4B4238]">
+          <p className="text-sm text-ink-soft">
             Your True Weekly Spend Limit:{" "}
             <strong className="text-lg text-primary" data-testid="weekly-limit">
               {kes(surplus / 4.33)}
             </strong>
           </p>
-          <p className="mt-2 text-xs text-[#4B4238]">
+          <p className="mt-2 text-xs text-ink-soft">
             🔒 <em>Action:</em> To protect your money, move the remaining{" "}
             <strong>{kes(surplus)}</strong> surplus out of your main M-Pesa wallet and
             into a locked savings pocket or MMF <em>on payday</em> before lifestyle creep handles

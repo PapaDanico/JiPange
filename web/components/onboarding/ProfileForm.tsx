@@ -229,7 +229,7 @@ export default function ProfileForm() {
             />
           ))}
         </div>
-        <p className="mt-2 text-center text-xs font-medium text-[#4B4238]">
+        <p className="mt-2 text-center text-xs font-medium text-ink-soft">
           Step {currentStep} of {TOTAL_STEPS}
         </p>
       </div>
@@ -242,7 +242,7 @@ export default function ProfileForm() {
               <p className="text-[13px] font-semibold leading-[1.7] text-primary">
                 In 90 seconds you&apos;ll see:
               </p>
-              <ul className="text-[13px] leading-[1.7] text-[#4B4238]">
+              <ul className="text-[13px] leading-[1.7] text-ink-soft">
                 <li>
                   📊 <strong>Your Pesa Score</strong> — a single number rating your financial health
                 </li>
@@ -256,12 +256,12 @@ export default function ProfileForm() {
               </ul>
             </div>
 
-            <p className="text-center text-xs text-[#4B4238]">
+            <p className="text-center text-xs text-ink-soft">
               Join 1,200+ Kenyans who&apos;ve already mapped their Pesa Picture this month.
             </p>
 
             <div>
-              <label htmlFor="fullName" className="block text-sm font-medium text-[#4B4238]">
+              <label htmlFor="fullName" className="block text-sm font-medium text-ink-soft">
                 Full name
               </label>
               <input
@@ -273,7 +273,7 @@ export default function ProfileForm() {
                 aria-invalid={Boolean(errors.fullName)}
                 aria-describedby={errors.fullName ? "fullName-error" : undefined}
                 autoFocus
-                className="mt-1 h-12 w-full rounded-lg border border-[#E5E0D8] bg-white px-4 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                className="mt-1 h-12 w-full rounded-lg border border-border bg-white px-4 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                 placeholder="e.g. Wanjiru Kamau"
               />
               {errors.fullName && (
@@ -288,9 +288,9 @@ export default function ProfileForm() {
         {/* ── Step 2: WhatsApp ── */}
         {currentStep === 2 && (
           <div>
-            <label htmlFor="whatsappNumber" className="block text-sm font-medium text-[#4B4238]">
+            <label htmlFor="whatsappNumber" className="block text-sm font-medium text-ink-soft">
               WhatsApp number{" "}
-              <span className="font-normal text-[#6f6e69]">(optional)</span>
+              <span className="font-normal text-faint">(optional)</span>
             </label>
             <input
               id="whatsappNumber"
@@ -301,7 +301,7 @@ export default function ProfileForm() {
               aria-invalid={Boolean(errors.whatsappNumber)}
               aria-describedby={errors.whatsappNumber ? "whatsappNumber-error" : undefined}
               autoFocus
-              className="mt-1 h-12 w-full rounded-lg border border-[#E5E0D8] bg-white px-4 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              className="mt-1 h-12 w-full rounded-lg border border-border bg-white px-4 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
               placeholder="07XX XXX XXX"
             />
             {errors.whatsappNumber && (
@@ -309,7 +309,7 @@ export default function ProfileForm() {
                 {errors.whatsappNumber}
               </p>
             )}
-            <p className="mt-1 text-xs text-[#6f6e69]">
+            <p className="mt-1 text-xs text-faint">
               So you can share your Pesa Picture via WhatsApp
             </p>
           </div>
@@ -318,7 +318,7 @@ export default function ProfileForm() {
         {/* ── Step 3: County ── */}
         {currentStep === 3 && (
           <div>
-            <label htmlFor="county" className="block text-sm font-medium text-[#4B4238]">
+            <label htmlFor="county" className="block text-sm font-medium text-ink-soft">
               County
             </label>
             <input
@@ -331,7 +331,7 @@ export default function ProfileForm() {
               aria-invalid={Boolean(errors.county)}
               aria-describedby={errors.county ? "county-error" : undefined}
               autoFocus
-              className="mt-1 h-12 w-full rounded-lg border border-[#E5E0D8] bg-white px-4 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              className="mt-1 h-12 w-full rounded-lg border border-border bg-white px-4 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
               placeholder="Start typing, e.g. Nai..."
             />
             <datalist id="county-options">
@@ -351,7 +351,7 @@ export default function ProfileForm() {
         {currentStep === 4 && (
           <div>
             <div className="flex items-center justify-between">
-              <label htmlFor="age" className="block text-sm font-medium text-[#4B4238]">
+              <label htmlFor="age" className="block text-sm font-medium text-ink-soft">
                 Age
               </label>
               <span className="text-sm font-semibold text-primary">{form.age}</span>
@@ -381,7 +381,7 @@ export default function ProfileForm() {
         {currentStep === 5 && (
           <>
             <div>
-              <label htmlFor="dependants" className="block text-sm font-medium text-[#4B4238]">
+              <label htmlFor="dependants" className="block text-sm font-medium text-ink-soft">
                 Number of dependants
               </label>
               <input
@@ -395,20 +395,20 @@ export default function ProfileForm() {
                 aria-invalid={Boolean(errors.dependants)}
                 aria-describedby={errors.dependants ? "dependants-error" : undefined}
                 autoFocus
-                className="mt-1 h-12 w-full rounded-lg border border-[#E5E0D8] bg-white px-4 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                className="mt-1 h-12 w-full rounded-lg border border-border bg-white px-4 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
               />
               {errors.dependants && (
                 <p id="dependants-error" className="mt-1 text-sm text-danger">
                   {errors.dependants}
                 </p>
               )}
-              <p className="mt-1 text-xs text-[#6f6e69]">
+              <p className="mt-1 text-xs text-faint">
                 Include children, spouse, parents and anyone who depends on your income.
               </p>
             </div>
 
             <div>
-              <span className="block text-sm font-medium text-[#4B4238]">
+              <span className="block text-sm font-medium text-ink-soft">
                 Do you contribute to a Chama or SACCO?
               </span>
               <div className="mt-2 flex gap-3">
@@ -418,8 +418,8 @@ export default function ProfileForm() {
                   aria-pressed={form.chamaMember}
                   className={`h-12 flex-1 rounded-full border text-base font-medium transition-colors ${
                     form.chamaMember
-                      ? "border-accent bg-accent text-[#171717]"
-                      : "border-[#E5E0D8] bg-white text-[#4B4238]"
+                      ? "border-accent bg-accent text-ink"
+                      : "border-border bg-white text-ink-soft"
                   }`}
                 >
                   Yes
@@ -430,14 +430,14 @@ export default function ProfileForm() {
                   aria-pressed={!form.chamaMember}
                   className={`h-12 flex-1 rounded-full border text-base font-medium transition-colors ${
                     !form.chamaMember
-                      ? "border-accent bg-accent text-[#171717]"
-                      : "border-[#E5E0D8] bg-white text-[#4B4238]"
+                      ? "border-accent bg-accent text-ink"
+                      : "border-border bg-white text-ink-soft"
                   }`}
                 >
                   No
                 </button>
               </div>
-              <p className="mt-1 text-xs text-[#4B4238]">
+              <p className="mt-1 text-xs text-ink-soft">
                 Helps us tailor your recommendations.
               </p>
             </div>
@@ -450,7 +450,7 @@ export default function ProfileForm() {
             <div>
               <label
                 htmlFor="grossMonthlySalary"
-                className="block text-sm font-medium text-[#4B4238]"
+                className="block text-sm font-medium text-ink-soft"
               >
                 Monthly gross salary (KES)
               </label>
@@ -469,7 +469,7 @@ export default function ProfileForm() {
                   errors.grossMonthlySalary ? "grossMonthlySalary-error" : undefined
                 }
                 autoFocus
-                className="mt-1 h-12 w-full rounded-lg border border-[#E5E0D8] bg-white px-4 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                className="mt-1 h-12 w-full rounded-lg border border-border bg-white px-4 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                 placeholder="e.g. 80000"
               />
               {errors.grossMonthlySalary && (
@@ -477,12 +477,12 @@ export default function ProfileForm() {
                   {errors.grossMonthlySalary}
                 </p>
               )}
-              <p className="mt-1 text-xs text-[#6f6e69]">
+              <p className="mt-1 text-xs text-faint">
                 Your total monthly pay before PAYE, NSSF and SHIF deductions — check your
                 payslip.
               </p>
               {previewNet && (
-                <p className="mt-2 rounded-lg bg-[#F1ECE3] px-4 py-3 text-sm text-primary">
+                <p className="mt-2 rounded-lg bg-canvas px-4 py-3 text-sm text-primary">
                   Estimated take-home pay:{" "}
                   <span className="font-semibold">{formatKES(previewNet.netMonthly)}</span>{" "}
                   /month
@@ -507,14 +507,14 @@ export default function ProfileForm() {
                 setErrors({});
                 setCurrentStep((prev) => prev - 1);
               }}
-              className="h-[52px] rounded-lg border border-[#E5E0D8] bg-white px-6 text-base font-medium text-[#4B4238] transition-colors hover:bg-[#F1ECE3]"
+              className="h-[52px] rounded-lg border border-border bg-white px-6 text-base font-medium text-ink-soft transition-colors hover:bg-canvas"
             >
               ← Back
             </button>
           )}
           <button
             type="submit"
-            className="min-h-[52px] flex-1 rounded-lg bg-primary text-base font-semibold text-white transition-colors hover:bg-[#584a3e]"
+            className="min-h-[52px] flex-1 rounded-lg bg-primary text-base font-semibold text-white transition-colors hover:bg-primary-deep"
           >
             {currentStep < TOTAL_STEPS ? "Next →" : "Show me my numbers →"}
           </button>

@@ -46,7 +46,7 @@ const VEHICLE_TO_TYPE: Partial<Record<VehicleId, ProductType>> = {
 function ProductCard({ product }: { product: ProductLink }) {
   const badge = TYPE_BADGE[product.type];
   return (
-    <div className="flex flex-col rounded-2xl border border-[#E5E0D8] bg-white p-4 shadow-sm">
+    <div className="flex flex-col rounded-2xl border border-border bg-white p-4 shadow-sm">
       {/* Header row */}
       <div className="flex items-start justify-between gap-2">
         <div>
@@ -58,11 +58,11 @@ function ProductCard({ product }: { product: ProductLink }) {
             >
               {badge.label}
             </span>
-            <span className="inline-block rounded-full border border-[#E5E0D8] px-2 py-0.5 text-[10px] font-medium text-[#6f6e69]">
+            <span className="inline-block rounded-full border border-border px-2 py-0.5 text-[10px] font-medium text-faint">
               {product.regulator}
             </span>
             {product.isAffiliate && (
-              <span className="inline-block rounded-full bg-accent/20 px-2 py-0.5 text-[10px] font-semibold text-[#B45309]">
+              <span className="inline-block rounded-full bg-accent/20 px-2 py-0.5 text-[10px] font-semibold text-warning">
                 ★ Partner
               </span>
             )}
@@ -73,7 +73,7 @@ function ProductCard({ product }: { product: ProductLink }) {
             <p className="text-lg font-bold text-primary tabular-nums">
               ~{product.yieldPct}%
             </p>
-            <p className="text-[10px] text-[#6f6e69]">
+            <p className="text-[10px] text-faint">
               {product.type === "sacco" ? "dividends p.a." : "yield p.a."}
             </p>
           </div>
@@ -81,10 +81,10 @@ function ProductCard({ product }: { product: ProductLink }) {
       </div>
 
       {/* Tagline */}
-      <p className="mt-2 text-xs text-[#4B4238]">{product.tagline}</p>
+      <p className="mt-2 text-xs text-ink-soft">{product.tagline}</p>
 
       {/* Stats row */}
-      <div className="mt-3 flex gap-3 text-xs text-[#4B4238]">
+      <div className="mt-3 flex gap-3 text-xs text-ink-soft">
         {product.minKes !== undefined && (
           <div className="flex-1">
             <p className="font-semibold text-primary">
@@ -131,8 +131,8 @@ function RecommendedStrip({ vehicleId }: { vehicleId: VehicleId }) {
         : "Your journey matched you with a SACCO";
 
   return (
-    <section className="mb-6 rounded-2xl border-2 border-accent bg-[#FFF8EA] p-4">
-      <p className="text-[10px] font-semibold uppercase tracking-wider text-[#B45309]">
+    <section className="mb-6 rounded-2xl border-2 border-accent bg-accent-soft p-4">
+      <p className="text-[10px] font-semibold uppercase tracking-wider text-warning">
         Recommended for you
       </p>
       <p className="mt-0.5 text-sm font-semibold text-primary">{label}</p>
@@ -141,7 +141,7 @@ function RecommendedStrip({ vehicleId }: { vehicleId: VehicleId }) {
           <ProductCard key={p.slug} product={p} />
         ))}
       </div>
-      <p className="mt-2 text-[11px] text-[#6f6e69]">
+      <p className="mt-2 text-[11px] text-faint">
         Based on your 5-question snapshot.{" "}
         <Link href="/profile" className="underline hover:text-primary">
           Retake the journey →
@@ -196,7 +196,7 @@ export default function PartnersView() {
             className={`flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
               activeTab === tab.id
                 ? "border-primary bg-primary text-white"
-                : "border-[#E5E0D8] bg-white text-[#4B4238] hover:border-primary hover:text-primary"
+                : "border-border bg-white text-ink-soft hover:border-primary hover:text-primary"
             }`}
           >
             <span aria-hidden="true">{tab.emoji}</span>
@@ -213,7 +213,7 @@ export default function PartnersView() {
       </div>
 
       {/* Disclaimer */}
-      <div className="mt-8 rounded-2xl bg-[#F1ECE3] p-4 text-xs text-[#4B4238]">
+      <div className="mt-8 rounded-2xl bg-canvas p-4 text-xs text-ink-soft">
         <p className="font-semibold text-primary">About this directory</p>
         <ul className="mt-2 space-y-1.5 list-disc pl-4">
           <li>

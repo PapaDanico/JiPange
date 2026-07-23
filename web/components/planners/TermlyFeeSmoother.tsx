@@ -64,12 +64,12 @@ export default function TermlyFeeSmoother() {
         <h2 className="text-base font-semibold text-primary">
           This year&apos;s fees — smoothed
         </h2>
-        <p className="mt-1 text-xs text-[#4B4238]">
+        <p className="mt-1 text-xs text-ink-soft">
           Three lumpy termly bills become one flat monthly amount that earns while it waits.
         </p>
 
         <div className="mt-4 flex items-center justify-between">
-          <p className="text-sm font-medium text-[#4B4238]">School fees (per child)</p>
+          <p className="text-sm font-medium text-ink-soft">School fees (per child)</p>
           <div className="flex gap-1" role="group" aria-label="Fee period">
             {([["Per year", false], ["Per term", true]] as const).map(([label, value]) => (
               <button
@@ -80,7 +80,7 @@ export default function TermlyFeeSmoother() {
                 className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
                   perTerm === value
                     ? "border-primary bg-primary text-white"
-                    : "border-[#E5E0D8] bg-white text-[#4B4238] hover:bg-[#F1ECE3]"
+                    : "border-border bg-white text-ink-soft hover:bg-canvas"
                 }`}
               >
                 {label}
@@ -101,8 +101,8 @@ export default function TermlyFeeSmoother() {
               aria-pressed={annualFees === String(preset)}
               className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
                 annualFees === String(preset)
-                  ? "border-accent bg-accent text-[#171717]"
-                  : "border-[#E5E0D8] bg-white text-[#4B4238] hover:bg-[#F1ECE3]"
+                  ? "border-accent bg-accent text-ink"
+                  : "border-border bg-white text-ink-soft hover:bg-canvas"
               }`}
             >
               {formatKES(preset)}
@@ -121,15 +121,15 @@ export default function TermlyFeeSmoother() {
               handleInputsChanged();
             }}
             placeholder="Custom amount, e.g. 150000"
-            className="h-12 w-full rounded-lg border border-[#E5E0D8] bg-white px-4 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+            className="h-12 w-full rounded-lg border border-border bg-white px-4 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
           />
-          <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-sm text-[#4B4238]">
+          <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-sm text-ink-soft">
             {perTerm ? "KES/term" : "KES/yr"}
           </span>
         </div>
 
         <div className="mt-4 flex items-center justify-between">
-          <p className="text-sm font-medium text-[#4B4238]">Number of children</p>
+          <p className="text-sm font-medium text-ink-soft">Number of children</p>
           <div className="flex items-center gap-3">
             <button
               type="button"
@@ -138,7 +138,7 @@ export default function TermlyFeeSmoother() {
                 handleInputsChanged();
               }}
               aria-label="Fewer children"
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-[#E5E0D8] text-lg text-[#4B4238] hover:bg-[#F1ECE3]"
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-lg text-ink-soft hover:bg-canvas"
             >
               −
             </button>
@@ -152,7 +152,7 @@ export default function TermlyFeeSmoother() {
                 handleInputsChanged();
               }}
               aria-label="More children"
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-[#E5E0D8] text-lg text-[#4B4238] hover:bg-[#F1ECE3]"
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-lg text-ink-soft hover:bg-canvas"
             >
               +
             </button>
@@ -163,14 +163,14 @@ export default function TermlyFeeSmoother() {
           <>
             {/* Standard vs JiPange visualizer */}
             <div className="mt-5 grid grid-cols-2 gap-3">
-              <div className="rounded-xl bg-[#FBEAEA] p-3">
+              <div className="rounded-xl bg-danger-soft p-3">
                 <p className="text-[11px] font-semibold uppercase tracking-wide text-danger">
                   Standard approach
                 </p>
                 <p className="mt-1 text-lg font-semibold text-danger" data-testid="term-shock">
                   {formatKES(Math.round(frontLoaded ? parsedFees * children * FRONT_LOADED_SPLIT[0] : termLump))}
                 </p>
-                <p className="text-xs text-[#4B4238]">
+                <p className="text-xs text-ink-soft">
                   {frontLoaded ? "Jan shock (then 30% May, 20% Sep)" : "× 3 termly shocks (Jan, May, Sep)"}
                 </p>
                 <div className="mt-2 flex items-end gap-1" aria-hidden="true">
@@ -179,14 +179,14 @@ export default function TermlyFeeSmoother() {
                   ))}
                 </div>
               </div>
-              <div className="rounded-xl bg-[#E9F5EC] p-3">
+              <div className="rounded-xl bg-success-soft p-3">
                 <p className="text-[11px] font-semibold uppercase tracking-wide text-success">
                   JiPange approach
                 </p>
                 <p className="mt-1 text-lg font-semibold text-success" data-testid="smoother-monthly">
                   {formatKES(Math.round(monthly))}/mo
                 </p>
-                <p className="text-xs text-[#4B4238]">flat, every month, earning interest</p>
+                <p className="text-xs text-ink-soft">flat, every month, earning interest</p>
                 <div className="mt-2 flex items-end gap-0.5" aria-hidden="true">
                   {Array.from({ length: 12 }, (_, i) => (
                     <div key={i} className="h-2.5 w-1.5 rounded-sm bg-success" />
@@ -195,7 +195,7 @@ export default function TermlyFeeSmoother() {
               </div>
             </div>
 
-            <label className="mt-3 flex cursor-pointer items-center gap-2 text-xs text-[#4B4238]">
+            <label className="mt-3 flex cursor-pointer items-center gap-2 text-xs text-ink-soft">
               <input
                 type="checkbox"
                 checked={frontLoaded}
@@ -208,7 +208,7 @@ export default function TermlyFeeSmoother() {
             {/* Fee escalation: plan for next January before it plans for you. */}
             <div className="mt-4">
               <div className="flex items-center justify-between">
-                <label htmlFor="fee-escalation" className="text-sm font-medium text-[#4B4238]">
+                <label htmlFor="fee-escalation" className="text-sm font-medium text-ink-soft">
                   Annual fee increase
                 </label>
                 <span className="text-sm font-semibold text-primary">+{escalation}%/yr</span>
@@ -222,7 +222,7 @@ export default function TermlyFeeSmoother() {
                 onChange={(event) => setEscalation(Number(event.target.value))}
                 className="mt-2 h-2 w-full accent-primary"
               />
-              <p className="mt-1 text-xs text-[#6f6e69]" data-testid="next-year-monthly">
+              <p className="mt-1 text-xs text-faint" data-testid="next-year-monthly">
                 Next year&apos;s target at that pace: ≈{" "}
                 <strong className="text-primary">
                   {formatKES(Math.round(monthly * (1 + escalation / 100)))}/mo
@@ -231,7 +231,7 @@ export default function TermlyFeeSmoother() {
               </p>
             </div>
 
-            <p className="mt-4 rounded-xl bg-[#FFF8EA] p-3 text-sm text-[#4B4238]">
+            <p className="mt-4 rounded-xl bg-accent-soft p-3 text-sm text-ink-soft">
               💰 <em>JiPange Bonus:</em> By smoothing your fees monthly, compound interest at ~
               {(SMOOTHER_MMF_RATE * 100).toFixed(0)}% pays{" "}
               <strong className="text-success">{formatKES(subsidy)}</strong> of your annual total
@@ -244,7 +244,7 @@ export default function TermlyFeeSmoother() {
       {/* ── Module 2: the CBC Project Leak cushion ── */}
       <section aria-label="CBC cushion" className="rounded-2xl bg-white p-6 shadow-sm">
         <label className="flex cursor-pointer items-center justify-between gap-3">
-          <span className="text-sm font-medium text-[#4B4238]">
+          <span className="text-sm font-medium text-ink-soft">
             Do you have children in the CBC system?
           </span>
           <Toggle
@@ -255,7 +255,7 @@ export default function TermlyFeeSmoother() {
           />
         </label>
         {cbc && (
-          <div className="mt-4 rounded-xl border-2 border-accent bg-[#FFF8EA] p-4 text-sm text-[#4B4238]">
+          <div className="mt-4 rounded-xl border-2 border-accent bg-accent-soft p-4 text-sm text-ink-soft">
             🛡️ <strong className="text-primary">The CBC Cushion:</strong> We recommend
             maintaining a floating buffer of{" "}
             <strong>{formatKES(CBC_CUSHION_PER_CHILD)} per child</strong> (
@@ -271,18 +271,18 @@ export default function TermlyFeeSmoother() {
         <section aria-label="Vehicle allocation" className="rounded-2xl bg-white p-6 shadow-sm">
           <h2 className="text-base font-semibold text-primary">Where each shilling goes</h2>
           <div className="mt-3 space-y-3">
-            <div className="rounded-xl border border-[#E5E0D8] p-4">
+            <div className="rounded-xl border border-border p-4">
               <p className="text-sm font-semibold text-primary">📈 Next term&apos;s fees</p>
-              <p className="mt-1 text-sm text-[#4B4238]">
+              <p className="mt-1 text-sm text-ink-soft">
                 A high-liquidity, M-Pesa integrated MMF (e.g., Sanlam, Britam, ICEA) — hassle-free
                 withdrawals every January, May, and September.
               </p>
             </div>
-            <div className="rounded-xl border border-[#E5E0D8] p-4">
+            <div className="rounded-xl border border-border p-4">
               <p className="text-sm font-semibold text-primary">
                 🏛️ Long-term transitions (High School / Uni)
               </p>
-              <p className="mt-1 text-sm text-[#4B4238]">
+              <p className="mt-1 text-sm text-ink-soft">
                 A Tier-1 Sacco (e.g., Stima, Safaricom) — the 3× development loan multiplier
                 funds future tuition blocks. Plan those stages below.
               </p>
@@ -294,14 +294,14 @@ export default function TermlyFeeSmoother() {
             disabled={locked}
             className={`mt-4 h-12 w-full rounded-full text-base font-semibold transition-colors ${
               locked
-                ? "bg-[#E9F5EC] text-success"
-                : "bg-primary text-white hover:bg-[#584a3e]"
+                ? "bg-success-soft text-success"
+                : "bg-primary text-white hover:bg-primary-deep"
             }`}
           >
             {locked ? "✓ Locked — see it on your Pesa Picture" : "Lock This Education Plan to My Profile"}
           </button>
           {locked && (
-            <p className="mt-2 text-center text-xs text-[#6f6e69]">
+            <p className="mt-2 text-center text-xs text-faint">
               <Link href="/picture" className="font-medium text-primary underline">
                 View it on My Pesa Picture →
               </Link>

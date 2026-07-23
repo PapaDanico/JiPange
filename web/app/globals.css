@@ -1,19 +1,43 @@
 @import "tailwindcss";
 
 @theme {
+  /* ── Typography ──
+     Signature pairing: a Tiempos-class serif for display/headings over a
+     clean humanist sans for UI. Variables are provided by next/font in
+     app/layout.tsx; the trailing stacks are the pre-font-load fallbacks. */
+  --font-sans: var(--font-figtree), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-source-serif), ui-serif, Georgia, "Times New Roman", serif;
+
+  /* ── Brand core ── */
   --color-primary: #6b5b4d;
+  --color-primary-deep: #584a3e; /* hover state of primary surfaces */
   --color-accent: #e8a838;
+  --color-accent-deep: #d6961f; /* hover state of accent surfaces */
+  --color-accent-ink: #946213; /* readable amber for text on soft tints */
+  --color-accent-soft: #fff8ea; /* amber tint panel */
+  --color-accent-wash: #fff4dc; /* lightest amber wash */
+
+  /* ── Semantic status ── */
   --color-success: #2d7d46;
+  --color-success-deep: #2b4a2b; /* readable green for text on soft tints */
+  --color-success-soft: #e9f5ec; /* green tint panel */
   /* Darkened from #D97706/#DC2626 so text using these tokens meets the
      WCAG AA 4.5:1 contrast minimum on white/near-white backgrounds. */
   --color-warning: #b45309;
   --color-danger: #c81e1e;
+  --color-danger-deep: #9b2c1e; /* readable red for text on soft tints */
+  --color-danger-soft: #fbeaea; /* red tint panel */
+
+  /* ── Neutrals ── */
   --color-background: #fafaf8;
   --color-surface: #ffffff;
   --color-canvas: #f1ece3;
   --color-border: #e5e0d8;
+  --color-border-strong: #c9bfb2;
   --color-ink: #171717;
-  --color-muted: #7a6b5e;
+  --color-ink-soft: #4b4238; /* default body copy */
+  --color-muted: #7a6b5e; /* secondary copy, AA on white/background */
+  --color-faint: #6f6e69; /* tertiary copy / fine print */
 }
 
 :root {
@@ -24,6 +48,17 @@
 body {
   background: #fafaf8;
   color: #171717;
+}
+
+/* Display serif for page-level headings — the signature move. Card-level
+   h3s and uppercase labels stay in the sans so small UI text keeps its
+   crispness. */
+@layer base {
+  h1,
+  h2 {
+    font-family: var(--font-display);
+    letter-spacing: -0.015em;
+  }
 }
 
 :where(a, button, input, select, textarea, summary):focus-visible {

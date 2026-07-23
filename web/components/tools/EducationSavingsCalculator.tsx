@@ -104,14 +104,14 @@ export default function EducationSavingsCalculator() {
   return (
     <div className="space-y-4">
       <div>
-        <label htmlFor="gradeValue" className="block text-sm font-medium text-[#4B4238]">
+        <label htmlFor="gradeValue" className="block text-sm font-medium text-ink-soft">
           Child&apos;s current level
         </label>
         <select
           id="gradeValue"
           value={gradeValue}
           onChange={(event) => setGradeValue(event.target.value)}
-          className="mt-1 h-12 w-full rounded-lg border border-[#E5E0D8] bg-white px-4 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+          className="mt-1 h-12 w-full rounded-lg border border-border bg-white px-4 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
         >
           {CBC_GRADES.map((g) => (
             <option key={g.value} value={g.value}>
@@ -123,7 +123,7 @@ export default function EducationSavingsCalculator() {
 
       {alreadyInSeniorSecondary && (
         <div className="rounded-2xl bg-white p-6 text-center shadow-sm">
-          <p className="text-sm text-[#4B4238]">
+          <p className="text-sm text-ink-soft">
             Your child has already reached Senior Secondary — there are no more CBC transitions
             ahead to save for. For fees due soon, try our{" "}
             <Link href="/tools/savings-goal" className="underline hover:text-primary">

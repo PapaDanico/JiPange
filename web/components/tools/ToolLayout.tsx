@@ -29,7 +29,7 @@ export default function ToolLayout({
           ← All calculators
         </Link>
         <h1 className="mt-2 text-2xl font-semibold text-primary lg:text-3xl">{title}</h1>
-        <p className="mt-1 max-w-2xl text-sm text-[#4B4238] lg:text-base">{description}</p>
+        <p className="mt-1 max-w-2xl text-sm text-ink-soft lg:text-base">{description}</p>
         {insights && (
           <div className="max-w-2xl">
             <ToolInsights insights={insights} />

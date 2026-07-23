@@ -83,17 +83,17 @@ export default function ActionPlan() {
         <h2 className="mt-2 text-lg font-semibold text-primary">
           Your AI action plan needs your real numbers
         </h2>
-        <p className="mt-1 text-sm text-[#4B4238]">
+        <p className="mt-1 text-sm text-ink-soft">
           Six quick questions — your actual salary and household — and JiPange generates a
           3-step plan built on real KRA tax maths. Still anonymous, still on your device.
         </p>
         <Link
           href="/profile/full"
-          className="mt-4 inline-flex h-11 items-center justify-center rounded-full bg-accent px-6 text-sm font-medium text-[#171717] transition-colors hover:bg-[#d6961f]"
+          className="mt-4 inline-flex h-11 items-center justify-center rounded-full bg-accent px-6 text-sm font-medium text-ink transition-colors hover:bg-accent-deep"
         >
           Take the 90-second deep profile →
         </Link>
-        <p className="mt-4 text-xs text-[#6f6e69]">
+        <p className="mt-4 text-xs text-faint">
           <Link href="/dashboard" className="font-medium text-primary underline">
             Back to my dashboard
           </Link>{" "}
@@ -115,17 +115,17 @@ export default function ActionPlan() {
     <div className="w-full max-w-2xl space-y-6 pb-28">
       {loading && (
         <div className="space-y-4">
-          <p className="text-center text-sm text-[#4B4238]">
+          <p className="text-center text-sm text-ink-soft">
             JiPange is thinking about your situation...
           </p>
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-32 animate-pulse rounded-2xl bg-[#F1ECE3]" />
+            <div key={i} className="h-32 animate-pulse rounded-2xl bg-canvas" />
           ))}
         </div>
       )}
 
       {error && !loading && !plan && (
-        <div className="rounded-2xl bg-[#FBEAEA] p-6 text-center">
+        <div className="rounded-2xl bg-danger-soft p-6 text-center">
           <p className="text-sm text-danger">{error}</p>
           <button
             onClick={() => void generatePlan(profile, calculations)}
@@ -147,15 +147,15 @@ export default function ActionPlan() {
           {plan.map((item) => (
             <div key={item.rank} className="rounded-2xl bg-white p-5 shadow-sm">
               <div className="flex items-center gap-2">
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-accent text-sm font-semibold text-[#171717]">
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-accent text-sm font-semibold text-ink">
                   {item.rank}
                 </span>
                 <span className="text-xl">{CATEGORY_ICON[item.category] ?? "💡"}</span>
                 <h3 className="text-base font-semibold text-primary">{item.title}</h3>
               </div>
-              <p className="mt-2 text-sm text-[#4B4238]">{item.description}</p>
+              <p className="mt-2 text-sm text-ink-soft">{item.description}</p>
               <p className="mt-2 text-sm font-medium text-success">{item.impact}</p>
-              <span className="mt-2 inline-block rounded-full bg-[#F1ECE3] px-3 py-1 text-xs text-[#4B4238]">
+              <span className="mt-2 inline-block rounded-full bg-canvas px-3 py-1 text-xs text-ink-soft">
                 {EFFORT_LABEL[item.effort] ?? item.effort}
               </span>
             </div>
@@ -163,7 +163,7 @@ export default function ActionPlan() {
 
           <button
             onClick={() => void generatePlan(profile, calculations)}
-            className="h-10 w-full rounded-full border border-[#E5E0D8] text-sm font-medium text-[#4B4238]"
+            className="h-10 w-full rounded-full border border-border text-sm font-medium text-ink-soft"
           >
             Try different recommendations
           </button>

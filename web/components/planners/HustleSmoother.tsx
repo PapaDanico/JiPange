@@ -63,8 +63,8 @@ export default function HustleSmoother() {
               aria-pressed={venture === v.value}
               className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
                 venture === v.value
-                  ? "border-accent bg-accent text-[#171717]"
-                  : "border-[#E5E0D8] bg-white text-[#4B4238] hover:bg-[#F1ECE3]"
+                  ? "border-accent bg-accent text-ink"
+                  : "border-border bg-white text-ink-soft hover:bg-canvas"
               }`}
             >
               {v.emoji} {v.label}
@@ -74,7 +74,7 @@ export default function HustleSmoother() {
 
         <div className="mt-4">
           <div className="flex items-center justify-between">
-            <label htmlFor="cycle-days" className="text-sm font-medium text-[#4B4238]">
+            <label htmlFor="cycle-days" className="text-sm font-medium text-ink-soft">
               Cycle length
             </label>
             <span className="text-sm font-semibold text-primary">{cycleDays} days</span>
@@ -101,7 +101,7 @@ export default function HustleSmoother() {
           ] as const
         ).map(([id, label, value, setter, placeholder]) => (
           <div key={id} className="relative mt-3">
-            <label htmlFor={id} className="block text-sm font-medium text-[#4B4238]">
+            <label htmlFor={id} className="block text-sm font-medium text-ink-soft">
               {label}
             </label>
             <input
@@ -115,7 +115,7 @@ export default function HustleSmoother() {
                 setDraw(null);
               }}
               placeholder={placeholder}
-              className="mt-1 h-12 w-full rounded-lg border border-[#E5E0D8] bg-white px-4 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              className="mt-1 h-12 w-full rounded-lg border border-border bg-white px-4 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
             />
           </div>
         ))}
@@ -127,11 +127,11 @@ export default function HustleSmoother() {
           <section aria-label="Cycle runway" className="rounded-2xl bg-white p-6 shadow-sm">
             <div className="flex items-center justify-between">
               <h2 className="text-base font-semibold text-primary">Where you are in the cycle</h2>
-              <span className="text-xs text-[#4B4238]">
+              <span className="text-xs text-ink-soft">
                 Day {dayInCycle} of {cycleDays}
               </span>
             </div>
-            <div className="mt-3 h-3 w-full overflow-hidden rounded-full bg-[#F1ECE3]">
+            <div className="mt-3 h-3 w-full overflow-hidden rounded-full bg-canvas">
               <div
                 className="h-full rounded-full bg-primary transition-all duration-500"
                 style={{ width: `${Math.min(100, (dayInCycle / cycleDays) * 100)}%` }}
@@ -149,15 +149,15 @@ export default function HustleSmoother() {
             />
 
             {runway.protected ? (
-              <p className="mt-3 inline-block rounded-full bg-[#E9F5EC] px-4 py-2 text-sm font-semibold text-success">
+              <p className="mt-3 inline-block rounded-full bg-success-soft px-4 py-2 text-sm font-semibold text-success">
                 🛡️ STATUS: NEXT CYCLE PROTECTED
               </p>
             ) : (
-              <div className="mt-3 rounded-xl border-2 border-accent bg-[#FFF4DC] p-3">
-                <p className="text-sm font-semibold text-[#946213]">
+              <div className="mt-3 rounded-xl border-2 border-accent bg-accent-wash p-3">
+                <p className="text-sm font-semibold text-accent-ink">
                   ⚠️ STATUS: RUNWAY GAP EXPOSED
                 </p>
-                <p className="mt-1 text-sm text-[#4B4238]">
+                <p className="mt-1 text-sm text-ink-soft">
                   You&apos;re {formatKES(runway.shortfall)} short of next cycle&apos;s{" "}
                   {formatKES(parsedCosts)} input costs — ring-fence that first, before drawing a
                   salary.
@@ -169,15 +169,15 @@ export default function HustleSmoother() {
           {/* ── Module B: the MMF smoothing tank ── */}
           <section aria-label="Smoothing tank" className="rounded-2xl bg-white p-6 shadow-sm">
             <h2 className="text-base font-semibold text-primary">The MMF smoothing tank</h2>
-            <p className="mt-1 text-xs text-[#4B4238]">
+            <p className="mt-1 text-xs text-ink-soft">
               Park the {formatKES(parsedPayout)} payout in a money market fund; draw a salary
               monthly while the rest compounds — worth ≈{" "}
               <strong className="text-success">{formatKES(tankInterestYear)}/yr</strong> at ~
               {(TARGET_MMF_YIELD * 100).toFixed(1)}% on the average balance.
             </p>
 
-            <div className="mt-4 rounded-xl bg-[#F1ECE3] p-4 text-center">
-              <p className="text-xs uppercase tracking-wide text-[#6f6e69]">
+            <div className="mt-4 rounded-xl bg-canvas p-4 text-center">
+              <p className="text-xs uppercase tracking-wide text-faint">
                 Your smoothed monthly salary
               </p>
               <p className="mt-1 text-3xl font-semibold text-primary" data-testid="hustle-draw">
@@ -187,7 +187,7 @@ export default function HustleSmoother() {
 
             <div className="mt-3">
               <div className="flex items-center justify-between">
-                <label htmlFor="hustle-buffer" className="text-sm font-medium text-[#4B4238]">
+                <label htmlFor="hustle-buffer" className="text-sm font-medium text-ink-soft">
                   Bad-cycle buffer (disease, drought, late payment)
                 </label>
                 <span className="text-sm font-semibold text-primary">{buffer}% held back</span>
@@ -209,10 +209,10 @@ export default function HustleSmoother() {
 
             <div className="mt-3">
               <div className="flex items-center justify-between">
-                <label htmlFor="hustle-slider" className="text-sm font-medium text-[#4B4238]">
+                <label htmlFor="hustle-slider" className="text-sm font-medium text-ink-soft">
                   Configure your drawdown
                 </label>
-                <span className="text-xs text-[#4B4238]">
+                <span className="text-xs text-ink-soft">
                   safe max: {formatKES(safeDraw)}
                 </span>
               </div>
@@ -229,12 +229,12 @@ export default function HustleSmoother() {
             </div>
 
             {currentDraw > safeDraw ? (
-              <p className="mt-3 rounded-xl bg-[#FBEAEA] p-3 text-sm text-danger">
+              <p className="mt-3 rounded-xl bg-danger-soft p-3 text-sm text-danger">
                 Drawing {formatKES(currentDraw - Math.round(safeDraw))} above the safe line eats
                 next cycle&apos;s seed capital — the tank runs dry before the payout lands.
               </p>
             ) : (
-              <p className="mt-3 rounded-xl bg-[#E9F5EC] p-3 text-sm text-[#2b4a2b]">
+              <p className="mt-3 rounded-xl bg-success-soft p-3 text-sm text-success-deep">
                 Sustainable: {formatKES(Math.round(safeDraw) - currentDraw)}/mo stays in the tank
                 earning MMF interest, and {formatKES(parsedCosts)} of seed capital is never
                 touched.
@@ -245,12 +245,12 @@ export default function HustleSmoother() {
           {/* ── Module C: automation referral ── */}
           <section
             aria-label="Automation"
-            className="rounded-2xl border-2 border-accent bg-[#FFF8EA] p-5"
+            className="rounded-2xl border-2 border-accent bg-accent-soft p-5"
           >
             <h2 className="text-sm font-semibold text-primary">
               ⚙️ Automate the tank — 3 steps
             </h2>
-            <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm text-[#4B4238]">
+            <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm text-ink-soft">
               <li>
                 Open an M-Pesa-integrated MMF (Britam, ICEA Lion, Sanlam) and note its Paybill.
               </li>
@@ -276,7 +276,7 @@ export default function HustleSmoother() {
         ]}
       />
 
-      <p className="text-xs text-[#4B4238]">
+      <p className="text-xs text-ink-soft">
         For guidance only, not financial advice. Yields vary — verify current MMF rates before
         committing.
       </p>

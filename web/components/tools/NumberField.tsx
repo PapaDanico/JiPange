@@ -28,7 +28,7 @@ export default function NumberField({
 
   return (
     <div>
-      <label htmlFor={id} className="block text-sm font-medium text-[#4B4238]">
+      <label htmlFor={id} className="block text-sm font-medium text-ink-soft">
         {label}
       </label>
       <div className="relative mt-1">
@@ -51,16 +51,16 @@ export default function NumberField({
           className={`h-12 w-full rounded-lg border bg-white text-base focus:outline-none focus:ring-1 ${showsCurrency ? "pl-14" : "pl-4"} ${suffix ? "pr-16" : "pr-4"} ${
             hasError
               ? "border-danger focus:border-danger focus:ring-danger"
-              : "border-[#E5E0D8] focus:border-primary focus:ring-primary"
+              : "border-border focus:border-primary focus:ring-primary"
           }`}
         />
         {showsCurrency && (
-          <span className="pointer-events-none absolute inset-y-0 left-4 flex items-center text-sm font-semibold text-[#7A6B5E]">
+          <span className="pointer-events-none absolute inset-y-0 left-4 flex items-center text-sm font-semibold text-muted">
             KSh
           </span>
         )}
         {suffix && (
-          <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-sm text-[#4B4238]">
+          <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-sm text-ink-soft">
             {suffix}
           </span>
         )}

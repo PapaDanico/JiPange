@@ -10,22 +10,22 @@ import {
 
 const SURVIVAL_COPY = {
   high_risk: {
-    className: "border-2 border-danger bg-[#FBEAEA]",
+    className: "border-2 border-danger bg-danger-soft",
     titleClass: "text-danger",
     title: "⚠️ High Priority: The Mobile Loan Trap",
     subtext:
       "Your current cushion relies on short-term digital credit. This creates an invisible 'interest tax' that chips away at your monthly earnings before you can save.",
   },
   optimized: {
-    className: "border-2 border-success bg-[#E9F5EC]",
+    className: "border-2 border-success bg-success-soft",
     titleClass: "text-success",
     title: "🛡️ Solid Baseline: Protected Liquidity",
     subtext:
       "You are successfully avoiding predatory short-term credit. Your foundation is primed for high-yield wealth building.",
   },
   exposed: {
-    className: "border-2 border-accent bg-[#FFF8EA]",
-    titleClass: "text-[#946213]",
+    className: "border-2 border-accent bg-accent-soft",
+    titleClass: "text-accent-ink",
     title: "🌤️ Workable, But Exposed",
     subtext:
       "You're covering surprises without digital debt — good — but each one leans on credit or people instead of a cushion that earns while it waits.",
@@ -45,11 +45,11 @@ function YieldBar({
   const width = Math.min(100, (ratePct / 10) * 100);
   return (
     <div>
-      <div className="flex items-center justify-between text-xs text-[#4B4238]">
+      <div className="flex items-center justify-between text-xs text-ink-soft">
         <span>{label}</span>
         <span className="font-semibold">{ratePct.toFixed(1)}%</span>
       </div>
-      <div className="mt-1 h-3 w-full overflow-hidden rounded-full bg-[#F1ECE3]">
+      <div className="mt-1 h-3 w-full overflow-hidden rounded-full bg-canvas">
         <div className={`h-full rounded-full ${barClass}`} style={{ width: `${width}%` }} />
       </div>
     </div>
@@ -73,7 +73,7 @@ export default function PesaDiagnostic({ answers }: { answers: JourneyAnswers })
       {/* ── Module 1: Survival Status header ── */}
       <section aria-label="Survival status" className={`rounded-2xl p-5 ${survival.className}`}>
         <h2 className={`text-base font-semibold ${survival.titleClass}`}>{survival.title}</h2>
-        <p className="mt-2 text-sm text-[#4B4238]">{survival.subtext}</p>
+        <p className="mt-2 text-sm text-ink-soft">{survival.subtext}</p>
       </section>
 
       {/* ── Module 2: The Silent Inflation Burner ── */}
@@ -95,7 +95,7 @@ export default function PesaDiagnostic({ answers }: { answers: JourneyAnswers })
               barClass="bg-danger"
             />
           </div>
-          <p className="mt-4 rounded-xl bg-[#FFF8EA] p-3 text-sm text-[#4B4238]">
+          <p className="mt-4 rounded-xl bg-accent-soft p-3 text-sm text-ink-soft">
             💡 <em>The Real Picture:</em> Because your floating cash sits in a standard account,
             inflation is currently outpacing your growth by{" "}
             <strong className="text-danger">{gapPoints}% annually</strong>. Shifting this
@@ -107,20 +107,20 @@ export default function PesaDiagnostic({ answers }: { answers: JourneyAnswers })
 
       {/* ── Module 3: Pesa Engine Persona ── */}
       <section aria-label="Pesa Engine persona" className="text-center">
-        <p className="text-xs font-semibold uppercase tracking-wide text-[#6f6e69]">
+        <p className="text-xs font-semibold uppercase tracking-wide text-faint">
           Your Pesa Engine persona
         </p>
         <p className="mt-2 inline-block rounded-2xl border-2 border-primary bg-white px-6 py-4 text-2xl font-bold text-primary shadow-sm">
           {persona.name}
         </p>
-        <p className="mt-2 text-sm text-[#4B4238]">{persona.blurb}</p>
+        <p className="mt-2 text-sm text-ink-soft">{persona.blurb}</p>
       </section>
 
       {/* Sticky forward CTA — clears the mobile bottom nav, hugs the viewport on desktop. */}
       <div className="sticky bottom-20 z-30 pt-2 sm:bottom-4">
         <Link
           href="/plan"
-          className="flex h-14 w-full items-center justify-center rounded-full bg-accent text-base font-semibold text-[#171717] shadow-lg transition-colors hover:bg-[#d6961f]"
+          className="flex h-14 w-full items-center justify-center rounded-full bg-accent text-base font-semibold text-ink shadow-lg transition-colors hover:bg-accent-deep"
         >
           Fix My Picture → View My Action Plan (Free)
         </Link>

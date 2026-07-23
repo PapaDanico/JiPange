@@ -24,7 +24,7 @@ export default function RecentToolsBar() {
           <Link
             key={tool.href}
             href={tool.href}
-            className="inline-flex items-center gap-1.5 rounded-full border border-[#E5E0D8] bg-white px-3 py-1.5 text-xs font-medium text-primary transition-colors hover:border-accent hover:text-accent"
+            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-white px-3 py-1.5 text-xs font-medium text-primary transition-colors hover:border-accent hover:text-accent"
           >
             <span aria-hidden="true">{tool.icon}</span>
             {tool.name}
