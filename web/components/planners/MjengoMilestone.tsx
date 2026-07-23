@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { formatKES } from "@/lib/budget";
 import { calculateLoanAmortization } from "@/lib/loans";
@@ -11,6 +11,7 @@ import {
   mjengoPlan,
 } from "@/lib/market-2026";
 import { getStoredCalculations } from "@/lib/storage";
+import { useStorageValue } from "@/lib/hooks";
 
 /** Assumptions for the safeguard estimate — visible in the UI copy. */
 const SACCO_LOAN_RATE = 0.12;
@@ -24,12 +25,10 @@ const SACCO_LOAN_TERM_MONTHS = 48;
 export default function MjengoMilestone() {
   const [propertyValue, setPropertyValue] = useState(3_000_000);
   const [contribution, setContribution] = useState("");
-  const [netMonthly, setNetMonthly] = useState<number | null>(null);
-
-  useEffect(() => {
+  const netMonthly = useStorageValue(() => {
     const stored = getStoredCalculations();
-    if (stored && stored.netMonthly > 0) setNetMonthly(stored.netMonthly);
-  }, []);
+    return stored && stored.netMonthly > 0 ? stored.netMonthly : null;
+  }, () => null);
 
   const parsedContribution = Math.max(0, Number(contribution) || 0);
   const plan = useMemo(

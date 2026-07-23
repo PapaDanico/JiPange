@@ -29,10 +29,14 @@ export default function JourneyWizard() {
   const [multiSelection, setMultiSelection] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
 
-  // Restore mid-abandonment draft on mount (step > 0 means real progress was made)
+  // Restore mid-abandonment draft on mount (step > 0 means real progress was
+  // made). This seeds the wizard's own editable state once — every answer
+  // after this point is edited independently by the user, so it doesn't fit
+  // useSyncExternalStore's "continuously mirror storage" model.
   useEffect(() => {
     const draft = getJourneyDraft();
     if (draft && draft.step > 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time draft restore into independently-edited wizard state; see comment above
       setStep(draft.step);
       setAnswers(draft.answers);
       // Restore multi-select state if we're resuming onto a multi-select question.

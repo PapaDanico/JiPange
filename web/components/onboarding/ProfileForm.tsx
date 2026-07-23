@@ -48,9 +48,13 @@ export default function ProfileForm() {
 
   // Restore an in-progress draft (e.g. after an accidental refresh or nav-away)
   // so filling in 6 fields doesn't have to survive in a single unbroken visit.
+  // This is a one-time seed into the form's own editable state — every
+  // keystroke after this point is a local edit, not a storage mirror, so it
+  // doesn't fit useSyncExternalStore.
   useEffect(() => {
     const draft = getProfileDraft();
     if (!draft) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time draft restore into independently-edited form state; see comment above
     setForm({
       fullName: draft.fullName,
       age: draft.age,

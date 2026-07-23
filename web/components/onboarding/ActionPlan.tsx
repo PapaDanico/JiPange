@@ -2,15 +2,15 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import {
   getStoredCalculations,
   getStoredPlan,
   getStoredProfile,
   setStoredPlan,
 } from "@/lib/storage";
+import { useStorageValue } from "@/lib/hooks";
 import { buildRetirementComparison } from "@/lib/projections";
-import type { ActionPlan as ActionPlanType, Calculations, Profile } from "@/lib/types";
+import type { Calculations, Profile } from "@/lib/types";
 import SaveMyPlan from "./SaveMyPlan";
 import WhatsAppShare from "./WhatsAppShare";
 
@@ -29,25 +29,11 @@ const EFFORT_LABEL: Record<string, string> = {
 };
 
 export default function ActionPlan() {
-  const router = useRouter();
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const [calculations, setCalculations] = useState<Calculations | null>(null);
-  const [plan, setPlan] = useState<ActionPlanType | null>(null);
+  const profile = useStorageValue(getStoredProfile, () => null);
+  const calculations = useStorageValue(getStoredCalculations, () => null);
+  const plan = useStorageValue(getStoredPlan, () => null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-
-  const [checked, setChecked] = useState(false);
-
-  useEffect(() => {
-    const storedProfile = getStoredProfile();
-    const storedCalculations = getStoredCalculations();
-    if (storedProfile && storedCalculations) {
-      setProfile(storedProfile);
-      setCalculations(storedCalculations);
-      setPlan(getStoredPlan());
-    }
-    setChecked(true);
-  }, [router]);
 
   useEffect(() => {
     if (!profile || !calculations || plan) return;
@@ -77,17 +63,13 @@ export default function ActionPlan() {
       }
 
       const data = await response.json();
-      setPlan(data.recommendations);
+      // setStoredPlan notifies subscribers, so `plan` above picks this up on its own.
       setStoredPlan(data.recommendations);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
       setLoading(false);
     }
-  }
-
-  if (!checked) {
-    return <p className="text-center text-[#4B4238]">Loading...</p>;
   }
 
   // Quiz-only (or brand-new) visitors: the AI plan needs real salary numbers.
