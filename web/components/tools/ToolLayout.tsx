@@ -40,7 +40,7 @@ export default function ToolLayout({
       {/* Single column up to lg; calculator + sticky sidebar (Next Move, share, plan upsell) beyond it. */}
       <div className="mt-8 grid w-full max-w-5xl gap-8 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start lg:gap-12">
         <div className="mx-auto w-full max-w-2xl lg:mx-0 lg:max-w-none">{children}</div>
-        <aside className="mx-auto w-full max-w-2xl space-y-6 lg:sticky lg:top-20 lg:mx-0 lg:max-w-none">
+        <aside className="mx-auto w-full max-w-2xl space-y-6 print:hidden lg:sticky lg:top-20 lg:mx-0 lg:max-w-none">
           <ToolEnhancements />
           <ToolLayoutCTA />
         </aside>

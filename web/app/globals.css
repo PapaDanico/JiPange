@@ -105,7 +105,16 @@ body.has-fixed-bottom-bar {
   padding-bottom: 6rem;
 }
 
+/* ── Print / Save-as-PDF: the one-page report ──
+   Design intent: a compact, editorial single-pager — serif display type,
+   hairline-ruled cards on white, no app chrome — that fits A4/Letter with
+   room to spare. */
 @media print {
+  @page {
+    size: A4;
+    margin: 13mm 15mm;
+  }
+
   /* Hide interactive and chrome elements */
   footer,
   nav,
@@ -114,11 +123,27 @@ body.has-fixed-bottom-bar {
     display: none !important;
   }
 
-  /* Force white page, remove shadows, keep brand colours */
+  /* White page, ink text, report-scale type */
   body {
     background: white !important;
     color: #171717 !important;
-    font-size: 12pt;
+    font-size: 10pt;
+    line-height: 1.45;
+    min-height: auto !important;
+    padding-bottom: 0 !important;
+  }
+
+  /* Collapse screen-layout spacing that would otherwise push a mostly
+     empty trailing page. */
+  .py-12 {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+  .mt-8 {
+    margin-top: 0 !important;
+  }
+  main.flex-1 {
+    flex: none !important;
   }
 
   * {
@@ -127,13 +152,63 @@ body.has-fixed-bottom-bar {
     print-color-adjust: exact;
   }
 
-  /* Result cards and charts should fit on one page */
-  .space-y-4 > * {
+  /* Animations don't run in print media — with fill-mode:both some engines
+     freeze elements at the FIRST keyframe (opacity 0), printing blank
+     results. Snap everything to its final state. */
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  /* Cards become compact hairline-ruled blocks: tighter padding, no page
+     breaks inside, subtle radius. */
+  .rounded-2xl,
+  .rounded-xl {
+    border-radius: 6px !important;
+    padding: 9pt 12pt !important;
+    break-inside: avoid;
+  }
+  .rounded-2xl:not([class*="border"]),
+  .rounded-xl:not([class*="border"]) {
+    border: 0.5pt solid #e5e0d8 !important;
+  }
+
+  /* Tighten the vertical rhythm between report blocks */
+  .space-y-4 > * + *,
+  .space-y-8 > * + * {
+    margin-top: 7pt !important;
+  }
+
+  /* Ledger rows (DeductionRow) and their separators print at report
+     density, so even the fullest breakdown holds one page. */
+  .py-1\.5 {
+    padding-top: 1.5pt !important;
+    padding-bottom: 1.5pt !important;
+  }
+  hr.my-2 {
+    margin-top: 3pt !important;
+    margin-bottom: 3pt !important;
+  }
+  .space-y-4 > *,
+  .space-y-8 > * {
     break-inside: avoid;
   }
 
+  /* Scale the display figures for the page */
+  .text-3xl,
+  .sm\:text-3xl {
+    font-size: 17pt !important;
+  }
+  .text-2xl {
+    font-size: 15pt !important;
+  }
+
   /* Expand content to full width for print */
-  .max-w-md {
+  .max-w-md,
+  .max-w-2xl,
+  .max-w-3xl {
     max-width: 100% !important;
   }
 
@@ -142,15 +217,17 @@ body.has-fixed-bottom-bar {
     overflow: visible;
   }
 
-  /* Add a JiPange print footer */
+  /* Report footer: hairline rule, small muted colophon */
   body::after {
     content: "JiPange · jipangefinance.org · Free financial tools for Kenya";
     display: block;
-    margin-top: 2rem;
-    padding-top: 0.5rem;
-    border-top: 1px solid #E5E0D8;
-    font-size: 9pt;
-    color: #9A8B80;
+    margin-top: 10pt;
+    padding-top: 5pt;
+    border-top: 0.5pt solid #e5e0d8;
+    font-size: 7.5pt;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #7a6b5e;
     text-align: center;
   }
 }

@@ -48,7 +48,7 @@ export default function ProductLinks({ products, heading }: ProductLinksProps) {
   const hasAffiliate = products.some((p) => p.isAffiliate);
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 print:hidden">
       {heading && (
         <p className="text-xs font-semibold text-primary uppercase tracking-wide">{heading}</p>
       )}

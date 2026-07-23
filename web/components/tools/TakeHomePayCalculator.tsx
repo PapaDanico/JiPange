@@ -14,6 +14,7 @@ import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import DeductionRow from "./DeductionRow";
 import ExportCardButton from "./ExportCardButton";
 import NumberField from "./NumberField";
+import PrintLetterhead from "./PrintLetterhead";
 import ResetLink from "./ResetLink";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
@@ -86,17 +87,7 @@ export default function TakeHomePayCalculator() {
 
   return (
     <div className="space-y-4">
-      <div className="hidden print:block">
-        <p className="text-lg font-semibold">JiPange — Take-Home Pay Estimate</p>
-        <p className="text-sm">
-          Generated{" "}
-          {new Date().toLocaleDateString("en-KE", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })}
-        </p>
-      </div>
+      <PrintLetterhead title="Take-Home Pay Estimate" />
 
       <div className="print:hidden">
         <NumberField
@@ -274,13 +265,17 @@ export default function TakeHomePayCalculator() {
             />
           </div>
 
-          <PayBreakdownChart
-            netMonthly={result.netMonthly}
-            paye={result.paye}
-            nssfTotal={result.nssf.total}
-            shif={result.shif}
-            ahl={result.ahl}
-          />
+          {/* The deduction table above carries the same data — the chart is
+              screen-only so the report holds one page. */}
+          <div className="print:hidden">
+            <PayBreakdownChart
+              netMonthly={result.netMonthly}
+              paye={result.paye}
+              nssfTotal={result.nssf.total}
+              shif={result.shif}
+              ahl={result.ahl}
+            />
+          </div>
 
           <div className="rounded-2xl bg-canvas p-6">
             <p className="text-sm text-ink-soft">
@@ -312,7 +307,7 @@ export default function TakeHomePayCalculator() {
           {showYearComparison && priorYearResult && (
             <div
               id="year-over-year-comparison"
-              className="rounded-2xl bg-white p-6 shadow-sm"
+              className="rounded-2xl bg-white p-6 shadow-sm print:hidden"
             >
               <p className="text-sm font-semibold text-primary">
                 NSSF Year 3 (2025) vs Year 4 (2026)
