@@ -168,7 +168,7 @@ export default function TakeHomePayCalculator() {
 
       {result && (
         <>
-        <div ref={resultsRef} className="space-y-4" aria-live="polite">
+        <div ref={resultsRef} className="animate-rise space-y-4" aria-live="polite">
           <ResultCard label="Take-home pay" value={formatKES(result.netMonthly)} tone="success" />
 
           {/* Salary explorer — drag to preview take-home at any salary level */}

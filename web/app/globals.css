@@ -38,6 +38,22 @@
   --color-ink-soft: #4b4238; /* default body copy */
   --color-muted: #7a6b5e; /* secondary copy, AA on white/background */
   --color-faint: #6f6e69; /* tertiary copy / fine print */
+
+  /* ── Motion ──
+     Results and panels rise in as they mount. Globally disabled for
+     prefers-reduced-motion by the media query below. */
+  --animate-rise: rise-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+
+  @keyframes rise-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 }
 
 :root {

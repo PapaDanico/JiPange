@@ -73,7 +73,7 @@ export default function OneThirdRuleCalculator() {
 
       {result && (
         <>
-          <div ref={resultsRef} className="space-y-4" aria-live="polite">
+          <div ref={resultsRef} className="animate-rise space-y-4" aria-live="polite">
           {result.compliant ? (
             <ResultCard
               label="✓ Your deductions are within the legal limit"

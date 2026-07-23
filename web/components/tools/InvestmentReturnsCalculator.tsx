@@ -193,7 +193,7 @@ export default function InvestmentReturnsCalculator() {
 
       {result && (
         <>
-          <div ref={resultsRef} className="space-y-4" aria-live="polite">
+          <div ref={resultsRef} className="animate-rise space-y-4" aria-live="polite">
             <ResultCard
               label="Projected future value"
               value={formatKES(result.total)}

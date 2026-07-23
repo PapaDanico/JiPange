@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { getStoredJourneyAnswers, getStoredProfile } from "@/lib/storage";
 import { useStorageValue } from "@/lib/hooks";
+import { CalculatorIcon, ChartIcon, HomeIcon, TargetIcon } from "./NavIcons";
 
 /**
  * Mobile-only bottom tab bar — the navigation pattern Kenyan users already
@@ -22,13 +23,13 @@ export default function BottomNav() {
       : { href: "/profile", label: "Get Plan" };
 
   const tabs = [
-    { href: "/", label: "Home", emoji: "🏠", exact: true },
-    { href: "/planners", label: "Planners", emoji: "🎯", exact: false },
-    { href: "/tools", label: "Tools", emoji: "🧮", exact: false },
+    { href: "/", label: "Home", Icon: HomeIcon, exact: true },
+    { href: "/planners", label: "Planners", Icon: TargetIcon, exact: false },
+    { href: "/tools", label: "Tools", Icon: CalculatorIcon, exact: false },
     {
       href: planTab.href,
       label: planTab.label,
-      emoji: "📊",
+      Icon: ChartIcon,
       // The plan journey spans three routes; highlight the tab on any of them.
       activePaths: ["/profile", "/picture", "/plan", "/dashboard"],
       exact: false,
@@ -62,9 +63,7 @@ export default function BottomNav() {
                 active ? "text-primary" : "text-faint"
               }`}
             >
-              <span aria-hidden="true" className={`text-xl ${active ? "" : "grayscale opacity-70"}`}>
-                {tab.emoji}
-              </span>
+              <tab.Icon className={`h-[22px] w-[22px] ${active ? "" : "opacity-70"}`} />
               {tab.label}
               <span
                 aria-hidden="true"

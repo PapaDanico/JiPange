@@ -11,6 +11,7 @@ import { buildRetirementComparison } from "@/lib/projections";
 import type { BudgetModel } from "@/lib/types";
 import { useCountUp } from "@/hooks/useCountUp";
 import MyGoals from "./MyGoals";
+import Skeleton from "@/components/Skeleton";
 
 const BudgetSplitPieChart = dynamic(() => import("./BudgetSplitPieChart"), { ssr: false });
 
@@ -81,7 +82,16 @@ export default function MoneyPicture() {
       : (split502525 ? split502525.savingsEmergency + split502525.investments : 0);
 
   if (!profile || !financials || !retirement || !split502525) {
-    return <p className="text-center text-ink-soft">Loading your Pesa Picture...</p>;
+    // One-frame hydration gate (storage reads are sync) or the pre-redirect
+    // beat for profileless visitors — mirror the page's card rhythm rather
+    // than flashing a text string.
+    return (
+      <div className="w-full max-w-2xl space-y-8" aria-label="Loading your Pesa Picture" role="status">
+        <Skeleton className="h-24" />
+        <Skeleton className="h-72" />
+        <Skeleton className="h-28" />
+      </div>
+    );
   }
 
   const chartData =

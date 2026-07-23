@@ -56,7 +56,7 @@ export default function DhowcsdLadderCalculator() {
 
       {ladder && (
         <>
-        <div ref={resultsRef} className="space-y-4" aria-live="polite">
+        <div ref={resultsRef} className="animate-rise space-y-4" aria-live="polite">
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             {ladder.buckets.map((bucket) => (
               <div key={bucket.days} className="rounded-2xl border border-border bg-white p-4">

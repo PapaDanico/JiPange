@@ -54,7 +54,7 @@ export default function FulizaCostCalculator() {
 
       {result && (
         <>
-          <div ref={resultsRef} className="space-y-4" aria-live="polite">
+          <div ref={resultsRef} className="animate-rise space-y-4" aria-live="polite">
             <ResultCard
               label="Total cost of borrowing"
               value={formatKES(result.totalFee)}

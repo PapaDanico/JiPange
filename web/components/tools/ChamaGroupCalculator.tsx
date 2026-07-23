@@ -199,7 +199,7 @@ export default function ChamaGroupCalculator() {
       <ResetLink show={isDirty} onReset={handleReset} />
 
       {result && mode === "merry-go-round" && mgr && (
-        <div ref={resultsRef} className="space-y-4" aria-live="polite">
+        <div ref={resultsRef} className="animate-rise space-y-4" aria-live="polite">
           <ResultCard
             label={`Monthly pool (${members} × ${formatKES(Number(contribution))})`}
             value={formatKES(mgr.monthlyPool)}
@@ -257,7 +257,7 @@ export default function ChamaGroupCalculator() {
       )}
 
       {result && mode === "investment" && inv && (
-        <div ref={resultsRef} className="space-y-4" aria-live="polite">
+        <div ref={resultsRef} className="animate-rise space-y-4" aria-live="polite">
           <ResultCard
             label={`Monthly pool invested (${members} × ${formatKES(Number(contribution))})`}
             value={formatKES(inv.monthlyPool)}
