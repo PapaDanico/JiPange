@@ -91,11 +91,11 @@ export default function OneThirdRuleCalculator() {
           )}
 
           <div className="rounded-2xl bg-white p-6 shadow-sm">
-            <div className="flex justify-between py-1.5 text-sm text-[#4B4238]">
+            <div className="flex justify-between py-1.5 text-sm text-ink-soft">
               <span>Statutory deductions (NSSF, SHIF, AHL, PAYE)</span>
               <span>{formatKES(result.statutoryDeductions)}</span>
             </div>
-            <div className="flex justify-between py-1.5 text-sm text-[#4B4238]">
+            <div className="flex justify-between py-1.5 text-sm text-ink-soft">
               <span>Non-statutory deductions (SACCO + loans)</span>
               <span>{formatKES(result.nonStatutoryDeductions)}</span>
             </div>
@@ -105,7 +105,7 @@ export default function OneThirdRuleCalculator() {
             </div>
           </div>
 
-          <p className="text-xs text-[#4B4238]">
+          <p className="text-xs text-ink-soft">
             Based on the Employment Act&apos;s one-third rule for non-statutory deductions. This is
             a simplified guide, not legal advice — consult a labour officer or lawyer for disputes.
           </p>

@@ -80,13 +80,13 @@ export default function ReturningUserRedirect() {
   if (!destination) return null;
 
   return (
-    <div className="mb-6 w-full max-w-md rounded-2xl border border-[#E5E0D8] bg-white p-4 text-center shadow-sm">
-      <p className="text-sm text-[#4B4238]">
+    <div className="mb-6 w-full max-w-md rounded-2xl border border-border bg-white p-4 text-center shadow-sm">
+      <p className="text-sm text-ink-soft">
         <span aria-hidden="true">👋 </span>Welcome back — pick up where you left off.
       </p>
       <Link
         href={destination.href}
-        className="mt-2 inline-flex h-10 items-center justify-center rounded-full bg-primary px-5 text-sm font-medium text-white transition-colors hover:bg-[#584a3e]"
+        className="mt-2 inline-flex h-10 items-center justify-center rounded-full bg-primary px-5 text-sm font-medium text-white transition-colors hover:bg-primary-deep"
       >
         {destination.label} →
       </Link>

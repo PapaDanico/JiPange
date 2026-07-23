@@ -7,10 +7,10 @@ import { getStoredCalculations, getStoredGoals, getStoredJourneyAnswers } from "
 import { useStorageValue } from "@/lib/hooks";
 
 const STATUS_STYLES: Record<IndicatorStatus, string> = {
-  strong: "bg-[#D1FAE5] text-[#2D7D46]",
+  strong: "bg-[#D1FAE5] text-success",
   good: "bg-[#DBEAFE] text-[#1E40AF]",
-  building: "bg-[#FEF3C7] text-[#B45309]",
-  risk: "bg-[#FEE2E2] text-[#C81E1E]",
+  building: "bg-[#FEF3C7] text-warning",
+  risk: "bg-[#FEE2E2] text-danger",
   unknown: "bg-[#F3F4F6] text-[#6B7280]",
 };
 
@@ -28,7 +28,7 @@ function IndicatorCard({ indicator }: { indicator: ReadinessIndicator }) {
       ? (
           <Link
             href={indicator.href}
-            className="mt-1 block text-[10px] text-[#6B5B4D] underline underline-offset-2 hover:text-primary leading-snug"
+            className="mt-1 block text-[10px] text-primary underline underline-offset-2 hover:text-primary leading-snug"
           >
             {indicator.hint}
           </Link>
@@ -39,7 +39,7 @@ function IndicatorCard({ indicator }: { indicator: ReadinessIndicator }) {
     : null;
 
   return (
-    <div className="rounded-xl border border-[#E5E0D8] bg-[#FAFAF8] p-2.5">
+    <div className="rounded-xl border border-border bg-background p-2.5">
       <p className="text-[11px] text-muted">{indicator.label}</p>
       <div className="mt-1 flex items-center gap-1.5">
         <span

@@ -37,7 +37,7 @@ const COLUMNS: { heading: string; links: { href: string; label: string }[] }[] =
 
 export default function Footer() {
   return (
-    <footer className="mt-auto border-t border-[#E5E0D8] px-6 py-8 text-xs text-[#4B4238] print:hidden">
+    <footer className="mt-auto border-t border-border px-6 py-8 text-xs text-ink-soft print:hidden">
       <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 sm:grid-cols-3">
         {COLUMNS.map((column) => (
           <div key={column.heading}>
@@ -56,7 +56,7 @@ export default function Footer() {
           </div>
         ))}
       </div>
-      <div className="mx-auto mt-8 flex max-w-5xl flex-col items-center gap-2 border-t border-[#E5E0D8] pt-4 text-center sm:flex-row sm:justify-between sm:text-left">
+      <div className="mx-auto mt-8 flex max-w-5xl flex-col items-center gap-2 border-t border-border pt-4 text-center sm:flex-row sm:justify-between sm:text-left">
         <p>
           © {new Date().getFullYear()} JiPange. For guidance only — not licensed financial
           advice.

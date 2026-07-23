@@ -48,7 +48,7 @@ export default function SaveMyPlan() {
 
   if (status === "unavailable") {
     return (
-      <div aria-live="polite" className="rounded-2xl bg-[#F1ECE3] p-5 text-center text-sm text-[#4B4238]">
+      <div aria-live="polite" className="rounded-2xl bg-canvas p-5 text-center text-sm text-ink-soft">
         Your plan is saved on this device. Account sync is coming soon.
       </div>
     );
@@ -56,7 +56,7 @@ export default function SaveMyPlan() {
 
   if (status === "signed-in") {
     return (
-      <div aria-live="polite" className="rounded-2xl bg-[#E9F5EC] p-5 text-center text-sm text-success">
+      <div aria-live="polite" className="rounded-2xl bg-success-soft p-5 text-center text-sm text-success">
         Your plan is saved. Come back anytime from any device.
       </div>
     );
@@ -64,7 +64,7 @@ export default function SaveMyPlan() {
 
   if (status === "sent") {
     return (
-      <div aria-live="polite" className="rounded-2xl bg-[#F1ECE3] p-5 text-center text-sm text-[#4B4238]">
+      <div aria-live="polite" className="rounded-2xl bg-canvas p-5 text-center text-sm text-ink-soft">
         Check your email for a magic link to finish saving your plan.
       </div>
     );
@@ -73,7 +73,7 @@ export default function SaveMyPlan() {
   return (
     <form onSubmit={handleSubmit} className="rounded-2xl bg-white p-5 shadow-sm" aria-live="polite">
       <p className="text-sm font-medium text-primary">Save your plan</p>
-      <p className="mt-1 text-xs text-[#4B4238]">
+      <p className="mt-1 text-xs text-ink-soft">
         Save your plan so you can access it from any device.
       </p>
       <div className="mt-3 flex gap-2">
@@ -83,7 +83,7 @@ export default function SaveMyPlan() {
           value={email}
           onChange={(event) => setEmail(event.target.value)}
           placeholder="you@example.com"
-          className="h-11 flex-1 rounded-full border border-[#E5E0D8] px-4 text-sm focus:border-primary focus:outline-none"
+          className="h-11 flex-1 rounded-full border border-border px-4 text-sm focus:border-primary focus:outline-none"
         />
         <button
           type="submit"

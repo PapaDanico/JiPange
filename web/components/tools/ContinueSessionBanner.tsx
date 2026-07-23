@@ -40,18 +40,18 @@ export default function ContinueSessionBanner() {
   if (!meta) return null;
 
   return (
-    <div className="mb-6 w-full rounded-2xl border border-accent bg-[#FFF8EA] p-4">
+    <div className="mb-6 w-full rounded-2xl border border-accent bg-accent-soft p-4">
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
           <p className="text-sm font-semibold text-primary">Continue where you left off?</p>
-          <p className="mt-0.5 truncate text-xs text-[#4B4238]">
+          <p className="mt-0.5 truncate text-xs text-ink-soft">
             <span aria-hidden="true">{meta.icon}</span> {meta.name} has unfinished inputs
           </p>
         </div>
         <div className="flex shrink-0 items-center gap-2">
           <Link
             href={href}
-            className="inline-flex h-9 items-center justify-center rounded-full bg-primary px-4 text-xs font-semibold text-white transition-colors hover:bg-[#584a3e]"
+            className="inline-flex h-9 items-center justify-center rounded-full bg-primary px-4 text-xs font-semibold text-white transition-colors hover:bg-primary-deep"
           >
             Resume →
           </Link>

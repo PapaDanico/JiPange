@@ -38,7 +38,7 @@ export default function ToolEnhancements() {
       {meta.nextMove && (
         <Link
           href={meta.nextMove.href}
-          className="flex h-12 w-full items-center justify-center rounded-full bg-primary text-center text-sm font-semibold text-white transition-colors hover:bg-[#584a3e]"
+          className="flex h-12 w-full items-center justify-center rounded-full bg-primary text-center text-sm font-semibold text-white transition-colors hover:bg-primary-deep"
         >
           {meta.nextMove.label}
         </Link>
@@ -54,7 +54,7 @@ export default function ToolEnhancements() {
               <Link
                 key={tool.href}
                 href={tool.href}
-                className="inline-flex items-center gap-1.5 rounded-full border border-[#E5E0D8] bg-white px-3 py-1.5 text-xs font-medium text-primary transition-colors hover:border-accent hover:text-accent"
+                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-white px-3 py-1.5 text-xs font-medium text-primary transition-colors hover:border-accent hover:text-accent"
               >
                 <span aria-hidden="true">{tool.icon}</span>
                 {tool.name}

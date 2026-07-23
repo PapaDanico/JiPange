@@ -22,13 +22,13 @@ export default function MyGoals({ savingsCapacity }: { savingsCapacity: number }
     return (
       <div className="rounded-2xl bg-white p-6 shadow-sm">
         <h2 className="text-base font-semibold text-primary">My goals</h2>
-        <p className="mt-1 text-sm text-[#4B4238]">
+        <p className="mt-1 text-sm text-ink-soft">
           Turn this capacity into commitments — plan school fees, a home deposit, an emergency
           fund, retirement or business capital.
         </p>
         <Link
           href="/planners"
-          className="mt-3 inline-flex h-10 items-center justify-center rounded-full bg-accent px-5 text-sm font-medium text-[#171717] transition-colors hover:bg-[#d6961f]"
+          className="mt-3 inline-flex h-10 items-center justify-center rounded-full bg-accent px-5 text-sm font-medium text-ink transition-colors hover:bg-accent-deep"
         >
           Open the goal planners →
         </Link>
@@ -62,7 +62,7 @@ export default function MyGoals({ savingsCapacity }: { savingsCapacity: number }
                 <span className="block truncate text-sm font-medium text-primary">
                   {goal.title}
                 </span>
-                <span className="block text-xs text-[#4B4238]">
+                <span className="block text-xs text-ink-soft">
                   {formatKES(goal.requiredMonthly)}/mo · {formatKES(goal.nominalTarget)} in{" "}
                   {goal.years} {goal.years === 1 ? "yr" : "yrs"}
                 </span>
@@ -72,7 +72,7 @@ export default function MyGoals({ savingsCapacity }: { savingsCapacity: number }
               type="button"
               onClick={() => handleRemove(goal.goalType)}
               aria-label={`Remove ${goal.title} goal`}
-              className="shrink-0 rounded-full border border-[#E5E0D8] px-2.5 py-1 text-xs text-[#6f6e69] hover:bg-[#F1ECE3]"
+              className="shrink-0 rounded-full border border-border px-2.5 py-1 text-xs text-faint hover:bg-canvas"
             >
               Remove
             </button>
@@ -80,15 +80,15 @@ export default function MyGoals({ savingsCapacity }: { savingsCapacity: number }
         ))}
       </ul>
 
-      <div className="mt-4 border-t border-[#E5E0D8] pt-3 text-sm">
+      <div className="mt-4 border-t border-border pt-3 text-sm">
         <div className="flex items-center justify-between">
-          <span className="text-[#4B4238]">Total monthly commitment</span>
+          <span className="text-ink-soft">Total monthly commitment</span>
           <span className={`font-semibold ${overCommitted ? "text-danger" : "text-success"}`}>
             {formatKES(totalMonthly)}/mo
           </span>
         </div>
         {savingsCapacity > 0 && (
-          <p className={`mt-1 text-xs ${overCommitted ? "text-danger" : "text-[#4B4238]"}`}>
+          <p className={`mt-1 text-xs ${overCommitted ? "text-danger" : "text-ink-soft"}`}>
             {overCommitted
               ? `That's ${formatKES(totalMonthly - savingsCapacity)} above your ${formatKES(
                   savingsCapacity

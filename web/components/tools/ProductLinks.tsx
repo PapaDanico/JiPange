@@ -1,14 +1,14 @@
 import { type ProductLink, HAS_AFFILIATE_LINKS } from "@/lib/affiliate-links";
 
 const REGULATOR_COLORS: Record<string, string> = {
-  CMA: "bg-[#E9F5EC] text-[#2b4a2b]",
+  CMA: "bg-success-soft text-success-deep",
   CBK: "bg-[#EEF2FF] text-[#2b3a7a]",
-  SASRA: "bg-[#FFF4DC] text-[#7a4a00]",
+  SASRA: "bg-accent-wash text-[#7a4a00]",
   "CBK+CMA": "bg-[#EEF2FF] text-[#2b3a7a]",
 };
 
 function ProductCard({ product }: { product: ProductLink }) {
-  const regulatorClass = REGULATOR_COLORS[product.regulator] ?? "bg-[#F1ECE3] text-[#4B4238]";
+  const regulatorClass = REGULATOR_COLORS[product.regulator] ?? "bg-canvas text-ink-soft";
   return (
     <a
       href={`/go/${product.slug}`}

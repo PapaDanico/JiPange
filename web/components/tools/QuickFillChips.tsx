@@ -17,8 +17,8 @@ export default function QuickFillChips({ label, options, onSelect, current }: Pr
             onClick={() => onSelect(opt.value)}
             className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
               current === opt.value
-                ? "border-accent bg-accent text-[#171717]"
-                : "border-[#E5E0D8] bg-white text-primary hover:border-accent"
+                ? "border-accent bg-accent text-ink"
+                : "border-border bg-white text-primary hover:border-accent"
             }`}
           >
             {opt.label}

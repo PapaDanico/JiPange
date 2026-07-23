@@ -76,7 +76,7 @@ export default function TaxShieldCalculator() {
       ).map(([id, label, value, setter, max]) => (
         <div key={id}>
           <div className="flex items-center justify-between">
-            <label htmlFor={id} className="text-sm font-medium text-[#4B4238]">
+            <label htmlFor={id} className="text-sm font-medium text-ink-soft">
               {label}
             </label>
             <span className="text-sm font-semibold text-primary">
@@ -102,13 +102,13 @@ export default function TaxShieldCalculator() {
         <>
         <div ref={resultsRef} className="space-y-4" aria-live="polite">
           {/* The leak gauge */}
-          <div className="rounded-2xl border-2 border-danger bg-[#FBEAEA] p-5">
+          <div className="rounded-2xl border-2 border-danger bg-danger-soft p-5">
             <h2 className="text-sm font-semibold uppercase tracking-wide text-danger">
               Your Monthly KRA Tax Leak
             </h2>
             <p className="mt-2 text-3xl font-semibold text-danger" data-testid="tax-leak">
               {formatKES(shield.totalMonthlyRecoverable)}
-              <span className="text-base font-normal text-[#4B4238]"> / month</span>
+              <span className="text-base font-normal text-ink-soft"> / month</span>
             </p>
             <div className="mt-3 h-3 w-full overflow-hidden rounded-full bg-white">
               <div
@@ -118,7 +118,7 @@ export default function TaxShieldCalculator() {
                 }}
               />
             </div>
-            <ul className="mt-3 space-y-1 text-sm text-[#4B4238]">
+            <ul className="mt-3 space-y-1 text-sm text-ink-soft">
               <li>
                 Pension headroom {formatKES(shield.pensionHeadroom)} →{" "}
                 <strong>{formatKES(shield.pensionTaxSavings)}</strong> PAYE recoverable
@@ -132,18 +132,18 @@ export default function TaxShieldCalculator() {
                 <strong>{formatKES(shield.insuranceReliefClaimable)}</strong> (15%, capped)
               </li>
             </ul>
-            <p className="mt-2 text-xs text-[#6f6e69]">
+            <p className="mt-2 text-xs text-faint">
               At your marginal PAYE band of {(shield.marginalRate * 100).toFixed(1)}%.
             </p>
           </div>
 
           {maxed ? (
-            <p className="rounded-2xl bg-[#E9F5EC] p-4 text-sm text-[#2b4a2b]">
+            <p className="rounded-2xl bg-success-soft p-4 text-sm text-success-deep">
               🛡️ Fully shielded — your statutory reliefs are maximised. Every allowable shilling
               is already working for you, not PAYE.
             </p>
           ) : (
-            <p className="rounded-2xl bg-[#FFF8EA] p-4 text-sm text-[#4B4238]">
+            <p className="rounded-2xl bg-accent-soft p-4 text-sm text-ink-soft">
               💡 <em>The Optimization Shield:</em> By adjusting your payroll allocations to
               maximize your pension and insurance lines, you legally stop{" "}
               <strong className="text-danger">
@@ -171,7 +171,7 @@ export default function TaxShieldCalculator() {
                 </a>
               ))}
             </div>
-            <p className="mt-2 text-xs text-[#6f6e69]">
+            <p className="mt-2 text-xs text-faint">
               Confirm the scheme is RBA-registered and the exact relief treatment with the
               provider and your payroll.
             </p>

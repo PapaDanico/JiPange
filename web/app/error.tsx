@@ -18,7 +18,7 @@ export default function Error({
     <div className="flex flex-1 flex-col items-center justify-center px-6 py-24 text-center">
       <p className="text-5xl">⚠️</p>
       <h1 className="mt-4 text-2xl font-semibold text-primary">Something went wrong</h1>
-      <p className="mt-2 max-w-xs text-sm text-[#4B4238]">
+      <p className="mt-2 max-w-xs text-sm text-ink-soft">
         An unexpected error occurred. Your data is still saved locally — try refreshing.
       </p>
       <div className="mt-8 flex flex-wrap justify-center gap-3">
@@ -31,7 +31,7 @@ export default function Error({
         </button>
         <Link
           href="/tools"
-          className="rounded-xl border border-[#E5E0D8] bg-white px-5 py-2.5 text-sm font-medium text-primary hover:bg-[#F1ECE3]"
+          className="rounded-xl border border-border bg-white px-5 py-2.5 text-sm font-medium text-primary hover:bg-canvas"
         >
           Go to calculators
         </Link>

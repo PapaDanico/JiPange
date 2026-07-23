@@ -59,15 +59,15 @@ export default function DhowcsdLadderCalculator() {
         <div ref={resultsRef} className="space-y-4" aria-live="polite">
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             {ladder.buckets.map((bucket) => (
-              <div key={bucket.days} className="rounded-2xl border border-[#E5E0D8] bg-white p-4">
-                <p className="text-xs font-semibold uppercase tracking-wide text-[#946213]">
+              <div key={bucket.days} className="rounded-2xl border border-border bg-white p-4">
+                <p className="text-xs font-semibold uppercase tracking-wide text-accent-ink">
                   {bucket.days}-day
                 </p>
                 <p className="mt-0.5 text-sm font-semibold text-primary">{bucket.label}</p>
-                <p className="mt-2 text-lg font-semibold text-[#171717]">
+                <p className="mt-2 text-lg font-semibold text-ink">
                   {formatKES(bucket.allocation)}
                 </p>
-                <p className="text-xs text-[#4B4238]">
+                <p className="text-xs text-ink-soft">
                   at {(bucket.yieldRate * 100).toFixed(2)}% →{" "}
                   <span className="font-medium text-success">
                     +{formatKES(bucket.annualYieldKes)}/yr

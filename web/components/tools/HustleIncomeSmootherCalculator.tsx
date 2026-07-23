@@ -104,7 +104,7 @@ export default function HustleIncomeSmootherCalculator() {
   return (
     <div className="space-y-4">
       <div>
-        <p className="text-sm font-medium text-[#4B4238]">
+        <p className="text-sm font-medium text-ink-soft">
           How many months of income to enter?
         </p>
         <QuickFillChips
@@ -133,7 +133,7 @@ export default function HustleIncomeSmootherCalculator() {
           <div className="flex items-center justify-between">
             <label
               htmlFor="hustle-drawPct"
-              className="text-sm font-medium text-[#4B4238]"
+              className="text-sm font-medium text-ink-soft"
             >
               Pay yourself this % of your median income
             </label>
@@ -188,7 +188,7 @@ export default function HustleIncomeSmootherCalculator() {
               <p className="text-sm font-semibold text-primary">
                 Month-by-month view
               </p>
-              <p className="mt-0.5 text-xs text-[#4B4238]">
+              <p className="mt-0.5 text-xs text-ink-soft">
                 Bars = your income. Vertical line = your salary draw.
               </p>
               <div className="mt-3 space-y-2.5">
@@ -202,7 +202,7 @@ export default function HustleIncomeSmootherCalculator() {
                   return (
                     <div key={i}>
                       <div className="flex items-center justify-between text-xs">
-                        <span className="text-[#4B4238]">{monthLabels[i]}</span>
+                        <span className="text-ink-soft">{monthLabels[i]}</span>
                         <span
                           className={`font-medium ${
                             isLean ? "text-danger" : "text-success"
@@ -212,7 +212,7 @@ export default function HustleIncomeSmootherCalculator() {
                           {formatKES(surplus)}
                         </span>
                       </div>
-                      <div className="relative mt-1 h-4 overflow-hidden rounded-full bg-[#F1ECE3]">
+                      <div className="relative mt-1 h-4 overflow-hidden rounded-full bg-canvas">
                         <div
                           className={`h-full rounded-full ${
                             isLean ? "bg-[#f5a9a9]" : "bg-[#86c99a]"
@@ -229,7 +229,7 @@ export default function HustleIncomeSmootherCalculator() {
                   );
                 })}
               </div>
-              <div className="mt-3 flex flex-wrap items-center gap-4 text-xs text-[#4B4238]">
+              <div className="mt-3 flex flex-wrap items-center gap-4 text-xs text-ink-soft">
                 <span className="flex items-center gap-1.5">
                   <span className="inline-block h-2.5 w-2.5 rounded-full bg-[#86c99a]" />
                   Surplus month
@@ -247,7 +247,7 @@ export default function HustleIncomeSmootherCalculator() {
 
             {/* Buffer outcome */}
             {result.finalBuffer > 0 ? (
-              <div className="rounded-2xl bg-[#E9F5EC] p-4 text-sm text-[#2b4a2b]">
+              <div className="rounded-2xl bg-success-soft p-4 text-sm text-success-deep">
                 <p className="font-semibold">
                   Buffer built:{" "}
                   {formatKES(result.finalBuffer)} (
@@ -264,11 +264,11 @@ export default function HustleIncomeSmootherCalculator() {
                 </p>
               </div>
             ) : (
-              <div className="rounded-2xl border border-[#F0C06A] bg-[#FFF4DC] p-4 text-sm">
+              <div className="rounded-2xl border border-[#F0C06A] bg-accent-wash p-4 text-sm">
                 <p className="font-semibold text-warning">
                   Your income is too variable for this draw level.
                 </p>
-                <p className="mt-1 text-xs text-[#4B4238]">
+                <p className="mt-1 text-xs text-ink-soft">
                   Lean months drain your buffer before the next surplus arrives.
                   Try lowering the draw % — 70% of median usually gives a safe
                   margin even with volatile income.
@@ -277,14 +277,14 @@ export default function HustleIncomeSmootherCalculator() {
             )}
 
             {result.shortMonths > 0 && (
-              <p className="text-xs text-[#4B4238]">
+              <p className="text-xs text-ink-soft">
                 {result.shortMonths} of {validIncomes.length} months fell below your
                 salary draw — that&apos;s exactly what the buffer fund covers.
               </p>
             )}
 
             {/* The three-step system */}
-            <div className="rounded-2xl bg-[#F1ECE3] p-4 text-sm text-[#4B4238]">
+            <div className="rounded-2xl bg-canvas p-4 text-sm text-ink-soft">
               <p className="font-semibold text-primary">The three-step system</p>
               <ol className="mt-2 list-decimal space-y-1 pl-5 text-xs">
                 <li>
@@ -302,7 +302,7 @@ export default function HustleIncomeSmootherCalculator() {
               </ol>
             </div>
 
-            <p className="text-xs text-[#4B4238]">
+            <p className="text-xs text-ink-soft">
               Running a cycle-based venture (poultry, horticulture, cash crops)?
               Try the{" "}
               <Link

@@ -11,9 +11,9 @@ export default function TermsPage() {
     <div className="flex flex-1 flex-col items-center px-6 py-12">
       <div className="w-full max-w-2xl">
         <h1 className="text-2xl font-semibold text-primary">Terms of Use</h1>
-        <p className="mt-1 text-sm text-[#4B4238]">Last updated: July 2026</p>
+        <p className="mt-1 text-sm text-ink-soft">Last updated: July 2026</p>
 
-        <div className="mt-8 space-y-6 text-sm leading-relaxed text-[#4B4238]">
+        <div className="mt-8 space-y-6 text-sm leading-relaxed text-ink-soft">
           <section>
             <h2 className="text-base font-semibold text-primary">1. Acceptance of these terms</h2>
             <p className="mt-2">

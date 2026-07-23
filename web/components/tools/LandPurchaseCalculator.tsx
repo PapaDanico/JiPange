@@ -86,8 +86,8 @@ export default function LandPurchaseCalculator() {
 
       {/* Land type */}
       <div>
-        <p className="text-sm font-medium text-[#4B4238]">Land type</p>
-        <div className="mt-1 flex rounded-lg border border-[#E5E0D8] bg-white p-1">
+        <p className="text-sm font-medium text-ink-soft">Land type</p>
+        <div className="mt-1 flex rounded-lg border border-border bg-white p-1">
           <button
             type="button"
             onClick={() => setLandType("urban_residential")}
@@ -95,7 +95,7 @@ export default function LandPurchaseCalculator() {
             className={`flex-1 rounded-md py-2 text-sm font-medium transition-colors ${
               landType === "urban_residential"
                 ? "bg-primary text-white"
-                : "text-[#4B4238] hover:bg-[#F1ECE3]"
+                : "text-ink-soft hover:bg-canvas"
             }`}
           >
             Urban / residential (4%)
@@ -107,22 +107,22 @@ export default function LandPurchaseCalculator() {
             className={`flex-1 rounded-md py-2 text-sm font-medium transition-colors ${
               landType === "agricultural"
                 ? "bg-primary text-white"
-                : "text-[#4B4238] hover:bg-[#F1ECE3]"
+                : "text-ink-soft hover:bg-canvas"
             }`}
           >
             Agricultural / rural (2%)
           </button>
         </div>
-        <p className="mt-1 text-xs text-[#6f6e69]">
+        <p className="mt-1 text-xs text-faint">
           Stamp duty rate per the Stamp Duty Act Cap 480 (Kenya).
         </p>
       </div>
 
       {/* Agent toggle */}
-      <div className="flex items-center justify-between rounded-lg border border-[#E5E0D8] bg-white px-4 py-3">
+      <div className="flex items-center justify-between rounded-lg border border-border bg-white px-4 py-3">
         <div>
-          <p className="text-sm font-medium text-[#4B4238]">Buying through a real estate agent</p>
-          <p className="text-xs text-[#6f6e69]">Standard commission is 3% of the plot price</p>
+          <p className="text-sm font-medium text-ink-soft">Buying through a real estate agent</p>
+          <p className="text-xs text-faint">Standard commission is 3% of the plot price</p>
         </div>
         <Toggle
           checked={usesAgent === "true"}
@@ -154,9 +154,9 @@ export default function LandPurchaseCalculator() {
             <p className="text-sm font-semibold text-primary">Full cost breakdown</p>
             <div className="mt-3 space-y-0">
               {/* Plot price row */}
-              <div className="flex items-center justify-between border-b border-[#E5E0D8] py-2.5">
+              <div className="flex items-center justify-between border-b border-border py-2.5">
                 <div>
-                  <p className="text-sm font-semibold text-[#4B4238]">Quoted plot price</p>
+                  <p className="text-sm font-semibold text-ink-soft">Quoted plot price</p>
                 </div>
                 <p className="text-sm font-semibold text-primary tabular-nums">
                   {formatKES(result.plotPrice)}
@@ -166,13 +166,13 @@ export default function LandPurchaseCalculator() {
               {COST_ROWS.map((row) => (
                 <div
                   key={row.label}
-                  className="flex items-center justify-between border-b border-[#E5E0D8] py-2.5"
+                  className="flex items-center justify-between border-b border-border py-2.5"
                 >
                   <div>
-                    <p className="text-sm text-[#4B4238]">{row.label}</p>
+                    <p className="text-sm text-ink-soft">{row.label}</p>
                     <p className="text-[11px] text-muted">{row.note}</p>
                   </div>
-                  <p className="text-sm font-medium text-[#4B4238] tabular-nums">
+                  <p className="text-sm font-medium text-ink-soft tabular-nums">
                     {formatKES(row.value)}
                   </p>
                 </div>

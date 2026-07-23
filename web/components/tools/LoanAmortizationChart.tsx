@@ -93,7 +93,7 @@ export default function LoanAmortizationChart({
     >
       <div className="mb-3 flex items-center justify-between">
         <p className="text-sm font-semibold text-primary">Where your payments go</p>
-        <div className="flex items-center gap-3 text-[10px] text-[#4B4238]">
+        <div className="flex items-center gap-3 text-[10px] text-ink-soft">
           <span className="flex items-center gap-1">
             <span className="inline-block h-2.5 w-2.5 rounded-sm bg-[#3a7d44]" />
             Principal

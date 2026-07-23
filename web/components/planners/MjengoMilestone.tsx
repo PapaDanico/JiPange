@@ -52,14 +52,14 @@ export default function MjengoMilestone() {
       <h2 className="text-base font-semibold text-primary">
         The Plot &amp; Mjengo path — skip the 14.5% mortgage
       </h2>
-      <p className="mt-1 text-xs text-[#4B4238]">
+      <p className="mt-1 text-xs text-ink-soft">
         Build the deposit vault, then let the Sacco&apos;s {SACCO_LEVERAGE_MULTIPLIER}× multiplier
         fund the build.
       </p>
 
       <div className="mt-4">
         <div className="flex items-center justify-between">
-          <label htmlFor="mjengo-value" className="text-sm font-medium text-[#4B4238]">
+          <label htmlFor="mjengo-value" className="text-sm font-medium text-ink-soft">
             Target property / build value
           </label>
           <span className="text-sm font-semibold text-primary">{formatKES(propertyValue)}</span>
@@ -77,7 +77,7 @@ export default function MjengoMilestone() {
       </div>
 
       <div className="mt-3">
-        <label htmlFor="mjengo-contribution" className="text-sm font-medium text-[#4B4238]">
+        <label htmlFor="mjengo-contribution" className="text-sm font-medium text-ink-soft">
           Monthly contribution
         </label>
       </div>
@@ -90,9 +90,9 @@ export default function MjengoMilestone() {
           value={contribution}
           onChange={(event) => setContribution(event.target.value)}
           placeholder="Monthly contribution, e.g. 30000"
-          className="h-12 w-full rounded-lg border border-[#E5E0D8] bg-white px-4 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+          className="h-12 w-full rounded-lg border border-border bg-white px-4 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
         />
-        <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-sm text-[#4B4238]">
+        <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-sm text-ink-soft">
           KES/mo
         </span>
       </div>
@@ -100,13 +100,13 @@ export default function MjengoMilestone() {
       {parsedContribution > 0 && (
         <div className="mt-5">
           {/* Vertical milestone stepper */}
-          <ol className="relative space-y-6 border-l-2 border-[#E5E0D8] pl-5">
+          <ol className="relative space-y-6 border-l-2 border-border pl-5">
             <li>
-              <span className="absolute -left-[11px] flex h-5 w-5 items-center justify-center rounded-full bg-accent text-[10px] font-bold text-[#171717]">
+              <span className="absolute -left-[11px] flex h-5 w-5 items-center justify-center rounded-full bg-accent text-[10px] font-bold text-ink">
                 1
               </span>
               <p className="text-sm font-semibold text-primary">The Accumulation Vault</p>
-              <p className="mt-0.5 text-sm text-[#4B4238]">
+              <p className="mt-0.5 text-sm text-ink-soft">
                 Deposit {formatKES(parsedContribution)}/mo into a Tier-1 Sacco until you hold{" "}
                 <strong>{formatKES(plan.requiredDeposits)}</strong> (a third of the target).
               </p>
@@ -122,12 +122,12 @@ export default function MjengoMilestone() {
                 2
               </span>
               <p className="text-sm font-semibold text-primary">The Multiplier Strike</p>
-              <p className="mt-0.5 text-sm text-[#4B4238]">
+              <p className="mt-0.5 text-sm text-ink-soft">
                 Activate the {SACCO_LEVERAGE_MULTIPLIER}× development loan:{" "}
                 <strong>{formatKES(plan.developmentLoan)}</strong> against your vault — enough for
                 the full plot-and-mjengo build.
               </p>
-              <p className="mt-1 text-xs text-[#6f6e69]">
+              <p className="mt-1 text-xs text-faint">
                 Est. repayment ≈ {formatKES(repayment)}/mo ({(SACCO_LOAN_RATE * 100).toFixed(0)}%
                 over {SACCO_LOAN_TERM_MONTHS} months — confirm terms with your Sacco).
               </p>
@@ -135,14 +135,14 @@ export default function MjengoMilestone() {
           </ol>
 
           {overThird && (
-            <p className="mt-4 rounded-xl border-2 border-danger bg-[#FBEAEA] p-3 text-sm text-danger">
+            <p className="mt-4 rounded-xl border-2 border-danger bg-danger-soft p-3 text-sm text-danger">
               ⚠️ Safeguard: that repayment exceeds {(MAX_SALARY_DEBT_LIMIT * 100).toFixed(0)}% of
               your take-home pay ({formatKES(netMonthly!)}) — the legal salary-deduction ceiling.
               Extend the vault phase or lower the target before striking.
             </p>
           )}
 
-          <p className="mt-4 text-xs text-[#6f6e69]">
+          <p className="mt-4 text-xs text-faint">
             Prefer T-Bills while you accumulate?{" "}
             <Link href="/tools/dhowcsd" className="font-medium text-primary underline">
               Ladder the vault on DhowCSD →

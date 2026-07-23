@@ -30,7 +30,7 @@ function MicroMilestone({ answers }: { answers: JourneyAnswers }) {
   return (
     <section aria-label="Micro-milestone" className="rounded-2xl bg-white p-5 shadow-sm">
       <h2 className="text-base font-semibold text-primary">Your first milestone</h2>
-      <p className="mt-1 rounded-xl bg-[#E9F5EC] p-4 text-sm text-[#2b4a2b]">
+      <p className="mt-1 rounded-xl bg-success-soft p-4 text-sm text-success-deep">
         🎯 Hit your first <strong>{formatKES(target)}</strong>
         {months !== null && (
           <>
@@ -43,7 +43,7 @@ function MicroMilestone({ answers }: { answers: JourneyAnswers }) {
 
       <div className="mt-4">
         <div className="flex items-center justify-between">
-          <label htmlFor="milestone-monthly" className="text-sm font-medium text-[#4B4238]">
+          <label htmlFor="milestone-monthly" className="text-sm font-medium text-ink-soft">
             Monthly contribution
           </label>
           <span className="text-sm font-semibold text-primary">{formatKES(monthly)}/mo</span>
@@ -59,7 +59,7 @@ function MicroMilestone({ answers }: { answers: JourneyAnswers }) {
           className="mt-2 h-2 w-full accent-primary"
         />
       </div>
-      <p className="mt-2 text-xs text-[#6f6e69]">
+      <p className="mt-2 text-xs text-faint">
         Assumes an {(MILESTONE_YIELD * 100).toFixed(1)}% p.a. MMF baseline compounded monthly —
         an assumption, not a promise. Check live rates before committing.
       </p>
@@ -167,8 +167,8 @@ function PaybillCopy({ payment }: { payment: PaybillInfo }) {
   }
 
   return (
-    <div className="mt-4 flex items-center justify-between gap-3 rounded-xl bg-[#F1ECE3] p-3">
-      <p className="text-xs text-[#4B4238]">
+    <div className="mt-4 flex items-center justify-between gap-3 rounded-xl bg-canvas p-3">
+      <p className="text-xs text-ink-soft">
         <span className="font-semibold text-primary">{payment.provider}</span>
         <br />
         Paybill <strong>{payment.paybill}</strong> · A/c {payment.account}
@@ -228,7 +228,7 @@ function VendorBlueprint({ vehicleId }: { vehicleId: Vehicle["id"] }) {
       <ul className="mt-3 space-y-3">
         {blueprint.steps.map((step, index) => (
           <li key={step}>
-            <label className="flex cursor-pointer items-start gap-3 text-sm text-[#4B4238]">
+            <label className="flex cursor-pointer items-start gap-3 text-sm text-ink-soft">
               <input
                 type="checkbox"
                 checked={done[index] ?? false}
@@ -241,7 +241,7 @@ function VendorBlueprint({ vehicleId }: { vehicleId: Vehicle["id"] }) {
         ))}
       </ul>
       <PaybillCopy payment={blueprint.payment} />
-      <p className="mt-1.5 text-[11px] text-[#6f6e69]">
+      <p className="mt-1.5 text-[11px] text-faint">
         Paybills verified Jul 2026 — always confirm with the provider before sending money.
       </p>
       <button
@@ -319,7 +319,7 @@ function LifeCapitalMap({ goal }: { goal: PrimaryGoal }) {
   return (
     <section aria-label="Life Capital Map" className="rounded-2xl bg-white p-5 shadow-sm">
       <h2 className="text-base font-semibold text-primary">Life Capital Map</h2>
-      <p className="mt-1 text-xs text-[#6f6e69]">
+      <p className="mt-1 text-xs text-faint">
         Every financial decision allocates one of four forms of capital. Your current focus:
       </p>
 
@@ -361,7 +361,7 @@ function LifeCapitalMap({ goal }: { goal: PrimaryGoal }) {
           {meta.emoji} {active} capital — your current focus
         </p>
         <p className="mt-1.5 text-xs leading-relaxed text-[#1E3A4A]">{meta.insight}</p>
-        <p className="mt-2 text-[11px] text-[#4B4238]">
+        <p className="mt-2 text-[11px] text-ink-soft">
           <strong>After this milestone:</strong> {meta.next}
         </p>
       </div>
@@ -390,7 +390,7 @@ function ViralShare() {
   return (
     <section
       aria-label="Share JiPange"
-      className="rounded-2xl border-2 border-accent bg-[#FFF8EA] p-5 text-center"
+      className="rounded-2xl border-2 border-accent bg-accent-soft p-5 text-center"
     >
       <p className="text-sm font-semibold text-primary">
         🔥 Help your friends protect their cash from inflation drag.
@@ -407,12 +407,12 @@ function ViralShare() {
         <button
           type="button"
           onClick={() => void copyLink()}
-          className="h-11 flex-1 rounded-full border border-[#E5E0D8] bg-white text-sm font-medium text-[#4B4238]"
+          className="h-11 flex-1 rounded-full border border-border bg-white text-sm font-medium text-ink-soft"
         >
           {copied ? "Copied!" : "Copy Anonymous Plan Link"}
         </button>
       </div>
-      <p className="mt-2 text-xs text-[#6f6e69]">
+      <p className="mt-2 text-xs text-faint">
         The link carries nothing about you — it just opens JiPange.
       </p>
     </section>

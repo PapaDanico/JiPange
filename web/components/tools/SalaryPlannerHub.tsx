@@ -123,7 +123,7 @@ export default function SalaryPlannerHub() {
           {/* Pension slider */}
           <div>
             <div className="flex items-center justify-between">
-              <label htmlFor="hub-pension" className="text-sm font-medium text-[#4B4238]">
+              <label htmlFor="hub-pension" className="text-sm font-medium text-ink-soft">
                 Pension contribution (KES/month)
               </label>
               <span className="text-sm font-semibold text-primary">
@@ -154,7 +154,7 @@ export default function SalaryPlannerHub() {
           {/* Mortgage slider */}
           <div>
             <div className="flex items-center justify-between">
-              <label htmlFor="hub-mortgage" className="text-sm font-medium text-[#4B4238]">
+              <label htmlFor="hub-mortgage" className="text-sm font-medium text-ink-soft">
                 Mortgage interest (KES/month)
               </label>
               <span className="text-sm font-semibold text-primary">
@@ -190,7 +190,7 @@ export default function SalaryPlannerHub() {
             onChange={setInsurance}
             placeholder="0"
           />
-          <p className="text-xs text-[#4B4238]">
+          <p className="text-xs text-ink-soft">
             Pension and mortgage reduce taxable pay. Insurance relief is 15% of premiums up to Ksh
             5,000/month. These are declared to your employer — the contributions themselves are not
             deducted here.
@@ -214,7 +214,7 @@ export default function SalaryPlannerHub() {
             className={`shrink-0 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
               activeTab === tab.id
                 ? "border-primary bg-primary text-white"
-                : "border-[#E5E0D8] bg-white text-[#4B4238] hover:bg-[#F1ECE3]"
+                : "border-border bg-white text-ink-soft hover:bg-canvas"
             }`}
           >
             {tab.label}
@@ -271,7 +271,7 @@ export default function SalaryPlannerHub() {
                       value={`(${formatKES(taxResult.mortgageRelief)})`}
                     />
                   )}
-                  <hr className="my-2 border-[#E5E0D8]" />
+                  <hr className="my-2 border-border" />
                   <DeductionRow
                     label="Taxable pay"
                     value={formatKES(taxResult.taxablePay)}
@@ -294,7 +294,7 @@ export default function SalaryPlannerHub() {
                     />
                   )}
                   <DeductionRow label="Net PAYE" value={`(${formatKES(taxResult.paye)})`} />
-                  <hr className="my-2 border-[#E5E0D8]" />
+                  <hr className="my-2 border-border" />
                   <DeductionRow
                     label="Net take-home pay"
                     value={formatKES(taxResult.netMonthly)}
@@ -311,7 +311,7 @@ export default function SalaryPlannerHub() {
                     label="Housing Levy match"
                     value={formatKES(taxResult.employerCost.ahl)}
                   />
-                  <hr className="my-2 border-[#E5E0D8]" />
+                  <hr className="my-2 border-border" />
                   <DeductionRow
                     label="Your total cost to employer"
                     value={formatKES(taxResult.employerCost.total)}
@@ -347,7 +347,7 @@ export default function SalaryPlannerHub() {
           {!split && noGrossMsg}
           {split && taxResult && (
             <>
-              <div className="rounded-2xl bg-[#F1ECE3] p-4 text-sm text-[#4B4238]">
+              <div className="rounded-2xl bg-canvas p-4 text-sm text-ink-soft">
                 Splitting your{" "}
                 <strong>{formatKES(taxResult.netMonthly)}</strong> take-home into three purposeful
                 buckets.
@@ -390,7 +390,7 @@ export default function SalaryPlannerHub() {
           {!taxResult && noGrossMsg}
           {taxResult && (
             <>
-              <div className="rounded-xl bg-[#F1ECE3] p-3 text-sm text-[#4B4238]">
+              <div className="rounded-xl bg-canvas p-3 text-sm text-ink-soft">
                 Routing from your{" "}
                 <strong>{formatKES(taxResult.netMonthly)}</strong> take-home pay.
               </div>
@@ -416,7 +416,7 @@ export default function SalaryPlannerHub() {
                     sublabel={`Floating surplus ${formatKES(routeSurplus)} ÷ 4.33 weeks`}
                     tone="success"
                   />
-                  <div className="rounded-2xl bg-[#F1ECE3] p-4 text-sm text-[#4B4238]">
+                  <div className="rounded-2xl bg-canvas p-4 text-sm text-ink-soft">
                     <p className="font-semibold text-primary">Payday action</p>
                     <p className="mt-1 text-xs">
                       On the day you&apos;re paid, move{" "}
@@ -433,7 +433,7 @@ export default function SalaryPlannerHub() {
                 </>
               )}
               {routeSurplus !== null && routeSurplus <= 0 && (Number(rent) > 0 || Number(bills) > 0) && (
-                <div className="rounded-xl border border-danger bg-[#FBEAEA] p-4 text-sm text-danger">
+                <div className="rounded-xl border border-danger bg-danger-soft p-4 text-sm text-danger">
                   Rent and bills exceed your take-home — review your fixed costs.
                 </div>
               )}
@@ -449,7 +449,7 @@ export default function SalaryPlannerHub() {
           {shieldResult && (
             <>
               {shieldResult.totalMonthlyRecoverable < 1 ? (
-                <div className="rounded-2xl bg-[#E9F5EC] p-4 text-sm text-[#2b4a2b]">
+                <div className="rounded-2xl bg-success-soft p-4 text-sm text-success-deep">
                   <p className="font-semibold">Fully optimised — no unused headroom.</p>
                   <p className="mt-1 text-xs">
                     You&apos;re already claiming all available pension, mortgage, and insurance relief.
@@ -489,9 +489,9 @@ export default function SalaryPlannerHub() {
               </div>
 
               {shieldResult.totalMonthlyRecoverable >= 1 && (
-                <div className="rounded-2xl bg-[#FFF4DC] p-4 text-sm">
+                <div className="rounded-2xl bg-accent-wash p-4 text-sm">
                   <p className="font-semibold text-warning">How to close the gap</p>
-                  <ol className="mt-2 list-decimal space-y-1 pl-5 text-xs text-[#4B4238]">
+                  <ol className="mt-2 list-decimal space-y-1 pl-5 text-xs text-ink-soft">
                     <li>
                       Open a pension plan and declare contributions to HR — headroom fills
                       immediately on the payslip.
@@ -537,7 +537,7 @@ export default function SalaryPlannerHub() {
             onChange={setTargetNet}
             placeholder="e.g. 80000"
           />
-          <p className="text-xs text-[#4B4238]">
+          <p className="text-xs text-ink-soft">
             Enter what you need in your pocket — we&apos;ll work out the gross salary to negotiate for.
           </p>
           {negotiateResult && (
@@ -556,7 +556,7 @@ export default function SalaryPlannerHub() {
                   tone="primary"
                 />
               </div>
-              <div className="rounded-2xl bg-[#F1ECE3] p-4 text-sm text-[#4B4238]">
+              <div className="rounded-2xl bg-canvas p-4 text-sm text-ink-soft">
                 <p className="font-semibold text-primary">Negotiation script</p>
                 <p className="mt-1 text-xs">
                   &quot;Based on my take-home needs and Kenya&apos;s statutory deductions, I&apos;m
@@ -565,7 +565,7 @@ export default function SalaryPlannerHub() {
                   discuss the full package including pension contributions.&quot;
                 </p>
               </div>
-              <p className="text-xs text-[#4B4238]">
+              <p className="text-xs text-ink-soft">
                 Verify the outcome: enter{" "}
                 <strong>{formatKES(negotiateResult.requiredGross)}</strong> in the gross field above
                 and switch to Take-Home to confirm the net pay.

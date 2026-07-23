@@ -127,8 +127,8 @@ export default function SavingsGoalCalculator() {
             aria-pressed={annualReturn === preset.value}
             className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
               annualReturn === preset.value
-                ? "border-accent bg-accent text-[#171717]"
-                : "border-[#E5E0D8] bg-white text-[#4B4238] hover:bg-[#F1ECE3]"
+                ? "border-accent bg-accent text-ink"
+                : "border-border bg-white text-ink-soft hover:bg-canvas"
             }`}
           >
             {preset.label}

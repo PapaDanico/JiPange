@@ -111,7 +111,7 @@ export default function MoneyRunwayCalculator() {
       />
       <div>
         <div className="flex items-center justify-between">
-          <label htmlFor="withdrawal-slider" className="text-xs text-[#4B4238]">
+          <label htmlFor="withdrawal-slider" className="text-xs text-ink-soft">
             Drag to see the runway change instantly
           </label>
           <span className="text-sm font-semibold text-primary">
@@ -151,13 +151,13 @@ export default function MoneyRunwayCalculator() {
             <RunwayDeclineChart data={chartData} infinite={!Number.isFinite(result)} />
             {/* Survival triage: is this cushion thick enough to invest from? */}
             {result < 3 ? (
-              <p data-testid="runway-triage" className="rounded-2xl border-2 border-danger bg-[#FBEAEA] p-4 text-sm text-[#4B4238]">
+              <p data-testid="runway-triage" className="rounded-2xl border-2 border-danger bg-danger-soft p-4 text-sm text-ink-soft">
                 🚨 <strong className="text-danger">Action Level: High Urgency.</strong> Your safety
                 cushion is critically thin. Freeze discretionary spending and route 100% of spare
                 liquidity into an emergency MMF buffer before any long-term investing.
               </p>
             ) : (
-              <p data-testid="runway-triage" className="rounded-2xl bg-[#E9F5EC] p-4 text-sm text-[#2b4a2b]">
+              <p data-testid="runway-triage" className="rounded-2xl bg-success-soft p-4 text-sm text-success-deep">
                 ✓ <strong>Action Level: Stable Runway.</strong> A healthy baseline safety net — your
                 cushion can absorb a shock, so salary surpluses can confidently flow to long-term
                 wealth builders.

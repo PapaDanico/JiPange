@@ -20,10 +20,10 @@ const FEASIBILITY_BADGE: Record<
   Exclude<Feasibility, "unknown">,
   { label: string; className: string }
 > = {
-  comfortable: { label: "Comfortably doable", className: "bg-[#E9F5EC] text-success" },
-  tight: { label: "Doable but tight", className: "bg-[#FFF4DC] text-[#946213]" },
-  stretch: { label: "A real stretch", className: "bg-[#FFF4DC] text-[#946213]" },
-  "beyond-reach": { label: "Beyond current capacity", className: "bg-[#FBEAEA] text-danger" },
+  comfortable: { label: "Comfortably doable", className: "bg-success-soft text-success" },
+  tight: { label: "Doable but tight", className: "bg-accent-wash text-accent-ink" },
+  stretch: { label: "A real stretch", className: "bg-accent-wash text-accent-ink" },
+  "beyond-reach": { label: "Beyond current capacity", className: "bg-danger-soft text-danger" },
 };
 
 const DEPOSIT_PERCENTAGES = [10, 15, 20, 30];
@@ -51,8 +51,8 @@ function formatYears(years: number): string {
 function chipClass(selected: boolean): string {
   return `rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
     selected
-      ? "border-accent bg-accent text-[#171717]"
-      : "border-[#E5E0D8] bg-white text-[#4B4238] hover:bg-[#F1ECE3]"
+      ? "border-accent bg-accent text-ink"
+      : "border-border bg-white text-ink-soft hover:bg-canvas"
   }`;
 }
 
@@ -326,7 +326,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
         {isChildrenBuilder && (
           <div className="space-y-4">
             {children.map((child, index) => (
-              <div key={index} className="rounded-xl border border-[#E5E0D8] p-4">
+              <div key={index} className="rounded-xl border border-border p-4">
                 <div className="flex items-center justify-between">
                   <p className="text-sm font-semibold text-primary">Child {index + 1}</p>
                   {children.length > 1 && (
@@ -334,7 +334,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
                       type="button"
                       onClick={() => setChildren((prev) => prev.filter((_, i) => i !== index))}
                       aria-label={`Remove child ${index + 1}`}
-                      className="rounded-full border border-[#E5E0D8] px-2.5 py-1 text-xs text-[#6f6e69] hover:bg-[#F1ECE3]"
+                      className="rounded-full border border-border px-2.5 py-1 text-xs text-faint hover:bg-canvas"
                     >
                       Remove
                     </button>
@@ -350,12 +350,12 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
                     placeholder="e.g. 7"
                     suffix="yrs"
                   />
-                  <p className="mt-1 text-xs text-[#6f6e69]">
+                  <p className="mt-1 text-xs text-faint">
                     With an age, we work out when fees start for the stage you pick.
                   </p>
                 </div>
 
-                <p className="mt-3 text-sm font-medium text-[#4B4238]">
+                <p className="mt-3 text-sm font-medium text-ink-soft">
                   What are you saving for?
                 </p>
                 <div className="mt-2 flex flex-wrap gap-2">
@@ -386,7 +386,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
                   <div className="flex items-center justify-between">
                     <label
                       htmlFor={`child-${index}-years`}
-                      className="block text-sm font-medium text-[#4B4238]"
+                      className="block text-sm font-medium text-ink-soft"
                     >
                       Fees start in
                     </label>
@@ -404,7 +404,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
                     className="mt-2 h-2 w-full accent-primary"
                   />
                   {child.age.trim() !== "" && stageStartAge(child.stageLabel) !== undefined && (
-                    <p className="mt-1 text-xs text-[#6f6e69]">
+                    <p className="mt-1 text-xs text-faint">
                       ≈ when they turn {stageStartAge(child.stageLabel)} — nudge the slider if
                       their path differs.
                     </p>
@@ -419,7 +419,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
                 onClick={() =>
                   setChildren((prev) => [...prev, { age: "", amount: "", years: "8", stageLabel: null }])
                 }
-                className="h-11 w-full rounded-xl border border-dashed border-[#C9BFB2] text-sm font-medium text-[#4B4238] hover:bg-[#F1ECE3]"
+                className="h-11 w-full rounded-xl border border-dashed border-border-strong text-sm font-medium text-ink-soft hover:bg-canvas"
               >
                 + Add another child
               </button>
@@ -439,7 +439,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
               suffix="KES/mo"
             />
             <div>
-              <p className="text-sm font-medium text-[#4B4238]">Months of cover</p>
+              <p className="text-sm font-medium text-ink-soft">Months of cover</p>
               <div className="mt-2 flex flex-wrap gap-2">
                 {COVER_MONTHS.map((m) => (
                   <button
@@ -453,7 +453,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
                   </button>
                 ))}
               </div>
-              <p className="mt-1 text-xs text-[#6f6e69]">
+              <p className="mt-1 text-xs text-faint">
                 3 months is a start; 6 months is the standard cushion.
               </p>
             </div>
@@ -472,7 +472,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
               suffix="KES"
             />
             <div>
-              <p className="text-sm font-medium text-[#4B4238]">Deposit</p>
+              <p className="text-sm font-medium text-ink-soft">Deposit</p>
               <div className="mt-2 flex flex-wrap gap-2">
                 {DEPOSIT_PERCENTAGES.map((pct) => (
                   <button
@@ -486,7 +486,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
                   </button>
                 ))}
               </div>
-              <p className="mt-1 text-xs text-[#6f6e69]">
+              <p className="mt-1 text-xs text-faint">
                 Kenyan lenders typically ask for 10-20% down; a bigger deposit means smaller
                 repayments.
               </p>
@@ -518,7 +518,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
                 </button>
               ))}
             </div>
-            <p className="text-xs text-[#6f6e69]">
+            <p className="text-xs text-faint">
               Pot = income × 300 (the 4% rule — a rough guide from US market history, not a
               guarantee).
             </p>
@@ -528,7 +528,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
         {/* Plain presets (business) */}
         {config.builder === "presets" && (
           <div>
-            <p className="block text-sm font-medium text-[#4B4238]">How much do you need?</p>
+            <p className="block text-sm font-medium text-ink-soft">How much do you need?</p>
             <div className="mt-2 flex flex-wrap gap-2">
               {config.amountPresets.map((preset) => (
                 <button
@@ -565,7 +565,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
         {!isChildrenBuilder && (
           <div>
             <div className="flex items-center justify-between">
-              <label htmlFor="goal-years" className="block text-sm font-medium text-[#4B4238]">
+              <label htmlFor="goal-years" className="block text-sm font-medium text-ink-soft">
                 When do you need it?
               </label>
               <span className="text-sm font-semibold text-primary">
@@ -610,7 +610,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
             suffix="KES/mo"
           />
           {capacityFromProfile && (
-            <p className="mt-1 text-xs text-[#6f6e69]">
+            <p className="mt-1 text-xs text-faint">
               Pre-filled from your Pesa Picture — edit if it&apos;s changed.
             </p>
           )}
@@ -618,7 +618,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
 
         <div>
           <div className="flex items-center justify-between">
-            <label htmlFor="goal-return" className="block text-sm font-medium text-[#4B4238]">
+            <label htmlFor="goal-return" className="block text-sm font-medium text-ink-soft">
               Assumed annual return
             </label>
             <span className="text-sm font-semibold text-primary">
@@ -634,7 +634,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
             onChange={(event) => setAnnualReturn(Number(event.target.value))}
             className="mt-2 h-2 w-full accent-primary"
           />
-          <p className="mt-1 text-xs text-[#6f6e69]">
+          <p className="mt-1 text-xs text-faint">
             An assumption, not a promise — bank savings sit low, money market funds and SACCO
             deposits typically higher. Check current rates before you commit.
           </p>
@@ -659,7 +659,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
             </div>
           )}
           {config.inflatesWithTime && !isChildrenBuilder && nominalTarget > parsedAmount * 1.01 && (
-            <p className="text-xs text-[#4B4238]">
+            <p className="text-xs text-ink-soft">
               {formatKES(parsedAmount)} today will cost about{" "}
               <span className="font-semibold">{formatKES(nominalTarget)}</span> in{" "}
               {formatYears(parsedYears)} — the gap is why your monthly saving rate has to rise
@@ -667,7 +667,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
             </p>
           )}
           {config.inflatesWithTime && isChildrenBuilder && (
-            <p className="text-xs text-[#4B4238]">
+            <p className="text-xs text-ink-soft">
               School costs inflate ~6.5% a year — each child&apos;s target above is already
               planned at the price it will actually be when their fees start.
             </p>
@@ -705,7 +705,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
                   )[i];
                   return (
                     <li key={i} className="flex items-center justify-between gap-2">
-                      <span className="min-w-0 truncate text-[#4B4238]">
+                      <span className="min-w-0 truncate text-ink-soft">
                         Child {i + 1}
                         {child?.stageLabel ? ` — ${child.stageLabel}` : ""} · in{" "}
                         {formatYears(item.years)}
@@ -728,11 +728,11 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
                 >
                   {badge.label}
                 </span>
-                <span className="text-xs text-[#4B4238]">
+                <span className="text-xs text-ink-soft">
                   {Math.round(multi.capacityShare * 100)}% of your capacity
                 </span>
               </div>
-              <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-[#F1ECE3]">
+              <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-canvas">
                 <div
                   className={`h-full rounded-full ${
                     multi.feasibility === "beyond-reach" ? "bg-danger" : "bg-success"
@@ -742,7 +742,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
               </div>
 
               {multi.feasibility === "beyond-reach" && singleItem && (
-                <div className="mt-4 space-y-3 text-sm text-[#4B4238]">
+                <div className="mt-4 space-y-3 text-sm text-ink-soft">
                   <p className="font-medium text-primary">
                     The goal doesn&apos;t fit the timeline — but you have two levers:
                   </p>
@@ -794,7 +794,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
               )}
 
               {multi.feasibility === "beyond-reach" && !singleItem && (
-                <p className="mt-4 text-sm text-[#4B4238]">
+                <p className="mt-4 text-sm text-ink-soft">
                   The combined amount doesn&apos;t fit your capacity. Try extending a
                   child&apos;s timeline, choosing a more affordable stage, or building the fund
                   one child at a time — the breakdown above shows where each shilling goes.
@@ -809,7 +809,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
             <button
               type="button"
               onClick={() => void fetchStrategy()}
-              className="h-12 w-full rounded-full bg-primary text-base font-medium text-white transition-colors hover:bg-[#584a3e]"
+              className="h-12 w-full rounded-full bg-primary text-base font-medium text-white transition-colors hover:bg-primary-deep"
             >
               Where should this money live? Get my strategy →
             </button>
@@ -817,15 +817,15 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
 
           {strategyLoading && (
             <div className="space-y-3">
-              <p className="text-center text-sm text-[#4B4238]">
+              <p className="text-center text-sm text-ink-soft">
                 JiPange is thinking about your goal...
               </p>
-              <div className="h-40 animate-pulse rounded-2xl bg-[#F1ECE3]" />
+              <div className="h-40 animate-pulse rounded-2xl bg-canvas" />
             </div>
           )}
 
           {strategyError && !strategyLoading && (
-            <div className="rounded-2xl bg-[#FBEAEA] p-5 text-center">
+            <div className="rounded-2xl bg-danger-soft p-5 text-center">
               <p className="text-sm text-danger">{strategyError}</p>
               <button
                 type="button"
@@ -839,35 +839,35 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
 
           {strategy && !strategyLoading && (
             <div className="space-y-4">
-              <div className="rounded-2xl border-2 border-accent bg-[#FFF8EA] p-5">
-                <h3 className="text-sm font-semibold uppercase tracking-wide text-[#946213]">
+              <div className="rounded-2xl border-2 border-accent bg-accent-soft p-5">
+                <h3 className="text-sm font-semibold uppercase tracking-wide text-accent-ink">
                   Recommended home for this money
                 </h3>
                 <p className="mt-1 text-lg font-semibold text-primary">{strategy.vehicle}</p>
-                <p className="mt-1 text-sm text-[#4B4238]">{strategy.why}</p>
+                <p className="mt-1 text-sm text-ink-soft">{strategy.why}</p>
               </div>
 
               {strategy.steps.map((step) => (
                 <div key={step.step} className="rounded-2xl bg-white p-5 shadow-sm">
                   <div className="flex items-center gap-2">
-                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-accent text-sm font-semibold text-[#171717]">
+                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-accent text-sm font-semibold text-ink">
                       {step.step}
                     </span>
                     <h3 className="text-base font-semibold text-primary">{step.title}</h3>
                   </div>
-                  <p className="mt-2 text-sm text-[#4B4238]">{step.description}</p>
+                  <p className="mt-2 text-sm text-ink-soft">{step.description}</p>
                 </div>
               ))}
 
-              <div className="rounded-2xl bg-[#FBEAEA] p-5">
+              <div className="rounded-2xl bg-danger-soft p-5">
                 <h3 className="text-sm font-semibold text-danger">⚠️ Watch out</h3>
-                <p className="mt-1 text-sm text-[#4B4238]">{strategy.watchOut}</p>
+                <p className="mt-1 text-sm text-ink-soft">{strategy.watchOut}</p>
               </div>
 
               <button
                 type="button"
                 onClick={() => void fetchStrategy()}
-                className="h-10 w-full rounded-full border border-[#E5E0D8] text-sm font-medium text-[#4B4238]"
+                className="h-10 w-full rounded-full border border-border text-sm font-medium text-ink-soft"
               >
                 Try a different strategy
               </button>
@@ -883,7 +883,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
                 disabled={goalSaved}
                 className={`h-11 w-full rounded-full text-sm font-medium transition-colors ${
                   goalSaved
-                    ? "bg-[#E9F5EC] text-success"
+                    ? "bg-success-soft text-success"
                     : "border border-primary text-primary hover:bg-primary hover:text-white"
                 }`}
               >
@@ -897,7 +897,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
         </div>
       )}
 
-      <p className="text-xs text-[#4B4238]">
+      <p className="text-xs text-ink-soft">
         For guidance only, not financial advice. Projections use your assumed return compounded
         monthly{config.inflatesWithTime ? " and ~6.5% annual inflation (Kenya CPI average)" : ""};
         actual returns vary. Verify product terms and current rates with the institution before

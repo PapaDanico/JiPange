@@ -113,7 +113,7 @@ export default function TwentiethChallengeTracker() {
           <p className="text-sm font-semibold text-primary">
             Set your monthly savings commitment
           </p>
-          <p className="mt-1 text-xs text-[#4B4238]">
+          <p className="mt-1 text-xs text-ink-soft">
             Choose an amount you&apos;ll commit to saving each month —
             then check in between the {WINDOW_START_DAY}th and{" "}
             {WINDOW_END_DAY}th to log that you did it.
@@ -138,7 +138,7 @@ export default function TwentiethChallengeTracker() {
           )}
         </div>
 
-        <div className="rounded-2xl bg-[#F1ECE3] p-4 text-xs text-[#4B4238]">
+        <div className="rounded-2xl bg-canvas p-4 text-xs text-ink-soft">
           <p className="font-semibold text-primary">How it works</p>
           <ol className="mt-2 list-decimal space-y-1 pl-4">
             <li>Pick a fixed amount to save each month — start small and stay consistent.</li>
@@ -161,7 +161,7 @@ export default function TwentiethChallengeTracker() {
         <p className="mt-1 text-sm font-semibold text-primary">
           {currentStreak === 1 ? "month" : "months"} streak
         </p>
-        <div className="mt-4 flex justify-center gap-8 text-xs text-[#4B4238]">
+        <div className="mt-4 flex justify-center gap-8 text-xs text-ink-soft">
           <div>
             <p className="text-lg font-semibold text-primary">{bestStreak}</p>
             <p>best</p>
@@ -190,22 +190,22 @@ export default function TwentiethChallengeTracker() {
               key={m.months}
               className={`flex min-w-[80px] flex-col items-center rounded-2xl border p-3 text-center ${
                 unlocked
-                  ? "border-accent bg-[#FFF8EA]"
-                  : "border-[#E5E0D8] bg-white opacity-50"
+                  ? "border-accent bg-accent-soft"
+                  : "border-border bg-white opacity-50"
               }`}
             >
               <span className="text-xl">{m.emoji}</span>
               <p className="mt-1 text-[10px] font-semibold text-primary">
                 {m.months} mo
               </p>
-              <p className="text-[9px] text-[#4B4238]">{m.label}</p>
+              <p className="text-[9px] text-ink-soft">{m.label}</p>
             </div>
           );
         })}
       </div>
 
       {nextMilestone && (
-        <p className="text-xs text-[#4B4238]">
+        <p className="text-xs text-ink-soft">
           {nextMilestone.months - bestStreak} more{" "}
           {nextMilestone.months - bestStreak === 1 ? "month" : "months"} to
           unlock {nextMilestone.emoji} {nextMilestone.label}.
@@ -214,7 +214,7 @@ export default function TwentiethChallengeTracker() {
 
       {/* Window status */}
       {windowStatus === "waiting" && (
-        <div className="rounded-2xl bg-[#F1ECE3] p-4 text-sm text-[#4B4238]">
+        <div className="rounded-2xl bg-canvas p-4 text-sm text-ink-soft">
           <p className="font-semibold text-primary">
             ⏳ Check-in window opens in {daysToWindow} day
             {daysToWindow !== 1 ? "s" : ""}
@@ -231,7 +231,7 @@ export default function TwentiethChallengeTracker() {
           <p className="text-sm font-semibold text-primary">
             🎯 Window open — check in now!
           </p>
-          <p className="mt-1 text-xs text-[#4B4238]">
+          <p className="mt-1 text-xs text-ink-soft">
             Confirm you saved your {formatKES(commitmentNum)} commitment this
             month. The window closes on the {WINDOW_END_DAY}th.
           </p>
@@ -255,7 +255,7 @@ export default function TwentiethChallengeTracker() {
       )}
 
       {windowStatus === "done" && (
-        <div className="rounded-2xl bg-[#E9F5EC] p-4 text-sm text-[#2b4a2b]">
+        <div className="rounded-2xl bg-success-soft p-4 text-sm text-success-deep">
           <p className="font-semibold">
             ✅ Cycle complete for {formatMonthLabel(getMonthKey(today))}!
           </p>
@@ -267,11 +267,11 @@ export default function TwentiethChallengeTracker() {
       )}
 
       {windowStatus === "closed" && (
-        <div className="rounded-2xl border border-[#F0C06A] bg-[#FFF4DC] p-4 text-sm">
+        <div className="rounded-2xl border border-[#F0C06A] bg-accent-wash p-4 text-sm">
           <p className="font-semibold text-warning">
             ⚠️ Window closed for this month.
           </p>
-          <p className="mt-1 text-xs text-[#4B4238]">
+          <p className="mt-1 text-xs text-ink-soft">
             The check-in window (
             {WINDOW_START_DAY}th–{WINDOW_END_DAY}th) passed without a
             check-in. Your streak resets — a new cycle starts next month.
@@ -280,8 +280,8 @@ export default function TwentiethChallengeTracker() {
       )}
 
       {/* Commitment display */}
-      <div className="flex items-center justify-between rounded-2xl bg-[#F1ECE3] px-4 py-3 text-sm">
-        <span className="text-[#4B4238]">Monthly commitment</span>
+      <div className="flex items-center justify-between rounded-2xl bg-canvas px-4 py-3 text-sm">
+        <span className="text-ink-soft">Monthly commitment</span>
         <span className="font-semibold text-primary">
           {formatKES(commitmentNum)}/month
         </span>
@@ -318,7 +318,7 @@ export default function TwentiethChallengeTracker() {
                   key={i}
                   className="flex items-center justify-between rounded-xl bg-white px-4 py-2.5 text-sm shadow-sm"
                 >
-                  <span className="text-[#4B4238]">
+                  <span className="text-ink-soft">
                     {formatMonthLabel(ci.month)}
                   </span>
                   <span className="font-medium text-success">
@@ -342,7 +342,7 @@ export default function TwentiethChallengeTracker() {
             Change commitment / reset challenge
           </button>
         ) : (
-          <div className="rounded-2xl border border-danger bg-[#FBEAEA] p-4 text-sm">
+          <div className="rounded-2xl border border-danger bg-danger-soft p-4 text-sm">
             <p className="font-semibold text-danger">
               This will clear your streak and history.
             </p>
@@ -357,7 +357,7 @@ export default function TwentiethChallengeTracker() {
               <button
                 type="button"
                 onClick={() => setShowReset(false)}
-                className="rounded-xl border border-[#E5E0D8] px-4 py-2 text-xs font-medium text-[#4B4238]"
+                className="rounded-xl border border-border px-4 py-2 text-xs font-medium text-ink-soft"
               >
                 Cancel
               </button>

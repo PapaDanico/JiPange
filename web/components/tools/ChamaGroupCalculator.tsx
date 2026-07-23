@@ -96,7 +96,7 @@ export default function ChamaGroupCalculator() {
 
   return (
     <div className="space-y-4">
-      <div className="flex rounded-lg border border-[#E5E0D8] bg-white p-1">
+      <div className="flex rounded-lg border border-border bg-white p-1">
         <button
           type="button"
           onClick={() => setMode("merry-go-round")}
@@ -104,7 +104,7 @@ export default function ChamaGroupCalculator() {
           className={`flex-1 rounded-md py-2 text-sm font-medium transition-colors ${
             mode === "merry-go-round"
               ? "bg-primary text-white"
-              : "text-[#4B4238] hover:bg-[#F1ECE3]"
+              : "text-ink-soft hover:bg-canvas"
           }`}
         >
           Merry-go-round
@@ -116,7 +116,7 @@ export default function ChamaGroupCalculator() {
           className={`flex-1 rounded-md py-2 text-sm font-medium transition-colors ${
             mode === "investment"
               ? "bg-primary text-white"
-              : "text-[#4B4238] hover:bg-[#F1ECE3]"
+              : "text-ink-soft hover:bg-canvas"
           }`}
         >
           Investment pool
@@ -157,7 +157,7 @@ export default function ChamaGroupCalculator() {
 
       {mode === "merry-go-round" && (
         <div>
-          <label htmlFor="bufferPercent" className="text-sm font-medium text-[#4B4238]">
+          <label htmlFor="bufferPercent" className="text-sm font-medium text-ink-soft">
             Emergency/welfare buffer (% of monthly pool)
           </label>
           <div className="mt-1 flex items-center gap-3">
@@ -224,7 +224,7 @@ export default function ChamaGroupCalculator() {
             />
           </div>
 
-          <div className="rounded-2xl bg-[#F1ECE3] p-4 text-sm text-[#4B4238]">
+          <div className="rounded-2xl bg-canvas p-4 text-sm text-ink-soft">
             <p className="font-semibold text-primary">How the math works</p>
             <p className="mt-1">
               <strong>First receiver</strong> (month 1): pays {formatKES(Number(contribution))}{" "}
@@ -244,7 +244,7 @@ export default function ChamaGroupCalculator() {
               </span>{" "}
               (they effectively funded everyone else&apos;s rotation).
             </p>
-            <p className="mt-2 text-xs text-[#6f6e69]">
+            <p className="mt-2 text-xs text-faint">
               The fairness mechanism: everyone gets to be &ldquo;first&rdquo; in future
               cycles, and group savings discipline is the real return.
             </p>
@@ -272,10 +272,10 @@ export default function ChamaGroupCalculator() {
                 { label: "After 5 years", total: inv.value5Yr, perMember: inv.perMemberShare5Yr },
               ].map((row) => (
                 <div key={row.label} className="flex items-center justify-between gap-2 text-sm">
-                  <span className="text-[#4B4238]">{row.label}</span>
+                  <span className="text-ink-soft">{row.label}</span>
                   <div className="text-right">
                     <span className="font-semibold text-primary">{formatKES(row.total)}</span>
-                    <span className="block text-xs text-[#4B4238]">
+                    <span className="block text-xs text-ink-soft">
                       {formatKES(row.perMember)}/member
                     </span>
                   </div>
@@ -284,7 +284,7 @@ export default function ChamaGroupCalculator() {
             </div>
           </div>
 
-          <p className="text-xs text-[#4B4238]">
+          <p className="text-xs text-ink-soft">
             Returns assume regular monthly deposits compounding at{" "}
             {annualReturn}% p.a. — achievable today via regulated MMFs (e.g. Cytonn, CIC, ICEA
             Lion) or SACCO dividend accounts. Actual returns vary.

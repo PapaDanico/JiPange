@@ -74,7 +74,7 @@ export default function InflationRealityCalculator() {
               label="The raise you need just to keep up"
               value={formatKES(result.purchasingPowerLost)}
             />
-            <p className="text-xs text-[#4B4238]">
+            <p className="text-xs text-ink-soft">
               Kenya CPI has averaged 6.5% per annum — source: Kenya National Bureau of Statistics
               (KNBS).
             </p>

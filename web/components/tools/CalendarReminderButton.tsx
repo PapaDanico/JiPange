@@ -76,9 +76,9 @@ export default function CalendarReminderButton() {
   }
 
   return (
-    <div className="rounded-2xl border border-[#E5E0D8] bg-white p-4 text-sm space-y-3">
+    <div className="rounded-2xl border border-border bg-white p-4 text-sm space-y-3">
       <p className="font-semibold text-primary">Add a monthly reminder</p>
-      <p className="text-xs text-[#4B4238]">
+      <p className="text-xs text-ink-soft">
         Get a nudge on the {WINDOW_START_DAY}th of every month — the first day your check-in
         window opens.
       </p>
@@ -95,7 +95,7 @@ export default function CalendarReminderButton() {
         <button
           type="button"
           onClick={downloadIcs}
-          className="flex h-10 items-center justify-center rounded-xl border border-[#E5E0D8] px-4 text-sm font-medium text-primary hover:bg-[#F1ECE3]"
+          className="flex h-10 items-center justify-center rounded-xl border border-border px-4 text-sm font-medium text-primary hover:bg-canvas"
         >
           Download .ics (Apple / Outlook)
         </button>

@@ -62,7 +62,7 @@ export default function SalaryNegotiationCalculator() {
               <DeductionRow label="Less: SHIF (2.75%)" value={`(${formatKES(result.breakdown.shif)})`} />
               <DeductionRow label="Less: Housing Levy (AHL)" value={`(${formatKES(result.breakdown.ahl)})`} />
               <DeductionRow label="Less: Net PAYE" value={`(${formatKES(result.breakdown.paye)})`} />
-              <hr className="my-2 border-[#E5E0D8]" />
+              <hr className="my-2 border-border" />
               <DeductionRow label="Net take-home pay" value={formatKES(result.breakdown.netMonthly)} bold />
             </div>
 

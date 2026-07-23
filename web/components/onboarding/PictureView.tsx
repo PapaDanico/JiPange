@@ -30,17 +30,17 @@ export default function PictureView() {
         <h2 className="mt-2 text-lg font-semibold text-primary">
           Your Pesa Picture starts with five taps
         </h2>
-        <p className="mt-1 text-sm text-[#4B4238]">
+        <p className="mt-1 text-sm text-ink-soft">
           Take the anonymous 90-second check and we&apos;ll diagnose your money&apos;s health —
           leaks, inflation drag, and where it should live.
         </p>
         <Link
           href="/profile"
-          className="mt-4 inline-flex h-11 items-center justify-center rounded-full bg-accent px-6 text-sm font-medium text-[#171717] transition-colors hover:bg-[#d6961f]"
+          className="mt-4 inline-flex h-11 items-center justify-center rounded-full bg-accent px-6 text-sm font-medium text-ink transition-colors hover:bg-accent-deep"
         >
           Start the 90-second check →
         </Link>
-        <p className="mt-4 text-xs text-[#6f6e69]">
+        <p className="mt-4 text-xs text-faint">
           Or explore freely:{" "}
           <Link href="/tools" className="font-medium text-primary underline">
             calculators
@@ -61,7 +61,7 @@ export default function PictureView() {
       {hasProfile && (
         <div>
           {answers && (
-            <h2 className="mb-4 border-t border-[#E5E0D8] pt-8 text-lg font-semibold text-primary">
+            <h2 className="mb-4 border-t border-border pt-8 text-lg font-semibold text-primary">
               Your shilling-exact numbers
             </h2>
           )}
@@ -73,7 +73,7 @@ export default function PictureView() {
       )}
       {answers && !hasProfile && hasGoals && <MyGoals savingsCapacity={0} />}
       {answers && !hasProfile && (
-        <p className="text-center text-xs text-[#6f6e69]">
+        <p className="text-center text-xs text-faint">
           Want the shilling-exact version — real take-home pay, budget split, wealth projection?{" "}
           <Link href="/profile/full" className="font-medium text-primary underline">
             Take the deep profile

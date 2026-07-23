@@ -199,7 +199,7 @@ export default function ToolsPage() {
     <div className="flex flex-1 flex-col items-center px-6 py-12">
       <div className="w-full max-w-5xl">
         <h1 className="text-2xl font-semibold text-primary lg:text-3xl">Free Financial Calculators</h1>
-        <p className="mt-1 max-w-2xl text-sm text-[#4B4238] lg:text-base">
+        <p className="mt-1 max-w-2xl text-sm text-ink-soft lg:text-base">
           Quick tools for everyday Kenyan money decisions — no account needed.
         </p>
       </div>

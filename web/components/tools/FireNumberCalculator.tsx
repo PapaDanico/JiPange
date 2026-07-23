@@ -72,7 +72,7 @@ export default function FireNumberCalculator() {
 
       <div>
         <div className="flex items-center justify-between">
-          <label htmlFor="currentAge" className="text-sm font-medium text-[#4B4238]">
+          <label htmlFor="currentAge" className="text-sm font-medium text-ink-soft">
             Current age
           </label>
           <span className="text-sm font-semibold text-primary">{currentAge}</span>
@@ -90,7 +90,7 @@ export default function FireNumberCalculator() {
 
       <div>
         <div className="flex items-center justify-between">
-          <label htmlFor="targetAge" className="text-sm font-medium text-[#4B4238]">
+          <label htmlFor="targetAge" className="text-sm font-medium text-ink-soft">
             Target retirement age
           </label>
           <span className="text-sm font-semibold text-primary">{targetAge}</span>
@@ -124,7 +124,7 @@ export default function FireNumberCalculator() {
             </h3>
             <ul className="mt-3 space-y-2">
               {FIRE_ALLOCATION.map((slice) => (
-                <li key={slice.label} className="text-sm text-[#4B4238]">
+                <li key={slice.label} className="text-sm text-ink-soft">
                   <div className="flex items-center justify-between gap-2">
                     <span className="font-medium">
                       {(slice.share * 100).toFixed(0)}% · {slice.label}
@@ -133,13 +133,13 @@ export default function FireNumberCalculator() {
                       {formatKES(fire.nominalFutureFireNumber * slice.share)}
                     </span>
                   </div>
-                  <div className="mt-1 h-2 w-full overflow-hidden rounded-full bg-[#F1ECE3]">
+                  <div className="mt-1 h-2 w-full overflow-hidden rounded-full bg-canvas">
                     <div
                       className="h-full rounded-full bg-success"
                       style={{ width: `${slice.share * 100}%` }}
                     />
                   </div>
-                  <p className="mt-0.5 text-xs text-[#6f6e69]">{slice.why}</p>
+                  <p className="mt-0.5 text-xs text-faint">{slice.why}</p>
                 </li>
               ))}
             </ul>
@@ -151,7 +151,7 @@ export default function FireNumberCalculator() {
             targetAge={Math.max(currentAge, targetAge)}
           />
 
-          <p className="text-xs text-[#4B4238]">
+          <p className="text-xs text-ink-soft">
             Why 20× and not the Western 25×: Kenya&apos;s low-risk yields (11.5% MMF/bond
             baseline) sit far above the 6.4% inflation line, supporting a ~5% localized safe
             withdrawal rate. Baselines shift — verify current rates before committing.

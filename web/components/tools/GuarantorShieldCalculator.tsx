@@ -57,14 +57,14 @@ export default function GuarantorShieldCalculator() {
             <ResultCard label="Frozen borrowing capacity" value={formatKES(frozen)} sublabel={`of your ${SACCO_LEVERAGE_MULTIPLIER}× gross ${formatKES(gross)}`} tone={frozen > 0 ? "danger" : undefined} />
           </div>
           {ratio > 0.5 ? (
-            <p data-testid="guarantor-status" className="rounded-2xl border-2 border-danger bg-[#FBEAEA] p-4 text-sm text-[#4B4238]">
+            <p data-testid="guarantor-status" className="rounded-2xl border-2 border-danger bg-danger-soft p-4 text-sm text-ink-soft">
               ❌ <strong className="text-danger">Status: Serious Credit Lockout.</strong> Over 50% of
               your deposits are backing other people&apos;s loans — apply for a development loan
               tomorrow and your allocation gets slashed. <strong>Action:</strong> ask the primary
               borrowers to execute a <em>guarantor substitution</em> to release your capacity.
             </p>
           ) : (
-            <p data-testid="guarantor-status" className="rounded-2xl bg-[#E9F5EC] p-4 text-sm text-[#2b4a2b]">
+            <p data-testid="guarantor-status" className="rounded-2xl bg-success-soft p-4 text-sm text-success-deep">
               ✓ <strong>Status: Safe Credit Buffer.</strong> Your guarantorship liability is
               contained — you retain clean leverage for plot, construction, or asset financing.
             </p>

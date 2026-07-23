@@ -38,16 +38,16 @@ export default async function GoalPlannerPage({ params }: PageProps) {
         <h1 className="mt-2 text-2xl font-semibold text-primary lg:text-3xl">
           {config.emoji} {config.title}
         </h1>
-        <p className="mt-1 max-w-2xl text-sm text-[#4B4238] lg:text-base">{config.tagline}</p>
+        <p className="mt-1 max-w-2xl text-sm text-ink-soft lg:text-base">{config.tagline}</p>
       </div>
       <div className="mt-8 w-full max-w-3xl space-y-10">
         {config.type === "home" && (
           <div>
             <MjengoMilestone />
-            <h2 className="mt-10 border-t border-[#E5E0D8] pt-8 text-lg font-semibold text-primary">
+            <h2 className="mt-10 border-t border-border pt-8 text-lg font-semibold text-primary">
               Or save the classic deposit
             </h2>
-            <p className="mt-1 text-sm text-[#4B4238]">
+            <p className="mt-1 text-sm text-ink-soft">
               Reverse-engineer a straight cash deposit on your own timeline.
             </p>
           </div>
@@ -55,10 +55,10 @@ export default async function GoalPlannerPage({ params }: PageProps) {
         {config.type === "education" && (
           <div>
             <TermlyFeeSmoother />
-            <h2 className="mt-10 border-t border-[#E5E0D8] pt-8 text-lg font-semibold text-primary">
+            <h2 className="mt-10 border-t border-border pt-8 text-lg font-semibold text-primary">
               Future stages — plan the big transitions
             </h2>
-            <p className="mt-1 text-sm text-[#4B4238]">
+            <p className="mt-1 text-sm text-ink-soft">
               Junior Secondary, Senior Secondary, university — reverse-engineered per child.
             </p>
           </div>
