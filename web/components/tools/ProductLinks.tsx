@@ -23,7 +23,7 @@ function ProductCard({ product }: { product: ProductLink }) {
             <span className="text-xs text-success font-medium">~{product.yieldPct}% p.a.</span>
           )}
           {product.minKes !== undefined && (
-            <span className="text-xs text-[#9A8B80]">from KES {product.minKes.toLocaleString("en-KE")}</span>
+            <span className="text-xs text-muted">from KES {product.minKes.toLocaleString("en-KE")}</span>
           )}
         </div>
       </div>
@@ -57,7 +57,7 @@ export default function ProductLinks({ products, heading }: ProductLinksProps) {
           <ProductCard key={p.slug} product={p} />
         ))}
       </div>
-      <p className="text-[10px] text-[#9A8B80] leading-relaxed">
+      <p className="text-[10px] text-muted leading-relaxed">
         {hasAffiliate || HAS_AFFILIATE_LINKS
           ? "JiPange may earn a small commission if you open an account through these links, at no extra cost to you. We only list CMA- or CBK-regulated products."
           : "Direct links to CMA- or CBK-regulated Kenyan products — no commission currently. Yields are approximate and change weekly."}

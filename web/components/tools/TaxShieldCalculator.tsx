@@ -99,7 +99,7 @@ export default function TaxShieldCalculator() {
         <button
           type="button"
           onClick={handleReset}
-          className="text-xs text-[#9A8B80] underline underline-offset-2 hover:text-primary"
+          className="text-xs text-muted underline underline-offset-2 hover:text-primary"
         >
           Start over
         </button>
@@ -107,7 +107,7 @@ export default function TaxShieldCalculator() {
 
       {shield && (
         <>
-        <div ref={resultsRef} className="space-y-4">
+        <div ref={resultsRef} className="space-y-4" aria-live="polite">
           {/* The leak gauge */}
           <div className="rounded-2xl border-2 border-danger bg-[#FBEAEA] p-5">
             <h2 className="text-sm font-semibold uppercase tracking-wide text-danger">

@@ -29,7 +29,7 @@ export default function ToolInsights({ insights }: { insights: [Insight, Insight
           </p>
           <p className="mt-1 text-[0.8125rem] leading-snug text-[#4B4238]">{ins.label}</p>
           {ins.source && (
-            <p className="mt-2 text-[0.6875rem] italic text-[#9A8B80]">{ins.source}</p>
+            <p className="mt-2 text-[0.6875rem] italic text-muted">{ins.source}</p>
           )}
         </div>
       ))}

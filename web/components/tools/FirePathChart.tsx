@@ -52,7 +52,7 @@ export default function FirePathChart({
     >
       <div className="mb-3 flex items-center justify-between">
         <p className="text-sm font-semibold text-primary">FIRE target by retirement age</p>
-        <span className="text-[10px] text-[#9A8B80]">
+        <span className="text-[10px] text-muted">
           {(KENYAN_INFLATION * 100).toFixed(1)}% inflation applied
         </span>
       </div>
@@ -106,7 +106,7 @@ export default function FirePathChart({
           </LineChart>
         </ResponsiveContainer>
       </div>
-      <p className="mt-2 text-[10px] text-[#9A8B80]">
+      <p className="mt-2 text-[10px] text-muted">
         The curve rises with inflation — retiring 5 years later means a materially larger target.
         Earlier retirement locks the clock in your favour.
       </p>

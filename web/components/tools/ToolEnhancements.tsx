@@ -46,7 +46,7 @@ export default function ToolEnhancements() {
 
       {related && related.length > 0 && (
         <div>
-          <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-[#9A8B80]">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-muted">
             Try next
           </p>
           <div className="flex flex-wrap gap-2">
@@ -66,7 +66,7 @@ export default function ToolEnhancements() {
 
       <button
         onClick={handleShare}
-        className="inline-flex items-center gap-1.5 text-xs font-medium text-[#9A8B80] underline underline-offset-2 hover:text-primary"
+        className="inline-flex items-center gap-1.5 text-xs font-medium text-muted underline underline-offset-2 hover:text-primary"
       >
         {copied ? "Link copied!" : "Share this calculator"}
       </button>

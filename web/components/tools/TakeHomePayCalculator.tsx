@@ -108,7 +108,7 @@ export default function TakeHomePayCalculator() {
           <button
             type="button"
             onClick={handleReset}
-            className="mt-2 text-xs text-[#9A8B80] underline underline-offset-2 hover:text-primary"
+            className="mt-2 text-xs text-muted underline underline-offset-2 hover:text-primary"
           >
             Start over
           </button>
@@ -174,7 +174,7 @@ export default function TakeHomePayCalculator() {
 
       {result && (
         <>
-        <div ref={resultsRef} className="space-y-4">
+        <div ref={resultsRef} className="space-y-4" aria-live="polite">
           <ResultCard label="Take-home pay" value={formatKES(result.netMonthly)} tone="success" />
 
           {/* Salary explorer — drag to preview take-home at any salary level */}
@@ -188,7 +188,7 @@ export default function TakeHomePayCalculator() {
               className="mt-3 flex items-baseline justify-between"
             >
               <span className="text-sm text-[#4B4238]">
-                KES {whatIfGrossValue.toLocaleString()} gross
+                KES {whatIfGrossValue.toLocaleString("en-KE")} gross
               </span>
               <span className="text-base font-semibold text-success">
                 → {formatKES(whatIfNetPay ?? 0)}
@@ -204,7 +204,7 @@ export default function TakeHomePayCalculator() {
               className="mt-2 h-2 w-full accent-primary"
               aria-label={`Explore salary — currently at ${whatIfPercent}% of entered gross`}
             />
-            <div className="mt-1 flex justify-between text-[10px] text-[#9A8B80]">
+            <div className="mt-1 flex justify-between text-[10px] text-muted">
               <span>50%</span>
               <span>Your salary</span>
               <span>200%</span>

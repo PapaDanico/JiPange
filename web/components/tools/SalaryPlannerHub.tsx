@@ -94,7 +94,7 @@ export default function SalaryPlannerHub() {
   const mortgageCapped = reliefs.mortgageInterest > MORTGAGE_INTEREST_RELIEF_CAP_MONTHLY;
 
   const noGrossMsg = (
-    <p className="text-sm text-[#9A8B80]">Enter your gross salary above to see results.</p>
+    <p className="text-sm text-muted">Enter your gross salary above to see results.</p>
   );
 
   return (
@@ -140,7 +140,7 @@ export default function SalaryPlannerHub() {
               onChange={(e) => setPension(e.target.value)}
               className="mt-2 h-2 w-full accent-primary"
             />
-            <div className="mt-1 flex justify-between text-[10px] text-[#9A8B80]">
+            <div className="mt-1 flex justify-between text-[10px] text-muted">
               <span>0</span>
               <span>cap {formatKES(PENSION_RELIEF_CAP_MONTHLY)}</span>
             </div>
@@ -171,7 +171,7 @@ export default function SalaryPlannerHub() {
               onChange={(e) => setMortgage(e.target.value)}
               className="mt-2 h-2 w-full accent-primary"
             />
-            <div className="mt-1 flex justify-between text-[10px] text-[#9A8B80]">
+            <div className="mt-1 flex justify-between text-[10px] text-muted">
               <span>0</span>
               <span>cap {formatKES(MORTGAGE_INTEREST_RELIEF_CAP_MONTHLY)}</span>
             </div>
@@ -228,7 +228,7 @@ export default function SalaryPlannerHub() {
           {!taxResult && noGrossMsg}
           {taxResult && (
             <>
-              <div ref={resultsRef} className="space-y-4">
+              <div ref={resultsRef} className="space-y-4" aria-live="polite">
                 <ResultCard
                   label="Take-home pay"
                   value={formatKES(taxResult.netMonthly)}

@@ -109,7 +109,7 @@ export default function FireNumberCalculator() {
         <button
           type="button"
           onClick={handleReset}
-          className="text-xs text-[#9A8B80] underline underline-offset-2 hover:text-primary"
+          className="text-xs text-muted underline underline-offset-2 hover:text-primary"
         >
           Start over
         </button>
@@ -117,7 +117,7 @@ export default function FireNumberCalculator() {
 
       {fire && (
         <>
-        <div ref={resultsRef} className="space-y-4">
+        <div ref={resultsRef} className="space-y-4" aria-live="polite">
           <ResultCard
             label={`Your FIRE number at age ${Math.max(currentAge, targetAge)} (nominal)`}
             value={formatKES(fire.nominalFutureFireNumber)}

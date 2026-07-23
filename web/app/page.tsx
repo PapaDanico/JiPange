@@ -263,7 +263,7 @@ export default function Home() {
                 <p className="mt-1.5 text-[0.8125rem] text-[#7A6B5E]">
                   of Kenyans cannot pass a basic financial literacy test
                   <br />
-                  <span className="mt-1 block text-[0.7rem] text-[#9A8B80]">
+                  <span className="mt-1 block text-[0.7rem] text-muted">
                     FinAccess Household Survey, 2024
                   </span>
                 </p>

@@ -199,14 +199,14 @@ export default function ChamaGroupCalculator() {
         <button
           type="button"
           onClick={handleReset}
-          className="text-xs text-[#9A8B80] underline underline-offset-2 hover:text-primary"
+          className="text-xs text-muted underline underline-offset-2 hover:text-primary"
         >
           Start over
         </button>
       )}
 
       {result && mode === "merry-go-round" && mgr && (
-        <div ref={resultsRef} className="space-y-4">
+        <div ref={resultsRef} className="space-y-4" aria-live="polite">
           <ResultCard
             label={`Monthly pool (${members} × ${formatKES(Number(contribution))})`}
             value={formatKES(mgr.monthlyPool)}
@@ -264,7 +264,7 @@ export default function ChamaGroupCalculator() {
       )}
 
       {result && mode === "investment" && inv && (
-        <div ref={resultsRef} className="space-y-4">
+        <div ref={resultsRef} className="space-y-4" aria-live="polite">
           <ResultCard
             label={`Monthly pool invested (${members} × ${formatKES(Number(contribution))})`}
             value={formatKES(inv.monthlyPool)}

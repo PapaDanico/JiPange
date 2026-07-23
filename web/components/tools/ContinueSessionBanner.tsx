@@ -59,7 +59,7 @@ export default function ContinueSessionBanner() {
             type="button"
             onClick={handleDismiss}
             aria-label="Dismiss"
-            className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-[#9A8B80] hover:text-primary"
+            className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-muted hover:text-primary"
           >
             ✕
           </button>

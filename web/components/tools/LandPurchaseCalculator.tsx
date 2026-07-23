@@ -134,14 +134,14 @@ export default function LandPurchaseCalculator() {
         <button
           type="button"
           onClick={handleReset}
-          className="text-xs text-[#9A8B80] underline underline-offset-2 hover:text-primary"
+          className="text-xs text-muted underline underline-offset-2 hover:text-primary"
         >
           Start over
         </button>
       )}
 
       {result && (
-        <div ref={resultsRef} className="space-y-4">
+        <div ref={resultsRef} className="space-y-4" aria-live="polite">
           {/* Headline numbers */}
           <ResultCard
             label="Grand total — what you actually need"
@@ -177,7 +177,7 @@ export default function LandPurchaseCalculator() {
                 >
                   <div>
                     <p className="text-sm text-[#4B4238]">{row.label}</p>
-                    <p className="text-[11px] text-[#9A8B80]">{row.note}</p>
+                    <p className="text-[11px] text-muted">{row.note}</p>
                   </div>
                   <p className="text-sm font-medium text-[#4B4238] tabular-nums">
                     {formatKES(row.value)}

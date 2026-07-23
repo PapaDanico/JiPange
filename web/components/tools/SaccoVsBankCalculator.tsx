@@ -90,7 +90,7 @@ export default function SaccoVsBankCalculator() {
         <button
           type="button"
           onClick={handleReset}
-          className="text-xs text-[#9A8B80] underline underline-offset-2 hover:text-primary"
+          className="text-xs text-muted underline underline-offset-2 hover:text-primary"
         >
           Start over
         </button>
@@ -98,7 +98,7 @@ export default function SaccoVsBankCalculator() {
 
       {results && (
         <>
-        <div ref={resultsRef} className="space-y-4">
+        <div ref={resultsRef} className="space-y-4" aria-live="polite">
           <div className="space-y-3">
             {results.map((product) => (
               <div key={product.name} className="rounded-2xl bg-white p-4 shadow-sm">

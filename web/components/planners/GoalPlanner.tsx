@@ -804,6 +804,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
           )}
 
           {/* ── AI strategy ── */}
+          <div aria-live="polite">
           {!strategy && !strategyLoading && (
             <button
               type="button"
@@ -872,6 +873,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
               </button>
             </div>
           )}
+          </div>
 
           {multi.totalRequiredMonthly > 0 && (
             <>

@@ -176,7 +176,7 @@ export default function EducationSavingsCalculator() {
         <button
           type="button"
           onClick={handleReset}
-          className="text-xs text-[#9A8B80] underline underline-offset-2 hover:text-primary"
+          className="text-xs text-muted underline underline-offset-2 hover:text-primary"
         >
           Start over
         </button>
@@ -184,7 +184,7 @@ export default function EducationSavingsCalculator() {
 
       {result && (
         <>
-        <div ref={resultsRef} className="space-y-4">
+        <div ref={resultsRef} className="space-y-4" aria-live="polite">
           {result.jssMonthly !== null && (
             <ResultCard
               label="Monthly savings for Junior Secondary"

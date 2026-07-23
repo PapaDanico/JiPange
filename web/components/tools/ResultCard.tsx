@@ -40,7 +40,8 @@ export default function ResultCard({
           type="button"
           onClick={handleCopy}
           aria-label={copied ? "Copied" : "Copy value"}
-          className="mt-0.5 shrink-0 text-[#9A8B80] transition-colors hover:text-primary print:hidden"
+          aria-live="polite"
+          className="relative mt-0.5 shrink-0 text-muted transition-colors before:absolute before:-inset-4 before:content-[''] hover:text-primary print:hidden"
         >
           {copied ? (
             <span className="text-xs font-medium text-success">✓</span>

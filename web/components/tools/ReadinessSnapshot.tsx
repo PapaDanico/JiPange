@@ -34,13 +34,13 @@ function IndicatorCard({ indicator }: { indicator: ReadinessIndicator }) {
           </Link>
         )
       : (
-          <p className="mt-1 text-[10px] text-[#9A8B80] leading-snug">{indicator.hint}</p>
+          <p className="mt-1 text-[10px] text-muted leading-snug">{indicator.hint}</p>
         )
     : null;
 
   return (
     <div className="rounded-xl border border-[#E5E0D8] bg-[#FAFAF8] p-2.5">
-      <p className="text-[11px] text-[#9A8B80]">{indicator.label}</p>
+      <p className="text-[11px] text-muted">{indicator.label}</p>
       <div className="mt-1 flex items-center gap-1.5">
         <span
           className={`inline-flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${STATUS_STYLES[indicator.status]}`}
@@ -77,7 +77,7 @@ export default function ReadinessSnapshot() {
           <p className="text-sm font-semibold text-primary">Financial Readiness</p>
           <Link
             href="/journey"
-            className="text-[10px] text-[#9A8B80] underline underline-offset-2 hover:text-primary"
+            className="text-[10px] text-muted underline underline-offset-2 hover:text-primary"
           >
             Update
           </Link>
@@ -87,7 +87,7 @@ export default function ReadinessSnapshot() {
             <IndicatorCard key={indicator.key} indicator={indicator} />
           ))}
         </div>
-        <p className="mt-2 text-[10px] text-[#9A8B80]">
+        <p className="mt-2 text-[10px] text-muted">
           Based on your{" "}
           <Link href="/journey" className="underline underline-offset-2 hover:text-primary">
             90-second assessment

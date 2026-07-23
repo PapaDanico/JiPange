@@ -46,7 +46,7 @@ export default function SalaryNegotiationCalculator() {
         <button
           type="button"
           onClick={() => setTargetNet("")}
-          className="text-xs text-[#9A8B80] underline underline-offset-2 hover:text-primary"
+          className="text-xs text-muted underline underline-offset-2 hover:text-primary"
         >
           Start over
         </button>
@@ -54,7 +54,7 @@ export default function SalaryNegotiationCalculator() {
 
       {result && (
         <>
-          <div ref={resultsRef} className="space-y-4">
+          <div ref={resultsRef} className="space-y-4" aria-live="polite">
             <ResultCard
               label="Negotiate for a gross salary of"
               value={formatKES(result.gross)}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -49,6 +49,14 @@ export default function JourneyWizard() {
   }, []);
 
   const question = JOURNEY_QUESTIONS[step];
+
+  // Move focus to the new question on every step change so keyboard/screen-
+  // reader users get a clear signal the question changed, instead of staying
+  // parked on the option they just tapped.
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  useEffect(() => {
+    headingRef.current?.focus();
+  }, [step]);
 
   function finish(finalAnswers: JourneyAnswers) {
     setSubmitting(true);
@@ -103,7 +111,7 @@ export default function JourneyWizard() {
 
       {/* Progress indicator: [ 1 - 2 - 3 - 4 - 5 ] */}
       <div className="mt-6" aria-label={`Step ${step + 1} of ${TOTAL_STEPS}`}>
-        <div className="flex items-center justify-center gap-1">
+        <div className="flex items-center justify-center gap-1" aria-hidden="true">
           {Array.from({ length: TOTAL_STEPS }, (_, i) => (
             <span key={i} className="flex items-center gap-1">
               <span
@@ -126,7 +134,9 @@ export default function JourneyWizard() {
         </p>
       </div>
 
-      <h2 className="mt-6 text-xl font-semibold text-primary">{question.title}</h2>
+      <h2 ref={headingRef} tabIndex={-1} className="mt-6 text-xl font-semibold text-primary outline-none">
+        {question.title}
+      </h2>
       {question.multi && (
         <p className="mt-1 text-sm text-[#4B4238]">Tap all that apply, then continue.</p>
       )}

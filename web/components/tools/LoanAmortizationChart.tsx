@@ -165,7 +165,7 @@ export default function LoanAmortizationChart({
         </ResponsiveContainer>
       </div>
       {principal > 0 && (
-        <p className="mt-2 text-[10px] text-[#9A8B80]">
+        <p className="mt-2 text-[10px] text-muted">
           The interest band is money paid to the lender on top of the original{" "}
           {formatKES(principal)} — every extra payment shrinks it from the right.
         </p>

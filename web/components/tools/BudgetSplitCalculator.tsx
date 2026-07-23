@@ -45,7 +45,7 @@ export default function BudgetSplitCalculator() {
         <button
           type="button"
           onClick={() => setGrossMonthlySalary("")}
-          className="text-xs text-[#9A8B80] underline underline-offset-2 hover:text-primary"
+          className="text-xs text-muted underline underline-offset-2 hover:text-primary"
         >
           Start over
         </button>

@@ -119,7 +119,7 @@ export default function DebtEscapeCalculator() {
                   type="button"
                   onClick={() => removeLoan(loan.id)}
                   aria-label="Remove this loan"
-                  className="text-xs text-[#9A8B80] hover:text-danger underline underline-offset-2"
+                  className="text-xs text-muted hover:text-danger underline underline-offset-2"
                 >
                   Remove
                 </button>
@@ -218,14 +218,14 @@ export default function DebtEscapeCalculator() {
         <button
           type="button"
           onClick={handleReset}
-          className="text-xs text-[#9A8B80] underline underline-offset-2 hover:text-primary"
+          className="text-xs text-muted underline underline-offset-2 hover:text-primary"
         >
           Start over
         </button>
       )}
 
       {result && (
-        <div ref={resultsRef} className="space-y-4">
+        <div ref={resultsRef} className="space-y-4" aria-live="polite">
           {/* Hero result */}
           <ResultCard
             label="Debt-free by"
