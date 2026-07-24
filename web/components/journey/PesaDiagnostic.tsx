@@ -69,7 +69,7 @@ export default function PesaDiagnostic({ answers }: { answers: JourneyAnswers })
   const gapPoints = ((CURRENT_INFLATION - ASSUMED_CURRENT_YIELD) * 100).toFixed(2);
 
   return (
-    <div className="w-full max-w-2xl space-y-6">
+    <div className="print-grid-2 w-full max-w-2xl space-y-6">
       {/* ── Module 1: Survival Status header ── */}
       <section aria-label="Survival status" className={`rounded-2xl p-5 ${survival.className}`}>
         <h2 className={`text-base font-semibold ${survival.titleClass}`}>{survival.title}</h2>
@@ -106,7 +106,7 @@ export default function PesaDiagnostic({ answers }: { answers: JourneyAnswers })
       )}
 
       {/* ── Module 3: Pesa Engine Persona ── */}
-      <section aria-label="Pesa Engine persona" className="text-center">
+      <section aria-label="Pesa Engine persona" className="text-center print:col-span-2">
         <p className="text-xs font-semibold uppercase tracking-wide text-faint">
           Your Pesa Engine persona
         </p>
@@ -117,7 +117,7 @@ export default function PesaDiagnostic({ answers }: { answers: JourneyAnswers })
       </section>
 
       {/* Sticky forward CTA — clears the mobile bottom nav, hugs the viewport on desktop. */}
-      <div className="sticky bottom-20 z-30 pt-2 sm:bottom-4">
+      <div className="sticky bottom-20 z-30 pt-2 print:hidden sm:bottom-4">
         <Link
           href="/plan"
           className="flex h-14 w-full items-center justify-center rounded-full bg-accent text-base font-semibold text-ink shadow-lg transition-colors hover:bg-accent-deep"

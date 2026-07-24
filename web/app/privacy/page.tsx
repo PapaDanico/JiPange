@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import DataControls from "@/components/data/DataControls";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
@@ -151,8 +152,8 @@ export default function PrivacyPage() {
             </h2>
             <p className="mt-2">
               Because we hold no personal data about you, there is nothing for us to provide,
-              correct, or delete on our end. To remove your local data, clear your
-              browser&apos;s site data for this site. If you have questions, contact us at{" "}
+              correct, or delete on our end. You can download, restore, or erase your
+              local data with the controls below. If you have questions, contact us at{" "}
               <a
                 href="mailto:hello@jipangefinance.app"
                 className="font-medium text-primary underline"
@@ -162,6 +163,8 @@ export default function PrivacyPage() {
               .
             </p>
           </section>
+
+          <DataControls />
 
           <section>
             <h2 className="text-base font-semibold text-primary">7. Children&apos;s privacy</h2>

@@ -112,7 +112,7 @@ body.has-fixed-bottom-bar {
 @media print {
   @page {
     size: A4;
-    margin: 13mm 15mm;
+    margin: 12mm 14mm;
   }
 
   /* Hide interactive and chrome elements. A report has no controls:
@@ -133,8 +133,8 @@ body.has-fixed-bottom-bar {
   body {
     background: white !important;
     color: #171717 !important;
-    font-size: 10pt;
-    line-height: 1.45;
+    font-size: 9.5pt;
+    line-height: 1.42;
     min-height: auto !important;
     padding-bottom: 0 !important;
   }
@@ -173,7 +173,7 @@ body.has-fixed-bottom-bar {
   .rounded-2xl,
   .rounded-xl {
     border-radius: 6px !important;
-    padding: 9pt 12pt !important;
+    padding: 8pt 11pt !important;
     break-inside: avoid;
   }
   .rounded-2xl:not([class*="border"]),
@@ -183,8 +183,10 @@ body.has-fixed-bottom-bar {
 
   /* Tighten the vertical rhythm between report blocks */
   .space-y-4 > * + *,
-  .space-y-8 > * + * {
-    margin-top: 7pt !important;
+  .space-y-6 > * + *,
+  .space-y-8 > * + *,
+  .space-y-10 > * + * {
+    margin-top: 6pt !important;
   }
 
   /* Ledger rows (DeductionRow) and their separators print at report
@@ -198,7 +200,9 @@ body.has-fixed-bottom-bar {
     margin-bottom: 3pt !important;
   }
   .space-y-4 > *,
-  .space-y-8 > * {
+  .space-y-6 > *,
+  .space-y-8 > *,
+  .space-y-10 > * {
     break-inside: avoid;
   }
 
@@ -223,11 +227,25 @@ body.has-fixed-bottom-bar {
     overflow: visible;
   }
 
+  /* Two-column report grid: self-contained cards flow 2-up in print
+     (financial-statement layout), halving the page cost of card stacks.
+     Overrides the screen space-y margins, which don't belong in a grid. */
+  .print-grid-2 {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    gap: 7pt;
+    align-items: start;
+  }
+  .print-grid-2 > * {
+    margin-top: 0 !important;
+    break-inside: avoid;
+  }
+
   /* Report footer: hairline rule, small muted colophon */
   body::after {
     content: "JiPange · jipangefinance.org · Free financial tools for Kenya";
     display: block;
-    margin-top: 10pt;
+    margin-top: 6pt;
     padding-top: 5pt;
     border-top: 0.5pt solid #e5e0d8;
     font-size: 7.5pt;
