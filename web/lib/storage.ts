@@ -42,6 +42,17 @@ function notifyChange(): void {
 }
 
 /**
+ * Wakes every useStorageValue/useStickyState subscriber after code outside
+ * this module writes localStorage directly (e.g. lib/backup.ts restoring a
+ * snapshot). The read cache self-corrects — it re-parses whenever a key's
+ * raw string differs from the cached one — so notification is all a bulk
+ * writer needs.
+ */
+export function notifyStorageChange(): void {
+  notifyChange();
+}
+
+/**
  * Subscribes to both same-tab writes (via this module's helpers) and
  * cross-tab writes (the native `storage` event). Pass directly as
  * useSyncExternalStore's `subscribe` argument.

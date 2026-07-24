@@ -76,7 +76,7 @@ export default function ActionPlan() {
   // Invite them into the deep profile instead of bouncing them off the page.
   if (!profile || !calculations) {
     return (
-      <div className="w-full max-w-2xl rounded-2xl bg-white p-6 text-center shadow-sm">
+      <div className="w-full max-w-2xl rounded-2xl bg-white p-6 text-center shadow-sm print:hidden">
         <p className="text-2xl" aria-hidden="true">
           🤖
         </p>
@@ -125,7 +125,7 @@ export default function ActionPlan() {
       )}
 
       {error && !loading && !plan && (
-        <div className="rounded-2xl bg-danger-soft p-6 text-center">
+        <div className="rounded-2xl bg-danger-soft p-6 text-center print:hidden">
           <p className="text-sm text-danger">{error}</p>
           <button
             onClick={() => void generatePlan(profile, calculations)}
@@ -168,7 +168,7 @@ export default function ActionPlan() {
             Try different recommendations
           </button>
 
-          <SaveMyPlan />
+          <div className="print:hidden"><SaveMyPlan /></div>
         </div>
       )}
 

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { getStoredGoals, getStoredJourneyAnswers, getStoredProfile } from "@/lib/storage";
 import { useStorageValue } from "@/lib/hooks";
+import DataControls from "@/components/data/DataControls";
 import PesaDiagnostic from "@/components/journey/PesaDiagnostic";
 import MoneyPicture from "./MoneyPicture";
 import MyGoals from "./MyGoals";
@@ -51,6 +52,8 @@ export default function PictureView() {
           </Link>
         </p>
         </div>
+        {/* Fresh device? This is where a backup file brings a plan back. */}
+        <DataControls />
       </div>
     );
   }
@@ -59,9 +62,12 @@ export default function PictureView() {
     <div className="w-full max-w-2xl space-y-10">
       {answers && <PesaDiagnostic answers={answers} />}
       {hasProfile && (
-        <div>
+        // When both the diagnostic and the numbers print, each gets its own
+        // clean page instead of straddling the break — solo sections still
+        // fit a single page.
+        <div className={answers ? "print:break-before-page" : undefined}>
           {answers && (
-            <h2 className="mb-4 border-t border-border pt-8 text-lg font-semibold text-primary">
+            <h2 className="mb-4 border-t border-border pt-8 text-lg font-semibold text-primary print:border-t-0 print:pt-0">
               Your shilling-exact numbers
             </h2>
           )}
@@ -80,6 +86,7 @@ export default function PictureView() {
           </Link>
         </p>
       )}
+      <DataControls />
     </div>
   );
 }

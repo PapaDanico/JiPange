@@ -112,7 +112,7 @@ export default function MoneyPicture() {
   const band = savingsRateBand(model === "kenya" ? financials.savingsRate : growthRate);
 
   return (
-    <div className="w-full max-w-2xl space-y-8">
+    <div className="print-grid-2 w-full max-w-2xl space-y-8">
       <div className="rounded-2xl bg-white p-6 shadow-sm">
         <p className="text-sm text-ink-soft">Your monthly take-home pay</p>
         <p className="mt-1 font-display text-3xl font-semibold tabular-nums text-primary">
@@ -120,7 +120,7 @@ export default function MoneyPicture() {
         </p>
       </div>
 
-      <div className="flex rounded-full bg-canvas p-1 text-sm font-medium">
+      <div className="flex rounded-full bg-canvas p-1 text-sm font-medium print:hidden">
         <button
           type="button"
           onClick={() => setModel("kenya")}
@@ -153,7 +153,7 @@ export default function MoneyPicture() {
       <div className="rounded-2xl bg-white p-6 shadow-sm">
         <h2 className="text-base font-semibold text-primary">Your budget split</h2>
         <div
-          className="mt-4 h-56"
+          className="mt-4 h-56 print:hidden"
           role="img"
           aria-label={`Budget split: ${chartData
             .map((entry) => `${entry.name} ${formatKES(entry.value)}`)
@@ -180,7 +180,7 @@ export default function MoneyPicture() {
       </div>
 
       {model === "kenya" && (
-        <div className="rounded-2xl border-2 border-accent bg-accent-soft p-6">
+        <div className="rounded-2xl border-2 border-accent bg-accent-soft p-6 print:hidden">
           <h3 className="text-sm font-semibold uppercase tracking-wide text-accent-ink">
             What most apps ignore
           </h3>
@@ -235,7 +235,7 @@ export default function MoneyPicture() {
 
       <Link
         href="/plan"
-        className="flex h-12 w-full items-center justify-center rounded-full bg-primary text-base font-medium text-white transition-colors hover:bg-primary-deep"
+        className="flex h-12 w-full items-center justify-center rounded-full bg-primary text-base font-medium text-white transition-colors print:hidden hover:bg-primary-deep"
       >
         Continue to your action plan →
       </Link>
