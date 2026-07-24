@@ -1,5 +1,9 @@
 import { test, expect } from "@playwright/test";
 
+// Every tool page renders a hidden print letterhead that repeats the tool
+// title, so text assertions whose pattern overlaps the title must filter to
+// visible matches — a bare .first() can resolve to the hidden letterhead.
+
 // ─── Tools index ───────────────────────────────────────────────────────────
 
 test("tools index loads and lists calculators", async ({ page }) => {
@@ -67,7 +71,7 @@ test("fire number: shows retirement number", async ({ page }) => {
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   const inputs = page.getByRole("spinbutton");
   await inputs.nth(0).fill("80000");
-  await expect(page.getByText(/FIRE number|retirement/i).first()).toBeVisible();
+  await expect(page.getByText(/FIRE number|retirement/i).filter({ visible: true }).first()).toBeVisible();
 });
 
 // ─── Money Runway ──────────────────────────────────────────────────────────
@@ -78,7 +82,7 @@ test("money runway: shows months of runway", async ({ page }) => {
   const inputs = page.getByRole("spinbutton");
   await inputs.nth(0).fill("1000000");
   await inputs.nth(1).fill("50000");
-  await expect(page.getByText(/years|runway/i).first()).toBeVisible();
+  await expect(page.getByText(/years|runway/i).filter({ visible: true }).first()).toBeVisible();
 });
 
 // ─── Budget Split ──────────────────────────────────────────────────────────
@@ -108,7 +112,7 @@ test("salary negotiation: reverse-engineers gross", async ({ page }) => {
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   const inputs = page.getByRole("spinbutton");
   await inputs.nth(0).fill("100000");
-  await expect(page.getByText(/gross/i).first()).toBeVisible();
+  await expect(page.getByText(/gross/i).filter({ visible: true }).first()).toBeVisible();
 });
 
 // ─── Payday Router ─────────────────────────────────────────────────────────
@@ -130,7 +134,7 @@ test("fuliza cost: shows true cost", async ({ page }) => {
   const inputs = page.getByRole("spinbutton");
   await inputs.nth(0).fill("5000");
   await inputs.nth(1).fill("14");
-  await expect(page.getByText(/cost|fee|fuliza/i).first()).toBeVisible();
+  await expect(page.getByText(/cost|fee|fuliza/i).filter({ visible: true }).first()).toBeVisible();
 });
 
 // ─── KPLC Optimizer ────────────────────────────────────────────────────────
@@ -140,7 +144,7 @@ test("kplc optimizer: shows kWh savings", async ({ page }) => {
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   const inputs = page.getByRole("spinbutton");
   await inputs.nth(0).fill("3000");
-  await expect(page.getByText(/kWh|unit|token/i).first()).toBeVisible();
+  await expect(page.getByText(/kWh|unit|token/i).filter({ visible: true }).first()).toBeVisible();
 });
 
 // ─── SACCO vs Bank ────────────────────────────────────────────────────────
@@ -151,7 +155,7 @@ test("sacco vs bank: shows comparison", async ({ page }) => {
   const inputs = page.getByRole("spinbutton");
   await inputs.nth(0).fill("500000");
   await inputs.nth(1).fill("12");
-  await expect(page.getByText(/SACCO/i).first()).toBeVisible();
+  await expect(page.getByText(/SACCO/i).filter({ visible: true }).first()).toBeVisible();
 });
 
 // ─── Guarantor Shield ─────────────────────────────────────────────────────
@@ -173,7 +177,7 @@ test("one-third rule: shows deduction analysis", async ({ page }) => {
   const inputs = page.getByRole("spinbutton");
   await inputs.nth(0).fill("120000");
   await inputs.nth(1).fill("50000");
-  await expect(page.getByText(/deduction|one.third|limit/i).first()).toBeVisible();
+  await expect(page.getByText(/deduction|one.third|limit/i).filter({ visible: true }).first()).toBeVisible();
 });
 
 // ─── Inflation Reality ───────────────────────────────────────────────────
@@ -194,7 +198,7 @@ test("dhowcsd: shows t-bill ladder allocation", async ({ page }) => {
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   const inputs = page.getByRole("spinbutton");
   await inputs.nth(0).fill("1000000");
-  await expect(page.getByText(/91|182|364|T-Bill/i).first()).toBeVisible();
+  await expect(page.getByText(/91|182|364|T-Bill/i).filter({ visible: true }).first()).toBeVisible();
 });
 
 // ─── Education Savings ────────────────────────────────────────────────────
