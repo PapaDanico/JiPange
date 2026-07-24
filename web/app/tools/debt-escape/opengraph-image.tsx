@@ -1,9 +1,11 @@
-import { ogCard, ogContentType, ogSize } from "@/lib/og/card";
+import { ogAlt, ogCard, ogContentType, ogSize } from "@/lib/og/card";
+
+const title = "Debt Stack Buster";
 
 export const size = ogSize;
 export const contentType = ogContentType;
-export const alt = "Debt Stack Buster — JiPange";
+export const alt = ogAlt(title);
 
 export default function Image() {
-  return ogCard('Debt Stack Buster');
+  return ogCard(title);
 }

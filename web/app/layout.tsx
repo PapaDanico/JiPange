@@ -18,7 +18,8 @@ export const metadata: Metadata = {
     siteName: "JiPange",
     type: "website",
     locale: "en_KE",
-    images: [{ url: "/logo-lockup.webp", width: 1131, height: 609, alt: "JiPange — jipange kabla pesa ikupange" }],
+    // og:image comes from the opengraph-image.tsx file convention: a
+    // site-wide card at app/opengraph-image.tsx plus per-route overrides.
   },
   twitter: { card: "summary_large_image" },
 };

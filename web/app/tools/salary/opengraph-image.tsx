@@ -1,9 +1,11 @@
-import { ogCard, ogContentType, ogSize } from "@/lib/og/card";
+import { ogAlt, ogCard, ogContentType, ogSize } from "@/lib/og/card";
+
+const title = "Salary & Pay Hub";
 
 export const size = ogSize;
 export const contentType = ogContentType;
-export const alt = "Salary & Pay Hub — JiPange";
+export const alt = ogAlt(title);
 
 export default function Image() {
-  return ogCard('Salary & Pay Hub');
+  return ogCard(title);
 }

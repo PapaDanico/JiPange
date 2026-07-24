@@ -1,9 +1,11 @@
-import { ogCard, ogContentType, ogSize } from "@/lib/og/card";
+import { ogAlt, ogCard, ogContentType, ogSize } from "@/lib/og/card";
+
+const title = "KPLC Token Band Optimizer";
 
 export const size = ogSize;
 export const contentType = ogContentType;
-export const alt = "⚡ KPLC Token Band Optimizer — JiPange";
+export const alt = ogAlt(title);
 
 export default function Image() {
-  return ogCard('⚡ KPLC Token Band Optimizer');
+  return ogCard(title);
 }

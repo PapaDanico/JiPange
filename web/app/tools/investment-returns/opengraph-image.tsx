@@ -1,9 +1,11 @@
-import { ogCard, ogContentType, ogSize } from "@/lib/og/card";
+import { ogAlt, ogCard, ogContentType, ogSize } from "@/lib/og/card";
+
+const title = "Investment Returns Calculator";
 
 export const size = ogSize;
 export const contentType = ogContentType;
-export const alt = "Investment Returns Calculator — JiPange";
+export const alt = ogAlt(title);
 
 export default function Image() {
-  return ogCard('Investment Returns Calculator');
+  return ogCard(title);
 }

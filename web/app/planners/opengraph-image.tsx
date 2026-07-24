@@ -1,9 +1,11 @@
-import { ogCard, ogContentType, ogSize } from "@/lib/og/card";
+import { ogAlt, ogCard, ogContentType, ogSize } from "@/lib/og/card";
+
+const title = "Goal Planners";
 
 export const size = ogSize;
 export const contentType = ogContentType;
-export const alt = "Goal Planners — JiPange";
+export const alt = ogAlt(title);
 
 export default function Image() {
-  return ogCard('Goal Planners');
+  return ogCard(title);
 }

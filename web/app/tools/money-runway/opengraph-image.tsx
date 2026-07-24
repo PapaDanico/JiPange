@@ -1,9 +1,11 @@
-import { ogCard, ogContentType, ogSize } from "@/lib/og/card";
+import { ogAlt, ogCard, ogContentType, ogSize } from "@/lib/og/card";
+
+const title = "Money Runway Calculator";
 
 export const size = ogSize;
 export const contentType = ogContentType;
-export const alt = "Money Runway Calculator — JiPange";
+export const alt = ogAlt(title);
 
 export default function Image() {
-  return ogCard('Money Runway Calculator');
+  return ogCard(title);
 }

@@ -1,9 +1,11 @@
-import { ogCard, ogContentType, ogSize } from "@/lib/og/card";
+import { ogAlt, ogCard, ogContentType, ogSize } from "@/lib/og/card";
+
+const title = "SHA Health Coverage Gap";
 
 export const size = ogSize;
 export const contentType = ogContentType;
-export const alt = "SHA Health Coverage Gap — JiPange";
+export const alt = ogAlt(title);
 
 export default function Image() {
-  return ogCard('SHA Health Coverage Gap');
+  return ogCard(title);
 }

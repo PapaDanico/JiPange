@@ -1,9 +1,11 @@
-import { ogCard, ogContentType, ogSize } from "@/lib/og/card";
+import { ogAlt, ogCard, ogContentType, ogSize } from "@/lib/og/card";
+
+const title = "My Pesa Picture";
 
 export const size = ogSize;
 export const contentType = ogContentType;
-export const alt = "My Pesa Picture — JiPange";
+export const alt = ogAlt(title);
 
 export default function Image() {
-  return ogCard('My Pesa Picture');
+  return ogCard(title);
 }
