@@ -1,9 +1,11 @@
-import { ogCard, ogContentType, ogSize } from "@/lib/og/card";
+import { ogAlt, ogCard, ogContentType, ogSize } from "@/lib/og/card";
+
+const title = "DhowCSD T-Bill Ladder";
 
 export const size = ogSize;
 export const contentType = ogContentType;
-export const alt = "DhowCSD T-Bill Ladder — JiPange";
+export const alt = ogAlt(title);
 
 export default function Image() {
-  return ogCard('DhowCSD T-Bill Ladder');
+  return ogCard(title);
 }

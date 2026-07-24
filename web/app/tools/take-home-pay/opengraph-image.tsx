@@ -1,9 +1,11 @@
-import { ogCard, ogContentType, ogSize } from "@/lib/og/card";
+import { ogAlt, ogCard, ogContentType, ogSize } from "@/lib/og/card";
+
+const title = "Take-Home Pay Calculator";
 
 export const size = ogSize;
 export const contentType = ogContentType;
-export const alt = "Take-Home Pay Calculator — JiPange";
+export const alt = ogAlt(title);
 
 export default function Image() {
-  return ogCard('Take-Home Pay Calculator');
+  return ogCard(title);
 }

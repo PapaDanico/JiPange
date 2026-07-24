@@ -1,9 +1,11 @@
-import { ogCard, ogContentType, ogSize } from "@/lib/og/card";
+import { ogAlt, ogCard, ogContentType, ogSize } from "@/lib/og/card";
+
+const title = "SACCO or bank? Find the cheaper loan";
 
 export const size = ogSize;
 export const contentType = ogContentType;
-export const alt = "SACCO or bank? Find the cheaper loan — JiPange";
+export const alt = ogAlt(title);
 
 export default function Image() {
-  return ogCard('SACCO or bank? Find the cheaper loan');
+  return ogCard(title);
 }

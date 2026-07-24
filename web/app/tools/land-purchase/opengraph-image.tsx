@@ -1,9 +1,11 @@
-import { ogCard, ogContentType, ogSize } from "@/lib/og/card";
+import { ogAlt, ogCard, ogContentType, ogSize } from "@/lib/og/card";
+
+const title = "True Cost of Buying Land in Kenya";
 
 export const size = ogSize;
 export const contentType = ogContentType;
-export const alt = "True Cost of Buying Land in Kenya — JiPange";
+export const alt = ogAlt(title);
 
 export default function Image() {
-  return ogCard('True Cost of Buying Land in Kenya');
+  return ogCard(title);
 }

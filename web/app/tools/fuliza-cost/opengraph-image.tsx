@@ -1,9 +1,11 @@
-import { ogCard, ogContentType, ogSize } from "@/lib/og/card";
+import { ogAlt, ogCard, ogContentType, ogSize } from "@/lib/og/card";
+
+const title = "What does Fuliza really cost?";
 
 export const size = ogSize;
 export const contentType = ogContentType;
-export const alt = "What does Fuliza really cost? — JiPange";
+export const alt = ogAlt(title);
 
 export default function Image() {
-  return ogCard('What does Fuliza really cost?');
+  return ogCard(title);
 }

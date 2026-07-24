@@ -1,6 +1,6 @@
 import { ogAlt, ogCard, ogContentType, ogSize } from "@/lib/og/card";
 
-const title = "KRA Tax Shield Optimizer";
+const title = "Your 90-second money check";
 
 export const size = ogSize;
 export const contentType = ogContentType;

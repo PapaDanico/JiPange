@@ -1,16 +1,33 @@
 import { ImageResponse } from "next/og";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
+import { SITE_URL } from "@/lib/site-config";
 
 /**
  * Shared Open Graph card renderer — every shared JiPange link unfurls as a
  * branded 1200×630 card instead of a bare URL. Rendered statically at build
  * time by the per-route opengraph-image.tsx files, so no user data and no
  * runtime cost. Fonts/logo load from lib/og (satori needs TTF + PNG).
+ *
+ * Titles must stay emoji-free: Source Serif 4 is the only embedded font, so
+ * emoji either render as blank tofu or pull a CDN fetch into the build.
+ * lib/og/__tests__/og-titles.test.ts enforces this and keeps each card in
+ * sync with its page's display title.
  */
 
 export const ogSize = { width: 1200, height: 630 };
 export const ogContentType = "image/png";
+
+/** Accessible alt text for a card — one convention for all 30+ routes. */
+export function ogAlt(title: string): string {
+  return `${title} — JiPange`;
+}
+
+function titleFontSize(title: string): number {
+  if (title.length > 55) return 54;
+  if (title.length > 34) return 62;
+  return 72;
+}
 
 export async function ogCard(title: string, kicker = "Free · Anonymous · Built for Kenya") {
   const dir = join(process.cwd(), "lib/og");
@@ -53,7 +70,7 @@ export async function ogCard(title: string, kicker = "Free · Anonymous · Built
           </div>
           <div
             style={{
-              fontSize: title.length > 34 ? 62 : 72,
+              fontSize: titleFontSize(title),
               fontWeight: 600,
               color: "#171717",
               lineHeight: 1.12,
@@ -67,7 +84,7 @@ export async function ogCard(title: string, kicker = "Free · Anonymous · Built
 
         <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
           <div style={{ display: "flex", width: 120, height: 8, backgroundColor: "#e8a838", borderRadius: 4 }} />
-          <div style={{ fontSize: 26, color: "#7a6b5e" }}>jipangefinance.org</div>
+          <div style={{ fontSize: 26, color: "#7a6b5e" }}>{new URL(SITE_URL).host}</div>
         </div>
       </div>
     ),

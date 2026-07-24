@@ -1,8 +1,10 @@
 import { test, expect } from "@playwright/test";
+import { visibleText } from "./helpers";
 
-// Every tool page renders a hidden print letterhead that repeats the tool
-// title, so text assertions whose pattern overlaps the title must filter to
-// visible matches — a bare .first() can resolve to the hidden letterhead.
+// Text assertions go through visibleText (see helpers.ts) so the hidden
+// print letterhead can never satisfy them, and each "shows output" test
+// asserts a string that only exists in the computed results — never one the
+// page's static heading or intro copy could match.
 
 // ─── Tools index ───────────────────────────────────────────────────────────
 
@@ -20,11 +22,11 @@ test("tools index loads and lists calculators", async ({ page }) => {
 test("take-home pay: shows net salary for valid input", async ({ page }) => {
   await page.goto("/tools/take-home-pay");
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-  await expect(page.getByText(/80%\+/)).toBeVisible();
-  const grossInput = page.getByRole("spinbutton").first();
-  await grossInput.fill("150000");
-  await expect(page.getByText(/net pay/i).first()).toBeVisible();
-  await expect(page.getByText(/PAYE/i).first()).toBeVisible();
+  await expect(visibleText(page, /80%\+/)).toBeVisible();
+  await page.getByRole("spinbutton").first().fill("150000");
+  // Ledger rows only exist once the breakdown computed.
+  await expect(visibleText(page, "Less: NSSF Tier 1")).toBeVisible();
+  await expect(visibleText(page, "PAYE (before relief)")).toBeVisible();
 });
 
 // ─── Savings Goal ──────────────────────────────────────────────────────────
@@ -36,7 +38,7 @@ test("savings goal: calculates required monthly deposit", async ({ page }) => {
   await inputs.nth(0).fill("500000");
   await inputs.nth(1).fill("24");
   await inputs.nth(2).fill("10");
-  await expect(page.getByText(/monthly/i).first()).toBeVisible();
+  await expect(visibleText(page, "Monthly savings needed")).toBeVisible();
 });
 
 // ─── Loan Repayment ────────────────────────────────────────────────────────
@@ -48,7 +50,7 @@ test("loan repayment: shows monthly instalment", async ({ page }) => {
   await inputs.nth(0).fill("200000");
   await inputs.nth(1).fill("12");
   await inputs.nth(2).fill("24");
-  await expect(page.getByText(/monthly installment|total repaid/i).first()).toBeVisible();
+  await expect(visibleText(page, "Monthly installment")).toBeVisible();
 });
 
 // ─── Investment Returns ────────────────────────────────────────────────────
@@ -61,7 +63,7 @@ test("investment returns: renders projection", async ({ page }) => {
   await inputs.nth(1).fill("5000");
   await inputs.nth(2).fill("10");
   await inputs.nth(3).fill("10");
-  await expect(page.getByText(/total value|projected/i).first()).toBeVisible();
+  await expect(visibleText(page, "Projected future value")).toBeVisible();
 });
 
 // ─── FIRE Number ───────────────────────────────────────────────────────────
@@ -69,9 +71,8 @@ test("investment returns: renders projection", async ({ page }) => {
 test("fire number: shows retirement number", async ({ page }) => {
   await page.goto("/tools/fire-number");
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-  const inputs = page.getByRole("spinbutton");
-  await inputs.nth(0).fill("80000");
-  await expect(page.getByText(/FIRE number|retirement/i).filter({ visible: true }).first()).toBeVisible();
+  await page.getByRole("spinbutton").first().fill("80000");
+  await expect(visibleText(page, /your fire number at age/i)).toBeVisible();
 });
 
 // ─── Money Runway ──────────────────────────────────────────────────────────
@@ -82,7 +83,7 @@ test("money runway: shows months of runway", async ({ page }) => {
   const inputs = page.getByRole("spinbutton");
   await inputs.nth(0).fill("1000000");
   await inputs.nth(1).fill("50000");
-  await expect(page.getByText(/years|runway/i).filter({ visible: true }).first()).toBeVisible();
+  await expect(visibleText(page, "Your money will last")).toBeVisible();
 });
 
 // ─── Budget Split ──────────────────────────────────────────────────────────
@@ -90,9 +91,8 @@ test("money runway: shows months of runway", async ({ page }) => {
 test("budget split: renders split amounts", async ({ page }) => {
   await page.goto("/tools/budget-split");
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-  const inputs = page.getByRole("spinbutton");
-  await inputs.nth(0).fill("120000");
-  await expect(page.getByText(/household expenses/i)).toBeVisible();
+  await page.getByRole("spinbutton").first().fill("120000");
+  await expect(visibleText(page, "Household expenses (50%)")).toBeVisible();
 });
 
 // ─── Tax Shield ────────────────────────────────────────────────────────────
@@ -100,9 +100,9 @@ test("budget split: renders split amounts", async ({ page }) => {
 test("tax shield: shows relief amounts", async ({ page }) => {
   await page.goto("/tools/tax-shield");
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-  const inputs = page.getByRole("spinbutton");
-  await inputs.nth(0).fill("200000");
-  await expect(page.getByText(/relief|saving|PAYE/i).first()).toBeVisible();
+  await page.getByRole("spinbutton").first().fill("200000");
+  await expect(page.getByTestId("tax-leak")).toBeVisible();
+  await expect(visibleText(page, /paye recoverable/i)).toBeVisible();
 });
 
 // ─── Salary Negotiation ───────────────────────────────────────────────────
@@ -110,9 +110,8 @@ test("tax shield: shows relief amounts", async ({ page }) => {
 test("salary negotiation: reverse-engineers gross", async ({ page }) => {
   await page.goto("/tools/salary-negotiation");
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-  const inputs = page.getByRole("spinbutton");
-  await inputs.nth(0).fill("100000");
-  await expect(page.getByText(/gross/i).filter({ visible: true }).first()).toBeVisible();
+  await page.getByRole("spinbutton").first().fill("100000");
+  await expect(visibleText(page, "Negotiate for a gross salary of")).toBeVisible();
 });
 
 // ─── Payday Router ─────────────────────────────────────────────────────────
@@ -123,7 +122,7 @@ test("payday router: shows weekly limit", async ({ page }) => {
   const inputs = page.getByRole("spinbutton");
   await inputs.nth(0).fill("120000");
   await inputs.nth(1).fill("30000");
-  await expect(page.getByText(/weekly|week/i).first()).toBeVisible();
+  await expect(page.getByTestId("weekly-limit")).toBeVisible();
 });
 
 // ─── Fuliza Cost ───────────────────────────────────────────────────────────
@@ -134,7 +133,7 @@ test("fuliza cost: shows true cost", async ({ page }) => {
   const inputs = page.getByRole("spinbutton");
   await inputs.nth(0).fill("5000");
   await inputs.nth(1).fill("14");
-  await expect(page.getByText(/cost|fee|fuliza/i).filter({ visible: true }).first()).toBeVisible();
+  await expect(visibleText(page, "Total cost of borrowing")).toBeVisible();
 });
 
 // ─── KPLC Optimizer ────────────────────────────────────────────────────────
@@ -142,9 +141,8 @@ test("fuliza cost: shows true cost", async ({ page }) => {
 test("kplc optimizer: shows kWh savings", async ({ page }) => {
   await page.goto("/tools/kplc-optimizer");
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-  const inputs = page.getByRole("spinbutton");
-  await inputs.nth(0).fill("3000");
-  await expect(page.getByText(/kWh|unit|token/i).filter({ visible: true }).first()).toBeVisible();
+  await page.getByRole("spinbutton").first().fill("3000");
+  await expect(page.getByTestId("kplc-extra")).toContainText("kWh");
 });
 
 // ─── SACCO vs Bank ────────────────────────────────────────────────────────
@@ -155,7 +153,9 @@ test("sacco vs bank: shows comparison", async ({ page }) => {
   const inputs = page.getByRole("spinbutton");
   await inputs.nth(0).fill("500000");
   await inputs.nth(1).fill("12");
-  await expect(page.getByText(/SACCO/i).filter({ visible: true }).first()).toBeVisible();
+  // Per-product comparison rows only exist once results computed.
+  await expect(visibleText(page, "Total repaid:")).toBeVisible();
+  await expect(visibleText(page, /% APR/)).toBeVisible();
 });
 
 // ─── Guarantor Shield ─────────────────────────────────────────────────────
@@ -166,7 +166,7 @@ test("guarantor shield: shows frozen borrowing power", async ({ page }) => {
   const inputs = page.getByRole("spinbutton");
   await inputs.nth(0).fill("500000");
   await inputs.nth(1).fill("200000");
-  await expect(page.getByText(/borrow|frozen|guarantee/i).first()).toBeVisible();
+  await expect(visibleText(page, "Frozen borrowing capacity")).toBeVisible();
 });
 
 // ─── 1/3 Rule Checker ────────────────────────────────────────────────────
@@ -177,7 +177,9 @@ test("one-third rule: shows deduction analysis", async ({ page }) => {
   const inputs = page.getByRole("spinbutton");
   await inputs.nth(0).fill("120000");
   await inputs.nth(1).fill("50000");
-  await expect(page.getByText(/deduction|one.third|limit/i).filter({ visible: true }).first()).toBeVisible();
+  await expect(
+    visibleText(page, /deductions are within the legal limit|deductions may exceed the legal limit/i)
+  ).toBeVisible();
 });
 
 // ─── Inflation Reality ───────────────────────────────────────────────────
@@ -188,7 +190,7 @@ test("inflation reality: shows real value erosion", async ({ page }) => {
   const inputs = page.getByRole("spinbutton");
   await inputs.nth(0).fill("100000");
   await inputs.nth(1).fill("5");
-  await expect(page.getByText(/real value|inflation|purchasing/i).first()).toBeVisible();
+  await expect(visibleText(page, "Your salary will feel like")).toBeVisible();
 });
 
 // ─── DhowCSD T-Bill Ladder ────────────────────────────────────────────────
@@ -196,9 +198,8 @@ test("inflation reality: shows real value erosion", async ({ page }) => {
 test("dhowcsd: shows t-bill ladder allocation", async ({ page }) => {
   await page.goto("/tools/dhowcsd");
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-  const inputs = page.getByRole("spinbutton");
-  await inputs.nth(0).fill("1000000");
-  await expect(page.getByText(/91|182|364|T-Bill/i).filter({ visible: true }).first()).toBeVisible();
+  await page.getByRole("spinbutton").first().fill("1000000");
+  await expect(visibleText(page, /blended ladder yield/i)).toBeVisible();
 });
 
 // ─── Education Savings ────────────────────────────────────────────────────
@@ -206,7 +207,8 @@ test("dhowcsd: shows t-bill ladder allocation", async ({ page }) => {
 test("education savings: shows monthly target", async ({ page }) => {
   await page.goto("/tools/education-savings");
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-  await expect(page.getByText(/monthly|save|target/i).first()).toBeVisible();
+  await page.getByRole("spinbutton").first().fill("30000");
+  await expect(visibleText(page, /monthly savings for|combined monthly savings/i)).toBeVisible();
 });
 
 // ─── Hustle Smoother ──────────────────────────────────────────────────────
@@ -219,16 +221,16 @@ test("hustle smoother: shows smoothed salary for variable income", async ({ page
   await page.fill("#income-3", "30000");
   await page.fill("#income-4", "60000");
   await page.fill("#income-5", "20000");
-  await expect(page.getByText("Your smoothed monthly salary")).toBeVisible();
+  await expect(visibleText(page, "Your smoothed monthly salary")).toBeVisible();
 });
 
 // ─── 20th challenge ───────────────────────────────────────────────────────
 
 test("20th challenge: setup screen loads and accepts a commitment", async ({ page }) => {
   await page.goto("/tools/20th-challenge");
-  await expect(page.getByText(/monthly savings commitment/i).first()).toBeVisible();
+  await expect(visibleText(page, /monthly savings commitment/i)).toBeVisible();
   await page.fill("#commitment", "5000");
-  await expect(page.getByText(/start the challenge/i)).toBeVisible();
+  await expect(visibleText(page, /start the challenge/i)).toBeVisible();
 });
 
 // ─── Affiliate links / product links ─────────────────────────────────────
@@ -239,8 +241,8 @@ test("affiliate links: savings goal shows MMF product cards", async ({ page }) =
   await inputs.nth(0).fill("500000");
   await inputs.nth(1).fill("24");
   await inputs.nth(2).fill("10");
-  await expect(page.getByText(/top mmfs for this goal/i)).toBeVisible();
-  await expect(page.getByText(/CIC MMF|Britam MMF/i).first()).toBeVisible();
+  await expect(visibleText(page, /top mmfs for this goal/i)).toBeVisible();
+  await expect(visibleText(page, /CIC MMF|Britam MMF/i)).toBeVisible();
 });
 
 test("affiliate links: /go/cic-mmf redirects externally", async ({ page }) => {
@@ -257,7 +259,7 @@ test("affiliate links: /go/unknown-slug redirects to /tools", async ({ page }) =
 
 test("tool enhancements: shows Try next section with chips", async ({ page }) => {
   await page.goto("/tools/take-home-pay");
-  await expect(page.getByText(/try next/i)).toBeVisible();
+  await expect(visibleText(page, /try next/i)).toBeVisible();
   await expect(page.getByRole("link", { name: "Salary & Pay Hub", exact: true }).first()).toBeVisible();
 });
 
@@ -277,7 +279,7 @@ test("recent tools bar: appears after visiting a tool", async ({ page }) => {
     );
   });
   await page.reload();
-  await expect(page.getByText(/recently used/i)).toBeVisible();
+  await expect(visibleText(page, /recently used/i)).toBeVisible();
   await expect(page.getByRole("link", { name: "Take-Home Pay", exact: true })).toBeVisible();
 });
 
@@ -285,7 +287,7 @@ test("recent tools bar: appears after visiting a tool", async ({ page }) => {
 
 test("tool insights: loan repayment caution card is visible", async ({ page }) => {
   await page.goto("/tools/loan-repayment");
-  await expect(page.getByText(/KSh 1,500/)).toBeVisible();
+  await expect(visibleText(page, /KSh 1,500/)).toBeVisible();
 });
 
 // ─── Navigation ───────────────────────────────────────────────────────────

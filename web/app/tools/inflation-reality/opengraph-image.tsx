@@ -1,9 +1,11 @@
-import { ogCard, ogContentType, ogSize } from "@/lib/og/card";
+import { ogAlt, ogCard, ogContentType, ogSize } from "@/lib/og/card";
+
+const title = "What is your salary really worth?";
 
 export const size = ogSize;
 export const contentType = ogContentType;
-export const alt = "What is your salary really worth? — JiPange";
+export const alt = ogAlt(title);
 
 export default function Image() {
-  return ogCard('What is your salary really worth?');
+  return ogCard(title);
 }
