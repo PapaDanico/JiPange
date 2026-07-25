@@ -5,11 +5,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { getStoredJourneyAnswers, getStoredProfile } from "@/lib/storage";
 import { useStorageValue } from "@/lib/hooks";
-
-const DESKTOP_LINKS = [
-  { href: "/planners", label: "Planners" },
-  { href: "/tools", label: "Calculators" },
-];
+import NavDropdown from "./NavDropdown";
+import PlannersDropdownPanel from "./PlannersDropdownPanel";
+import CalculatorsDropdownPanel from "./CalculatorsDropdownPanel";
 
 export default function AppHeader() {
   const pathname = usePathname();
@@ -45,20 +43,16 @@ export default function AppHeader() {
         </Link>
 
         <nav className="flex items-center gap-4" aria-label="Primary">
-          {DESKTOP_LINKS.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              aria-current={underPath(link.href) ? "page" : undefined}
-              className={`hidden text-sm font-medium sm:block ${
-                underPath(link.href)
-                  ? "text-primary underline underline-offset-4"
-                  : "text-ink-soft hover:text-primary"
-              }`}
-            >
-              {link.label}
-            </Link>
-          ))}
+          <div className="hidden sm:block">
+            <NavDropdown label="Planners" active={underPath("/planners")}>
+              <PlannersDropdownPanel />
+            </NavDropdown>
+          </div>
+          <div className="hidden sm:block">
+            <NavDropdown label="Calculators" active={underPath("/tools")}>
+              <CalculatorsDropdownPanel />
+            </NavDropdown>
+          </div>
           <Link
             href={cta.href}
             className="inline-flex h-9 items-center justify-center rounded-full bg-accent px-4 text-sm font-medium text-ink transition-colors hover:bg-accent-deep"
