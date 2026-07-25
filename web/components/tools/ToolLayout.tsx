@@ -3,6 +3,8 @@ import PrintLetterhead from "./PrintLetterhead";
 import ToolInsights from "./ToolInsights";
 import ToolEnhancements from "./ToolEnhancements";
 import ToolLayoutCTA from "./ToolLayoutCTA";
+import JsonLd from "@/components/seo/JsonLd";
+import { breadcrumbJsonLd, softwareApplicationJsonLd } from "@/lib/structured-data";
 
 interface Insight {
   icon: string;
@@ -15,16 +17,29 @@ interface Insight {
 export default function ToolLayout({
   title,
   description,
+  path,
   insights,
   children,
 }: {
   title: string;
   description: string;
+  /** This page's route (e.g. "/tools/fire-number") — powers its structured
+   *  data. Every call site already lives at a fixed, known route, so this
+   *  is a one-line addition, not a new place for title/description to drift. */
+  path: string;
   insights?: [Insight, Insight];
   children: React.ReactNode;
 }) {
   return (
     <div className="flex flex-1 flex-col items-center px-6 py-12">
+      <JsonLd data={softwareApplicationJsonLd({ name: title, description, path })} />
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "Calculators", path: "/tools" },
+          { name: title, path },
+        ])}
+      />
       {/* Every calculator prints as a letterheaded one-page report. */}
       <div className="w-full max-w-5xl">
         <PrintLetterhead title={title} />

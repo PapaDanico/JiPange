@@ -11,6 +11,7 @@ export const metadata: Metadata = {
 export default function LandPurchasePage() {
   return (
     <ToolLayout
+      path="/tools/land-purchase"
       title="True Cost of Buying Land in Kenya"
       description="The quoted plot price is only the start. Enter the price and land type to see stamp duty, legal fees, valuation, and every other cost you must budget for."
       insights={[

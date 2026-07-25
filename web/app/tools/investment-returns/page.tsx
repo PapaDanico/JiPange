@@ -11,6 +11,7 @@ export const metadata: Metadata = {
 export default function InvestmentReturnsPage() {
   return (
     <ToolLayout
+      path="/tools/investment-returns"
       title="Investment Returns Calculator"
       description="Project how a lump sum and monthly contributions could grow over time."
       insights={[

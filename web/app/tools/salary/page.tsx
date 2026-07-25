@@ -11,6 +11,7 @@ export const metadata: Metadata = {
 export default function SalaryHubPage() {
   return (
     <ToolLayout
+      path="/tools/salary"
       title="Salary & Pay Hub"
       description="Take-home pay, budget split, payday routing, tax shield, and salary negotiation — all from one gross salary."
       insights={[

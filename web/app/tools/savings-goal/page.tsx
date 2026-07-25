@@ -11,6 +11,7 @@ export const metadata: Metadata = {
 export default function SavingsGoalPage() {
   return (
     <ToolLayout
+      path="/tools/savings-goal"
       title="Savings Goal Calculator"
       description="Enter a target amount and timeline to see how much to save each month."
       insights={[

@@ -3,7 +3,9 @@ import { Figtree, Source_Serif_4 } from "next/font/google";
 import Footer from "@/components/Footer";
 import AppHeader from "@/components/nav/AppHeader";
 import BottomNav from "@/components/nav/BottomNav";
+import JsonLd from "@/components/seo/JsonLd";
 import { SITE_URL } from "@/lib/site-config";
+import { organizationJsonLd, websiteJsonLd } from "@/lib/structured-data";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -52,6 +54,8 @@ export default function RootLayout({
     <html lang="en" className={`h-full ${figtree.variable} ${sourceSerif.variable}`}>
       {/* pb-16 clears the fixed mobile bottom nav; sm:pb-0 removes it where the bar is hidden. */}
       <body className="min-h-full flex flex-col bg-background pb-16 font-sans text-ink antialiased sm:pb-0 print:pb-0">
+        <JsonLd data={organizationJsonLd()} />
+        <JsonLd data={websiteJsonLd()} />
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-primary focus:px-4 focus:py-2 focus:text-sm focus:text-white"

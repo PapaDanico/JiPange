@@ -11,6 +11,7 @@ export const metadata: Metadata = {
 export default function TwentiethChallengePage() {
   return (
     <ToolLayout
+      path="/tools/20th-challenge"
       title="20th-to-20th Savings Challenge"
       description="Pick an amount. Save it every month. Check in between the 15th and 25th to keep your streak alive."
       insights={[

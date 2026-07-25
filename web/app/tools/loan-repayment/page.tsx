@@ -11,6 +11,7 @@ export const metadata: Metadata = {
 export default function LoanRepaymentPage() {
   return (
     <ToolLayout
+      path="/tools/loan-repayment"
       title="Loan / HELB Repayment Calculator"
       description="See your monthly installment and total interest on any loan."
       insights={[

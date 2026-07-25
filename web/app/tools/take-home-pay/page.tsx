@@ -11,6 +11,7 @@ export const metadata: Metadata = {
 export default function TakeHomePayPage() {
   return (
     <ToolLayout
+      path="/tools/take-home-pay"
       title="Take-Home Pay Calculator"
       description="Enter your gross monthly salary to see your exact net pay after PAYE, NSSF, SHIF, and the Housing Levy."
       insights={[

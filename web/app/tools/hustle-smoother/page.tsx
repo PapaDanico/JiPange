@@ -11,6 +11,7 @@ export const metadata: Metadata = {
 export default function HustleSmootherPage() {
   return (
     <ToolLayout
+      path="/tools/hustle-smoother"
       title="Hustle Income Smoother"
       description="Variable income in, steady salary out. Enter your last few months, get the monthly draw you can count on."
       insights={[
