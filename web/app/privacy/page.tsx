@@ -123,6 +123,12 @@ export default function PrivacyPage() {
                 countries) as part of standard hosting telemetry.
               </li>
               <li>
+                <strong>Simple Analytics</strong> — counts page views. It sets no cookies,
+                stores no IP addresses, builds no profile and cannot follow you to another
+                site, which is why this page carries no consent banner. It tells us how many
+                people opened a calculator; it cannot see the numbers you typed into it.
+              </li>
+              <li>
                 <strong>Linked financial products</strong> — some calculator result pages
                 show links to regulated Kenyan financial products (Money Market Funds, Treasury
                 Bills via DhowCSD, etc.). These links go through our <code>/go/</code> redirect
@@ -132,8 +138,9 @@ export default function PrivacyPage() {
               </li>
             </ul>
             <p className="mt-2">
-              We do not use advertising networks, tracking pixels, or third-party analytics
-              SDKs.
+              We do not use advertising networks or tracking pixels. The one analytics tool we
+              do use is named above, counts page views only, and is cookieless by design — it
+              cannot identify you or follow you off this site.
             </p>
           </section>
 
