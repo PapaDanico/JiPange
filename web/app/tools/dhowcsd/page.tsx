@@ -11,6 +11,7 @@ export const metadata: Metadata = {
 export default function DhowcsdPage() {
   return (
     <ToolLayout
+      path="/tools/dhowcsd"
       title="DhowCSD T-Bill Ladder"
       description="Three tenors, one ladder: quarterly liquidity with a blended yield that crushes the 3.23% bank average."
       insights={[

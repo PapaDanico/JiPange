@@ -11,6 +11,7 @@ export const metadata: Metadata = {
 export default function MoneyRunwayPage() {
   return (
     <ToolLayout
+      path="/tools/money-runway"
       title="Money Runway Calculator"
       description="See how long your savings will last at a given monthly withdrawal."
       insights={[

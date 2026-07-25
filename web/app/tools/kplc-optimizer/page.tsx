@@ -11,6 +11,7 @@ export const metadata: Metadata = {
 export default function KplcOptimizerPage() {
   return (
     <ToolLayout
+      path="/tools/kplc-optimizer"
       title="⚡ KPLC Token Band Optimizer"
       description="Same budget, more units — split your token purchases to stay in the cheaper tariff band."
       insights={[

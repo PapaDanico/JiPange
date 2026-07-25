@@ -11,6 +11,7 @@ export const metadata: Metadata = {
 export default function ChamaPage() {
   return (
     <ToolLayout
+      path="/tools/chama"
       title="Chama / Group savings optimizer"
       description="Simulate merry-go-round rotation payouts and welfare fund, or model what your group achieves by investing together."
       insights={[

@@ -11,6 +11,7 @@ export const metadata: Metadata = {
 export default function EducationSavingsPage() {
   return (
     <ToolLayout
+      path="/tools/education-savings"
       title="Kids' Education Savings Calculator"
       description="Plan monthly savings for Junior and Senior Secondary fees under Kenya's CBC system."
       insights={[

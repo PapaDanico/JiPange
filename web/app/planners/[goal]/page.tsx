@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import GoalPlanner from "@/components/planners/GoalPlanner";
 import TermlyFeeSmoother from "@/components/planners/TermlyFeeSmoother";
 import MjengoMilestone from "@/components/planners/MjengoMilestone";
+import JsonLd from "@/components/seo/JsonLd";
+import { breadcrumbJsonLd, softwareApplicationJsonLd } from "@/lib/structured-data";
 import { GOAL_CONFIGS, GOAL_TYPES, type GoalType } from "@/lib/goal-planner";
 
 interface PageProps {
@@ -29,8 +31,18 @@ export default async function GoalPlannerPage({ params }: PageProps) {
   const config = GOAL_CONFIGS[goal as GoalType];
   if (!config) notFound();
 
+  const path = `/planners/${goal}`;
+
   return (
     <div className="flex flex-1 flex-col items-center px-6 py-12">
+      <JsonLd data={softwareApplicationJsonLd({ name: config.title, description: config.tagline, path })} />
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "Planners", path: "/planners" },
+          { name: config.title, path },
+        ])}
+      />
       <div className="w-full max-w-3xl">
         <Link href="/planners" className="text-xs font-medium text-primary underline">
           ← All planners

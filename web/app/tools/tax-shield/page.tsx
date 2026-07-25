@@ -11,6 +11,7 @@ export const metadata: Metadata = {
 export default function TaxShieldPage() {
   return (
     <ToolLayout
+      path="/tools/tax-shield"
       title="KRA Tax Shield Optimizer"
       description="Claw back overpaid PAYE by maxing your legal pension, mortgage and insurance reliefs."
       insights={[

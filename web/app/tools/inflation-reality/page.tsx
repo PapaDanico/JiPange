@@ -11,6 +11,7 @@ export const metadata: Metadata = {
 export default function InflationRealityPage() {
   return (
     <ToolLayout
+      path="/tools/inflation-reality"
       title="What is your salary really worth?"
       description="See how much purchasing power your salary loses to inflation over time."
       insights={[

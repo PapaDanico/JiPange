@@ -11,6 +11,7 @@ export const metadata: Metadata = {
 export default function FulizaCostPage() {
   return (
     <ToolLayout
+      path="/tools/fuliza-cost"
       title="What does Fuliza really cost?"
       description="See the real fee and equivalent APR before you borrow on Fuliza."
       insights={[

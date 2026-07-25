@@ -11,6 +11,7 @@ export const metadata: Metadata = {
 export default function OneThirdRulePage() {
   return (
     <ToolLayout
+      path="/tools/one-third-rule"
       title="Are your deductions legal?"
       description="Check your SACCO and loan deductions against the Employment Act's one-third rule."
       insights={[

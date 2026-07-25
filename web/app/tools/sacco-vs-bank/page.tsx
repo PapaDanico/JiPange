@@ -11,6 +11,7 @@ export const metadata: Metadata = {
 export default function SaccoVsBankPage() {
   return (
     <ToolLayout
+      path="/tools/sacco-vs-bank"
       title="SACCO or bank? Find the cheaper loan"
       description="Compare SACCO, bank, and mobile lender costs for the same loan amount and term."
       insights={[

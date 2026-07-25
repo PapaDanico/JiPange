@@ -11,6 +11,7 @@ export const metadata: Metadata = {
 export default function BudgetSplitPage() {
   return (
     <ToolLayout
+      path="/tools/budget-split"
       title="50/25/25 Budget Split Calculator"
       description="A simple 3-way split: 50% for daily living, 25% for a safety net, 25% for building wealth."
       insights={[

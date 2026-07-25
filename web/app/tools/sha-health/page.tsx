@@ -11,6 +11,7 @@ export const metadata: Metadata = {
 export default function ShaHealthPage() {
   return (
     <ToolLayout
+      path="/tools/sha-health"
       title="SHA Health Coverage Gap"
       description="Find your exact SHA (SHIF) contribution and the private top-up cost needed to cover what SHA doesn't — private hospitals, dental, optical, and more."
       insights={[

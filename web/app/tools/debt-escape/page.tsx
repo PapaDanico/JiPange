@@ -11,6 +11,7 @@ export const metadata: Metadata = {
 export default function DebtEscapePage() {
   return (
     <ToolLayout
+      path="/tools/debt-escape"
       title="Debt Stack Buster"
       description="Enter your mobile loans and a monthly repayment budget. The avalanche method (highest rate first) shows you the fastest, cheapest way out."
       insights={[

@@ -11,6 +11,7 @@ export const metadata: Metadata = {
 export default function GuarantorShieldPage() {
   return (
     <ToolLayout
+      path="/tools/guarantor-shield"
       title="🎯 Sacco Guarantor Liability Shield"
       description="Your deposits back other people's loans — find your true unencumbered borrowing power."
       insights={[

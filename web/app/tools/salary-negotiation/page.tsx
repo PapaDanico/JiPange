@@ -11,6 +11,7 @@ export const metadata: Metadata = {
 export default function SalaryNegotiationPage() {
   return (
     <ToolLayout
+      path="/tools/salary-negotiation"
       title="What gross should I ask for?"
       description="Enter your target take-home pay and we'll work out the gross salary to negotiate for."
       insights={[

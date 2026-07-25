@@ -12,6 +12,7 @@ export const metadata: Metadata = {
 export default function FireNumberPage() {
   return (
     <ToolLayout
+      path="/tools/fire-number"
       title="FIRE Number Calculator"
       description="Find your Financial Independence number and how many years to reach it."
       insights={[
