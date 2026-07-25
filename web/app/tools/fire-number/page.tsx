@@ -31,6 +31,12 @@ export default function FireNumberPage() {
           source: "JiPange FIRE projection",
         },
       ]}
+      deeper={{
+        question: "Your FIRE number depends entirely on the yield you assume.",
+        answer: "Mwangaza Yield works that yield out from live CBK auction data rather than a typed-in guess: what a buildable bond ladder actually pays after tax, marked down for the fall the Central Bank Rate has genuinely made on the record.",
+        href: "https://mwangazayield.org/goals/",
+        label: "Check the yield behind the number",
+      }}
     >
       <FireNumberCalculator />
       <div className="mt-6 rounded-2xl bg-canvas p-4 text-sm text-ink-soft print:hidden">

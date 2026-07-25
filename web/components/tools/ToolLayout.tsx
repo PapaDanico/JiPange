@@ -3,6 +3,7 @@ import PrintLetterhead from "./PrintLetterhead";
 import ToolInsights from "./ToolInsights";
 import ToolEnhancements from "./ToolEnhancements";
 import ToolLayoutCTA from "./ToolLayoutCTA";
+import GoDeeper, { type DeeperLink } from "./GoDeeper";
 import JsonLd from "@/components/seo/JsonLd";
 import { breadcrumbJsonLd, softwareApplicationJsonLd } from "@/lib/structured-data";
 
@@ -19,6 +20,7 @@ export default function ToolLayout({
   description,
   path,
   insights,
+  deeper,
   children,
 }: {
   title: string;
@@ -28,6 +30,8 @@ export default function ToolLayout({
    *  is a one-line addition, not a new place for title/description to drift. */
   path: string;
   insights?: [Insight, Insight];
+  /** Optional handoff to the sister tool that goes deeper on this question. */
+  deeper?: DeeperLink;
   children: React.ReactNode;
 }) {
   return (
@@ -63,6 +67,7 @@ export default function ToolLayout({
         <aside className="mx-auto w-full max-w-2xl space-y-6 print:hidden lg:sticky lg:top-20 lg:mx-0 lg:max-w-none">
           <ToolEnhancements />
           <ToolLayoutCTA />
+          {deeper && <GoDeeper deeper={deeper} />}
         </aside>
       </div>
     </div>

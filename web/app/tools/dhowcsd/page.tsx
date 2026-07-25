@@ -30,6 +30,12 @@ export default function DhowcsdPage() {
           source: "CBK T-Bill yields, June 2026",
         },
       ]}
+      deeper={{
+        question: "A T-bill ladder tops out at 364 days. What about the years beyond it?",
+        answer: "Treasury bonds run 2 to 30 years and pay a coupon every 182 days. Mwangaza Yield prices them after Kenyan withholding tax — 15%, 10%, or nothing at all on an infrastructure bond — and builds a bond ladder the same way this one builds a bill ladder.",
+        href: "https://mwangazayield.org/ladder/",
+        label: "Build a bond ladder",
+      }}
     >
       <DhowcsdLadderCalculator />
     </ToolLayout>

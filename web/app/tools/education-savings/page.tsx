@@ -30,6 +30,12 @@ export default function EducationSavingsPage() {
           source: "JiPange projection at 11% p.a.",
         },
       ]}
+      deeper={{
+        question: "Will the money be there the term the fees fall due?",
+        answer: "Mwangaza Yield matches bond maturities to each fee year, so principal returns just before the invoice instead of forcing a sale at whatever price the market offers that week.",
+        href: "https://mwangazayield.org/goals/",
+        label: "Match maturities to fee years",
+      }}
     >
       <EducationSavingsCalculator />
     </ToolLayout>
