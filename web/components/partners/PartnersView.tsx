@@ -103,6 +103,13 @@ function ProductCard({ product }: { product: ProductLink }) {
       <div className="mt-4">
         <Link
           href={`/go/${product.slug}`}
+          // /go/[slug] is a redirect to the provider, and Next prefetches
+          // internal routes on sight — so merely SCROLLING this page fetched the
+          // redirect and followed it, pinging six financial companies before the
+          // reader clicked anything. On a page that promises to store nothing
+          // that is a contradiction, and on Kenyan mobile data it is six
+          // requests nobody asked for.
+          prefetch={false}
           target="_blank"
           rel="noopener noreferrer"
           className="flex h-10 w-full items-center justify-center rounded-xl border border-primary text-sm font-medium text-primary transition-colors hover:bg-primary hover:text-white"

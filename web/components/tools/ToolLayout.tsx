@@ -62,7 +62,12 @@ export default function ToolLayout({
       </div>
 
       {/* Single column up to lg; calculator + sticky sidebar (Next Move, share, plan upsell) beyond it. */}
-      <div className="mt-8 grid w-full max-w-5xl gap-8 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start lg:gap-12">
+      {/* [&>*]:min-w-0 — a grid child defaults to min-width:auto, so it refuses to
+          shrink below its content's minimum and pushes the whole page sideways.
+          The salary tab strip is a legitimate overflow-x-auto scroller, but its
+          column expanded to fit every tab instead of letting the strip scroll,
+          giving 12px of horizontal page scroll at 360px. Applies to all tools. */}
+      <div className="mt-8 grid w-full max-w-5xl gap-8 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start lg:gap-12 [&>*]:min-w-0">
         <div className="mx-auto w-full max-w-2xl lg:mx-0 lg:max-w-none">{children}</div>
         <aside className="mx-auto w-full max-w-2xl space-y-6 print:hidden lg:sticky lg:top-20 lg:mx-0 lg:max-w-none">
           <ToolEnhancements />
