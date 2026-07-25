@@ -298,13 +298,53 @@ test("header: logo links back to home", async ({ page }) => {
   await expect(page).toHaveURL("/");
 });
 
-test("header: calculators nav link has aria-current on tools pages", async ({ page }) => {
+test("header: calculators dropdown is styled active on tools pages", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 800 });
   await page.goto("/tools");
   const header = page.locator("header");
-  const calcLink = header.getByRole("link", { name: "Calculators", exact: true });
-  await expect(calcLink).toBeVisible();
-  await expect(calcLink).toHaveAttribute("aria-current", "page");
+  const calcTrigger = header.getByRole("button", { name: "Calculators", exact: true });
+  await expect(calcTrigger).toBeVisible();
+  await expect(calcTrigger).toHaveClass(/text-primary/);
+});
+
+test("header: calculators dropdown opens and jumps straight to a tool", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto("/");
+  const header = page.locator("header");
+  await header.getByRole("button", { name: "Calculators", exact: true }).click();
+  const link = page.getByRole("link", { name: /savings goal calculator/i });
+  await expect(link).toBeVisible();
+  await link.click();
+  await expect(page).toHaveURL("/tools/savings-goal");
+});
+
+test("header: planners dropdown opens and jumps straight to a goal", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto("/");
+  const header = page.locator("header");
+  await header.getByRole("button", { name: "Planners", exact: true }).click();
+  const link = page.getByRole("link", { name: /emergency fund planner/i });
+  await expect(link).toBeVisible();
+  await link.click();
+  await expect(page).toHaveURL("/planners/emergency");
+});
+
+test("header: dropdown closes on outside click and on Escape", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto("/");
+  const header = page.locator("header");
+  const trigger = header.getByRole("button", { name: "Calculators", exact: true });
+
+  await trigger.click();
+  await expect(page.getByRole("link", { name: /savings goal calculator/i })).toBeVisible();
+  await page.mouse.click(10, 400);
+  await expect(page.getByRole("link", { name: /savings goal calculator/i })).not.toBeVisible();
+
+  await trigger.click();
+  await expect(page.getByRole("link", { name: /savings goal calculator/i })).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("link", { name: /savings goal calculator/i })).not.toBeVisible();
+  await expect(trigger).toBeFocused();
 });
 
 test("all tools breadcrumb back link goes to /tools", async ({ page }) => {

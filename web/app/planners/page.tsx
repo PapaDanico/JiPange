@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { GOAL_CONFIGS, GOAL_TYPES } from "@/lib/goal-planner";
+import { PLANNER_NAV_ITEMS } from "@/lib/planner-nav";
+
+const hustleItem = PLANNER_NAV_ITEMS.find((item) => item.href === "/planners/hustle")!;
 
 export const metadata: Metadata = {
   title: "Goal Planners — JiPange",
@@ -39,16 +42,14 @@ export default function PlannersPage() {
           );
         })}
         <Link
-          href="/planners/hustle"
+          href={hustleItem.href}
           className="block rounded-2xl bg-white p-5 shadow-sm transition-shadow hover:shadow-md"
         >
           <div className="flex items-center gap-3">
-            <span className="text-2xl">🔄</span>
+            <span className="text-2xl">{hustleItem.icon}</span>
             <div>
-              <h2 className="text-base font-semibold text-primary">Hustle Income Smoother</h2>
-              <p className="mt-0.5 text-sm text-ink-soft">
-                Turn lumpy poultry, farm or gig payouts into a steady monthly salary.
-              </p>
+              <h2 className="text-base font-semibold text-primary">{hustleItem.title}</h2>
+              <p className="mt-0.5 text-sm text-ink-soft">{hustleItem.tagline}</p>
             </div>
           </div>
         </Link>
