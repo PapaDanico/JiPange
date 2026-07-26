@@ -8,6 +8,7 @@ import {
   localizedFire,
 } from "@/lib/market-2026";
 import { formatKES } from "@/lib/budget";
+import { inflationAttribution } from "@/lib/rates-feed";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import ExportCardButton from "./ExportCardButton";
@@ -114,7 +115,7 @@ export default function FireNumberCalculator() {
           <ResultCard
             label={`Your FIRE number at age ${Math.max(currentAge, targetAge)} (nominal)`}
             value={formatKES(fire.nominalFutureFireNumber)}
-            sublabel={`That's ${formatKES(fire.todaysMoneyFireNumber)} in today's money (20× annual expenses at the localized ${(LOCAL_SAFE_WITHDRAWAL_RATE * 100).toFixed(0)}% withdrawal rate), grown along the ${(KENYAN_INFLATION * 100).toFixed(1)}% KNBS inflation line for ${fire.yearsToRetirement} years.`}
+            sublabel={`That's ${formatKES(fire.todaysMoneyFireNumber)} in today's money (20× annual expenses at the localized ${(LOCAL_SAFE_WITHDRAWAL_RATE * 100).toFixed(0)}% withdrawal rate), grown along the published ${(KENYAN_INFLATION * 100).toFixed(2)}% inflation line — ${inflationAttribution()} — for ${fire.yearsToRetirement} years.`}
             tone="primary"
           />
 

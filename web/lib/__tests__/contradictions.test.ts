@@ -9,10 +9,18 @@ import { compareLoanProducts } from "@/lib/loan-comparison";
 import {
   DHOWCSD_BILL_MINIMUM,
   DHOWCSD_MINIMUM,
+  KENYAN_INFLATION,
   dhowcsdLadder,
 } from "@/lib/market-2026";
 import { calculateShaHealth } from "@/lib/sha";
-import { TBILL_RATES } from "@/lib/rates-feed";
+import {
+  RATES,
+  TBILL_RATES,
+  currentInflation,
+  inflationAttribution,
+} from "@/lib/rates-feed";
+import { CURRENT_INFLATION } from "@/lib/journey";
+import { DEFAULT_INFLATION_RATE } from "@/lib/projections";
 import { round2 } from "@/lib/money";
 
 /**
@@ -175,5 +183,46 @@ describe("round2 — the rounding primitive every engine sits on", () => {
   it("handles negatives without drifting away from zero", () => {
     expect(round2(-2.344)).toBe(-2.34);
     expect(Math.abs(round2(-0.001))).toBe(0);
+  });
+});
+
+describe("inflation: one app, one published rate", () => {
+  /**
+   * Three hardcoded figures used to answer the same question. The journey
+   * funnel said 6.7%, the FIRE calculator said 6.4%, the projection engine
+   * defaulted to 6.5% — and the first two were rendered to the reader as
+   * "inflation runs at X%". A reader who visited two pages was told two
+   * different things about the same month, and none of the three was sourced
+   * or dated. Meanwhile the rates feed had been carrying a tracked, dated,
+   * attributed CPI print the whole time.
+   */
+  it("quotes the published print, not a house estimate", () => {
+    expect(CURRENT_INFLATION).toBeCloseTo(currentInflation(), 12);
+    expect(RATES.macro.inflation).not.toBeNull();
+    expect(CURRENT_INFLATION * 100).toBeCloseTo(RATES.macro.inflation!.value, 10);
+  });
+
+  it("gives the FIRE calculator and the journey funnel the same number", () => {
+    // These were 0.064 and 0.067. The whole bug in one assertion.
+    expect(KENYAN_INFLATION).toBe(CURRENT_INFLATION);
+  });
+
+  it("names its source and its date wherever it is quoted", () => {
+    const a = inflationAttribution();
+    expect(a).toContain(RATES.macro.inflation!.source);
+    expect(a).toMatch(/20\d\d/);
+    expect(a).toContain("Mwangaza Yield");
+  });
+
+  /**
+   * The long-run projection default is NOT the same question and stays
+   * separate on purpose: anchoring a thirty-year retirement plan to whichever
+   * month the user opened the app would let the plan swing on noise. This
+   * pins that it is a deliberate long-run figure in a sane band, not a stale
+   * copy of the current print that someone forgot to wire up.
+   */
+  it("keeps the long-run projection assumption distinct but plausible", () => {
+    expect(DEFAULT_INFLATION_RATE).toBeGreaterThan(0.03);
+    expect(DEFAULT_INFLATION_RATE).toBeLessThan(0.12);
   });
 });

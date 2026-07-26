@@ -112,6 +112,46 @@ export function isStale(now: Date = new Date()): boolean {
   return daysSinceRefresh(now) > STALE_AFTER_DAYS;
 }
 
+/**
+ * The published inflation rate, as a fraction (0.0641, not 6.41).
+ *
+ * Three different figures used to be hardcoded across this app — 6.7% in the
+ * journey funnel, 6.4% in the FIRE calculator, 6.5% in the projection engine —
+ * and each was rendered to the reader as "inflation runs at X%". A reader who
+ * visited two pages was told two different things about the same month, and
+ * none of the three was sourced or dated.
+ *
+ * All three predate this feed. Inflation is not a house assumption: it is a
+ * published figure with a date and a publisher, and the feed already carries
+ * it. Same argument as the T-bill rates above — the side that tracks the
+ * number publishes it, and we read it.
+ *
+ * Throws if it is missing. A financial app that quietly substitutes a
+ * plausible inflation rate for a real one is worse than a build that fails.
+ */
+export function currentInflation(): number {
+  const reading = feed.macro.inflation;
+  if (!reading || !Number.isFinite(reading.value)) {
+    throw new Error(
+      "rates-snapshot.json carries no inflation reading. Re-run scripts/sync-rates.mjs; " +
+        "do not substitute an estimate.",
+    );
+  }
+  return reading.value / 100;
+}
+
+/** e.g. "KNBS CPI, 25 Jul 2026". Shown wherever the inflation rate is quoted. */
+export function inflationAttribution(): string {
+  const r = feed.macro.inflation;
+  if (!r) return "no published reading";
+  const when = new Date(r.date).toLocaleDateString("en-KE", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+  return `${r.source}, ${when}, via Mwangaza Yield`;
+}
+
 /** e.g. "CBK auction of 16 Jul 2026". Always shown next to a rate. */
 export function attribution(): string {
   const auction = TBILL_RATES[0]?.auctionDate;
