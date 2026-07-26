@@ -200,7 +200,7 @@ export default function PartnersView() {
             key={tab.id}
             type="button"
             onClick={() => setActiveTab(tab.id)}
-            className={`flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
+            className={`flex shrink-0 items-center gap-1.5 inline-flex min-h-11 items-center justify-center rounded-full border px-4 py-1.5 text-xs font-medium transition-colors ${
               activeTab === tab.id
                 ? "border-primary bg-primary text-white"
                 : "border-border bg-white text-ink-soft hover:border-primary hover:text-primary"

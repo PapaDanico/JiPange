@@ -23,7 +23,7 @@ export function KplcOptimizer() {
             type="button"
             onClick={() => { setBudget(b); setCustom(""); }}
             aria-pressed={active === b}
-            className={`rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
+            className={`inline-flex min-h-11 items-center justify-center rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
               active === b
                 ? "border-primary bg-primary text-white"
                 : "border-border bg-white text-ink-soft hover:bg-canvas"

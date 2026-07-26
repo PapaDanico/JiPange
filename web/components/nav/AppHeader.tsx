@@ -30,7 +30,7 @@ export default function AppHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur print:hidden">
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4 sm:px-6">
-        <Link href="/" className="flex items-center" aria-label="JiPange home">
+        <Link href="/" className="flex min-h-11 items-center" aria-label="JiPange home">
           <Image
             src="/logo-lockup.webp"
             alt="JiPange"

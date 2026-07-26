@@ -49,7 +49,7 @@ function formatYears(years: number): string {
 }
 
 function chipClass(selected: boolean): string {
-  return `rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
+  return `inline-flex min-h-11 items-center justify-center rounded-full border px-4 py-1.5 text-xs font-medium transition-colors ${
     selected
       ? "border-accent bg-accent text-ink"
       : "border-border bg-white text-ink-soft hover:bg-canvas"
@@ -401,7 +401,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
                     max={CHILD_TIMELINE_MAX}
                     value={child.years}
                     onChange={(event) => updateChild(index, { years: event.target.value })}
-                    className="mt-2 h-2 w-full accent-primary"
+                    className="mt-2 h-11 w-full cursor-pointer accent-primary"
                   />
                   {child.age.trim() !== "" && stageStartAge(child.stageLabel) !== undefined && (
                     <p className="mt-1 text-xs text-faint">
@@ -579,7 +579,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
               max={maxYears}
               value={years}
               onChange={(event) => setYears(event.target.value)}
-              className="mt-2 h-2 w-full accent-primary"
+              className="mt-2 h-11 w-full cursor-pointer accent-primary"
             />
           </div>
         )}
@@ -632,7 +632,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
             max={16}
             value={annualReturn}
             onChange={(event) => setAnnualReturn(Number(event.target.value))}
-            className="mt-2 h-2 w-full accent-primary"
+            className="mt-2 h-11 w-full cursor-pointer accent-primary"
           />
           <p className="mt-1 text-xs text-faint">
             An assumption, not a promise — bank savings sit low, money market funds and SACCO

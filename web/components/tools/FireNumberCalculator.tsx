@@ -117,7 +117,7 @@ export default function FireNumberCalculator() {
           max={70}
           value={currentAge}
           onChange={(event) => setCurrentAge(Number(event.target.value))}
-          className="mt-2 h-2 w-full accent-primary"
+          className="mt-2 h-11 w-full cursor-pointer accent-primary"
         />
       </div>
 
@@ -135,7 +135,7 @@ export default function FireNumberCalculator() {
           max={75}
           value={targetAge}
           onChange={(event) => setTargetAge(Number(event.target.value))}
-          className="mt-2 h-2 w-full accent-primary"
+          className="mt-2 h-11 w-full cursor-pointer accent-primary"
         />
       </div>
 

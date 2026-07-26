@@ -61,7 +61,7 @@ export default function HustleSmoother() {
                 setDraw(null);
               }}
               aria-pressed={venture === v.value}
-              className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
+              className={`inline-flex min-h-11 items-center justify-center rounded-full border px-4 py-1.5 text-xs font-medium transition-colors ${
                 venture === v.value
                   ? "border-accent bg-accent text-ink"
                   : "border-border bg-white text-ink-soft hover:bg-canvas"
@@ -89,7 +89,7 @@ export default function HustleSmoother() {
               setCycleDays(Number(event.target.value));
               setDraw(null);
             }}
-            className="mt-2 h-2 w-full accent-primary"
+            className="mt-2 h-11 w-full cursor-pointer accent-primary"
           />
         </div>
 
@@ -145,7 +145,7 @@ export default function HustleSmoother() {
               value={dayInCycle}
               onChange={(event) => setDayInCycle(Number(event.target.value))}
               aria-label="Day in cycle"
-              className="mt-2 h-2 w-full accent-primary"
+              className="mt-2 h-11 w-full cursor-pointer accent-primary"
             />
 
             {runway.protected ? (
@@ -203,7 +203,7 @@ export default function HustleSmoother() {
                   setBuffer(Number(event.target.value));
                   setDraw(null);
                 }}
-                className="mt-2 h-2 w-full accent-primary"
+                className="mt-2 h-11 w-full cursor-pointer accent-primary"
               />
             </div>
 
@@ -224,7 +224,7 @@ export default function HustleSmoother() {
                 step={500}
                 value={currentDraw}
                 onChange={(event) => setDraw(Number(event.target.value))}
-                className="mt-2 h-2 w-full accent-primary"
+                className="mt-2 h-11 w-full cursor-pointer accent-primary"
               />
             </div>
 

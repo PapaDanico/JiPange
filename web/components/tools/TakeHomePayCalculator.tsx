@@ -102,7 +102,7 @@ export default function TakeHomePayCalculator() {
         onClick={() => setShowReliefs((prev) => !prev)}
         aria-expanded={showReliefs}
         aria-controls="optional-tax-reliefs"
-        className="text-sm font-medium text-primary underline print:hidden"
+        className="inline-flex min-h-11 items-center text-sm font-medium text-primary underline print:hidden"
       >
         {showReliefs ? "− Hide optional tax reliefs" : "+ Add optional tax reliefs"}
       </button>
@@ -183,7 +183,7 @@ export default function TakeHomePayCalculator() {
               step={5}
               value={whatIfPercent}
               onChange={(e) => setWhatIfPercent(Number(e.target.value))}
-              className="mt-2 h-2 w-full accent-primary"
+              className="mt-2 h-11 w-full cursor-pointer accent-primary"
               aria-label={`Explore salary — currently at ${whatIfPercent}% of entered gross`}
             />
             <div className="mt-1 flex justify-between text-[10px] text-muted">
@@ -294,7 +294,7 @@ export default function TakeHomePayCalculator() {
             onClick={() => setShowYearComparison((prev) => !prev)}
             aria-expanded={showYearComparison}
             aria-controls="year-over-year-comparison"
-            className="text-sm font-medium text-primary underline print:hidden"
+            className="inline-flex min-h-11 items-center text-sm font-medium text-primary underline print:hidden"
           >
             {showYearComparison
               ? "− Hide year-over-year comparison"

@@ -152,7 +152,7 @@ export default function DhowcsdLadderCalculator() {
                   onChange={(e) =>
                     setWeights({ ...weights, [days]: Number(e.target.value) })
                   }
-                  className="mt-1 w-full accent-primary"
+                  className="mt-1 h-11 w-full cursor-pointer accent-primary"
                 />
               </div>
             );

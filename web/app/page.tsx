@@ -285,7 +285,7 @@ export default function Home() {
                 What do you want your money to do better?
               </h2>
             </div>
-            <Link href="/tools" className="text-sm font-semibold text-primary underline underline-offset-4 hover:text-accent">
+            <Link href="/tools" className="inline-flex min-h-11 items-center text-sm font-semibold text-primary underline underline-offset-4 hover:text-accent">
               Browse every calculator →
             </Link>
           </div>
@@ -566,7 +566,7 @@ export default function Home() {
             </div>
             <Link
               href="/tools"
-              className="text-sm font-semibold text-primary underline underline-offset-4 hover:text-accent"
+              className="inline-flex min-h-11 items-center text-sm font-semibold text-primary underline underline-offset-4 hover:text-accent"
             >
               All 18 calculators →
             </Link>
@@ -611,7 +611,7 @@ export default function Home() {
             </div>
             <Link
               href="/planners"
-              className="text-sm font-semibold text-primary underline underline-offset-4 hover:text-accent"
+              className="inline-flex min-h-11 items-center text-sm font-semibold text-primary underline underline-offset-4 hover:text-accent"
             >
               All 6 planners →
             </Link>

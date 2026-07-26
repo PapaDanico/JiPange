@@ -113,7 +113,7 @@ export default function SalaryPlannerHub() {
         type="button"
         onClick={() => setShowReliefs((prev) => !prev)}
         aria-expanded={showReliefs}
-        className="text-sm font-medium text-primary underline"
+        className="inline-flex min-h-11 items-center text-sm font-medium text-primary underline"
       >
         {showReliefs ? "− Hide optional tax reliefs" : "+ Add optional tax reliefs"}
       </button>
@@ -138,7 +138,7 @@ export default function SalaryPlannerHub() {
               step={500}
               value={Number(pension) || 0}
               onChange={(e) => setPension(e.target.value)}
-              className="mt-2 h-2 w-full accent-primary"
+              className="mt-2 h-11 w-full cursor-pointer accent-primary"
             />
             <div className="mt-1 flex justify-between text-[10px] text-muted">
               <span>0</span>
@@ -169,7 +169,7 @@ export default function SalaryPlannerHub() {
               step={500}
               value={Number(mortgage) || 0}
               onChange={(e) => setMortgage(e.target.value)}
-              className="mt-2 h-2 w-full accent-primary"
+              className="mt-2 h-11 w-full cursor-pointer accent-primary"
             />
             <div className="mt-1 flex justify-between text-[10px] text-muted">
               <span>0</span>
@@ -211,7 +211,7 @@ export default function SalaryPlannerHub() {
             role="tab"
             aria-selected={activeTab === tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`shrink-0 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
+            className={`shrink-0 inline-flex min-h-11 items-center justify-center rounded-full border px-4 py-1.5 text-xs font-medium transition-colors ${
               activeTab === tab.id
                 ? "border-primary bg-primary text-white"
                 : "border-border bg-white text-ink-soft hover:bg-canvas"

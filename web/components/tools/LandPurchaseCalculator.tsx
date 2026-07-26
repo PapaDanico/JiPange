@@ -92,7 +92,7 @@ export default function LandPurchaseCalculator() {
             type="button"
             onClick={() => setLandType("urban_residential")}
             aria-pressed={landType === "urban_residential"}
-            className={`flex-1 rounded-md py-2 text-sm font-medium transition-colors ${
+            className={`min-h-11 flex-1 rounded-md py-2 text-sm font-medium transition-colors ${
               landType === "urban_residential"
                 ? "bg-primary text-white"
                 : "text-ink-soft hover:bg-canvas"
@@ -104,7 +104,7 @@ export default function LandPurchaseCalculator() {
             type="button"
             onClick={() => setLandType("agricultural")}
             aria-pressed={landType === "agricultural"}
-            className={`flex-1 rounded-md py-2 text-sm font-medium transition-colors ${
+            className={`min-h-11 flex-1 rounded-md py-2 text-sm font-medium transition-colors ${
               landType === "agricultural"
                 ? "bg-primary text-white"
                 : "text-ink-soft hover:bg-canvas"

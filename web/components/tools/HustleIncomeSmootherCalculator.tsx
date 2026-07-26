@@ -147,7 +147,7 @@ export default function HustleIncomeSmootherCalculator() {
             step={5}
             value={drawPct}
             onChange={(e) => setDrawPct(e.target.value)}
-            className="mt-2 h-2 w-full accent-primary"
+            className="mt-2 h-11 w-full cursor-pointer accent-primary"
           />
           <div className="mt-1 flex justify-between text-[10px] text-muted">
             <span>50% (very conservative)</span>

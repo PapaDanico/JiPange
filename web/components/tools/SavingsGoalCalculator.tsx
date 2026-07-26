@@ -125,7 +125,7 @@ export default function SavingsGoalCalculator() {
             type="button"
             onClick={() => setAnnualReturn(preset.value)}
             aria-pressed={annualReturn === preset.value}
-            className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
+            className={`inline-flex min-h-11 items-center justify-center rounded-full border px-4 py-1.5 text-xs font-medium transition-colors ${
               annualReturn === preset.value
                 ? "border-accent bg-accent text-ink"
                 : "border-border bg-white text-ink-soft hover:bg-canvas"

@@ -307,7 +307,7 @@ export default function TwentiethChallengeTracker() {
             type="button"
             onClick={() => setShowHistory((p) => !p)}
             aria-expanded={showHistory}
-            className="text-sm font-medium text-primary underline"
+            className="inline-flex min-h-11 items-center text-sm font-medium text-primary underline"
           >
             {showHistory ? "− Hide history" : `+ Show history (${checkIns.length} check-ins)`}
           </button>

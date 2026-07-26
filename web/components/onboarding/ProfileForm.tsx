@@ -367,7 +367,7 @@ export default function ProfileForm() {
               aria-invalid={Boolean(errors.age)}
               aria-describedby={errors.age ? "age-error" : undefined}
               autoFocus
-              className="mt-2 h-2 w-full accent-primary"
+              className="mt-2 h-11 w-full cursor-pointer accent-primary"
             />
             {errors.age && (
               <p id="age-error" className="mt-1 text-sm text-danger">

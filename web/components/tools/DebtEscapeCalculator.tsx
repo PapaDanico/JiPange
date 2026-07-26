@@ -120,7 +120,7 @@ export default function DebtEscapeCalculator() {
                   type="button"
                   onClick={() => removeLoan(loan.id)}
                   aria-label="Remove this loan"
-                  className="text-xs text-muted hover:text-danger underline underline-offset-2"
+                  className="inline-flex min-h-11 items-center text-xs text-muted hover:text-danger underline underline-offset-2"
                 >
                   Remove
                 </button>
@@ -183,7 +183,7 @@ export default function DebtEscapeCalculator() {
           <button
             type="button"
             onClick={addLoan}
-            className="flex items-center gap-1.5 text-sm font-medium text-primary underline underline-offset-2 hover:text-ink-soft"
+            className="flex min-h-11 items-center gap-1.5 text-sm font-medium text-primary underline underline-offset-2 hover:text-ink-soft"
           >
             + Add another loan
           </button>

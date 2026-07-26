@@ -135,7 +135,7 @@ export default function InvestmentReturnsCalculator() {
           step={500}
           value={Math.min(Number(monthly) || 0, monthlySliderMax)}
           onChange={(event) => setMonthly(event.target.value)}
-          className="mt-2 h-2 w-full accent-primary"
+          className="mt-2 h-11 w-full cursor-pointer accent-primary"
           aria-label="Explore monthly contribution"
         />
       </div>
@@ -153,7 +153,7 @@ export default function InvestmentReturnsCalculator() {
             type="button"
             onClick={() => setAnnualReturn(preset.value)}
             aria-pressed={annualReturn === preset.value}
-            className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
+            className={`inline-flex min-h-11 items-center justify-center rounded-full border px-4 py-1.5 text-xs font-medium transition-colors ${
               annualReturn === preset.value
                 ? "border-accent bg-accent text-ink"
                 : "border-border bg-white text-ink-soft hover:bg-canvas"
@@ -185,7 +185,7 @@ export default function InvestmentReturnsCalculator() {
           max={25}
           value={stepUp}
           onChange={(event) => setStepUp(Number(event.target.value))}
-          className="mt-2 h-2 w-full accent-primary"
+          className="mt-2 h-11 w-full cursor-pointer accent-primary"
         />
       </div>
 

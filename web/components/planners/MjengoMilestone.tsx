@@ -72,7 +72,7 @@ export default function MjengoMilestone() {
           step={100_000}
           value={propertyValue}
           onChange={(event) => setPropertyValue(Number(event.target.value))}
-          className="mt-2 h-2 w-full accent-primary"
+          className="mt-2 h-11 w-full cursor-pointer accent-primary"
         />
       </div>
 

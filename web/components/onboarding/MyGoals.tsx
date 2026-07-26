@@ -43,7 +43,7 @@ export default function MyGoals({ savingsCapacity }: { savingsCapacity: number }
     <div className="rounded-2xl bg-white p-6 shadow-sm">
       <div className="flex items-center justify-between">
         <h2 className="text-base font-semibold text-primary">My goals</h2>
-        <Link href="/planners" className="text-xs font-medium text-primary underline">
+        <Link href="/planners" className="inline-flex min-h-11 items-center text-xs font-medium text-primary underline">
           + Add a goal
         </Link>
       </div>

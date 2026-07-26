@@ -44,7 +44,7 @@ export default async function GoalPlannerPage({ params }: PageProps) {
         ])}
       />
       <div className="w-full max-w-3xl">
-        <Link href="/planners" className="text-xs font-medium text-primary underline">
+        <Link href="/planners" className="inline-flex min-h-11 items-center text-xs font-medium text-primary underline">
           ← All planners
         </Link>
         <h1 className="mt-2 text-2xl font-semibold text-primary lg:text-3xl">

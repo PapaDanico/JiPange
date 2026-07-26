@@ -54,7 +54,7 @@ export default function ToolEnhancements() {
               <Link
                 key={tool.href}
                 href={tool.href}
-                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-white px-3 py-1.5 text-xs font-medium text-primary transition-colors hover:border-accent hover:text-accent"
+                className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-border bg-white px-4 py-1.5 text-xs font-medium text-primary transition-colors hover:border-accent hover:text-accent"
               >
                 <span aria-hidden="true">{tool.icon}</span>
                 {tool.name}
@@ -67,13 +67,13 @@ export default function ToolEnhancements() {
       <div className="flex items-center gap-4">
         <button
           onClick={handleShare}
-          className="inline-flex items-center gap-1.5 text-xs font-medium text-muted underline underline-offset-2 hover:text-primary"
+          className="inline-flex min-h-11 items-center gap-1.5 py-1 text-xs font-medium text-muted underline underline-offset-2 hover:text-primary"
         >
           {copied ? "Link copied!" : "Share this calculator"}
         </button>
         <button
           onClick={() => window.print()}
-          className="inline-flex items-center gap-1.5 text-xs font-medium text-muted underline underline-offset-2 hover:text-primary"
+          className="inline-flex min-h-11 items-center gap-1.5 py-1 text-xs font-medium text-muted underline underline-offset-2 hover:text-primary"
         >
           Print / Save as PDF
         </button>
