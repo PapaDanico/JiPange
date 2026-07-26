@@ -99,7 +99,7 @@ export default function TermlyFeeSmoother() {
                 handleInputsChanged();
               }}
               aria-pressed={annualFees === String(preset)}
-              className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
+              className={`inline-flex min-h-11 items-center justify-center rounded-full border px-4 py-1.5 text-xs font-medium transition-colors ${
                 annualFees === String(preset)
                   ? "border-accent bg-accent text-ink"
                   : "border-border bg-white text-ink-soft hover:bg-canvas"
@@ -124,7 +124,7 @@ export default function TermlyFeeSmoother() {
             className="h-12 w-full rounded-lg border border-border bg-white px-4 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
           />
           <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-sm text-ink-soft">
-            {perTerm ? "KES/term" : "KES/yr"}
+            {perTerm ? "Ksh/term" : "Ksh/yr"}
           </span>
         </div>
 
@@ -220,7 +220,7 @@ export default function TermlyFeeSmoother() {
                 max={15}
                 value={escalation}
                 onChange={(event) => setEscalation(Number(event.target.value))}
-                className="mt-2 h-2 w-full accent-primary"
+                className="mt-2 h-11 w-full cursor-pointer accent-primary"
               />
               <p className="mt-1 text-xs text-faint" data-testid="next-year-monthly">
                 Next year&apos;s target at that pace: ≈{" "}

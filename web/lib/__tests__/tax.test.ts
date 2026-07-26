@@ -21,19 +21,19 @@ describe("calculateNSSF", () => {
     expect(calculateNSSF(9_000)).toEqual({ tier1: 540, tier2: 0, total: 540 });
   });
 
-  it("caps tier2 at KES 5,940 once gross is at or above the upper earnings limit (108,000)", () => {
+  it("caps tier2 at Ksh 5,940 once gross is at or above the upper earnings limit (108,000)", () => {
     expect(calculateNSSF(108_000)).toEqual({ tier1: 540, tier2: 5_940, total: 6_480 });
     expect(calculateNSSF(500_000)).toEqual({ tier1: 540, tier2: 5_940, total: 6_480 });
   });
 });
 
 describe("calculateSHIF", () => {
-  it("charges 2.75% of gross once that exceeds the KES 300 minimum", () => {
+  it("charges 2.75% of gross once that exceeds the Ksh 300 minimum", () => {
     expect(calculateSHIF(20_000)).toBe(550);
     expect(calculateSHIF(100_000)).toBe(2_750);
   });
 
-  it("floors at the KES 300 minimum monthly contribution", () => {
+  it("floors at the Ksh 300 minimum monthly contribution", () => {
     // 2.75% of 5,000 = 137.50, below the 300 minimum.
     expect(calculateSHIF(5_000)).toBe(300);
   });
@@ -61,7 +61,7 @@ describe("calculatePAYE", () => {
 });
 
 describe("calculateNetPay — NSSF/SHIF/AHL rates effective February 2026", () => {
-  it("KES 20,000 gross — zero PAYE (relief absorbs the 10% first-band tax)", () => {
+  it("Ksh 20,000 gross — zero PAYE (relief absorbs the 10% first-band tax)", () => {
     const result = calculateNetPay(20_000);
     expect(result.nssf).toEqual({ tier1: 540, tier2: 660, total: 1_200 });
     expect(result.shif).toBe(550);
@@ -71,7 +71,7 @@ describe("calculateNetPay — NSSF/SHIF/AHL rates effective February 2026", () =
     expect(result.netMonthly).toBe(17_950);
   });
 
-  it("KES 50,000 gross — cross-checked against an independently published worked example", () => {
+  it("Ksh 50,000 gross — cross-checked against an independently published worked example", () => {
     const result = calculateNetPay(50_000);
     expect(result.nssf.total).toBe(3_000);
     expect(result.shif).toBe(1_375);
@@ -83,7 +83,7 @@ describe("calculateNetPay — NSSF/SHIF/AHL rates effective February 2026", () =
     expect(result.employerCost).toEqual({ nssf: 3_000, ahl: 750, total: 53_750 });
   });
 
-  it("KES 100,000 gross", () => {
+  it("Ksh 100,000 gross", () => {
     const result = calculateNetPay(100_000);
     expect(result.nssf.total).toBe(6_000);
     expect(result.shif).toBe(2_750);
@@ -93,7 +93,7 @@ describe("calculateNetPay — NSSF/SHIF/AHL rates effective February 2026", () =
     expect(result.netMonthly).toBe(70_441.65);
   });
 
-  it("KES 200,000 gross — NSSF capped (above the upper earnings limit)", () => {
+  it("Ksh 200,000 gross — NSSF capped (above the upper earnings limit)", () => {
     const result = calculateNetPay(200_000);
     expect(result.nssf.total).toBe(6_480);
     expect(result.shif).toBe(5_500);
@@ -103,7 +103,7 @@ describe("calculateNetPay — NSSF/SHIF/AHL rates effective February 2026", () =
     expect(result.netMonthly).toBe(137_130.65);
   });
 
-  it("KES 500,000 gross", () => {
+  it("Ksh 500,000 gross", () => {
     const result = calculateNetPay(500_000);
     expect(result.nssf.total).toBe(6_480);
     expect(result.shif).toBe(13_750);
@@ -113,7 +113,7 @@ describe("calculateNetPay — NSSF/SHIF/AHL rates effective February 2026", () =
     expect(result.netMonthly).toBe(338_205.65);
   });
 
-  it("KES 1,000,000 gross — top PAYE band applies", () => {
+  it("Ksh 1,000,000 gross — top PAYE band applies", () => {
     const result = calculateNetPay(1_000_000);
     expect(result.nssf.total).toBe(6_480);
     expect(result.shif).toBe(27_500);
@@ -135,7 +135,7 @@ describe("calculateNetPay — NSSF/SHIF/AHL rates effective February 2026", () =
 });
 
 describe("calculateNetPay — optional reliefs", () => {
-  it("pension contribution reduces taxable pay and PAYE (KES 100,000 gross, KES 10,000 pension)", () => {
+  it("pension contribution reduces taxable pay and PAYE (Ksh 100,000 gross, Ksh 10,000 pension)", () => {
     const result = calculateNetPay(100_000, { pensionContribution: 10_000 });
     expect(result.pensionRelief).toBe(10_000);
     expect(result.taxablePay).toBe(79_750);
@@ -143,17 +143,17 @@ describe("calculateNetPay — optional reliefs", () => {
     expect(result.netMonthly).toBe(73_441.65);
   });
 
-  it("caps pension relief at KES 30,000/month even if more is contributed", () => {
+  it("caps pension relief at Ksh 30,000/month even if more is contributed", () => {
     const result = calculateNetPay(100_000, { pensionContribution: 50_000 });
     expect(result.pensionRelief).toBe(30_000);
   });
 
-  it("caps mortgage interest relief at KES 30,000/month", () => {
+  it("caps mortgage interest relief at Ksh 30,000/month", () => {
     const result = calculateNetPay(100_000, { mortgageInterest: 45_000 });
     expect(result.mortgageRelief).toBe(30_000);
   });
 
-  it("insurance relief is 15% of premiums up to KES 5,000/month, applied as a tax credit", () => {
+  it("insurance relief is 15% of premiums up to Ksh 5,000/month, applied as a tax credit", () => {
     const result = calculateNetPay(50_000, { insurancePremium: 5_000 });
     expect(result.insuranceRelief).toBe(750);
     expect(result.taxablePay).toBe(44_875); // unaffected — insurance relief doesn't reduce taxable pay
@@ -161,7 +161,7 @@ describe("calculateNetPay — optional reliefs", () => {
     expect(result.netMonthly).toBe(39_779.15); // 39,029.15 base + 750 relief
   });
 
-  it("caps insurance relief at 15% of KES 5,000 even if more premium is paid", () => {
+  it("caps insurance relief at 15% of Ksh 5,000 even if more premium is paid", () => {
     const result = calculateNetPay(50_000, { insurancePremium: 20_000 });
     expect(result.insuranceRelief).toBe(750);
   });

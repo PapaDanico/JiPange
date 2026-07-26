@@ -26,7 +26,7 @@ export default function ChamaPage() {
         {
           icon: "📈",
           tone: "hopeful",
-          stat: "KSh 700B+",
+          stat: "Ksh 700B+",
           label:
             "estimated value of assets held by registered chamas and investment clubs in Kenya — peer accountability turns small contributions into real wealth.",
           source: "CBK Financial Stability Report 2024",

@@ -19,14 +19,14 @@ export default function FulizaCostPage() {
           icon: "⚠️",
           tone: "caution",
           stat: "~400%",
-          label: "is Fuliza's real annualised cost — the daily fee annualised. KSh 6.50/day on a KSh 600 borrow feels small; it's the most expensive credit most Kenyans ever use.",
+          label: "is Fuliza's real annualised cost — the daily fee annualised. Ksh 6.50/day on a Ksh 600 borrow feels small; it's the most expensive credit most Kenyans ever use.",
           source: "Safaricom FY2026 · JiPange APR calculation",
         },
         {
           icon: "💡",
           tone: "hopeful",
-          stat: "KSh 3,000",
-          label: "as a standing M-Pesa float — funded once from savings — eliminates most Fuliza use and saves KSh 2,000–4,000/year in fees.",
+          stat: "Ksh 3,000",
+          label: "as a standing M-Pesa float — funded once from savings — eliminates most Fuliza use and saves Ksh 2,000–4,000/year in fees.",
           source: "JiPange calculation",
         },
       ]}

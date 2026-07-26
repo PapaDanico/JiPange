@@ -18,15 +18,15 @@ export default function InflationRealityPage() {
         {
           icon: "⚠️",
           tone: "caution",
-          stat: "KSh 73,000",
-          label: "is what KSh 100,000 in savings is worth after 5 years at 6.3% inflation — a KSh 27,000 silent loss.",
+          stat: "Ksh 73,000",
+          label: "is what Ksh 100,000 in savings is worth after 5 years at 6.3% inflation — a Ksh 27,000 silent loss.",
           source: "KNBS CPI data, 2025 average",
         },
         {
           icon: "📈",
           tone: "hopeful",
-          stat: "KSh 20,000+",
-          label: "extra earned over 3 years by moving KSh 50,000 from a bank (3.23%) to an MMF (11.5%) — same money, right vehicle.",
+          stat: "Ksh 20,000+",
+          label: "extra earned over 3 years by moving Ksh 50,000 from a bank (3.23%) to an MMF (11.5%) — same money, right vehicle.",
           source: "CMA / CBK rate data, 2026",
         },
       ]}

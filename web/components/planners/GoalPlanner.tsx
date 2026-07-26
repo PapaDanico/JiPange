@@ -49,7 +49,7 @@ function formatYears(years: number): string {
 }
 
 function chipClass(selected: boolean): string {
-  return `rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
+  return `inline-flex min-h-11 items-center justify-center rounded-full border px-4 py-1.5 text-xs font-medium transition-colors ${
     selected
       ? "border-accent bg-accent text-ink"
       : "border-border bg-white text-ink-soft hover:bg-canvas"
@@ -378,7 +378,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
                     value={child.amount}
                     onChange={(v) => updateChild(index, { amount: v, stageLabel: null })}
                     placeholder="e.g. 800000"
-                    suffix="KES"
+                    suffix="Ksh"
                   />
                 </div>
 
@@ -401,7 +401,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
                     max={CHILD_TIMELINE_MAX}
                     value={child.years}
                     onChange={(event) => updateChild(index, { years: event.target.value })}
-                    className="mt-2 h-2 w-full accent-primary"
+                    className="mt-2 h-11 w-full cursor-pointer accent-primary"
                   />
                   {child.age.trim() !== "" && stageStartAge(child.stageLabel) !== undefined && (
                     <p className="mt-1 text-xs text-faint">
@@ -436,7 +436,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
               value={expenses}
               onChange={(v) => applyEmergency(v, coverMonths)}
               placeholder="e.g. 45000"
-              suffix="KES/mo"
+              suffix="Ksh/mo"
             />
             <div>
               <p className="text-sm font-medium text-ink-soft">Months of cover</p>
@@ -469,7 +469,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
               value={price}
               onChange={(v) => applyHome(v, depositPct)}
               placeholder="e.g. 8000000"
-              suffix="KES"
+              suffix="Ksh"
             />
             <div>
               <p className="text-sm font-medium text-ink-soft">Deposit</p>
@@ -503,7 +503,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
               value={income}
               onChange={(v) => applyIncome(v)}
               placeholder="e.g. 50000"
-              suffix="KES/mo"
+              suffix="Ksh/mo"
             />
             <div className="flex flex-wrap gap-2">
               {RETIREMENT_INCOMES.map((inc) => (
@@ -557,7 +557,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
             value={amount}
             onChange={(v) => setAmount(v)}
             placeholder="e.g. 800000"
-            suffix="KES"
+            suffix="Ksh"
           />
         )}
 
@@ -579,7 +579,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
               max={maxYears}
               value={years}
               onChange={(event) => setYears(event.target.value)}
-              className="mt-2 h-2 w-full accent-primary"
+              className="mt-2 h-11 w-full cursor-pointer accent-primary"
             />
           </div>
         )}
@@ -594,7 +594,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
           value={currentSavings}
           onChange={(v) => setCurrentSavings(v)}
           placeholder="0"
-          suffix="KES"
+          suffix="Ksh"
         />
 
         <div>
@@ -607,7 +607,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
               setCapacityFromProfile(false);
             }}
             placeholder="e.g. 15000"
-            suffix="KES/mo"
+            suffix="Ksh/mo"
           />
           {capacityFromProfile && (
             <p className="mt-1 text-xs text-faint">
@@ -632,7 +632,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
             max={16}
             value={annualReturn}
             onChange={(event) => setAnnualReturn(Number(event.target.value))}
-            className="mt-2 h-2 w-full accent-primary"
+            className="mt-2 h-11 w-full cursor-pointer accent-primary"
           />
           <p className="mt-1 text-xs text-faint">
             An assumption, not a promise — bank savings sit low, money market funds and SACCO

@@ -31,7 +31,7 @@ export const MAX_SALARY_DEBT_LIMIT = 0.33; // one-third gross pay rule
  * were a return. It is not. CBK quotes a DISCOUNT rate: the discount is earned
  * on a smaller outlay (so the true gross yield is higher) and 15% withholding
  * tax then applies (so the net is lower). Using the quote was wrong in both
- * directions at once and overstated a KES 300,000 ladder by about KES 2,300 a
+ * directions at once and overstated a Ksh 300,000 ladder by about Ksh 2,300 a
  * year.
  *
  * The live, correctly computed figures now come from lib/rates-feed.ts, which
@@ -113,7 +113,7 @@ export function mjengoPlan(params: {
  * a single bill.
  *
  * This was 50,000, which was wrong twice. CBK's minimum for a Treasury bill is
- * KES 100,000 (bonds are 50,000 — the two were conflated), and the ladder
+ * Ksh 100,000 (bonds are 50,000 — the two were conflated), and the ladder
  * splits capital into thirds, so a reader following this tool at the old
  * threshold would have tried to bid ~16,667 per tenor and had every bid
  * rejected. The figure now comes from the published feed and is multiplied by
@@ -186,7 +186,7 @@ export function dhowcsdLadder(
   weights: TenorWeights = EVEN_WEIGHTS
 ): DhowcsdLadder {
   // A rung weighted to zero is a rung the reader removed. Dropping it entirely
-  // beats showing a KES 0 bill they cannot buy.
+  // beats showing a Ksh 0 bill they cannot buy.
   const active = TBILL_RATES.filter((r) => (weights[r.tenorDays] ?? 0) > 0);
   const totalWeight = active.reduce((sum, r) => sum + (weights[r.tenorDays] ?? 0), 0);
 
@@ -198,11 +198,11 @@ export function dhowcsdLadder(
   /*
    * ROUNDING DOWN, AND WHY IT IS NOT PEDANTRY
    *
-   * CBK takes a bid of KES 100,000 and then multiples of 50,000. A weighted
+   * CBK takes a bid of Ksh 100,000 and then multiples of 50,000. A weighted
    * split lands on figures like 133,333, which is not a bid anybody can place,
    * so each rung is floored to a placeable amount. A rung that cannot reach
    * the 100,000 minimum is dropped rather than shown — this tool used to
-   * advertise KES 16,667 bids that CBK would have rejected outright, and the
+   * advertise Ksh 16,667 bids that CBK would have rejected outright, and the
    * fix is worth nothing if a custom weighting reintroduces it.
    *
    * What the rounding leaves over is reported as unallocatedKes instead of

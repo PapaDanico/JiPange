@@ -2,7 +2,7 @@
  * SHA (Social Health Authority) contribution calculator and coverage gap analyser.
  * SHA replaced NHIF in October 2024 and is Kenya's sole statutory health financier in 2026.
  *
- * Contribution: 2.75% of gross salary / declared income, floor KSh 300/month.
+ * Contribution: 2.75% of gross salary / declared income, floor Ksh 300/month.
  * Rates and tariffs from SHA Act 2023 and the 2026 SHA Tariffs document.
  */
 

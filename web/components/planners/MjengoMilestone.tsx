@@ -72,7 +72,7 @@ export default function MjengoMilestone() {
           step={100_000}
           value={propertyValue}
           onChange={(event) => setPropertyValue(Number(event.target.value))}
-          className="mt-2 h-2 w-full accent-primary"
+          className="mt-2 h-11 w-full cursor-pointer accent-primary"
         />
       </div>
 
@@ -93,7 +93,7 @@ export default function MjengoMilestone() {
           className="h-12 w-full rounded-lg border border-border bg-white px-4 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
         />
         <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-sm text-ink-soft">
-          KES/mo
+          Ksh/mo
         </span>
       </div>
 

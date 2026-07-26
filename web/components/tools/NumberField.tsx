@@ -11,6 +11,7 @@ export default function NumberField({
   suffix,
   currency,
   min = 0,
+  max,
 }: {
   id: string;
   label: string;
@@ -20,11 +21,24 @@ export default function NumberField({
   suffix?: string;
   currency?: boolean;
   min?: number;
+  /**
+   * Upper bound, where one is meaningful.
+   *
+   * Not decoration. Every field here was unbounded, and "85000" in a box
+   * labelled "Investment period (years)" is one fat-fingered keystroke away.
+   * The projection then compounds to ~1e38, the chart's path data overflows,
+   * and the browser logs 174 errors while the reader looks at a broken graph
+   * with no idea what they did. A calculator that cannot say "that cannot be
+   * right" will confidently draw nonsense instead.
+   */
+  max?: number;
 }) {
   const [touched, setTouched] = useState(false);
   const num = Number(value);
-  const hasError = touched && value !== "" && num < min;
-  const showsCurrency = currency ?? /\((?:KES|KSh)(?:\/month)?\)/i.test(label);
+  const tooLow = num < min;
+  const tooHigh = max !== undefined && num > max;
+  const hasError = touched && value !== "" && (tooLow || tooHigh);
+  const showsCurrency = currency ?? /\(Ksh(?:\/month)?\)/i.test(label);
 
   return (
     <div className="print:hidden">
@@ -37,6 +51,7 @@ export default function NumberField({
           type="number"
           inputMode="decimal"
           min={min}
+          max={max}
           value={value}
           onBlur={() => setTouched(true)}
           onChange={(event) => onChange(event.target.value)}
@@ -56,7 +71,7 @@ export default function NumberField({
         />
         {showsCurrency && (
           <span className="pointer-events-none absolute inset-y-0 left-4 flex items-center text-sm font-semibold text-muted">
-            KSh
+            Ksh
           </span>
         )}
         {suffix && (
@@ -67,7 +82,11 @@ export default function NumberField({
       </div>
       {hasError && (
         <p id={`${id}-error`} role="alert" className="mt-1 text-xs text-danger">
-          {min > 0 ? `Must be at least ${min.toLocaleString()}` : "Enter a positive number"}
+          {tooHigh
+            ? `That looks too high — enter ${max!.toLocaleString()} or less`
+            : min > 0
+              ? `Must be at least ${min.toLocaleString()}`
+              : "Enter a positive number"}
         </p>
       )}
     </div>

@@ -102,7 +102,7 @@ export default function SalaryPlannerHub() {
       {/* Shared gross salary input */}
       <NumberField
         id="hub-gross"
-        label="Monthly gross salary (KES)"
+        label="Monthly gross salary (Ksh)"
         value={gross}
         onChange={setGross}
         placeholder="e.g. 80000"
@@ -113,7 +113,7 @@ export default function SalaryPlannerHub() {
         type="button"
         onClick={() => setShowReliefs((prev) => !prev)}
         aria-expanded={showReliefs}
-        className="text-sm font-medium text-primary underline"
+        className="inline-flex min-h-11 items-center text-sm font-medium text-primary underline"
       >
         {showReliefs ? "− Hide optional tax reliefs" : "+ Add optional tax reliefs"}
       </button>
@@ -124,7 +124,7 @@ export default function SalaryPlannerHub() {
           <div>
             <div className="flex items-center justify-between">
               <label htmlFor="hub-pension" className="text-sm font-medium text-ink-soft">
-                Pension contribution (KES/month)
+                Pension contribution (Ksh/month)
               </label>
               <span className="text-sm font-semibold text-primary">
                 {formatKES(Number(pension) || 0)}
@@ -138,7 +138,7 @@ export default function SalaryPlannerHub() {
               step={500}
               value={Number(pension) || 0}
               onChange={(e) => setPension(e.target.value)}
-              className="mt-2 h-2 w-full accent-primary"
+              className="mt-2 h-11 w-full cursor-pointer accent-primary"
             />
             <div className="mt-1 flex justify-between text-[10px] text-muted">
               <span>0</span>
@@ -155,7 +155,7 @@ export default function SalaryPlannerHub() {
           <div>
             <div className="flex items-center justify-between">
               <label htmlFor="hub-mortgage" className="text-sm font-medium text-ink-soft">
-                Mortgage interest (KES/month)
+                Mortgage interest (Ksh/month)
               </label>
               <span className="text-sm font-semibold text-primary">
                 {formatKES(Number(mortgage) || 0)}
@@ -169,7 +169,7 @@ export default function SalaryPlannerHub() {
               step={500}
               value={Number(mortgage) || 0}
               onChange={(e) => setMortgage(e.target.value)}
-              className="mt-2 h-2 w-full accent-primary"
+              className="mt-2 h-11 w-full cursor-pointer accent-primary"
             />
             <div className="mt-1 flex justify-between text-[10px] text-muted">
               <span>0</span>
@@ -185,7 +185,7 @@ export default function SalaryPlannerHub() {
           {/* Insurance field */}
           <NumberField
             id="hub-insurance"
-            label="Life / education insurance premium (KES/month)"
+            label="Life / education insurance premium (Ksh/month)"
             value={insurance}
             onChange={setInsurance}
             placeholder="0"
@@ -211,7 +211,7 @@ export default function SalaryPlannerHub() {
             role="tab"
             aria-selected={activeTab === tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`shrink-0 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
+            className={`shrink-0 inline-flex min-h-11 items-center justify-center rounded-full border px-4 py-1.5 text-xs font-medium transition-colors ${
               activeTab === tab.id
                 ? "border-primary bg-primary text-white"
                 : "border-border bg-white text-ink-soft hover:bg-canvas"
@@ -396,14 +396,14 @@ export default function SalaryPlannerHub() {
               </div>
               <NumberField
                 id="hub-rent"
-                label="Rent (KES/month)"
+                label="Rent (Ksh/month)"
                 value={rent}
                 onChange={setRent}
                 placeholder="e.g. 20000"
               />
               <NumberField
                 id="hub-bills"
-                label="Fixed bills (KES/month)"
+                label="Fixed bills (Ksh/month)"
                 value={bills}
                 onChange={setBills}
                 placeholder="e.g. 10000"
@@ -532,7 +532,7 @@ export default function SalaryPlannerHub() {
         <div className="space-y-4">
           <NumberField
             id="hub-targetNet"
-            label="Target take-home pay (KES/month)"
+            label="Target take-home pay (Ksh/month)"
             value={targetNet}
             onChange={setTargetNet}
             placeholder="e.g. 80000"

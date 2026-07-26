@@ -16,11 +16,11 @@ export type GoalType = "education" | "home" | "emergency" | "business" | "retire
 export type Feasibility = "comfortable" | "tight" | "stretch" | "beyond-reach" | "unknown";
 
 export interface GoalPlanInput {
-  /** KES needed at the target date (nominal — inflate first if planning in today's prices). */
+  /** Ksh needed at the target date (nominal — inflate first if planning in today's prices). */
   targetAmount: number;
   /** Years until the money is needed. */
   years: number;
-  /** KES already set aside toward this goal. */
+  /** Ksh already set aside toward this goal. */
   currentSavings?: number;
   /** Assumed net annual return on the savings vehicle, e.g. 0.08. */
   annualReturn: number;
@@ -52,7 +52,7 @@ export interface GoalPlanResult {
    */
   yearsAtCapacity: number | null;
   /**
-   * Lever 2 — shrink the target: KES accumulated by the original date saving
+   * Lever 2 — shrink the target: Ksh accumulated by the original date saving
    * the full monthly capacity. null when capacity is unknown.
    */
   amountAtCapacityByTargetDate: number | null;
@@ -334,9 +334,9 @@ export const GOAL_CONFIGS: Record<GoalType, GoalConfig> = {
     defaultAnnualReturn: 0.09,
     amountPresets: [
       { label: "Plot deposit", amount: 500_000 },
-      { label: "10% on a KES 5M home", amount: 500_000 },
-      { label: "10% on a KES 8M home", amount: 800_000 },
-      { label: "20% on a KES 8M home", amount: 1_600_000 },
+      { label: "10% on a Ksh 5M home", amount: 500_000 },
+      { label: "10% on a Ksh 8M home", amount: 800_000 },
+      { label: "20% on a Ksh 8M home", amount: 1_600_000 },
     ],
     builder: "price-deposit",
     defaultYears: 5,
@@ -382,10 +382,10 @@ export const GOAL_CONFIGS: Record<GoalType, GoalConfig> = {
     // Pot sizes derived from the 4% rule: monthly income × 12 ÷ 0.04
     // (i.e. × 300). A rough guide from US data — the planner copy says so.
     amountPresets: [
-      { label: "KES 30k/month for life", amount: 9_000_000 },
-      { label: "KES 50k/month for life", amount: 15_000_000 },
-      { label: "KES 100k/month for life", amount: 30_000_000 },
-      { label: "KES 150k/month for life", amount: 45_000_000 },
+      { label: "Ksh 30k/month for life", amount: 9_000_000 },
+      { label: "Ksh 50k/month for life", amount: 15_000_000 },
+      { label: "Ksh 100k/month for life", amount: 30_000_000 },
+      { label: "Ksh 150k/month for life", amount: 45_000_000 },
     ],
     builder: "income",
     defaultYears: 25,

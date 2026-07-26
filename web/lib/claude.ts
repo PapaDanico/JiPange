@@ -173,16 +173,16 @@ function buildPlanPrompt(params: { profile: Profile; net: number; surplus: numbe
 Based on this person's profile:
 - Age: ${profile.age}
 - County: ${profile.county}
-- Monthly gross salary: KES ${profile.grossMonthlySalary}
-- Monthly net salary: KES ${Math.round(net)}
-- Estimated monthly savings capacity: KES ${Math.round(surplus)}
+- Monthly gross salary: Ksh ${profile.grossMonthlySalary}
+- Monthly net salary: Ksh ${Math.round(net)}
+- Estimated monthly savings capacity: Ksh ${Math.round(surplus)}
 - Number of dependants: ${profile.dependants}
 - Chama/SACCO member: ${profile.chamaMember ? "Yes" : "No"}
 
 Generate exactly 3 specific, ranked, immediately actionable financial recommendations for this person. Each recommendation must:
 1. Be specific to their income level and life situation (not generic)
 2. Reference actual Kenyan financial products or institutions where relevant (M-Shwari, specific SACCO types, NSE, HELB, Britam, NSSF Tier 2 voluntary, T-Bills via CBK DhowCSD, etc.)
-3. Include a specific KES amount or percentage target
+3. Include a specific Ksh amount or percentage target
 4. Be achievable within 90 days
 5. Be ranked by impact (highest impact first)
 
@@ -193,7 +193,7 @@ Format as JSON:
   {
     "rank": 1,
     "title": "Short action title",
-    "description": "2-3 sentence specific recommendation with KES amounts",
+    "description": "2-3 sentence specific recommendation with Ksh amounts",
     "impact": "What this achieves in 12 months",
     "effort": "low|medium|high",
     "category": "savings|debt|insurance|investment|tax"
@@ -244,10 +244,10 @@ ${GOAL_CONTEXT[request.goalType]}
 
 The numbers (already computed — do not recompute them):
 - Goal: ${request.goalTitle}
-- Target: KES ${Math.round(request.targetAmount)} needed in ${request.years} years
-- Already saved: KES ${Math.round(request.currentSavings)}
-- Required monthly saving to hit the target: KES ${Math.round(request.requiredMonthly)}
-${request.monthlyCapacity ? `- Their total monthly savings capacity: KES ${Math.round(request.monthlyCapacity)}` : ""}
+- Target: Ksh ${Math.round(request.targetAmount)} needed in ${request.years} years
+- Already saved: Ksh ${Math.round(request.currentSavings)}
+- Required monthly saving to hit the target: Ksh ${Math.round(request.requiredMonthly)}
+${request.monthlyCapacity ? `- Their total monthly savings capacity: Ksh ${Math.round(request.monthlyCapacity)}` : ""}
 - ${feasibilityNote}
 ${request.context ? `- Goal details: ${request.context}` : ""}
 
@@ -258,7 +258,7 @@ Format as JSON:
   "vehicle": "The recommended savings vehicle(s), one short phrase",
   "why": "1-2 sentences: why this vehicle fits this goal's horizon and risk",
   "steps": [
-    { "step": 1, "title": "Short action title", "description": "Concrete first move with KES amounts, doable this week" },
+    { "step": 1, "title": "Short action title", "description": "Concrete first move with Ksh amounts, doable this week" },
     { "step": 2, "title": "...", "description": "..." },
     { "step": 3, "title": "...", "description": "..." }
   ],

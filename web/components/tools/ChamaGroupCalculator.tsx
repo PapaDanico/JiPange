@@ -101,7 +101,7 @@ export default function ChamaGroupCalculator() {
           type="button"
           onClick={() => setMode("merry-go-round")}
           aria-pressed={mode === "merry-go-round"}
-          className={`flex-1 rounded-md py-2 text-sm font-medium transition-colors ${
+          className={`min-h-11 flex-1 rounded-md py-2 text-sm font-medium transition-colors ${
             mode === "merry-go-round"
               ? "bg-primary text-white"
               : "text-ink-soft hover:bg-canvas"
@@ -113,7 +113,7 @@ export default function ChamaGroupCalculator() {
           type="button"
           onClick={() => setMode("investment")}
           aria-pressed={mode === "investment"}
-          className={`flex-1 rounded-md py-2 text-sm font-medium transition-colors ${
+          className={`min-h-11 flex-1 rounded-md py-2 text-sm font-medium transition-colors ${
             mode === "investment"
               ? "bg-primary text-white"
               : "text-ink-soft hover:bg-canvas"
@@ -142,7 +142,7 @@ export default function ChamaGroupCalculator() {
       <div>
         <NumberField
           id="contribution"
-          label="Monthly contribution per member (KES)"
+          label="Monthly contribution per member (Ksh)"
           value={contribution}
           onChange={setContribution}
           placeholder="e.g. 2000"
@@ -169,7 +169,7 @@ export default function ChamaGroupCalculator() {
               step={1}
               value={bufferPercent}
               onChange={(e) => setBufferPercent(e.target.value)}
-              className="flex-1 h-2 accent-primary"
+              className="h-11 flex-1 cursor-pointer accent-primary"
             />
             <span className="w-10 text-right text-sm font-semibold text-primary">
               {bufferPercent}%

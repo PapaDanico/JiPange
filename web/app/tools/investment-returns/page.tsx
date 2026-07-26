@@ -18,15 +18,15 @@ export default function InvestmentReturnsPage() {
         {
           icon: "⚠️",
           tone: "caution",
-          stat: "KSh 4.6T",
+          stat: "Ksh 4.6T",
           label: "sits in Kenyan bank accounts earning 3.23% — below inflation — silently losing real value every day.",
           source: "CMA Collective Investment Schemes, July 2026",
         },
         {
           icon: "🚀",
           tone: "hopeful",
-          stat: "KSh 1.1M",
-          label: "is what KSh 5,000/month grows to over 10 years at 11.5% MMF — vs KSh 600,000 sitting flat in a bank.",
+          stat: "Ksh 1.1M",
+          label: "is what Ksh 5,000/month grows to over 10 years at 11.5% MMF — vs Ksh 600,000 sitting flat in a bank.",
           source: "Based on CIC Money Market Fund average yield, 2025/26",
         },
       ]}

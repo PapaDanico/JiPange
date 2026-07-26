@@ -19,20 +19,20 @@ export default function DhowcsdPage() {
           icon: "⚠️",
           tone: "caution",
           stat: "2%",
-          label: "of Kenyans invest in Treasury Bills, despite a government guarantee behind every shilling. A single bill starts at KSh 100,000.",
+          label: "of Kenyans invest in Treasury Bills, despite a government guarantee behind every shilling. A single bill starts at Ksh 100,000.",
           source: "CBK DhowCSD subscriber data, 2025",
         },
         {
           icon: "🏆",
           tone: "hopeful",
-          // Was "KSh 7,000+ ... on a KSh 50,000 ladder", which implies 14% —
+          // Was "Ksh 7,000+ ... on a Ksh 50,000 ladder", which implies 14% —
           // roughly the tax-free yield on a long infrastructure bond, not a
-          // bill. At the current blended 8.15% net, KSh 50,000 earns about
-          // KSh 4,080. The bank comparison is the honest version of the same
-          // point and is arguably stronger: it takes ~KSh 126,000 in a savings
-          // account at 3.23% to earn what KSh 50,000 earns here.
-          stat: "KSh 8,100+",
-          label: "earned per year, after tax, on a KSh 100,000 bill — what a savings account pays on more than twice the money.",
+          // bill. At the current blended 8.15% net, Ksh 50,000 earns about
+          // Ksh 4,080. The bank comparison is the honest version of the same
+          // point and is arguably stronger: it takes ~Ksh 126,000 in a savings
+          // account at 3.23% to earn what Ksh 50,000 earns here.
+          stat: "Ksh 8,100+",
+          label: "earned per year, after tax, on a Ksh 100,000 bill — what a savings account pays on more than twice the money.",
           source: "CBK auction yields via Mwangaza Yield, net of 15% withholding tax",
         },
       ]}

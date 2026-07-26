@@ -137,7 +137,7 @@ export default function EducationSavingsCalculator() {
       {grade && grade.yearsToJSS > 0 && (
         <NumberField
           id="jssFees"
-          label={`Junior Secondary total fees, 3 years (KES) — starts in ${grade.yearsToJSS} year${grade.yearsToJSS === 1 ? "" : "s"}`}
+          label={`Junior Secondary total fees, 3 years (Ksh) — starts in ${grade.yearsToJSS} year${grade.yearsToJSS === 1 ? "" : "s"}`}
           value={jssFees}
           onChange={setJssFees}
           placeholder="e.g. 600000"
@@ -147,7 +147,7 @@ export default function EducationSavingsCalculator() {
       {grade && grade.yearsToSSS > 0 && (
         <NumberField
           id="sssFees"
-          label={`Senior Secondary total fees, 3 years (KES) — starts in ${grade.yearsToSSS} year${grade.yearsToSSS === 1 ? "" : "s"}`}
+          label={`Senior Secondary total fees, 3 years (Ksh) — starts in ${grade.yearsToSSS} year${grade.yearsToSSS === 1 ? "" : "s"}`}
           value={sssFees}
           onChange={setSssFees}
           placeholder="e.g. 900000"
@@ -158,7 +158,7 @@ export default function EducationSavingsCalculator() {
         <>
           <NumberField
             id="currentSavings"
-            label="Already saved toward this (KES)"
+            label="Already saved toward this (Ksh)"
             value={currentSavings}
             onChange={setCurrentSavings}
             placeholder="0"

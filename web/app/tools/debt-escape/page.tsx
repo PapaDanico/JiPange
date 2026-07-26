@@ -19,7 +19,7 @@ export default function DebtEscapePage() {
           icon: "⚠️",
           tone: "caution",
           stat: "32%/month",
-          label: "is Fuliza's effective monthly rate — KSh 1,000 borrowed for 30 days costs KSh 320 in fees alone. Clearing it first saves the most money.",
+          label: "is Fuliza's effective monthly rate — Ksh 1,000 borrowed for 30 days costs Ksh 320 in fees alone. Clearing it first saves the most money.",
           source: "Safaricom Fuliza tariff · JiPange calculation",
         },
         {

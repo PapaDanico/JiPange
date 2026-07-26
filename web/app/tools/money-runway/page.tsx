@@ -26,7 +26,7 @@ export default function MoneyRunwayPage() {
           icon: "🛡️",
           tone: "hopeful",
           stat: "15 months",
-          label: "is all it takes to build a 3-month KSh 30,000 emergency fund by saving KSh 2,000/month — start today.",
+          label: "is all it takes to build a 3-month Ksh 30,000 emergency fund by saving Ksh 2,000/month — start today.",
           source: "JiPange projection",
         },
       ]}

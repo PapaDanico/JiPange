@@ -4,8 +4,8 @@
  *
  * Deduction order (NSSF, SHIF, and AHL are all pre-tax): gross → NSSF → SHIF → AHL →
  * taxable pay → PAYE bands → personal relief → net pay. Verified against an
- * independently-published worked example for a KES 50,000 gross salary (taxable pay
- * KES 44,875; PAYE after relief KES 5,846) — see payecalculator.co.ke's PAYE guide.
+ * independently-published worked example for a Ksh 50,000 gross salary (taxable pay
+ * Ksh 44,875; PAYE after relief Ksh 5,846) — see payecalculator.co.ke's PAYE guide.
  *
  * The old 15% SHIF relief and 15% AHL relief were BOTH repealed by the Tax Laws
  * (Amendment) Act, 2024, effective December 2024. Do not reintroduce them — the

@@ -82,8 +82,8 @@ describe("Fuliza: one screen, one APR", () => {
 
 describe("DhowCSD ladder: a plan CBK would actually accept", () => {
   /**
-   * The tool advertised a KES 50,000 entry and split capital into thirds —
-   * ~16,667 per bill, against a real per-bill minimum of KES 100,000. Every
+   * The tool advertised a Ksh 50,000 entry and split capital into thirds —
+   * ~16,667 per bill, against a real per-bill minimum of Ksh 100,000. Every
    * bid a reader placed by following it would have been rejected.
    */
   it("takes the per-bill minimum from the feed, not a hardcoded guess", () => {

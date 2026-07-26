@@ -102,11 +102,11 @@ export default function SavingsGoalCalculator() {
 
   return (
     <div className="space-y-4">
-      <NumberField id="target" label="Savings target (KES)" value={target} onChange={setTarget} placeholder="e.g. 500000" />
+      <NumberField id="target" label="Savings target (Ksh)" value={target} onChange={setTarget} placeholder="e.g. 500000" />
       <NumberField id="years" label="Time to reach it (years)" value={years} onChange={setYears} placeholder="e.g. 3" />
       <NumberField
         id="currentSavings"
-        label="Current savings (KES)"
+        label="Current savings (Ksh)"
         value={currentSavings}
         onChange={setCurrentSavings}
         placeholder="0"
@@ -125,7 +125,7 @@ export default function SavingsGoalCalculator() {
             type="button"
             onClick={() => setAnnualReturn(preset.value)}
             aria-pressed={annualReturn === preset.value}
-            className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
+            className={`inline-flex min-h-11 items-center justify-center rounded-full border px-4 py-1.5 text-xs font-medium transition-colors ${
               annualReturn === preset.value
                 ? "border-accent bg-accent text-ink"
                 : "border-border bg-white text-ink-soft hover:bg-canvas"

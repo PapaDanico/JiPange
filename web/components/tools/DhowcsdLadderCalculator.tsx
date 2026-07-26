@@ -82,7 +82,7 @@ export default function DhowcsdLadderCalculator() {
     <div className="space-y-4">
       <NumberField
         id="ladderCapital"
-        label="Capital to allocate (KES)"
+        label="Capital to allocate (Ksh)"
         value={capital}
         onChange={setCapital}
         placeholder={`Minimum ${DHOWCSD_MINIMUM.toLocaleString("en-KE")}`}
@@ -152,7 +152,7 @@ export default function DhowcsdLadderCalculator() {
                   onChange={(e) =>
                     setWeights({ ...weights, [days]: Number(e.target.value) })
                   }
-                  className="mt-1 w-full accent-primary"
+                  className="mt-1 h-11 w-full cursor-pointer accent-primary"
                 />
               </div>
             );
@@ -169,7 +169,7 @@ export default function DhowcsdLadderCalculator() {
           </p>
           <ProductLinks
             products={MMF_LINKS.slice(0, 2)}
-            heading="MMFs to park in while building to KES 50,000"
+            heading="MMFs to park in while building to Ksh 50,000"
           />
         </div>
       )}
@@ -219,7 +219,7 @@ export default function DhowcsdLadderCalculator() {
           {ladder.unallocatedKes > 0 && (
             <p className="text-xs text-ink-soft">
               <strong className="text-ink">{formatKES(ladder.unallocatedKes)}</strong> is left
-              unplaced: CBK bids go in KES 50,000 steps from a {formatKES(DHOWCSD_BILL_MINIMUM)}{" "}
+              unplaced: CBK bids go in Ksh 50,000 steps from a {formatKES(DHOWCSD_BILL_MINIMUM)}{" "}
               minimum, so each rung is rounded down to an amount you could actually bid. Keep it
               liquid, or nudge the amount up to absorb it.
             </p>

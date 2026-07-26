@@ -42,7 +42,7 @@ export default function InflationRealityCalculator() {
     <div className="space-y-4">
       <NumberField
         id="salary"
-        label="Current monthly salary (KES)"
+        label="Current monthly salary (Ksh)"
         value={salary}
         onChange={setSalary}
         placeholder="e.g. 80000"

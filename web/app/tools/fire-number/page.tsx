@@ -27,7 +27,7 @@ export default function FireNumberPage() {
           icon: "🌅",
           tone: "hopeful",
           stat: "2× more",
-          label: "wealth at 55 by starting KSh 3,000/month at 28 vs 38 — at 10% return. Starting early is the single biggest lever.",
+          label: "wealth at 55 by starting Ksh 3,000/month at 28 vs 38 — at 10% return. Starting early is the single biggest lever.",
           source: "JiPange FIRE projection",
         },
       ]}

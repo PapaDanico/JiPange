@@ -106,7 +106,7 @@ export default function ToolsIndexList({ groups }: { groups: ToolGroup[] }) {
               type="button"
               onClick={() => setActiveCategory(label)}
               aria-pressed={activeCategory === label}
-              className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
+              className={`inline-flex min-h-11 items-center justify-center rounded-full border px-4 py-1.5 text-xs font-medium transition-colors ${
                 activeCategory === label
                   ? "border-primary bg-primary text-white"
                   : "border-border bg-white text-ink-soft hover:bg-canvas"

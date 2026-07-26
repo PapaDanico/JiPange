@@ -102,8 +102,8 @@ export default function ShaHealthCalculator() {
         id="income"
         label={
           employmentType === "employed"
-            ? "Gross monthly salary (KES)"
-            : "Monthly income / declared earnings (KES)"
+            ? "Gross monthly salary (Ksh)"
+            : "Monthly income / declared earnings (Ksh)"
         }
         value={income}
         onChange={setIncome}

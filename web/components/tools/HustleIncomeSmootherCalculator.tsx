@@ -120,7 +120,7 @@ export default function HustleIncomeSmootherCalculator() {
           <NumberField
             key={i}
             id={`income-${i}`}
-            label={`${monthLabels[i]} income (KES)`}
+            label={`${monthLabels[i]} income (Ksh)`}
             value={incomes[i] ?? ""}
             onChange={(v) => updateIncome(i, v)}
             placeholder="e.g. 35000"
@@ -147,7 +147,7 @@ export default function HustleIncomeSmootherCalculator() {
             step={5}
             value={drawPct}
             onChange={(e) => setDrawPct(e.target.value)}
-            className="mt-2 h-2 w-full accent-primary"
+            className="mt-2 h-11 w-full cursor-pointer accent-primary"
           />
           <div className="mt-1 flex justify-between text-[10px] text-muted">
             <span>50% (very conservative)</span>

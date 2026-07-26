@@ -351,7 +351,11 @@ test("recent tools bar: appears after visiting a tool", async ({ page }) => {
 
 test("tool insights: loan repayment caution card is visible", async ({ page }) => {
   await page.goto("/tools/loan-repayment");
-  await expect(visibleText(page, /KSh 1,500/)).toBeVisible();
+  // The figure is the assertion; the currency prefix is not. This pinned
+  // "KSh 1,500" and broke the moment the app settled on one spelling of the
+  // shilling — a test failing over a label it was not written to check. The
+  // spelling is enforced on its own, in lib/__tests__/currency-label.test.ts.
+  await expect(visibleText(page, /1,500/)).toBeVisible();
 });
 
 // ─── Navigation ───────────────────────────────────────────────────────────
@@ -423,3 +427,66 @@ test("landing page: loads and has CTA", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByRole("link", { name: /start my plan/i }).first()).toBeVisible();
 });
+
+// ─── Mobile ergonomics ────────────────────────────────────────────────────
+
+/**
+ * Controls a thumb can actually hit, on the screen most readers are using.
+ *
+ * A sweep of all 36 routes at 390px found 36 of them carrying sub-40px
+ * controls: the "← All calculators" back link on every calculator page at
+ * 14px, the related-tool chips at 30px, preset chips at 30px, the segmented
+ * tabs at 30px, and ten sliders with an 8px hit area. None of it was visible
+ * in a screenshot or caught by a unit test — everything rendered correctly and
+ * was simply too small to press.
+ *
+ * Two things this test does NOT flag, both deliberate and both learned by
+ * getting them wrong first:
+ *   - the skip link, which is 1px until focused, on purpose;
+ *   - controls that expand their hit area with a ::before overlay, an idiom
+ *     already used here (`before:-inset-4` on the info icons). The element box
+ *     stays small while the TARGET is comfortably large, and measuring only
+ *     getBoundingClientRect reports a defect where someone already did the
+ *     right thing.
+ */
+const ERGONOMIC_ROUTES = ["/tools/take-home-pay", "/tools/savings-goal", "/tools/salary", "/tools"];
+
+for (const route of ERGONOMIC_ROUTES) {
+  test(`mobile: ${route} has no sub-40px controls and no sideways scroll`, async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto(route);
+    await page.waitForTimeout(600);
+
+    const report = await page.evaluate(() => {
+      const overflow =
+        document.documentElement.scrollWidth - document.documentElement.clientWidth;
+      const small: string[] = [];
+      for (const el of Array.from(
+        document.querySelectorAll<HTMLElement>("button, a, select, input, [role=button]"),
+      )) {
+        const box0 = el.getBoundingClientRect();
+        if (box0.width === 0 || box0.height === 0) continue;
+        if (getComputedStyle(el).visibility === "hidden") continue;
+        if (el.closest("nav") || el.closest("footer")) continue;
+        if (/\bsr-only\b/.test(el.className || "")) continue;
+        const parent = el.parentElement;
+        if (el.tagName === "A" && parent && /^(P|LI|SPAN)$/.test(parent.tagName)) continue;
+
+        const box = (el.closest("label") ?? el).getBoundingClientRect();
+        const before = getComputedStyle(el, "::before");
+        let reach = 0;
+        if (before?.content && before.content !== "none") {
+          const top = parseFloat(before.top);
+          if (!Number.isNaN(top) && top < 0) reach = Math.abs(top) * 2;
+        }
+        if (box.height + reach < 40) {
+          small.push(`${el.tagName} "${(el.textContent ?? "").trim().slice(0, 30)}" ${Math.round(box.height)}px`);
+        }
+      }
+      return { overflow, small: Array.from(new Set(small)) };
+    });
+
+    expect(report.overflow, "the page must never scroll sideways at 390px").toBeLessThanOrEqual(1);
+    expect(report.small, `controls too small to press:\n${report.small.join("\n")}`).toEqual([]);
+  });
+}

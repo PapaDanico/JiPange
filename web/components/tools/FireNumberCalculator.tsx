@@ -83,7 +83,7 @@ export default function FireNumberCalculator() {
     <div className="space-y-4">
       <NumberField
         id="monthlyExpenses"
-        label="Your monthly expenses, excluding medical (KES)"
+        label="Your monthly expenses, excluding medical (Ksh)"
         value={monthlyExpenses}
         onChange={setMonthlyExpenses}
         placeholder="e.g. 80000"
@@ -97,7 +97,7 @@ export default function FireNumberCalculator() {
       */}
       <NumberField
         id="monthlyMedical"
-        label="Monthly medical cover — SHA plus any private top-up (KES)"
+        label="Monthly medical cover — SHA plus any private top-up (Ksh)"
         value={monthlyMedical}
         onChange={setMonthlyMedical}
         placeholder="e.g. 8000"
@@ -117,7 +117,7 @@ export default function FireNumberCalculator() {
           max={70}
           value={currentAge}
           onChange={(event) => setCurrentAge(Number(event.target.value))}
-          className="mt-2 h-2 w-full accent-primary"
+          className="mt-2 h-11 w-full cursor-pointer accent-primary"
         />
       </div>
 
@@ -135,7 +135,7 @@ export default function FireNumberCalculator() {
           max={75}
           value={targetAge}
           onChange={(event) => setTargetAge(Number(event.target.value))}
-          className="mt-2 h-2 w-full accent-primary"
+          className="mt-2 h-11 w-full cursor-pointer accent-primary"
         />
       </div>
 

@@ -49,7 +49,7 @@ export default function ToolLayout({
         <PrintLetterhead title={title} />
       </div>
       <div className="w-full max-w-5xl print:hidden">
-        <Link href="/tools" className="text-xs font-medium text-primary underline">
+        <Link href="/tools" className="inline-flex min-h-11 items-center text-xs font-medium text-primary underline">
           ← All calculators
         </Link>
         <h1 className="mt-2 text-2xl font-semibold text-primary lg:text-3xl">{title}</h1>

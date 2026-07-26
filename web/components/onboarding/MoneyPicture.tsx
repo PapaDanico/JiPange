@@ -228,7 +228,7 @@ export default function MoneyPicture() {
         </div>
         <p className="mt-3 text-xs text-ink-soft">
           Assumes a {(growthRate * 100).toFixed(0)}% savings rate at 10% annual return over{" "}
-          {retirement.yearsToRetirement} years. Figures are nominal KES — inflation will reduce
+          {retirement.yearsToRetirement} years. Figures are nominal Ksh — inflation will reduce
           real purchasing power.
         </p>
       </div>

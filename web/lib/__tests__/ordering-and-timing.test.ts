@@ -17,7 +17,7 @@ describe("the income smoother: where the buffer went, not just where it ended", 
   /**
    * The bug in one case. Two lean months, then three fat ones. The year ends
    * with a healthy buffer and the tool used to call that a success — while the
-   * hustler was KES 140,000 overdrawn in February and would have had to
+   * hustler was Ksh 140,000 overdrawn in February and would have had to
    * borrow to eat.
    */
   const LEAN_FIRST = [10_000, 10_000, 300_000, 100_000, 100_000];

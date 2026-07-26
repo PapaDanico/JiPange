@@ -50,21 +50,21 @@ export default function OneThirdRuleCalculator() {
     <div className="space-y-4">
       <NumberField
         id="basicSalary"
-        label="Basic salary (KES) — not gross"
+        label="Basic salary (Ksh) — not gross"
         value={basicSalary}
         onChange={setBasicSalary}
         placeholder="e.g. 40000"
       />
       <NumberField
         id="saccoDeductions"
-        label="Total SACCO/cooperative deductions (KES)"
+        label="Total SACCO/cooperative deductions (Ksh)"
         value={saccoDeductions}
         onChange={setSaccoDeductions}
         placeholder="0"
       />
       <NumberField
         id="loanDeductions"
-        label="Total loan repayment deductions, non-statutory (KES)"
+        label="Total loan repayment deductions, non-statutory (Ksh)"
         value={loanDeductions}
         onChange={setLoanDeductions}
         placeholder="0"

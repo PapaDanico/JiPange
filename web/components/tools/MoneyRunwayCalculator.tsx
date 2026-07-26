@@ -97,14 +97,14 @@ export default function MoneyRunwayCalculator() {
     <div className="space-y-4">
       <NumberField
         id="startingBalance"
-        label="Starting savings balance (KES)"
+        label="Starting savings balance (Ksh)"
         value={startingBalance}
         onChange={setStartingBalance}
         placeholder="e.g. 2000000"
       />
       <NumberField
         id="monthlyWithdrawal"
-        label="Monthly withdrawal (KES)"
+        label="Monthly withdrawal (Ksh)"
         value={monthlyWithdrawal}
         onChange={setMonthlyWithdrawal}
         placeholder="e.g. 50000"
@@ -126,7 +126,7 @@ export default function MoneyRunwayCalculator() {
           step={500}
           value={Math.min(Number(monthlyWithdrawal) || 0, withdrawalSliderMax)}
           onChange={(event) => setMonthlyWithdrawal(event.target.value)}
-          className="mt-2 h-2 w-full accent-primary"
+          className="mt-2 h-11 w-full cursor-pointer accent-primary"
           aria-label="Explore monthly withdrawal"
         />
       </div>

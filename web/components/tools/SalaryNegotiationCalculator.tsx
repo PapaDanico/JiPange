@@ -38,7 +38,7 @@ export default function SalaryNegotiationCalculator() {
     <div className="space-y-4">
       <NumberField
         id="targetNet"
-        label="Target take-home pay (KES/month)"
+        label="Target take-home pay (Ksh/month)"
         value={targetNet}
         onChange={setTargetNet}
         placeholder="e.g. 100000"

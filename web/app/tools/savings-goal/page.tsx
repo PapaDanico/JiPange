@@ -25,8 +25,8 @@ export default function SavingsGoalPage() {
         {
           icon: "🌱",
           tone: "hopeful",
-          stat: "KSh 100,000+",
-          label: "is what KSh 2,000/month reaches in 3 years at 11% MMF — not KSh 72,000 flat. Compounding is the difference.",
+          stat: "Ksh 100,000+",
+          label: "is what Ksh 2,000/month reaches in 3 years at 11% MMF — not Ksh 72,000 flat. Compounding is the difference.",
           source: "JiPange projection at 11% p.a.",
         },
       ]}
