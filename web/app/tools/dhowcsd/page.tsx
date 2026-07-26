@@ -13,7 +13,7 @@ export default function DhowcsdPage() {
     <ToolLayout
       path="/tools/dhowcsd"
       title="DhowCSD T-Bill Ladder"
-      description="Three tenors, one ladder: quarterly liquidity with a blended yield that crushes the 3.23% bank average."
+      description="Three tenors, one ladder: quarterly liquidity and a blended yield — after tax — that still clears the 3.23% bank average several times over."
       insights={[
         {
           icon: "⚠️",
@@ -25,9 +25,15 @@ export default function DhowcsdPage() {
         {
           icon: "🏆",
           tone: "hopeful",
-          stat: "KSh 7,000+",
-          label: "earned per year on a KSh 50,000 T-Bill ladder — more than most savings accounts earn on KSh 200,000.",
-          source: "CBK T-Bill yields, June 2026",
+          // Was "KSh 7,000+ ... on a KSh 50,000 ladder", which implies 14% —
+          // roughly the tax-free yield on a long infrastructure bond, not a
+          // bill. At the current blended 8.15% net, KSh 50,000 earns about
+          // KSh 4,080. The bank comparison is the honest version of the same
+          // point and is arguably stronger: it takes ~KSh 126,000 in a savings
+          // account at 3.23% to earn what KSh 50,000 earns here.
+          stat: "KSh 4,000+",
+          label: "earned per year, after tax, on a KSh 50,000 T-Bill ladder — what a savings account pays on more than twice the money.",
+          source: "CBK auction yields via Mwangaza Yield, net of 15% withholding tax",
         },
       ]}
       deeper={{

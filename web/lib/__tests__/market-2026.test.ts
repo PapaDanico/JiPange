@@ -67,11 +67,28 @@ describe("dhowcsdLadder", () => {
     for (const bucket of ladder.buckets) expect(bucket.allocation).toBeCloseTo(100_000, 6);
   });
 
-  it("computes the blended yield and the bank advantage", () => {
-    expect(ladder.blendedYield).toBeCloseTo((0.0883 + 0.0896 + 0.0899) / 3, 10);
+  /**
+   * This test used to read `(0.0883 + 0.0896 + 0.0899) / 3` — the three CBK
+   * quotes the ladder once projected income from. It was pinning the bug: a
+   * quote is a discount rate, not a return, so the ladder claimed ~8.93% where
+   * the holder actually keeps ~8.15% after 15% withholding tax. The assertion
+   * now follows the net yields the feed publishes, and the old number is kept
+   * below purely as the thing that must never come back.
+   */
+  it("blends the NET yields the feed publishes", () => {
+    const expected =
+      ladder.buckets.reduce((sum, b) => sum + b.yieldRate, 0) / ladder.buckets.length;
+    expect(ladder.blendedYield).toBeCloseTo(expected, 10);
     expect(ladder.ladderAnnualKes).toBeCloseTo(300_000 * ladder.blendedYield, 6);
     expect(ladder.advantageKes).toBeCloseTo(ladder.ladderAnnualKes - 300_000 * 0.0323, 6);
     expect(ladder.advantageKes).toBeGreaterThan(0);
+  });
+
+  it("no longer quotes the discount rate as a return", () => {
+    const OLD_BLEND = (0.0883 + 0.0896 + 0.0899) / 3;
+    expect(ladder.blendedYield).toBeLessThan(OLD_BLEND);
+    // Roughly three quarters of a percentage point of overstatement, removed.
+    expect(OLD_BLEND - ladder.blendedYield).toBeGreaterThan(0.005);
   });
 });
 

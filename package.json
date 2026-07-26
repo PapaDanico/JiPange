@@ -8,7 +8,8 @@
     "build": "cd web && npm run build",
     "start": "cd web && npm run start",
     "lint": "cd web && npm run lint",
-    "test": "cd web && npm run test"
+    "test": "cd web && npm run test",
+    "sync:rates": "node scripts/sync-rates.mjs"
   },
   "workspaces": [
     "web"

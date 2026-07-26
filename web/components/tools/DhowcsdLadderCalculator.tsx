@@ -16,11 +16,18 @@ import ResetLink from "./ResetLink";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
 import { TBILL_LINKS, MMF_LINKS } from "@/lib/affiliate-links";
+import { attribution, daysSinceRefresh, isStale } from "@/lib/rates-feed";
 
 /**
  * DhowCSD T-Bill laddering: capital split evenly across the 91/182/364-day
- * tenors so a tranche matures every quarter while the blend crushes bank
- * savings yields.
+ * tenors so a tranche matures every quarter while the blend beats bank savings.
+ *
+ * Every figure shown is NET of the 15% withholding tax, and the card makes the
+ * gap between CBK's quote and that net figure explicit. It used to project
+ * income from the quoted discount rate, which flattered the ladder by about
+ * 0.8 percentage points — see lib/rates-feed.ts. Showing the three numbers
+ * side by side is better than silently fixing one of them: the gap is the
+ * single most useful thing a first-time bidder can learn here.
  */
 export default function DhowcsdLadderCalculator() {
   const [capital, setCapital] = useStickyState("jipange:tool:dhowcsd:capital", "");
@@ -68,25 +75,45 @@ export default function DhowcsdLadderCalculator() {
                   {formatKES(bucket.allocation)}
                 </p>
                 <p className="text-xs text-ink-soft">
-                  at {(bucket.yieldRate * 100).toFixed(2)}% →{" "}
+                  at {(bucket.yieldRate * 100).toFixed(2)}% net →{" "}
                   <span className="font-medium text-success">
                     +{formatKES(bucket.annualYieldKes)}/yr
                   </span>
+                </p>
+                <p className="mt-1 text-[11px] leading-relaxed text-ink-soft/80">
+                  CBK quotes {(bucket.quotedRate * 100).toFixed(2)}%; that is a discount rate worth{" "}
+                  {(bucket.grossRate * 100).toFixed(2)}% before tax.
                 </p>
               </div>
             ))}
           </div>
 
           <ResultCard
-            label={`Blended ladder yield: ${(ladder.blendedYield * 100).toFixed(2)}% p.a.`}
+            label={`Blended ladder yield: ${(ladder.blendedYield * 100).toFixed(2)}% p.a. net of tax`}
             value={`+${formatKES(ladder.advantageKes)}/yr`}
             sublabel={`vs the same ${formatKES(parsed)} at a bank's ${(BANK_SAVINGS_BASELINE * 100).toFixed(2)}% average: ${formatKES(ladder.ladderAnnualKes)} vs ${formatKES(ladder.bankAnnualKes)} a year — and a tranche matures every ~13 weeks for liquidity.`}
             tone="success"
           />
 
+          <div className="rounded-2xl border border-border bg-accent-soft/40 p-4">
+            <p className="text-xs font-semibold uppercase tracking-wide text-accent-ink">
+              Why these differ from the rate you saw advertised
+            </p>
+            <p className="mt-1.5 text-xs leading-relaxed text-ink-soft">
+              CBK quotes T-Bills as a <strong>discount rate</strong>, which is not what you earn.
+              You pay less than face value, so the discount is earned on a smaller outlay and the
+              true yield is <em>higher</em> than the quote — then 15% withholding tax pulls it
+              back <em>below</em> the quote. Every figure above is the net, after tax. Rates come
+              from the {attribution()}, and reset at each auction.
+            </p>
+          </div>
+
           <CalculatorDisclaimer
             extraNotes={[
-              "T-Bill yields quoted are recent auction baselines — actual rates set at each CBK auction.",
+              isStale()
+                ? `These rates were last refreshed ${daysSinceRefresh()} days ago — check the current CBK auction before bidding.`
+                : "Rates reset at each weekly CBK auction; yours will differ.",
+              "Yields shown are net of 15% withholding tax.",
             ]}
           />
           <ProductLinks
@@ -95,7 +122,7 @@ export default function DhowcsdLadderCalculator() {
           />
 
           <ShareResultButton
-            message={`🏦 *My DhowCSD T-Bill Ladder*\n\n${formatKES(parsed)} split across 91/182/364-day T-Bills earns ~${formatKES(ladder.ladderAnnualKes)}/yr (${(ladder.blendedYield * 100).toFixed(2)}% blended) — ${formatKES(ladder.advantageKes)} more than bank savings, with quarterly liquidity.\n\nBuild yours → jipangefinance.org/tools/dhowcsd`}
+            message={`🏦 *My DhowCSD T-Bill Ladder*\n\n${formatKES(parsed)} split across 91/182/364-day T-Bills earns ~${formatKES(ladder.ladderAnnualKes)}/yr (${(ladder.blendedYield * 100).toFixed(2)}% blended, net of tax) — ${formatKES(ladder.advantageKes)} more than bank savings, with quarterly liquidity.\n\nBuild yours → jipangefinance.org/tools/dhowcsd`}
           />
         </div>
         <ExportCardButton containerRef={resultsRef} filename="dhowcsd-ladder" />

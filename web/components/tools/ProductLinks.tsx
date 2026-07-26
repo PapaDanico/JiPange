@@ -20,7 +20,14 @@ function ProductCard({ product }: { product: ProductLink }) {
         <p className="text-sm font-semibold text-primary leading-tight">{product.shortName}</p>
         <div className="mt-0.5 flex items-center gap-2">
           {product.yieldPct !== undefined && (
-            <span className="text-xs text-success font-medium">~{product.yieldPct}% p.a.</span>
+            <span className="text-xs text-success font-medium">
+              {/* One decimal: the feed carries four, which reads as a
+                  precision nobody has about next week's auction. */}
+              ~{product.yieldPct.toFixed(1)}% p.a.{" "}
+              <span className="font-normal text-ink-soft">
+                {product.yieldBasis === "net" ? "net of tax" : "before tax"}
+              </span>
+            </span>
           )}
           {product.minKes !== undefined && (
             <span className="text-xs text-muted">from KES {product.minKes.toLocaleString("en-KE")}</span>

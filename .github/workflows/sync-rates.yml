@@ -1,0 +1,57 @@
+name: Sync rates from Mwangaza Yield
+
+# The T-bill figures the DhowCSD ladder projects from are published daily by
+# our sister tool, which derives them from CBK auction data. This job pulls
+# them into the committed snapshot the app ships (web/lib/rates-snapshot.json).
+#
+# It runs AFTER Mwangaza's own 6am EAT scrape so it sees the day's figures
+# rather than yesterday's. The sync script refuses on anything it cannot
+# verify — unknown schema, missing tenor, implausible yield or an implausible
+# one-day move — and leaves the existing snapshot untouched, so a bad upstream
+# day costs us freshness, never correctness.
+
+on:
+  schedule:
+    - cron: '0 5 * * 1-5' # 8am EAT weekdays, ~2h after Mwangaza's refresh
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Why you are syncing off-schedule'
+        required: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+
+      - name: Pull the published feed
+        run: node scripts/sync-rates.mjs
+
+      # The snapshot feeds a calculator, so a refresh that breaks the tests is
+      # a refresh we do not ship. Running them here means the commit that lands
+      # on main is one we have already checked, not one CI discovers later.
+      - name: Verify the app still agrees with the new figures
+        run: cd web && npm ci && npm run test
+
+      - name: Commit the refreshed snapshot
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add web/lib/rates-snapshot.json
+          git diff --cached --quiet && { echo "rates unchanged"; exit 0; }
+          git commit -m "chore(rates): refresh from Mwangaza Yield feed $(date -u +%F)"
+          for attempt in 1 2 3; do
+            if git push; then exit 0; fi
+            echo "push rejected (attempt $attempt) — rebasing onto the new tip"
+            git pull --rebase origin "$GITHUB_REF_NAME" || {
+              echo "rebase conflicted on the snapshot — someone edited rates by hand."
+              echo "NOT resolving automatically: the next run re-derives it cleanly."
+              exit 1
+            }
+          done
