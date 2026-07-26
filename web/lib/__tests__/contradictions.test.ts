@@ -91,11 +91,39 @@ describe("DhowCSD ladder: a plan CBK would actually accept", () => {
     }
   });
 
-  it("the old 50,000 threshold would have failed that test", () => {
+  it("places nothing at the old 50,000 threshold, rather than something unbuyable", () => {
+    // This used to assert that the smallest rung fell BELOW the minimum — i.e.
+    // that the plan was unexecutable but still displayed. The allocator now
+    // drops a rung it cannot place at all, which is the stronger behaviour:
+    // no bid beats a bid CBK will reject.
     const ladder = dhowcsdLadder(50_000);
-    const smallest = Math.min(...ladder.buckets.map((b) => b.allocation));
-    expect(smallest).toBeLessThan(DHOWCSD_BILL_MINIMUM); // i.e. unexecutable
+    expect(ladder.buckets).toHaveLength(0);
+    expect(ladder.unallocatedKes).toBe(50_000);
     expect(DHOWCSD_MINIMUM).toBeGreaterThan(50_000);
+  });
+
+  it("never places a rung below the per-bill minimum, at any weighting", () => {
+    // The guarantee that matters: whatever the reader does with the weights,
+    // every rung shown is one CBK would accept.
+    for (const weights of [
+      { 91: 1, 182: 1, 364: 1 },
+      { 91: 9, 182: 1, 364: 1 },
+      { 91: 0, 182: 0, 364: 1 },
+      { 91: 1, 182: 0, 364: 0 },
+      { 91: 50, 182: 1, 364: 1 },
+    ]) {
+      for (const cap of [100_000, 250_000, 300_000, 1_000_000]) {
+        const l = dhowcsdLadder(cap, weights);
+        for (const b of l.buckets) {
+          expect(b.allocation, `${cap} @ ${JSON.stringify(weights)}`)
+            .toBeGreaterThanOrEqual(DHOWCSD_BILL_MINIMUM);
+          expect(b.allocation % 50_000).toBe(0);
+        }
+        // Nothing is invented or lost.
+        const placed = l.buckets.reduce((s, b) => s + b.allocation, 0);
+        expect(placed + l.unallocatedKes).toBe(cap);
+      }
+    }
   });
 });
 

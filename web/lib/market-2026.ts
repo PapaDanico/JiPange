@@ -134,11 +134,33 @@ export interface LadderBucket {
 
 export interface DhowcsdLadder {
   buckets: LadderBucket[];
+  /** Weighted by allocation, not a plain average of the three tenors. */
   blendedYield: number;
   ladderAnnualKes: number;
   bankAnnualKes: number;
   advantageKes: number;
+  /** Capital that could not be placed because a rung fell below the minimum. */
+  unallocatedKes: number;
+  /** True when the reader set the weights themselves. */
+  tailored: boolean;
 }
+
+/**
+ * How capital is split across the three tenors, as weights.
+ *
+ * Equal thirds is a reasonable default and a poor answer to most real
+ * questions. Somebody holding a deposit they may need in a hurry wants the
+ * 91-day rung heavy; somebody parking a bonus for a year wants the 364-day
+ * rung heavy, because it pays the most. Forcing thirds on both was the tool
+ * deciding a trade-off that belongs to the reader.
+ *
+ * Weights are relative, not percentages — {91: 2, 182: 1, 364: 1} means half
+ * in the 91-day. They are normalised here so the UI never has to make them
+ * sum to anything.
+ */
+export type TenorWeights = Record<number, number>;
+
+export const EVEN_WEIGHTS: TenorWeights = { 91: 1, 182: 1, 364: 1 };
 
 const BUCKET_LABELS: Record<number, string> = {
   91: "Quarterly Liquidity Wheel",
@@ -155,27 +177,71 @@ const BUCKET_LABELS: Record<number, string> = {
  * against a bank rate would flatter the ladder for free; it wins on the honest
  * comparison anyway.
  */
-export function dhowcsdLadder(totalCapital: number): DhowcsdLadder {
-  const third = totalCapital / 3;
-  const buckets: LadderBucket[] = TBILL_RATES.map((rate) => ({
+export function dhowcsdLadder(
+  totalCapital: number,
+  weights: TenorWeights = EVEN_WEIGHTS
+): DhowcsdLadder {
+  // A rung weighted to zero is a rung the reader removed. Dropping it entirely
+  // beats showing a KES 0 bill they cannot buy.
+  const active = TBILL_RATES.filter((r) => (weights[r.tenorDays] ?? 0) > 0);
+  const totalWeight = active.reduce((sum, r) => sum + (weights[r.tenorDays] ?? 0), 0);
+
+  const raw = active.map((rate) => ({
+    rate,
+    share: totalWeight > 0 ? (weights[rate.tenorDays] ?? 0) / totalWeight : 0,
+  }));
+
+  /*
+   * ROUNDING DOWN, AND WHY IT IS NOT PEDANTRY
+   *
+   * CBK takes a bid of KES 100,000 and then multiples of 50,000. A weighted
+   * split lands on figures like 133,333, which is not a bid anybody can place,
+   * so each rung is floored to a placeable amount. A rung that cannot reach
+   * the 100,000 minimum is dropped rather than shown — this tool used to
+   * advertise KES 16,667 bids that CBK would have rejected outright, and the
+   * fix is worth nothing if a custom weighting reintroduces it.
+   *
+   * What the rounding leaves over is reported as unallocatedKes instead of
+   * being quietly folded into a rung, because the reader's weights are then
+   * no longer the weights being shown.
+   */
+  const STEP = 50_000;
+  const placeable: { rate: (typeof TBILL_RATES)[number]; allocation: number }[] = [];
+  for (const { rate, share } of raw) {
+    const target = totalCapital * share;
+    const floored = Math.floor(target / STEP) * STEP;
+    if (floored >= DHOWCSD_BILL_MINIMUM) placeable.push({ rate, allocation: floored });
+  }
+
+  const buckets: LadderBucket[] = placeable.map(({ rate, allocation }) => ({
     label: BUCKET_LABELS[rate.tenorDays] ?? `${rate.tenorDays}-day`,
     days: rate.tenorDays as 91 | 182 | 364,
     yieldRate: rate.netEAY / 100,
     quotedRate: rate.quotedDiscountRate / 100,
     grossRate: rate.grossEAY / 100,
-    allocation: third,
-    annualYieldKes: (third * rate.netEAY) / 100,
+    allocation,
+    annualYieldKes: (allocation * rate.netEAY) / 100,
   }));
 
-  const blendedYield =
-    buckets.reduce((sum, b) => sum + b.yieldRate, 0) / (buckets.length || 1);
+  const placed = buckets.reduce((sum, b) => sum + b.allocation, 0);
   const ladderAnnualKes = buckets.reduce((sum, b) => sum + b.annualYieldKes, 0);
+  // Weighted by money, not a plain mean: with 90% in the 364-day rung the
+  // blended yield must sit near that rung's, and an unweighted average would
+  // report the same figure whatever the reader chose.
+  const blendedYield = placed > 0 ? ladderAnnualKes / placed : 0;
   const bankAnnualKes = totalCapital * BANK_SAVINGS_BASELINE;
+
+  const tailored = TBILL_RATES.some(
+    (r) => (weights[r.tenorDays] ?? 0) !== (EVEN_WEIGHTS[r.tenorDays] ?? 0)
+  );
+
   return {
     buckets,
     blendedYield,
     ladderAnnualKes,
     bankAnnualKes,
     advantageKes: ladderAnnualKes - bankAnnualKes,
+    unallocatedKes: Math.max(0, totalCapital - placed),
+    tailored,
   };
 }
