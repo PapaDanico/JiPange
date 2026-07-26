@@ -31,7 +31,7 @@ export default function AboutPage() {
               DhowCSD bonds, SACCO rates, or what rolling Fuliza for three months actually costs.
             </p>
             <p className="mt-3 font-medium text-primary">
-              So we built it. Free. No login. No data collection. Yours.
+              So we built it. Free, and yours: every calculator runs in your browser and sends nothing anywhere. Two things are optional and asked for — an AI action plan, and saving a plan across devices. Neither is required, and the privacy notice says exactly what each one sends.
             </p>
           </section>
 

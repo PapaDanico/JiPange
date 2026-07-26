@@ -147,13 +147,30 @@ async function generateJson<Schema extends z.ZodTypeAny>(
 
 // ── 3-step action plan (onboarding Screen 3) ──
 
+/**
+ * The reader's NAME is deliberately not in this prompt.
+ *
+ * It was, and it did nothing: none of the three recommendations this asks for
+ * is improved by knowing somebody is called Wanjiru rather than Otieno. What it
+ * did do was turn an age, a county and a salary — which describe a type of
+ * household — into a record about an identified individual, and then send that
+ * across a border to a third-party model provider.
+ *
+ * Kenya's Data Protection Act, 2019 asks at section 25(c) that personal data be
+ * "adequate, relevant, limited to what is necessary" for the purpose. A field
+ * that changes no output is not necessary. Dropping it is cheaper than
+ * disclosing it, and it is the only change here that reduces risk rather than
+ * describing it.
+ *
+ * The name is still collected and still shown back to the reader in their own
+ * plan, on their own device. It simply does not travel.
+ */
 function buildPlanPrompt(params: { profile: Profile; net: number; surplus: number }): string {
   const { profile, net, surplus } = params;
 
   return `${JIPANGE_VOICE}
 
 Based on this person's profile:
-- Name: ${profile.fullName}
 - Age: ${profile.age}
 - County: ${profile.county}
 - Monthly gross salary: KES ${profile.grossMonthlySalary}

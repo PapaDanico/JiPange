@@ -59,9 +59,11 @@ export default function TermsPage() {
           <section>
             <h2 className="text-base font-semibold text-primary">5. Data and privacy</h2>
             <p className="mt-2">
-              JiPange does not require registration and does not collect personal data. All
-              calculations run in your browser. Any profile data you choose to enter is saved
-              only in your browser&apos;s local storage and never sent to our servers. See our{" "}
+              JiPange does not require registration to use any calculator, and every
+              calculator computes in your browser. Two optional features do send data: asking
+              for an AI action plan sends your figures — but not your name — to our server and
+              on to Anthropic, and saving a plan across devices requires an email address. You
+              never have to use either. See our{" "}
               <Link href="/privacy" className="underline hover:text-primary">
                 Privacy Policy
               </Link>{" "}
@@ -80,18 +82,27 @@ export default function TermsPage() {
           <section>
             <h2 className="text-base font-semibold text-primary">7. Third-party services and affiliate links</h2>
             <p className="mt-2">
-              JiPange relies on third-party providers to operate, including Anthropic (to
-              generate AI action plans from anonymous inputs) and Netlify (hosting). Your use
-              of features that rely on these providers is also subject to their own terms and
-              policies.
+              JiPange relies on third-party providers to operate: Netlify (hosting),
+              Anthropic (generating an AI action plan, when you ask for one) and Supabase
+              (sign-in and saved plans, if you choose to save one). Each processes outside
+              Kenya. Your use of features that rely on them is also subject to their own terms
+              and policies, and our{" "}
+              <Link href="/privacy" className="underline hover:text-primary">
+                privacy notice
+              </Link>{" "}
+              sets out what each one receives.
             </p>
             <p className="mt-2">
-              Some calculator result pages include links to regulated Kenyan financial products
-              — Money Market Funds, Treasury Bills (DhowCSD), and similar instruments. These
-              links may be affiliate referral links: JiPange may earn a small commission if you
-              open an account through them, at no extra cost to you. Each product card clearly
-              states whether it carries an affiliate relationship. We link only to
-              CMA- or CBK-regulated products; inclusion is not a guarantee of suitability for
+              Some calculator result pages link to regulated Kenyan financial products — money
+              market funds, Treasury bills via DhowCSD, SACCOs and pension providers.{" "}
+              <strong>
+                We currently hold no affiliate arrangement with any of them and earn nothing if
+                you open an account.
+              </strong>{" "}
+              They are plain links carrying no referral identifier. If that ever changes, the
+              product card itself will say so — the affiliate status of every listed product is
+              a field on the card, not a footnote here. We link only to CMA-, CBK-, SASRA- or
+              RBA-regulated products, and inclusion is never a statement that something suits
               your circumstances.
             </p>
           </section>
