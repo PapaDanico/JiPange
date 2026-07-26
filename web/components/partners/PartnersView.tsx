@@ -112,7 +112,7 @@ function ProductCard({ product }: { product: ProductLink }) {
           prefetch={false}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex h-10 w-full items-center justify-center rounded-xl border border-primary text-sm font-medium text-primary transition-colors hover:bg-primary hover:text-white"
+          className="flex h-11 w-full items-center justify-center rounded-xl border border-primary text-sm font-medium text-primary transition-colors hover:bg-primary hover:text-white"
         >
           Visit {product.shortName} →
         </Link>

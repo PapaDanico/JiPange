@@ -138,7 +138,7 @@ export default function TermlyFeeSmoother() {
                 handleInputsChanged();
               }}
               aria-label="Fewer children"
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-lg text-ink-soft hover:bg-canvas"
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-border text-lg text-ink-soft hover:bg-canvas"
             >
               −
             </button>
@@ -152,7 +152,7 @@ export default function TermlyFeeSmoother() {
                 handleInputsChanged();
               }}
               aria-label="More children"
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-lg text-ink-soft hover:bg-canvas"
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-border text-lg text-ink-soft hover:bg-canvas"
             >
               +
             </button>

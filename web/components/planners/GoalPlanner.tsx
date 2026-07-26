@@ -830,7 +830,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
               <button
                 type="button"
                 onClick={() => void fetchStrategy()}
-                className="mt-3 h-10 rounded-full bg-primary px-4 text-sm font-medium text-white"
+                className="mt-3 h-11 rounded-full bg-primary px-4 text-sm font-medium text-white"
               >
                 Try again
               </button>
@@ -867,7 +867,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
               <button
                 type="button"
                 onClick={() => void fetchStrategy()}
-                className="h-10 w-full rounded-full border border-border text-sm font-medium text-ink-soft"
+                className="h-11 w-full rounded-full border border-border text-sm font-medium text-ink-soft"
               >
                 Try a different strategy
               </button>
