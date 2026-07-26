@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { readFileSync } from "node:fs";
 import { visibleText } from "./helpers";
 
 // Text assertions go through visibleText (see helpers.ts) so the hidden
@@ -27,6 +28,38 @@ test("take-home pay: shows net salary for valid input", async ({ page }) => {
   // Ledger rows only exist once the breakdown computed.
   await expect(visibleText(page, "Less: NSSF Tier 1")).toBeVisible();
   await expect(visibleText(page, "PAYE (before relief)")).toBeVisible();
+});
+
+/**
+ * The export button must produce an actual PDF.
+ *
+ * The assertion is the %PDF- magic bytes and the page structure, not "a
+ * download fired with a plausible size" — the sister product held that weaker
+ * check green for months while the button emitted a .png, and the user's
+ * report ("I still cannot generate PDFs") was accurate the whole time.
+ */
+test("take-home pay: the PDF button downloads a real, paginated PDF", async ({ page }) => {
+  // A phone viewport on purpose: it is what most readers are on, and it is the
+  // case that makes the card tall enough to need more than one A4 page. At the
+  // desktop default the same card is wide and short and fits on one — also
+  // correct, but it would not exercise the pagination path.
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/tools/take-home-pay");
+  await page.getByRole("spinbutton").first().fill("150000");
+  await expect(visibleText(page, "PAYE (before relief)")).toBeVisible();
+
+  const downloadPromise = page.waitForEvent("download");
+  await page.getByRole("button", { name: /download pdf/i }).click();
+  const download = await downloadPromise;
+
+  expect(download.suggestedFilename()).toMatch(/\.pdf$/);
+  const path = await download.path();
+  const bytes = readFileSync(path);
+  expect(bytes.subarray(0, 5).toString("latin1")).toBe("%PDF-");
+  // A long result is cut across A4 pages rather than shrunk to an unreadable
+  // sliver on one, so this card yields more than a single /Type /Page.
+  const pages = (bytes.toString("latin1").match(/\/Type\s*\/Page[^s]/g) ?? []).length;
+  expect(pages).toBeGreaterThan(1);
 });
 
 // ─── Savings Goal ──────────────────────────────────────────────────────────
