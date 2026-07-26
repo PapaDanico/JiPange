@@ -7,6 +7,7 @@
  */
 
 import { SHIF_RATE } from "./tax";
+import { round2 } from "./money";
 
 export type EmploymentType = "employed" | "self_employed" | "informal";
 
@@ -22,6 +23,20 @@ export interface ShaInput {
 
 export interface ShaResult {
   monthlyContribution: number;
+  /**
+   * True when the 2.75%-of-income formula is a genuine statutory rate for this
+   * person, false when it is our best available approximation.
+   *
+   * SHA assesses salaried members on gross pay at 2.75%. Non-salaried members
+   * are means-assessed on declared HOUSEHOLD income and assets, which is a
+   * different process with its own schedule — not something this calculator
+   * can reproduce from a single income figure. It used to accept an
+   * employmentType and silently ignore it, so a self-employed user tapped a
+   * control that changed nothing and got a salaried answer presented as fact.
+   * The number is still the most useful estimate we can offer; what changes is
+   * that we now say which it is.
+   */
+  isStatutoryRate: boolean;
   annualContribution: number;
   isAtFloor: boolean;
   shaAsPercentOfIncome: number;
@@ -32,14 +47,15 @@ export interface ShaResult {
 }
 
 export function calculateShaHealth(input: ShaInput): ShaResult {
-  const { grossMonthlyIncome, wantsPrivateCare } = input;
+  const { grossMonthlyIncome, wantsPrivateCare, employmentType } = input;
+  const isStatutoryRate = employmentType === "employed";
   // Guard against 0/negative family size reaching the tiers below — the UI's
   // preset selector never sends this, but the exported function has no
   // schema of its own, so a bad direct caller shouldn't get a nonsensical
   // "0 members" label.
   const familySize = Math.max(1, input.familySize);
 
-  const computed = Math.round(grossMonthlyIncome * SHIF_RATE);
+  const computed = round2(grossMonthlyIncome * SHIF_RATE);
   const monthlyContribution = Math.max(computed, MONTHLY_FLOOR);
   const isAtFloor = computed < MONTHLY_FLOOR;
   const annualContribution = monthlyContribution * 12;
@@ -100,6 +116,7 @@ export function calculateShaHealth(input: ShaInput): ShaResult {
 
   return {
     monthlyContribution,
+    isStatutoryRate,
     annualContribution,
     isAtFloor,
     shaAsPercentOfIncome,

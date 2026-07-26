@@ -139,7 +139,7 @@ const TOOLS = [
   { href: "/tools/money-runway", emoji: "⏳", name: "Money Runway", hook: "How long your savings survive a job loss" },
   { href: "/tools/guarantor-shield", emoji: "🛡️", name: "Sacco Guarantor Shield", hook: "Your real unencumbered borrowing power" },
   { href: "/tools/kplc-optimizer", emoji: "⚡", name: "KPLC Token Optimizer", hook: "Free units by splitting your token buys" },
-  { href: "/tools/fuliza-cost", emoji: "📱", name: "True Cost of Fuliza", hook: "What KSh 6.75/day really costs you annually" },
+  { href: "/tools/fuliza-cost", emoji: "📱", name: "True Cost of Fuliza", hook: "What KSh 6.50/day really costs you annually" },
 ];
 
 const PLANNERS = [
@@ -470,7 +470,7 @@ export default function Home() {
                   Real annualised cost of Fuliza
                 </p>
                 <p className="text-[0.8125rem] leading-relaxed text-muted">
-                  KSh 6.75/day on KSh 600 feels like loose change. Annualised, it&apos;s the most
+                  KSh 6.50/day on KSh 600 feels like loose change. Annualised, it&apos;s the most
                   expensive credit product most Kenyans ever use — more than bank overdrafts, more
                   than credit cards. Kenyans borrowed KSh 1.46 trillion through Fuliza in the year
                   to March 2026.

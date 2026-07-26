@@ -86,6 +86,20 @@ export default function FulizaCostCalculator() {
             <BehavioralInsightStrip
               insight="Each Fuliza fee feels small in isolation — that's the marginal cost trap. Behavioural economists call it the 'pennies-a-day' illusion: we evaluate each transaction individually and never sum the true annual toll. The APR figure above converts that illusion into a single number your brain can actually weigh."
             />
+            <div className="rounded-2xl border border-border bg-danger-soft/40 p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-danger">
+                And if you never clear it
+              </p>
+              <p className="mt-1.5 text-xs leading-relaxed text-ink-soft">
+                The {Math.round(result.annualisedApr * 100)}% above is the APR — the daily fee
+                annualised, which is what the facility contractually costs. Roll the balance for a
+                whole year without clearing it and the fees keep landing on a balance that never
+                shrinks: the compounded cost reaches roughly{" "}
+                <strong>{Math.round(result.rolledAnnualCost * 100).toLocaleString("en-KE")}%</strong>.
+                That is not the advertised rate — it is what a permanent overdraft actually does.
+              </p>
+            </div>
+
             <CalculatorDisclaimer />
 
             <ShareResultButton

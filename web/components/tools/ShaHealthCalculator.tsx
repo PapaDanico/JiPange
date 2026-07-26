@@ -159,7 +159,9 @@ export default function ShaHealthCalculator() {
               sublabel={
                 result.isAtFloor
                   ? "At the Ksh 300 statutory floor — your 2.75% computed contribution was below this."
-                  : `${result.shaAsPercentOfIncome}% of your gross income`
+                  : result.isStatutoryRate
+                    ? `${result.shaAsPercentOfIncome}% of your gross income`
+                    : `${result.shaAsPercentOfIncome}% of the income you entered — an estimate; see the note below`
               }
               tone="primary"
             />
@@ -219,6 +221,21 @@ export default function ShaHealthCalculator() {
             products={healthPartners}
             heading="Explore regulated pension & insurance providers"
           />
+
+          {!result.isStatutoryRate && (
+            <div className="rounded-2xl border border-border bg-accent-soft/40 p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-accent-ink">
+                How your contribution is really assessed
+              </p>
+              <p className="mt-1.5 text-xs leading-relaxed text-ink-soft">
+                The 2.75% rate above is the statutory deduction for <strong>salaried</strong>{" "}
+                members. If you are self-employed or in informal work, SHA assesses you on declared{" "}
+                <strong>household</strong> income and assets rather than a single payslip figure, so
+                your actual contribution is set through that process and may differ from this. Treat
+                the figure as a planning estimate and confirm your assessment with SHA directly.
+              </p>
+            </div>
+          )}
 
           <CalculatorDisclaimer
             extraNotes={[

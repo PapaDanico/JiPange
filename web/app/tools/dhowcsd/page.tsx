@@ -19,7 +19,7 @@ export default function DhowcsdPage() {
           icon: "⚠️",
           tone: "caution",
           stat: "2%",
-          label: "of Kenyans invest in Treasury Bills despite them being risk-free, government-backed, and accessible from KSh 3,000.",
+          label: "of Kenyans invest in Treasury Bills, despite a government guarantee behind every shilling. A single bill starts at KSh 100,000.",
           source: "CBK DhowCSD subscriber data, 2025",
         },
         {
@@ -31,8 +31,8 @@ export default function DhowcsdPage() {
           // KSh 4,080. The bank comparison is the honest version of the same
           // point and is arguably stronger: it takes ~KSh 126,000 in a savings
           // account at 3.23% to earn what KSh 50,000 earns here.
-          stat: "KSh 4,000+",
-          label: "earned per year, after tax, on a KSh 50,000 T-Bill ladder — what a savings account pays on more than twice the money.",
+          stat: "KSh 8,100+",
+          label: "earned per year, after tax, on a KSh 100,000 bill — what a savings account pays on more than twice the money.",
           source: "CBK auction yields via Mwangaza Yield, net of 15% withholding tax",
         },
       ]}

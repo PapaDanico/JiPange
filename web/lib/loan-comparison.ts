@@ -1,6 +1,6 @@
 import { calculateLoanAmortization } from "./loans";
 import { round2 } from "./money";
-import { FULIZA_DAILY_RATE } from "./fuliza";
+import { FULIZA_APR, FULIZA_DAILY_RATE } from "./fuliza";
 
 export type LoanProductTier = "green" | "amber" | "red";
 
@@ -86,7 +86,11 @@ export function compareLoanProducts(principal: number, termMonths: number): Loan
       monthlyPayment: null,
       totalRepaid: fulizaTotalRepaid,
       totalInterest: fulizaTotalInterest,
-      apr: Math.pow(1 + FULIZA_DAILY_RATE, 365) - 1,
+      // Simple annualisation, matching this row's totalInterest (which is
+      // computed on the non-compounding daily fee just above). The compounded
+      // figure used to sit here, so the table showed a 30-day repayment of
+      // 1.32x principal beside an APR of 4,999% that could not produce it.
+      apr: FULIZA_APR,
       tier: "red",
       estimated: true,
     },

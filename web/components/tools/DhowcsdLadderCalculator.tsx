@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 import {
   BANK_SAVINGS_BASELINE,
+  DHOWCSD_BILL_MINIMUM,
   DHOWCSD_MINIMUM,
   dhowcsdLadder,
 } from "@/lib/market-2026";
@@ -51,8 +52,10 @@ export default function DhowcsdLadderCalculator() {
       {belowMinimum && (
         <div className="space-y-3">
           <p className="text-sm text-danger">
-            DhowCSD T-Bill bids start at {formatKES(DHOWCSD_MINIMUM)} — park smaller amounts in an
-            MMF until you cross the threshold.
+            A single T-Bill bid starts at {formatKES(DHOWCSD_BILL_MINIMUM)}, and this ladder holds
+            three of them — so {formatKES(DHOWCSD_MINIMUM)} is the least that builds the full
+            structure. Park smaller amounts in an MMF, or bid one tenor at a time, until you cross
+            the threshold.
           </p>
           <ProductLinks
             products={MMF_LINKS.slice(0, 2)}
