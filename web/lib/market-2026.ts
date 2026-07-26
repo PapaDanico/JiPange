@@ -1,5 +1,6 @@
 import { solveYearsToTarget } from "./goal-planner";
 import { TARGET_MMF_YIELD } from "./journey";
+import { TBILL_RATES } from "./rates-feed";
 
 /**
  * 2026 Kenyan macro benchmarks (product-spec constants). These are quoted
@@ -18,9 +19,23 @@ export const NOMINAL_RETIREMENT_YIELD = TARGET_MMF_YIELD;
 export const LOCAL_SAFE_WITHDRAWAL_RATE = 0.05; // localized SWR (net real return)
 export const SACCO_LEVERAGE_MULTIPLIER = 3.0;
 export const MAX_SALARY_DEBT_LIMIT = 0.33; // one-third gross pay rule
-export const YIELD_91_DAY = 0.0883;
-export const YIELD_182_DAY = 0.0896;
-export const YIELD_364_DAY = 0.0899;
+/**
+ * T-bill yields are no longer constants here.
+ *
+ * They used to be three hardcoded numbers — 0.0883 / 0.0896 / 0.0899 — copied
+ * from CBK's published quotes and then multiplied by capital as though a quote
+ * were a return. It is not. CBK quotes a DISCOUNT rate: the discount is earned
+ * on a smaller outlay (so the true gross yield is higher) and 15% withholding
+ * tax then applies (so the net is lower). Using the quote was wrong in both
+ * directions at once and overstated a KES 300,000 ladder by about KES 2,300 a
+ * year.
+ *
+ * The live, correctly computed figures now come from lib/rates-feed.ts, which
+ * reads the feed published by Mwangaza Yield — the sister tool that derives
+ * these conventions from CBK data and verifies them against real broker
+ * contract notes. See that file for why we read an answer instead of copying
+ * a formula.
+ */
 export const BANK_SAVINGS_BASELINE = 0.0323;
 
 // ── Module 1: the localized FIRE engine ──
@@ -94,7 +109,12 @@ export const DHOWCSD_MINIMUM = 50_000;
 export interface LadderBucket {
   label: string;
   days: 91 | 182 | 364;
+  /** NET effective annual yield, after 15% withholding tax. Project from this. */
   yieldRate: number;
+  /** CBK's published quote, for showing the reader the gap. Never project from it. */
+  quotedRate: number;
+  /** Effective annual yield before tax. */
+  grossRate: number;
   allocation: number;
   annualYieldKes: number;
 }
@@ -107,15 +127,36 @@ export interface DhowcsdLadder {
   advantageKes: number;
 }
 
+const BUCKET_LABELS: Record<number, string> = {
+  91: "Quarterly Liquidity Wheel",
+  182: "Mid-Term Shield",
+  364: "The Inflation Crusher",
+};
+
+/**
+ * Capital split evenly across the three tenors, projected on NET yields.
+ *
+ * Every rate here is after 15% withholding tax, because that is the money that
+ * reaches the holder — and because the bank baseline it is compared against is
+ * a headline rate a saver would also be taxed on. Quoting a gross ladder
+ * against a bank rate would flatter the ladder for free; it wins on the honest
+ * comparison anyway.
+ */
 export function dhowcsdLadder(totalCapital: number): DhowcsdLadder {
   const third = totalCapital / 3;
-  const buckets: LadderBucket[] = [
-    { label: "Quarterly Liquidity Wheel", days: 91, yieldRate: YIELD_91_DAY, allocation: third, annualYieldKes: third * YIELD_91_DAY },
-    { label: "Mid-Term Shield", days: 182, yieldRate: YIELD_182_DAY, allocation: third, annualYieldKes: third * YIELD_182_DAY },
-    { label: "The Inflation Crusher", days: 364, yieldRate: YIELD_364_DAY, allocation: third, annualYieldKes: third * YIELD_364_DAY },
-  ];
-  const blendedYield = (YIELD_91_DAY + YIELD_182_DAY + YIELD_364_DAY) / 3;
-  const ladderAnnualKes = totalCapital * blendedYield;
+  const buckets: LadderBucket[] = TBILL_RATES.map((rate) => ({
+    label: BUCKET_LABELS[rate.tenorDays] ?? `${rate.tenorDays}-day`,
+    days: rate.tenorDays as 91 | 182 | 364,
+    yieldRate: rate.netEAY / 100,
+    quotedRate: rate.quotedDiscountRate / 100,
+    grossRate: rate.grossEAY / 100,
+    allocation: third,
+    annualYieldKes: (third * rate.netEAY) / 100,
+  }));
+
+  const blendedYield =
+    buckets.reduce((sum, b) => sum + b.yieldRate, 0) / (buckets.length || 1);
+  const ladderAnnualKes = buckets.reduce((sum, b) => sum + b.annualYieldKes, 0);
   const bankAnnualKes = totalCapital * BANK_SAVINGS_BASELINE;
   return {
     buckets,

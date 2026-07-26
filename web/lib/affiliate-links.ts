@@ -1,4 +1,17 @@
+import { tbillRate } from "./rates-feed";
+
 export type ProductType = "mmf" | "tbill" | "sacco" | "pension";
+
+/**
+ * Whether a quoted yield is before or after withholding tax.
+ *
+ * This is not a detail. MMF and SACCO figures are published gross, Treasury
+ * bill yields here are computed net, and listing them side by side without
+ * saying which is which invites a reader to compare 11.8% against 8.45% and
+ * conclude the wrong thing — the MMF is nearer 10.0% once 15% tax is taken.
+ * Every card states its basis.
+ */
+export type YieldBasis = "gross" | "net";
 export type Regulator = "CMA" | "CBK" | "SASRA" | "CBK+CMA" | "RBA";
 
 export interface ProductLink {
@@ -10,6 +23,8 @@ export interface ProductLink {
   isAffiliate: boolean;
   /** Approximate annualised yield or dividend rate — verify live before committing. */
   yieldPct?: number;
+  /** Whether yieldPct is before or after withholding tax. Defaults to gross. */
+  yieldBasis?: YieldBasis;
   /** Minimum entry in KES. */
   minKes?: number;
   regulator: Regulator;
@@ -120,7 +135,11 @@ export const PRODUCT_LINKS: ProductLink[] = [
     type: "tbill",
     url: "https://dhowcsd.centralbank.go.ke",
     isAffiliate: false,
-    yieldPct: 10.8,
+    // Live, and NET of the 15% withholding tax — the 364-day bill from the
+    // published feed. It was hardcoded at 10.8%, which was neither current nor
+    // net, and sat directly beneath a ladder card quoting the correct 8.4%.
+    yieldPct: tbillRate(364)?.netEAY ?? undefined,
+    yieldBasis: "net",
     minKes: 50000,
     regulator: "CBK",
     liquidity: "91 / 182 / 364-day terms",
@@ -133,7 +152,13 @@ export const PRODUCT_LINKS: ProductLink[] = [
     type: "tbill",
     url: "https://dhowcsd.centralbank.go.ke",
     isAffiliate: false,
+    // Infrastructure bond coupons are withholding-tax exempt, so this gross
+    // figure IS the net one. Left as an approximate benchmark rather than
+    // wired to the feed: the published bond bands blend taxable and tax-free
+    // paper, so quoting a band median as "the IFB yield" would be a guess
+    // wearing a live number's clothes.
     yieldPct: 14.0,
+    yieldBasis: "net",
     minKes: 50000,
     regulator: "CBK",
     liquidity: "Locked to term; secondary market available",
