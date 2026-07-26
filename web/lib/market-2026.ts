@@ -104,7 +104,20 @@ export function mjengoPlan(params: {
 
 // ── Module 2b: DhowCSD treasury laddering ──
 
-export const DHOWCSD_MINIMUM = 50_000;
+/**
+ * The minimum that makes a THREE-TENOR LADDER executable, not the minimum for
+ * a single bill.
+ *
+ * This was 50,000, which was wrong twice. CBK's minimum for a Treasury bill is
+ * KES 100,000 (bonds are 50,000 — the two were conflated), and the ladder
+ * splits capital into thirds, so a reader following this tool at the old
+ * threshold would have tried to bid ~16,667 per tenor and had every bid
+ * rejected. The figure now comes from the published feed and is multiplied by
+ * the number of rungs, so the tool cannot again advertise a plan that CBK will
+ * not accept.
+ */
+export const DHOWCSD_BILL_MINIMUM = TBILL_RATES[0]?.minInvestmentKES ?? 100_000;
+export const DHOWCSD_MINIMUM = DHOWCSD_BILL_MINIMUM * TBILL_RATES.length;
 
 export interface LadderBucket {
   label: string;
