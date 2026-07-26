@@ -191,7 +191,7 @@ export default function DashboardView() {
         </p>
         <Link
           href="/profile/full"
-          className="mt-3 inline-flex h-10 items-center justify-center rounded-full bg-accent px-5 text-sm font-medium text-ink transition-colors hover:bg-accent-deep"
+          className="mt-3 inline-flex h-11 items-center justify-center rounded-full bg-accent px-5 text-sm font-medium text-ink transition-colors hover:bg-accent-deep"
         >
           Build my full Pesa Picture →
         </Link>

@@ -86,7 +86,7 @@ export default function ReturningUserRedirect() {
       </p>
       <Link
         href={destination.href}
-        className="mt-2 inline-flex h-10 items-center justify-center rounded-full bg-primary px-5 text-sm font-medium text-white transition-colors hover:bg-primary-deep"
+        className="mt-2 inline-flex h-11 items-center justify-center rounded-full bg-primary px-5 text-sm font-medium text-white transition-colors hover:bg-primary-deep"
       >
         {destination.label} →
       </Link>

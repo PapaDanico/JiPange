@@ -129,7 +129,7 @@ export default function ActionPlan() {
           <p className="text-sm text-danger">{error}</p>
           <button
             onClick={() => void generatePlan(profile, calculations)}
-            className="mt-3 h-10 rounded-full bg-primary px-4 text-sm font-medium text-white"
+            className="mt-3 h-11 rounded-full bg-primary px-4 text-sm font-medium text-white"
           >
             Try again
           </button>
@@ -163,7 +163,7 @@ export default function ActionPlan() {
 
           <button
             onClick={() => void generatePlan(profile, calculations)}
-            className="h-10 w-full rounded-full border border-border text-sm font-medium text-ink-soft"
+            className="h-11 w-full rounded-full border border-border text-sm font-medium text-ink-soft"
           >
             Try different recommendations
           </button>

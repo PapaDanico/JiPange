@@ -18,7 +18,7 @@ export default function ResumeToast() {
       </p>
       <Link
         href="/profile/full"
-        className="inline-flex h-10 shrink-0 items-center justify-center rounded-full bg-primary px-5 text-sm font-medium text-white transition-colors hover:bg-primary-deep"
+        className="inline-flex h-11 shrink-0 items-center justify-center rounded-full bg-primary px-5 text-sm font-medium text-white transition-colors hover:bg-primary-deep"
       >
         Resume
       </Link>

@@ -36,7 +36,7 @@ export default function PlanPage() {
         </p>
         <Link
           href="/planners"
-          className="mt-3 inline-flex h-10 items-center justify-center rounded-full bg-primary px-5 text-sm font-medium text-white transition-colors hover:bg-primary-deep"
+          className="mt-3 inline-flex h-11 items-center justify-center rounded-full bg-primary px-5 text-sm font-medium text-white transition-colors hover:bg-primary-deep"
         >
           Open the goal planners
         </Link>
@@ -48,7 +48,7 @@ export default function PlanPage() {
         </p>
         <Link
           href="/tools"
-          className="mt-3 inline-flex h-10 items-center justify-center rounded-full bg-accent px-5 text-sm font-medium text-ink transition-colors hover:bg-accent-deep"
+          className="mt-3 inline-flex h-11 items-center justify-center rounded-full bg-accent px-5 text-sm font-medium text-ink transition-colors hover:bg-accent-deep"
         >
           Explore calculators
         </Link>

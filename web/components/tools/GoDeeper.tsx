@@ -38,7 +38,7 @@ export default function GoDeeper({ deeper }: { deeper: DeeperLink }) {
         href={deeper.href}
         target="_blank"
         rel="noopener"
-        className="mt-3 inline-flex h-10 items-center justify-center rounded-full border border-primary/25 px-5 text-sm font-medium text-primary transition-colors hover:bg-primary/10"
+        className="mt-3 inline-flex h-11 items-center justify-center rounded-full border border-primary/25 px-5 text-sm font-medium text-primary transition-colors hover:bg-primary/10"
       >
         {deeper.label} →
       </Link>

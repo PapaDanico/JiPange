@@ -55,7 +55,7 @@ export default function AppHeader() {
           </div>
           <Link
             href={cta.href}
-            className="inline-flex h-9 items-center justify-center rounded-full bg-accent px-4 text-sm font-medium text-ink transition-colors hover:bg-accent-deep"
+            className="relative before:absolute before:-inset-y-1 before:inset-x-0 before:content-[''] inline-flex h-9 items-center justify-center rounded-full bg-accent px-4 text-sm font-medium text-ink transition-colors hover:bg-accent-deep"
           >
             {cta.label}
           </Link>

@@ -87,7 +87,7 @@ export default function CalendarReminderButton() {
           href={buildGoogleUrl()}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex h-10 items-center justify-center rounded-xl bg-primary px-4 text-sm font-semibold text-white hover:bg-primary/90"
+          className="flex h-11 items-center justify-center rounded-xl bg-primary px-4 text-sm font-semibold text-white hover:bg-primary/90"
           onClick={() => setOpen(false)}
         >
           Add to Google Calendar
@@ -95,7 +95,7 @@ export default function CalendarReminderButton() {
         <button
           type="button"
           onClick={downloadIcs}
-          className="flex h-10 items-center justify-center rounded-xl border border-border px-4 text-sm font-medium text-primary hover:bg-canvas"
+          className="flex h-11 items-center justify-center rounded-xl border border-border px-4 text-sm font-medium text-primary hover:bg-canvas"
         >
           Download .ics (Apple / Outlook)
         </button>
