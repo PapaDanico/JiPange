@@ -68,11 +68,42 @@ test("investment returns: renders projection", async ({ page }) => {
 
 // ─── FIRE Number ───────────────────────────────────────────────────────────
 
-test("fire number: shows retirement number", async ({ page }) => {
+/**
+ * Asserts the substance, not the heading.
+ *
+ * This used to check for the copy "your FIRE number at age" — which a heading
+ * alone satisfies, and which went stale the moment the tool stopped quoting a
+ * nominal number. The tool now exists to say one thing a reader cannot get
+ * from their own budget: what share of the retirement capital is medical
+ * cover. So that is what gets checked, along with the figure being stated in
+ * today's money rather than inflated into an unactionable nominal headline.
+ */
+test("fire number: prices retirement in today's money and surfaces the medical share", async ({
+  page,
+}) => {
   await page.goto("/tools/fire-number");
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-  await page.getByRole("spinbutton").first().fill("80000");
-  await expect(visibleText(page, /your fire number at age/i)).toBeVisible();
+
+  const inputs = page.getByRole("spinbutton");
+  await inputs.nth(0).fill("80000"); // living costs
+  await inputs.nth(1).fill("8000"); // medical cover
+
+  await expect(visibleText(page, /in today's shillings/i)).toBeVisible();
+  await expect(visibleText(page, /of your retirement/i)).toBeVisible();
+  await expect(
+    visibleText(page, /exists for nothing but medical cover/i)
+  ).toBeVisible();
+  // The return assumption must always be shown with its evidence, never bare.
+  await expect(visibleText(page, /after inflation and tax/i)).toBeVisible();
+});
+
+test("fire number: says plainly that a plan with no medical cover is incomplete", async ({
+  page,
+}) => {
+  await page.goto("/tools/fire-number");
+  await page.getByRole("spinbutton").nth(0).fill("80000");
+  // Medical deliberately left empty.
+  await expect(visibleText(page, /SHA is a floor, not a plan/i)).toBeVisible();
 });
 
 // ─── Money Runway ──────────────────────────────────────────────────────────
