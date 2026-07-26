@@ -13,7 +13,7 @@ const ROUTES = [
     "chama", "hustle-smoother", "20th-challenge", "debt-escape", "land-purchase",
     "salary", "sha-health",
   ].map((t) => `/tools/${t}`),
-  "/terms", "/privacy",
+  "/terms", "/privacy", "/faq", "/glossary",
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
