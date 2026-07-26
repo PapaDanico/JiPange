@@ -48,6 +48,39 @@ export default function ExportCardButton({
     chrome.forEach((node) => {
       node.style.display = "none";
     });
+
+    /*
+     * Freeze the entrance animation, or the picture is of it happening.
+     *
+     * Results mount with `animate-rise` — `rise-in 0.4s ... both` — and `both`
+     * means the element holds the keyframe's `from` state, `opacity: 0`, until
+     * the animation runs. html2canvas paints a CLONE inside a fresh iframe, so
+     * the clone's elements mount anew and start that animation over from zero.
+     * The capture then lands somewhere in the middle of it.
+     *
+     * The download worked and the file was junk: every exported card came out
+     * washed to a pale grey on cream, legible only if you already knew what it
+     * said. It read as a design choice rather than a bug, which is how it
+     * survived the fix that made this button produce a file at all.
+     *
+     * Inline, and on every descendant, for the reason documented above: inline
+     * styles are carried onto the clone where a class-based rule is not.
+     */
+    const animated = [el, ...Array.from(el.querySelectorAll<HTMLElement>("*"))];
+    const previousMotion = animated.map((node) => ({
+      animation: node.style.animation,
+      opacity: node.style.opacity,
+      transform: node.style.transform,
+    }));
+    animated.forEach((node) => {
+      node.style.animation = "none";
+      node.style.opacity = "1";
+      // translateY(10px) is the other half of the same keyframe; left alone it
+      // shifts every block down the page in the capture.
+      if (node.style.transform === "" || /translateY/.test(node.style.transform)) {
+        node.style.transform = "none";
+      }
+    });
     try {
       // html2canvas-pro, not html2canvas: Tailwind v4 emits color-mix() in
       // oklab space, and html2canvas 1.4.1 throws "unsupported color function
@@ -118,6 +151,11 @@ export default function ExportCardButton({
     } finally {
       chrome.forEach((node, i) => {
         node.style.display = previousDisplay[i];
+      });
+      animated.forEach((node, i) => {
+        node.style.animation = previousMotion[i].animation;
+        node.style.opacity = previousMotion[i].opacity;
+        node.style.transform = previousMotion[i].transform;
       });
       setLoading(false);
     }
