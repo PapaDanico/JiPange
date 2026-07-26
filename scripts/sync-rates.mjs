@@ -37,6 +37,22 @@ const MAX_YIELD = 30;
 /** A one-day move larger than this is a broken parse, not a market. */
 const MAX_DAILY_MOVE_PP = 3;
 
+/**
+ * Past this, the feed itself has stopped moving and somebody should know.
+ *
+ * The checks below all ask "is this number wrong?". None of them asks "is
+ * anyone still producing it?" — and those fail differently. If the upstream
+ * scrapers break, the feed keeps serving its last good figures with an old
+ * generatedAt, every validation passes, and this job reports "already current"
+ * every morning while the data quietly ages. The app surfaces staleness to
+ * readers after 14 days; this makes sure the people running it hear about it
+ * too, and sooner.
+ *
+ * A warning, not a refusal: old-but-real rates are still the best available,
+ * and refusing them would replace a stale number with no number at all.
+ */
+const WARN_FEED_AGE_DAYS = 10;
+
 const argFrom = process.argv.indexOf("--from");
 const localPath = argFrom > -1 ? process.argv[argFrom + 1] : null;
 
@@ -88,6 +104,19 @@ for (const tenor of REQUIRED_TENORS) {
   if (!(row.netEAY < row.grossEAY)) fail(`${tenor}-day net is not below gross — check the feed`);
   if (!(row.grossEAY > row.quotedDiscountRate)) {
     fail(`${tenor}-day gross is not above the quoted discount rate — check the feed`);
+  }
+}
+
+/* ------------------------------------------------------- freshness check */
+
+if (typeof incoming.generatedAt === "string") {
+  const generated = new Date(incoming.generatedAt);
+  const ageDays = Math.floor((Date.now() - generated.getTime()) / 86_400_000);
+  if (Number.isFinite(ageDays) && ageDays > WARN_FEED_AGE_DAYS) {
+    console.warn(
+      `::warning::Rates feed is ${ageDays} days old (generated ${incoming.generatedAt}). ` +
+        `The upstream pipeline may have stopped. Figures below are still being used.`,
+    );
   }
 }
 
