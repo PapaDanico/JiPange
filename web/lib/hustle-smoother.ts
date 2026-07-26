@@ -25,6 +25,26 @@ export interface SmootherResult {
   finalBuffer: number;
   finalBufferMonths: number;
   shortMonths: number;
+  /**
+   * The deepest the running buffer ever got, and the month it happened.
+   *
+   * This is the number the tool was missing. `finalBuffer` says where you
+   * ended up; it says nothing about the hole you had to climb out of, and the
+   * order of the months decides that entirely. Two hustlers with the identical
+   * twelve months of income in a different sequence get the identical final
+   * buffer — and one of them was KES 140,000 overdrawn in February.
+   */
+  lowestBuffer: number;
+  /** 1-based month index of the trough. */
+  lowestBufferMonth: number;
+  /** True when the plan required money the simulation never had. */
+  goesNegative: boolean;
+  /**
+   * What you would have needed in the bank on day one for this draw to have
+   * been survivable — i.e. the trough, made positive. Zero when the plan never
+   * dipped. This is the actionable form of the finding.
+   */
+  requiredStartingBuffer: number;
 }
 
 /**
@@ -43,6 +63,10 @@ export function smoothIncomes(
       finalBuffer: 0,
       finalBufferMonths: 0,
       shortMonths: 0,
+      lowestBuffer: 0,
+      lowestBufferMonth: 0,
+      goesNegative: false,
+      requiredStartingBuffer: 0,
     };
   }
 
@@ -61,10 +85,19 @@ export function smoothIncomes(
 
   let cumBuffer = 0;
   let shortMonths = 0;
-  const points: MonthPoint[] = incomes.map((income) => {
+  // Track the trough as we go. The order of the months is the whole story:
+  // the same twelve figures shuffled give the same final buffer and a
+  // completely different experience of the year.
+  let lowestBuffer = Infinity;
+  let lowestBufferMonth = 0;
+  const points: MonthPoint[] = incomes.map((income, i) => {
     const surplus = income - monthlyDraw;
     cumBuffer += surplus;
     if (surplus < 0) shortMonths++;
+    if (cumBuffer < lowestBuffer) {
+      lowestBuffer = cumBuffer;
+      lowestBufferMonth = i + 1;
+    }
     return { income, surplus, cumBuffer };
   });
 
@@ -79,5 +112,9 @@ export function smoothIncomes(
     finalBuffer,
     finalBufferMonths,
     shortMonths,
+    lowestBuffer,
+    lowestBufferMonth,
+    goesNegative: lowestBuffer < 0,
+    requiredStartingBuffer: Math.max(0, -lowestBuffer),
   };
 }

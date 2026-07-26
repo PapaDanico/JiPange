@@ -1,17 +1,21 @@
 import { solveYearsToTarget } from "./goal-planner";
-import { TARGET_MMF_YIELD } from "./journey";
+import { CURRENT_INFLATION, TARGET_MMF_YIELD } from "./journey";
 import { TBILL_RATES } from "./rates-feed";
 
 /**
  * 2026 Kenyan macro benchmarks (product-spec constants). These are quoted
  * baselines, not promises — every consuming UI says "check current rates".
  */
-// Independently-set from the journey funnel's own inflation assumption
-// (lib/journey.ts CURRENT_INFLATION, 0.067) — both are "quoted baseline,
-// check current rates" estimates rather than a single tracked figure, so
-// they aren't merged here; harmonizing them is a product call, not a
-// mechanical fix.
-export const KENYAN_INFLATION = 0.064; // KNBS baseline
+/**
+ * One inflation rate for the whole app, read from the published feed.
+ *
+ * This was 0.064 against the journey funnel's 0.067, with a comment saying
+ * harmonizing them was "a product call, not a mechanical fix". That was true
+ * while both were house estimates. It stopped being true when the rates feed
+ * began carrying a tracked, dated, attributed CPI reading — at which point the
+ * product call answers itself: quote the published figure, not either guess.
+ */
+export const KENYAN_INFLATION = CURRENT_INFLATION;
 // Same real-world assumption as lib/journey.ts's TARGET_MMF_YIELD — kept as
 // one shared constant so the FIRE calculator and the journey funnel never
 // silently disagree on the MMF baseline they're both quoting.

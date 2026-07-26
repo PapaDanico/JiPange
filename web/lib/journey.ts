@@ -1,4 +1,5 @@
 import { FULIZA_DAILY_RATE } from "./fuliza";
+import { currentInflation } from "./rates-feed";
 
 /**
  * The 90-second journey funnel: 5 tap-only questions → a deterministic
@@ -101,10 +102,15 @@ export const JOURNEY_QUESTIONS: JourneyQuestion[] = [
 
 export const ASSUMED_CURRENT_YIELD = 0.0323; // bank savings average
 export const TARGET_MMF_YIELD = 0.115; // local index baseline
-// Independently-set from lib/market-2026.ts's KENYAN_INFLATION (0.064) — both
-// are "quoted baseline, check current rates" estimates rather than a single
-// tracked figure; see the comment there before assuming this is a typo.
-export const CURRENT_INFLATION = 0.067;
+/**
+ * The published inflation rate, read from the rates feed.
+ *
+ * This was 0.067 and the FIRE calculator's was 0.064 — each hardcoded, each
+ * rendered to the reader as "inflation runs at X%". Two pages, two answers,
+ * the same month, neither sourced or dated. Both now read one tracked figure;
+ * see lib/rates-feed.ts for why we consume this rather than assume it.
+ */
+export const CURRENT_INFLATION = currentInflation();
 // Spec states "+8.2%"; 11.5 − 3.23 = 8.27, truncated (not rounded) to match.
 export const YIELD_UPSIDE_POINTS = Math.floor((TARGET_MMF_YIELD - ASSUMED_CURRENT_YIELD) * 1000) / 10; // 8.2
 

@@ -226,27 +226,35 @@ export default function ChamaGroupCalculator() {
 
           <div className="rounded-2xl bg-canvas p-4 text-sm text-ink-soft">
             <p className="font-semibold text-primary">How the math works</p>
+            {/*
+              This used to print the same number twice under two labels — one
+              green, one red — because in nominal cash terms every slot IS the
+              same: everybody pays the contribution for all N months and
+              receives the payout once. The difference is timing, and the tool
+              said nothing about what timing is worth.
+            */}
             <p className="mt-1">
-              <strong>First receiver</strong> (month 1): pays {formatKES(Number(contribution))}{" "}
-              once, receives {formatKES(mgr.rotationPayout)} —{" "}
-              <span className={mgr.netGainFirstReceiver >= 0 ? "text-success font-medium" : "text-danger font-medium"}>
-                net {mgr.netGainFirstReceiver >= 0 ? "+" : ""}
-                {formatKES(mgr.netGainFirstReceiver)}
-              </span>{" "}
-              (essentially an interest-free loan from the group).
+              In pure cash, every member ends the cycle identically: each pays{" "}
+              {formatKES(Number(contribution) * mgr.cycleMonths)} across the{" "}
+              {mgr.cycleMonths} months and receives {formatKES(mgr.rotationPayout)} once, so
+              the cash result is {formatKES(mgr.netGainFirstReceiver)} for everybody —
+              the welfare buffer the group holds back. Going first is not a bigger payout.
             </p>
             <p className="mt-1">
-              <strong>Last receiver</strong> (month {mgr.cycleMonths}): pays{" "}
-              {formatKES(Number(contribution) * mgr.cycleMonths)} total across the cycle,
-              receives {formatKES(mgr.rotationPayout)} —{" "}
-              <span className="text-danger font-medium">
-                net {formatKES(mgr.netGainLastReceiver)}
+              <strong>What going first is actually worth</strong> is the time. Receiving in
+              month 1 is an interest-free loan from the group; receiving in month{" "}
+              {mgr.cycleMonths} is an interest-free loan <em>to</em> it. Measured against the{" "}
+              {mgr.discountRateSource}, slot 1 is worth{" "}
+              <span className="font-medium text-success">
+                {formatKES(Math.round(mgr.firstVersusLastKES))}
               </span>{" "}
-              (they effectively funded everyone else&apos;s rotation).
+              more than the last slot.
             </p>
             <p className="mt-2 text-xs text-faint">
-              The fairness mechanism: everyone gets to be &ldquo;first&rdquo; in future
-              cycles, and group savings discipline is the real return.
+              That gap is what the group is really allocating when it picks the order — and
+              why rotating who goes first between cycles, or drawing lots each cycle, is the
+              fairness mechanism rather than a formality. Group savings discipline is still
+              the larger return.
             </p>
           </div>
 

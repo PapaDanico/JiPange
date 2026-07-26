@@ -245,8 +245,39 @@ export default function HustleIncomeSmootherCalculator() {
               </div>
             </div>
 
+            {/*
+              This comes FIRST on purpose. The buffer ending positive says
+              nothing about the hole you had to climb out of, and the ORDER of
+              the months decides that entirely: ending at +120,000 having been
+              140,000 overdrawn in month two is a year that ended fine and could
+              not actually be lived. The tool used to report only the ending, and
+              report it in green.
+            */}
+            {result.goesNegative && (
+              <div className="rounded-2xl border border-[#F0C06A] bg-accent-wash p-4 text-sm">
+                <p className="font-semibold text-warning">
+                  This plan runs dry in month {result.lowestBufferMonth}.
+                </p>
+                <p className="mt-1 text-xs text-ink-soft">
+                  Taking {formatKES(result.monthlyDraw)} every month, your buffer bottoms out
+                  at {formatKES(result.lowestBuffer)} — money you would have had to borrow,
+                  because the lean months arrive before the good ones pay for them. You would
+                  need {formatKES(result.requiredStartingBuffer)} already saved on day one for
+                  this draw to work, or a smaller draw.
+                  {result.finalBuffer > 0 && (
+                    <>
+                      {" "}
+                      It does end the {validIncomes.length} months up at{" "}
+                      {formatKES(result.finalBuffer)} — but that is where it finished, not
+                      how it felt.
+                    </>
+                  )}
+                </p>
+              </div>
+            )}
+
             {/* Buffer outcome */}
-            {result.finalBuffer > 0 ? (
+            {result.finalBuffer > 0 && !result.goesNegative ? (
               <div className="rounded-2xl bg-success-soft p-4 text-sm text-success-deep">
                 <p className="font-semibold">
                   Buffer built:{" "}
@@ -278,8 +309,8 @@ export default function HustleIncomeSmootherCalculator() {
 
             {result.shortMonths > 0 && (
               <p className="text-xs text-ink-soft">
-                {result.shortMonths} of {validIncomes.length} months fell below your
-                salary draw — that&apos;s exactly what the buffer fund covers.
+                {result.shortMonths} of {validIncomes.length} months fell below your salary
+                draw — that&apos;s exactly what the buffer fund covers.
               </p>
             )}
 
@@ -315,7 +346,7 @@ export default function HustleIncomeSmootherCalculator() {
             </p>
 
             <ShareResultButton
-              message={`🔄 *My Hustle Income Smoother*\n\n${validIncomes.length} months · Median: ${formatKES(result.stats.median)}\nSmoothed monthly salary: ${formatKES(result.monthlyDraw)}\nBuffer built: ${formatKES(Math.max(0, result.finalBuffer))} (${result.finalBufferMonths.toFixed(1)} months)\n\nSmooth yours → jipangefinance.org/tools/hustle-smoother`}
+              message={`🔄 *My Hustle Income Smoother*\n\n${validIncomes.length} months · Median: ${formatKES(result.stats.median)}\nSmoothed monthly salary: ${formatKES(result.monthlyDraw)}\nBuffer built: ${formatKES(Math.max(0, result.finalBuffer))} (${result.finalBufferMonths.toFixed(1)} months)${result.goesNegative ? `\n⚠️ Runs dry in month ${result.lowestBufferMonth} — needs ${formatKES(result.requiredStartingBuffer)} saved up front` : ""}\n\nSmooth yours → jipangefinance.org/tools/hustle-smoother`}
             />
           </div>
           <ExportCardButton containerRef={resultsRef} filename="hustle-smoother" />

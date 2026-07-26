@@ -3,11 +3,21 @@
  * FV = PV × (1 + r)^n + PMT × ((1 + r)^n − 1) / r, compounded monthly.
  */
 
-// Independently-set from lib/journey.ts's CURRENT_INFLATION (0.067) and
-// lib/market-2026.ts's KENYAN_INFLATION (0.064) — a user-overridable default
-// for retirement-plan projections, not a displayed "current rate" claim, so
-// it's kept separate rather than merged with those two.
-export const DEFAULT_INFLATION_RATE = 0.065; // Kenya CPI average, per annum
+/**
+ * A LONG-RUN assumption, deliberately not the current published rate.
+ *
+ * lib/journey.ts's CURRENT_INFLATION now reads the tracked CPI print from the
+ * rates feed, because a page saying "inflation runs at X%" is making a claim
+ * about today, and today is knowable. This constant answers a different
+ * question: what should a thirty-year projection assume?
+ *
+ * One month's year-on-year print is a poor answer to that. Kenyan inflation
+ * ran above 9% in 2023 and below 5% in 2024; anchoring a retirement plan to
+ * whichever month the user happened to open the app would let the plan swing
+ * on noise. So this stays a separate, user-overridable long-run average, and
+ * the divergence from CURRENT_INFLATION is deliberate rather than an oversight.
+ */
+export const DEFAULT_INFLATION_RATE = 0.065; // long-run Kenya CPI average, per annum
 /**
  * Bengen (1994) 4% safe withdrawal rate. This was calibrated on US market
  * and inflation history — JiPange surfaces it as a rough guide only, not
