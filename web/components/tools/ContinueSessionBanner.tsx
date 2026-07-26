@@ -51,7 +51,7 @@ export default function ContinueSessionBanner() {
         <div className="flex shrink-0 items-center gap-2">
           <Link
             href={href}
-            className="inline-flex h-9 items-center justify-center rounded-full bg-primary px-4 text-xs font-semibold text-white transition-colors hover:bg-primary-deep"
+            className="relative before:absolute before:-inset-y-1 before:inset-x-0 before:content-[''] inline-flex h-9 items-center justify-center rounded-full bg-primary px-4 text-xs font-semibold text-white transition-colors hover:bg-primary-deep"
           >
             Resume →
           </Link>

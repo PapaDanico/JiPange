@@ -22,7 +22,7 @@ export default function ToolLayoutCTA() {
         </p>
         <Link
           href="/picture"
-          className="mt-3 inline-flex h-10 items-center justify-center rounded-full bg-accent px-5 text-sm font-medium text-ink transition-colors hover:bg-accent-deep"
+          className="mt-3 inline-flex h-11 items-center justify-center rounded-full bg-accent px-5 text-sm font-medium text-ink transition-colors hover:bg-accent-deep"
         >
           View my plan →
         </Link>
@@ -39,7 +39,7 @@ export default function ToolLayoutCTA() {
         </p>
         <Link
           href="/dashboard"
-          className="mt-3 inline-flex h-10 items-center justify-center rounded-full bg-accent px-5 text-sm font-medium text-ink transition-colors hover:bg-accent-deep"
+          className="mt-3 inline-flex h-11 items-center justify-center rounded-full bg-accent px-5 text-sm font-medium text-ink transition-colors hover:bg-accent-deep"
         >
           Complete my plan
         </Link>
@@ -55,7 +55,7 @@ export default function ToolLayoutCTA() {
       </p>
       <Link
         href="/profile"
-        className="mt-3 inline-flex h-10 items-center justify-center rounded-full bg-accent px-5 text-sm font-medium text-ink transition-colors hover:bg-accent-deep"
+        className="mt-3 inline-flex h-11 items-center justify-center rounded-full bg-accent px-5 text-sm font-medium text-ink transition-colors hover:bg-accent-deep"
       >
         Build my free plan
       </Link>

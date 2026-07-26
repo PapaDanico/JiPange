@@ -177,7 +177,7 @@ function PaybillCopy({ payment }: { payment: PaybillInfo }) {
         type="button"
         onClick={handleCopy}
         data-testid="paybill-copy"
-        className="h-9 shrink-0 rounded-full border border-primary px-4 text-xs font-medium text-primary transition-colors hover:bg-primary hover:text-white"
+        className="relative before:absolute before:-inset-y-1 before:inset-x-0 before:content-[''] h-9 shrink-0 rounded-full border border-primary px-4 text-xs font-medium text-primary transition-colors hover:bg-primary hover:text-white"
       >
         {copied ? "✓ Copied" : "📋 Copy"}
       </button>

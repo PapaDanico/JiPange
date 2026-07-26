@@ -581,7 +581,7 @@ export default function Home() {
                 data-delay={i % 2 === 1 ? "1" : undefined}
                 className="group flex items-center gap-3.5 rounded-xl border border-border bg-canvas p-4 transition-all hover:-translate-y-0.5 hover:border-accent hover:shadow-[0_3px_12px_rgba(232,160,32,0.12)]"
               >
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-border bg-white text-lg">
+                <div className="flex h-11 w-10 shrink-0 items-center justify-center rounded-lg border border-border bg-white text-lg">
                   {tool.emoji}
                 </div>
                 <div className="min-w-0">
