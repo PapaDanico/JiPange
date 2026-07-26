@@ -25,7 +25,7 @@ export default function SaccoVsBankPage() {
         {
           icon: "🤝",
           tone: "hopeful",
-          stat: "KSh 180B",
+          stat: "Ksh 180B",
           label: "estimated interest saved by Sacco members in 2023 vs equivalent bank loans — Saccos exist to serve members, not shareholders.",
           source: "SASRA Sacco Supervision Annual Report 2023",
         },

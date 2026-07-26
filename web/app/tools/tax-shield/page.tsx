@@ -25,7 +25,7 @@ export default function TaxShieldPage() {
         {
           icon: "💸",
           tone: "hopeful",
-          stat: "KSh 72,000",
+          stat: "Ksh 72,000",
           label: "back per year — the legal PAYE saving from maxing your pension contribution alone at higher salary bands.",
           source: "KRA Tax Relief Schedule 2025/26",
         },

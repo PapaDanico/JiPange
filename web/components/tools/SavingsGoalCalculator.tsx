@@ -102,11 +102,11 @@ export default function SavingsGoalCalculator() {
 
   return (
     <div className="space-y-4">
-      <NumberField id="target" label="Savings target (KES)" value={target} onChange={setTarget} placeholder="e.g. 500000" />
+      <NumberField id="target" label="Savings target (Ksh)" value={target} onChange={setTarget} placeholder="e.g. 500000" />
       <NumberField id="years" label="Time to reach it (years)" value={years} onChange={setYears} placeholder="e.g. 3" />
       <NumberField
         id="currentSavings"
-        label="Current savings (KES)"
+        label="Current savings (Ksh)"
         value={currentSavings}
         onChange={setCurrentSavings}
         placeholder="0"

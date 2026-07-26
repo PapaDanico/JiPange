@@ -18,7 +18,7 @@ import { dhowcsdLadder, BANK_SAVINGS_BASELINE } from "@/lib/market-2026";
  * projected income straight from them. A CBK quote is a discount rate, not a
  * return: the true gross yield is higher, and 15% withholding tax then makes
  * the net lower. The ladder was therefore wrong in both directions at once and
- * overstated a KES 300,000 ladder by roughly KES 2,300 a year.
+ * overstated a Ksh 300,000 ladder by roughly Ksh 2,300 a year.
  *
  * These tests pin the corrected behaviour hard enough that a well-meaning
  * refactor cannot reintroduce it.
@@ -88,7 +88,7 @@ describe("the ladder projects from net yields", () => {
     const third = CAPITAL / 3;
     const oldClaim = third * OLD[91] + third * OLD[182] + third * OLD[364];
     expect(ladder.ladderAnnualKes).toBeLessThan(oldClaim);
-    // Measured on the shipped snapshot: about KES 2,300 a year on 300k.
+    // Measured on the shipped snapshot: about Ksh 2,300 a year on 300k.
     expect(oldClaim - ladder.ladderAnnualKes).toBeGreaterThan(1_500);
   });
 

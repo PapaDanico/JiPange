@@ -57,7 +57,7 @@ const REALITY_STATS: {
     dataSuffix: "%",
     color: "text-[#86CBA5]",
     label: "Kenya MMF baseline return",
-    detail: `Same shillings, right vehicle. Yet KSh 5 trillion sits in bank accounts — only KSh 370 billion (7%) is in money market funds.`,
+    detail: `Same shillings, right vehicle. Yet Ksh 5 trillion sits in bank accounts — only Ksh 370 billion (7%) is in money market funds.`,
     source: "CMA Collective Investment Schemes, July 2026",
     cta: "See the compounding →",
     href: "/tools/investment-returns",
@@ -69,7 +69,7 @@ const REALITY_STATS: {
     color: "text-[#F0C060]",
     label: "Kenyans who used Fuliza in a year",
     detail:
-      "KSh 1.46 trillion borrowed — mostly for food, rent and school fees. Average ticket: KSh 254. This is a planning gap, not a cash-flow accident.",
+      "Ksh 1.46 trillion borrowed — mostly for food, rent and school fees. Average ticket: Ksh 254. This is a planning gap, not a cash-flow accident.",
     source: "Safaricom FY2026 · Nation Africa",
     cta: "Calculate Fuliza's true cost →",
     href: "/tools/fuliza-cost",
@@ -139,7 +139,7 @@ const TOOLS = [
   { href: "/tools/money-runway", emoji: "⏳", name: "Money Runway", hook: "How long your savings survive a job loss" },
   { href: "/tools/guarantor-shield", emoji: "🛡️", name: "Sacco Guarantor Shield", hook: "Your real unencumbered borrowing power" },
   { href: "/tools/kplc-optimizer", emoji: "⚡", name: "KPLC Token Optimizer", hook: "Free units by splitting your token buys" },
-  { href: "/tools/fuliza-cost", emoji: "📱", name: "True Cost of Fuliza", hook: "What KSh 6.50/day really costs you annually" },
+  { href: "/tools/fuliza-cost", emoji: "📱", name: "True Cost of Fuliza", hook: "What Ksh 6.50/day really costs you annually" },
 ];
 
 const PLANNERS = [
@@ -441,7 +441,7 @@ export default function Home() {
                 JiPange is the only calculator suite built specifically for this reality. Every
                 number is grounded in Kenya&apos;s actual tax bands, real MMF yields, the NSSF Act
                 2013 phased rollout, SHIF contributions, and Sacco mechanics — not a US retirement
-                spreadsheet with a KES sign dropped in.
+                spreadsheet with a Ksh sign dropped in.
               </p>
               <p data-reveal data-delay="2" className="text-[0.9375rem] leading-loose text-ink-soft">
                 <strong className="text-primary">No black box. No selling. No accounts.</strong>
@@ -470,9 +470,9 @@ export default function Home() {
                   Real annualised cost of Fuliza
                 </p>
                 <p className="text-[0.8125rem] leading-relaxed text-muted">
-                  KSh 6.50/day on KSh 600 feels like loose change. Annualised, it&apos;s the most
+                  Ksh 6.50/day on Ksh 600 feels like loose change. Annualised, it&apos;s the most
                   expensive credit product most Kenyans ever use — more than bank overdrafts, more
-                  than credit cards. Kenyans borrowed KSh 1.46 trillion through Fuliza in the year
+                  than credit cards. Kenyans borrowed Ksh 1.46 trillion through Fuliza in the year
                   to March 2026.
                 </p>
                 <p className="mt-3 text-[0.6875rem] italic text-danger-deep">
@@ -492,15 +492,15 @@ export default function Home() {
                   className="text-4xl font-black leading-none tracking-tighter text-success-deep"
                   style={{ fontVariantNumeric: "tabular-nums" }}
                 >
-                  KSh 4.6T
+                  Ksh 4.6T
                 </p>
                 <p className="mt-1.5 mb-3 text-[0.875rem] font-semibold text-ink-soft">
                   in bank accounts earning below inflation
                 </p>
                 <p className="text-[0.8125rem] leading-relaxed text-muted">
-                  Of KSh 5 trillion in Kenyan bank savings, only KSh 370 billion is in money market
+                  Of Ksh 5 trillion in Kenyan bank savings, only Ksh 370 billion is in money market
                   funds — earning 9–12% vs. bank rates of {pct(ASSUMED_CURRENT_YIELD)}. The
-                  difference at KSh 100,000 over 5 years is over KSh 50,000 earned or lost.
+                  difference at Ksh 100,000 over 5 years is over Ksh 50,000 earned or lost.
                 </p>
                 <p className="mt-3 text-[0.6875rem] italic text-success-deep">
                   CMA 2026 · Business Daily Africa

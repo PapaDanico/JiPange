@@ -18,14 +18,14 @@ export default function EducationSavingsPage() {
         {
           icon: "⚠️",
           tone: "caution",
-          stat: "KSh 165,000",
+          stat: "Ksh 165,000",
           label: "per year is the top-end cost for CBC Junior Secondary. Most families discover this in January — and borrow.",
           source: "MoE School Fees Guidelines 2025",
         },
         {
           icon: "🎓",
           tone: "hopeful",
-          stat: "KSh 1,500/mo",
+          stat: "Ksh 1,500/mo",
           label: "saved in an MMF from Standard 5 fully covers Junior Secondary fees — no loans, no scrambling every term.",
           source: "JiPange projection at 11% p.a.",
         },

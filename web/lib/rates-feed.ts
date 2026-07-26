@@ -13,7 +13,7 @@ import snapshot from "./rates-snapshot.json";
  *
  * This file exists because we were doing precisely that. The DhowCSD ladder
  * held three hardcoded quoted rates and projected income straight from them,
- * overstating a KES 300,000 ladder by about KES 2,300 a year. The temptation
+ * overstating a Ksh 300,000 ladder by about Ksh 2,300 a year. The temptation
  * was to port the formula. We didn't: two copies of a convention drift, and
  * the copy that drifts is never the one that gets corrected. Mwangaza Yield
  * derives these conventions from CBK data and verifies them against real

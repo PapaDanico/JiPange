@@ -37,7 +37,7 @@ export default function BudgetSplitCalculator() {
     <div className="space-y-4">
       <NumberField
         id="grossMonthlySalary"
-        label="Gross monthly salary (KES)"
+        label="Gross monthly salary (Ksh)"
         value={grossMonthlySalary}
         onChange={setGrossMonthlySalary}
         placeholder="e.g. 80000"

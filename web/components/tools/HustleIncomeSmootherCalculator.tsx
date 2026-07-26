@@ -120,7 +120,7 @@ export default function HustleIncomeSmootherCalculator() {
           <NumberField
             key={i}
             id={`income-${i}`}
-            label={`${monthLabels[i]} income (KES)`}
+            label={`${monthLabels[i]} income (Ksh)`}
             value={incomes[i] ?? ""}
             onChange={(v) => updateIncome(i, v)}
             placeholder="e.g. 35000"

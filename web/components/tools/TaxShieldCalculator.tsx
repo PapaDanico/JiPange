@@ -60,7 +60,7 @@ export default function TaxShieldCalculator() {
     <div className="space-y-4">
       <NumberField
         id="shieldGross"
-        label="Gross monthly salary (KES)"
+        label="Gross monthly salary (Ksh)"
         value={gross}
         onChange={setGross}
         placeholder="e.g. 150000"

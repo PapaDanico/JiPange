@@ -84,7 +84,7 @@ export function futureValueWithStepUp(
   return { total, totalContributed };
 }
 
-/** Converts a nominal future KES amount to today's purchasing power. */
+/** Converts a nominal future Ksh amount to today's purchasing power. */
 export function inflationAdjust(
   nominalValue: number,
   years: number,
@@ -94,7 +94,7 @@ export function inflationAdjust(
   return nominalValue / Math.pow(1 + annualInflationRate, years);
 }
 
-/** The nominal KES amount, N years from now, that has the same purchasing power as `todaysValue` today. */
+/** The nominal Ksh amount, N years from now, that has the same purchasing power as `todaysValue` today. */
 export function inflateToFutureCost(
   todaysValue: number,
   years: number,

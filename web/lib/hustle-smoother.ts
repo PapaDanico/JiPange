@@ -32,7 +32,7 @@ export interface SmootherResult {
    * ended up; it says nothing about the hole you had to climb out of, and the
    * order of the months decides that entirely. Two hustlers with the identical
    * twelve months of income in a different sequence get the identical final
-   * buffer — and one of them was KES 140,000 overdrawn in February.
+   * buffer — and one of them was Ksh 140,000 overdrawn in February.
    */
   lowestBuffer: number;
   /** 1-based month index of the trough. */

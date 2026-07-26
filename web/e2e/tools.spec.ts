@@ -351,7 +351,11 @@ test("recent tools bar: appears after visiting a tool", async ({ page }) => {
 
 test("tool insights: loan repayment caution card is visible", async ({ page }) => {
   await page.goto("/tools/loan-repayment");
-  await expect(visibleText(page, /KSh 1,500/)).toBeVisible();
+  // The figure is the assertion; the currency prefix is not. This pinned
+  // "KSh 1,500" and broke the moment the app settled on one spelling of the
+  // shilling — a test failing over a label it was not written to check. The
+  // spelling is enforced on its own, in lib/__tests__/currency-label.test.ts.
+  await expect(visibleText(page, /1,500/)).toBeVisible();
 });
 
 // ─── Navigation ───────────────────────────────────────────────────────────

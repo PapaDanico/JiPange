@@ -142,7 +142,7 @@ export default function ChamaGroupCalculator() {
       <div>
         <NumberField
           id="contribution"
-          label="Monthly contribution per member (KES)"
+          label="Monthly contribution per member (Ksh)"
           value={contribution}
           onChange={setContribution}
           placeholder="e.g. 2000"

@@ -89,7 +89,7 @@ export default function TakeHomePayCalculator() {
       <div className="print:hidden">
         <NumberField
           id="gross"
-          label="Monthly gross salary (KES)"
+          label="Monthly gross salary (Ksh)"
           value={gross}
           onChange={setGross}
           placeholder="e.g. 80000"
@@ -114,7 +114,7 @@ export default function TakeHomePayCalculator() {
         >
           <NumberField
             id="pensionContribution"
-            label="Voluntary pension contribution (KES/month) — capped at Ksh 30,000"
+            label="Voluntary pension contribution (Ksh/month) — capped at Ksh 30,000"
             value={pensionContribution}
             onChange={setPensionContribution}
             placeholder="0"
@@ -126,7 +126,7 @@ export default function TakeHomePayCalculator() {
           )}
           <NumberField
             id="mortgageInterest"
-            label="Mortgage interest paid, registered home loan (KES/month) — capped at Ksh 30,000"
+            label="Mortgage interest paid, registered home loan (Ksh/month) — capped at Ksh 30,000"
             value={mortgageInterest}
             onChange={setMortgageInterest}
             placeholder="0"
@@ -139,7 +139,7 @@ export default function TakeHomePayCalculator() {
           )}
           <NumberField
             id="insurancePremium"
-            label="Life/health/education insurance premium (KES/month)"
+            label="Life/health/education insurance premium (Ksh/month)"
             value={insurancePremium}
             onChange={setInsurancePremium}
             placeholder="0"

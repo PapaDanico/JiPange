@@ -121,7 +121,7 @@ export default function TwentiethChallengeTracker() {
           <div className="mt-4">
             <NumberField
               id="commitment"
-              label="Monthly savings commitment (KES)"
+              label="Monthly savings commitment (Ksh)"
               value={draftCommitment}
               onChange={setDraftCommitment}
               placeholder="e.g. 5000"
@@ -238,7 +238,7 @@ export default function TwentiethChallengeTracker() {
           <div className="mt-3">
             <NumberField
               id="checkin-amount"
-              label={`Amount saved this cycle (KES) — default ${formatKES(commitmentNum)}`}
+              label={`Amount saved this cycle (Ksh) — default ${formatKES(commitmentNum)}`}
               value={checkInAmount}
               onChange={setCheckInAmount}
               placeholder={String(commitmentNum)}

@@ -15,7 +15,7 @@ describe("calculateLoanAmortization", () => {
     expect(result.schedule[11].remainingBalance).toBe(0);
   });
 
-  it("matches the classic textbook EMI for KES 1,000 at 12% APR over 12 months", () => {
+  it("matches the classic textbook EMI for Ksh 1,000 at 12% APR over 12 months", () => {
     const result = calculateLoanAmortization({
       principal: 1_000,
       annualRate: 0.12,

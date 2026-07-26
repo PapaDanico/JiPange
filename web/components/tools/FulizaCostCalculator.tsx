@@ -38,7 +38,7 @@ export default function FulizaCostCalculator() {
     <div className="space-y-4">
       <NumberField
         id="amount"
-        label="Amount borrowed (KES)"
+        label="Amount borrowed (Ksh)"
         value={amount}
         onChange={setAmount}
         placeholder="e.g. 5000"

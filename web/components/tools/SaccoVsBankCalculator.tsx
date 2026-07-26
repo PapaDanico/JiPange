@@ -60,7 +60,7 @@ export default function SaccoVsBankCalculator() {
       <div>
         <NumberField
           id="amount"
-          label="Loan amount needed (KES)"
+          label="Loan amount needed (Ksh)"
           value={amount}
           onChange={setAmount}
           placeholder="e.g. 100000"
@@ -130,7 +130,7 @@ export default function SaccoVsBankCalculator() {
             <summary className="cursor-pointer font-semibold text-primary">How to join a SACCO</summary>
             <ol className="mt-2 list-decimal space-y-1 pl-5">
               <li>Find a SACCO open to you — many are tied to your employer, profession, or county (e.g. teachers, boda boda riders, matatu saccos).</li>
-              <li>Buy a minimum number of shares (often KES 1,000–5,000) to become a member.</li>
+              <li>Buy a minimum number of shares (often Ksh 1,000–5,000) to become a member.</li>
               <li>Save consistently for a few months — most SACCOs require a savings history before lending, often 3x your savings balance.</li>
               <li>Apply for a loan through the SACCO, usually needing a guarantor from within the SACCO.</li>
             </ol>

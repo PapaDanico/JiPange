@@ -18,6 +18,43 @@ import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
 import { MMF_AND_TBILL_LINKS } from "@/lib/affiliate-links";
 
+/**
+ * The longest horizon this tool will price, and the guard that enforces it.
+ *
+ * "85000" in a field labelled "Investment period (years)" is one keystroke
+ * away, and there was no upper bound anywhere. The projection compounded to
+ * about 1e38, the growth chart's path data overflowed, and the browser logged
+ * 174 errors while the reader looked at a broken graph.
+ *
+ * The clamp lives here as well as on the input because these values persist to
+ * localStorage through useStickyState. A max attribute added today does not
+ * reach back into the storage of somebody who typed a silly number yesterday —
+ * only clamping at the point of calculation does.
+ *
+ * 60 years is past any real plan: a 25-year-old projecting to 85.
+ */
+const MAX_YEARS = 60;
+
+/**
+ * And the return, which turned out to matter more than the horizon.
+ *
+ * Bounding the years alone still left 158 errors: 85000 in a field labelled
+ * "Expected annual return" is 850x a year, which overflows a float inside a
+ * decade. 50% is already far beyond anything this tool should encourage
+ * anybody to plan on.
+ */
+const MAX_RETURN_PCT = 50;
+
+function clampYears(value: number): number {
+  if (!Number.isFinite(value) || value <= 0) return 0;
+  return Math.min(value, MAX_YEARS);
+}
+
+function clampRate(percent: number): number {
+  if (!Number.isFinite(percent) || percent <= 0) return 0;
+  return Math.min(percent, MAX_RETURN_PCT) / 100;
+}
+
 const RATE_PRESETS = [
   { label: "Bank 3.23%", value: "3.23" },
   { label: "T-Bill ~8.9%", value: "8.9" },
@@ -47,13 +84,13 @@ export default function InvestmentReturnsCalculator() {
   );
 
   const result = useMemo(() => {
-    const yearsValue = Number(years);
+    const yearsValue = clampYears(Number(years));
     if (!yearsValue || yearsValue <= 0) return null;
 
     const { total, totalContributed } = futureValueWithStepUp(
       Number(lumpSum) || 0,
       Number(monthly) || 0,
-      Math.max(0, Number(annualReturn) || 0) / 100,
+      clampRate(Number(annualReturn)),
       yearsValue,
       stepUp / 100
     );
@@ -67,9 +104,9 @@ export default function InvestmentReturnsCalculator() {
   }, [lumpSum, monthly, annualReturn, years, stepUp]);
 
   const chartData = useMemo((): GrowthDataPoint[] => {
-    const yearsValue = Number(years);
+    const yearsValue = clampYears(Number(years));
     if (!yearsValue || yearsValue <= 0) return [];
-    const rate = Math.max(0, Number(annualReturn) || 0) / 100;
+    const rate = clampRate(Number(annualReturn));
     const pv = Number(lumpSum) || 0;
     const mo = Number(monthly) || 0;
     const su = stepUp / 100;
@@ -77,7 +114,9 @@ export default function InvestmentReturnsCalculator() {
     const points: GrowthDataPoint[] = [];
     for (let y = step; y <= yearsValue; y += step) {
       const { total, totalContributed } = futureValueWithStepUp(pv, mo, rate, y, su);
-      points.push({ year: y, contributed: totalContributed, growth: Math.max(0, total - totalContributed) });
+      const growth = Math.max(0, total - totalContributed);
+      if (!Number.isFinite(totalContributed) || !Number.isFinite(growth)) continue;
+      points.push({ year: y, contributed: totalContributed, growth });
     }
     const last = yearsValue;
     if (points.length === 0 || points[points.length - 1].year !== last) {
@@ -106,14 +145,14 @@ export default function InvestmentReturnsCalculator() {
     <div className="space-y-4">
       <NumberField
         id="lumpSum"
-        label="Starting lump sum (KES)"
+        label="Starting lump sum (Ksh)"
         value={lumpSum}
         onChange={setLumpSum}
         placeholder="0"
       />
       <NumberField
         id="monthly"
-        label="Monthly contribution (KES)"
+        label="Monthly contribution (Ksh)"
         value={monthly}
         onChange={setMonthly}
         placeholder="e.g. 10000"
@@ -145,6 +184,7 @@ export default function InvestmentReturnsCalculator() {
         value={annualReturn}
         onChange={setAnnualReturn}
         suffix="%"
+        max={MAX_RETURN_PCT}
       />
       <div className="flex flex-wrap gap-2">
         {RATE_PRESETS.map((preset) => (
@@ -169,6 +209,7 @@ export default function InvestmentReturnsCalculator() {
         value={years}
         onChange={setYears}
         placeholder="e.g. 10"
+        max={MAX_YEARS}
       />
 
       <div>

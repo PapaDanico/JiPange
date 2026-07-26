@@ -78,7 +78,7 @@ export default function LoanRepaymentCalculator() {
       <div>
         <NumberField
           id="principal"
-          label="Loan amount / HELB balance (KES)"
+          label="Loan amount / HELB balance (Ksh)"
           value={principal}
           onChange={setPrincipal}
           placeholder="e.g. 500000"

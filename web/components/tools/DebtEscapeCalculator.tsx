@@ -154,7 +154,7 @@ export default function DebtEscapeCalculator() {
             <div className="grid grid-cols-2 gap-3">
               <NumberField
                 id={`balance-${loan.id}`}
-                label="Outstanding balance (KES)"
+                label="Outstanding balance (Ksh)"
                 value={loan.balance}
                 onChange={(v) => setLoanField(loan.id, "balance", v)}
                 placeholder="e.g. 5000"
@@ -193,7 +193,7 @@ export default function DebtEscapeCalculator() {
       {/* Monthly repayment budget */}
       <NumberField
         id="budget"
-        label="Monthly amount you can put toward debt repayment (KES)"
+        label="Monthly amount you can put toward debt repayment (Ksh)"
         value={budget}
         onChange={setBudget}
         placeholder="e.g. 8000"

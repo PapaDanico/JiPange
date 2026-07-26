@@ -5,8 +5,8 @@ import HowItWorks from "./HowItWorks";
 import NumberField from "./NumberField";
 import { formatKES as kes } from "@/lib/budget";
 
-const LUMP_RATE = 19.9; // KSh/kWh average, single lump-sum buy
-const STAGGERED_RATE = 16.45; // KSh/kWh average when split buys stay in lower tariff bands
+const LUMP_RATE = 19.9; // Ksh/kWh average, single lump-sum buy
+const STAGGERED_RATE = 16.45; // Ksh/kWh average when split buys stay in lower tariff bands
 const BUDGETS = [1000, 2000, 5000];
 
 export function KplcOptimizer() {
@@ -35,7 +35,7 @@ export function KplcOptimizer() {
       </div>
       <NumberField
         id="kplcCustom"
-        label="Or your exact monthly token budget (KES)"
+        label="Or your exact monthly token budget (Ksh)"
         value={custom}
         onChange={setCustom}
         placeholder="e.g. 3500"
@@ -66,9 +66,9 @@ export function PaydayRouter() {
   const surplus = (Number(salary) || 0) - (Number(rent) || 0) - (Number(bills) || 0);
   return (
     <div className="space-y-4">
-      <NumberField id="routerSalary" label="Net monthly salary (KES)" value={salary} onChange={setSalary} placeholder="e.g. 60000" />
-      <NumberField id="routerRent" label="Rent (KES)" value={rent} onChange={setRent} placeholder="e.g. 20000" />
-      <NumberField id="routerBills" label="Fixed bills (KES)" value={bills} onChange={setBills} placeholder="e.g. 10000" />
+      <NumberField id="routerSalary" label="Net monthly salary (Ksh)" value={salary} onChange={setSalary} placeholder="e.g. 60000" />
+      <NumberField id="routerRent" label="Rent (Ksh)" value={rent} onChange={setRent} placeholder="e.g. 20000" />
+      <NumberField id="routerBills" label="Fixed bills (Ksh)" value={bills} onChange={setBills} placeholder="e.g. 10000" />
       {Number(salary) > 0 && surplus > 0 && (
         <div className="rounded-2xl bg-white p-5 shadow-sm">
           <p className="text-sm text-ink-soft">

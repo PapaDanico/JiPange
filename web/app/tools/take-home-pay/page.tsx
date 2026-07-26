@@ -25,7 +25,7 @@ export default function TakeHomePayPage() {
         {
           icon: "💡",
           tone: "hopeful",
-          stat: "KSh 4,500",
+          stat: "Ksh 4,500",
           label: "is the monthly PAYE saving you can unlock by maxing your pension contribution — legally, every month, right now.",
           source: "KRA Tax Relief Bands 2025/26",
         },

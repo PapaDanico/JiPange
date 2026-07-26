@@ -13,7 +13,7 @@ describe("calculateShaHealth", () => {
     expect(result.isAtFloor).toBe(false);
   });
 
-  it("applies floor of KSh 300 for low-income earners", () => {
+  it("applies floor of Ksh 300 for low-income earners", () => {
     const result = calculateShaHealth({
       employmentType: "informal",
       grossMonthlyIncome: 5_000,

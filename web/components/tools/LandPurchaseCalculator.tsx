@@ -70,7 +70,7 @@ export default function LandPurchaseCalculator() {
       <div>
         <NumberField
           id="price"
-          label="Quoted plot price (KES)"
+          label="Quoted plot price (Ksh)"
           value={price}
           onChange={setPrice}
           placeholder="e.g. 2000000"

@@ -452,7 +452,7 @@ export default function ProfileForm() {
                 htmlFor="grossMonthlySalary"
                 className="block text-sm font-medium text-ink-soft"
               >
-                Monthly gross salary (KES)
+                Monthly gross salary (Ksh)
               </label>
               <input
                 id="grossMonthlySalary"

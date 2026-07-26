@@ -19,14 +19,14 @@ export default function SalaryNegotiationPage() {
           icon: "⚠️",
           tone: "caution",
           stat: "68%",
-          label: "of Kenyan employees have never negotiated their salary — most leave KSh 20,000–80,000/year on the table.",
+          label: "of Kenyan employees have never negotiated their salary — most leave Ksh 20,000–80,000/year on the table.",
           source: "BrighterMonday Kenya Salary Survey 2024",
         },
         {
           icon: "🎯",
           tone: "hopeful",
-          stat: "KSh 108,000",
-          label: "extra per year — what a KSh 15,000 gross raise delivers after deductions. Compounding with each promotion.",
+          stat: "Ksh 108,000",
+          label: "extra per year — what a Ksh 15,000 gross raise delivers after deductions. Compounding with each promotion.",
           source: "JiPange PAYE calculation",
         },
       ]}

@@ -109,7 +109,7 @@ For guidance only — not financial advice.`,
     },
     steps: [
       "Pick a CMA-regulated MMF with M-Pesa deposits and T+1 withdrawals (e.g., Britam, ICEA Lion, Sanlam).",
-      "Complete the app/USSD sign-up with your ID and KRA PIN — most start from about KSh 500.",
+      "Complete the app/USSD sign-up with your ID and KRA PIN — most start from about Ksh 500.",
       "Automate a monthly M-Pesa deposit for the amount on the milestone slider above.",
     ],
     guideName: "jipange-mmf-onboarding-guide.txt",
@@ -117,7 +117,7 @@ For guidance only — not financial advice.`,
 
 1. Confirm the fund is CMA-regulated and check its latest daily yield.
 2. Sign up in the provider's app or USSD with national ID + KRA PIN.
-3. Make the opening deposit from M-Pesa (minimums often around KSh 500).
+3. Make the opening deposit from M-Pesa (minimums often around Ksh 500).
 4. Set a monthly auto-deposit for your JiPange milestone amount.
 5. Test one withdrawal early so you trust the T+1 M-Pesa payout.
 
@@ -127,13 +127,13 @@ For guidance only — not financial advice.`,
   ifb: {
     title: "🏦 Action Item: Stage Your Infrastructure Bond Entry",
     payment: {
-      provider: "CBK DhowCSD (≤ KSh 250,000)",
+      provider: "CBK DhowCSD (≤ Ksh 250,000)",
       paybill: "200222",
       account: "shown under DhowCSD → Transactions",
     },
     steps: [
       "Register on CBK DhowCSD (app or web) with your ID and KRA PIN.",
-      "Park monthly savings in an MMF until you reach the bond minimum (typically KSh 50,000).",
+      "Park monthly savings in an MMF until you reach the bond minimum (typically Ksh 50,000).",
       "Bid in the next IFB auction and diarise the bi-annual, tax-free coupon dates.",
     ],
     guideName: "jipange-ifb-onboarding-guide.txt",

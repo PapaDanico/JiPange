@@ -28,7 +28,7 @@ describe("Rule Block A — the Debt Intercept", () => {
     expect(model.fulizaTax).not.toBeNull();
   });
 
-  it("indexes the micro-fund target progressively within KSh 10k-30k", () => {
+  it("indexes the micro-fund target progressively within Ksh 10k-30k", () => {
     const targets = (["under_50k", "50k_120k", "120k_250k", "above_250k"] as const).map(
       (bracket) =>
         mapJourney({ ...base, liquidity_leak: "mobile_loans", income_bracket: bracket })

@@ -59,10 +59,10 @@ export const JOURNEY_QUESTIONS: JourneyQuestion[] = [
     key: "income_bracket",
     title: "Roughly what is your total predictable monthly take-home pay?",
     options: [
-      { value: "under_50k", label: "Under KSh 50,000", emoji: "🌱" },
-      { value: "50k_120k", label: "KSh 50,000 – 120,000", emoji: "🌿" },
-      { value: "120k_250k", label: "KSh 120,000 – 250,000", emoji: "🌳" },
-      { value: "above_250k", label: "Above KSh 250,000", emoji: "🌲" },
+      { value: "under_50k", label: "Under Ksh 50,000", emoji: "🌱" },
+      { value: "50k_120k", label: "Ksh 50,000 – 120,000", emoji: "🌿" },
+      { value: "120k_250k", label: "Ksh 120,000 – 250,000", emoji: "🌳" },
+      { value: "above_250k", label: "Above Ksh 250,000", emoji: "🌲" },
     ],
   },
   {
@@ -116,7 +116,7 @@ export const YIELD_UPSIDE_POINTS = Math.floor((TARGET_MMF_YIELD - ASSUMED_CURREN
 
 // ── Income-tier tables (documented assumptions, all user-visible copy says "estimated") ──
 
-/** Rule A: micro-emergency fund target, KSh 10k-30k indexed progressively. */
+/** Rule A: micro-emergency fund target, Ksh 10k-30k indexed progressively. */
 const MICRO_FUND_TARGET: Record<IncomeBracket, number> = {
   under_50k: 10_000,
   "50k_120k": 18_000,
@@ -162,7 +162,7 @@ export const VEHICLES: Record<VehicleId, Vehicle> = {
     id: "mmf",
     name: "High-Liquidity Money Market Fund",
     examples: ["Britam", "ICEA Lion", "Sanlam"],
-    minEntry: "From ~KSh 500",
+    minEntry: "From ~Ksh 500",
     liquidity: "T+1 withdrawals to M-Pesa",
     yieldRange: "~11.5% local index baseline (varies)",
     valueProps: [
@@ -175,7 +175,7 @@ export const VEHICLES: Record<VehicleId, Vehicle> = {
     id: "sacco",
     name: "Regulated Tier-1 Sacco",
     examples: ["Stima", "Kenya Police", "Safaricom Sacco"],
-    minEntry: "From ~KSh 1,000/month",
+    minEntry: "From ~Ksh 1,000/month",
     liquidity: "Notice period (30–60 days typical)",
     yieldRange: "~10–15% annual dividends / rebates",
     valueProps: [
@@ -188,7 +188,7 @@ export const VEHICLES: Record<VehicleId, Vehicle> = {
     id: "ifb",
     name: "CBK Infrastructure Bond (IFB)",
     examples: ["Via CBK DhowCSD", "Sacco shares"],
-    minEntry: "Typically from KSh 50,000 (DhowCSD)",
+    minEntry: "Typically from Ksh 50,000 (DhowCSD)",
     liquidity: "Locked to term; secondary-market exit possible",
     yieldRange: "Tax-free coupons — check current auction rates at CBK",
     valueProps: [
@@ -210,11 +210,11 @@ export interface FulizaTax {
 
 export interface InflationDrag {
   medianSavings: number;
-  /** KSh of purchasing power lost per year at the assumed bank yield. */
+  /** Ksh of purchasing power lost per year at the assumed bank yield. */
   netLossAnnual: number;
   /** Percentage-point yield swing available by moving to an MMF. */
   upsidePoints: number;
-  /** KSh gained per year at the target MMF yield vs the bank yield. */
+  /** Ksh gained per year at the target MMF yield vs the bank yield. */
   mmfExtraAnnual: number;
 }
 

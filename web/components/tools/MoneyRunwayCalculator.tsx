@@ -97,14 +97,14 @@ export default function MoneyRunwayCalculator() {
     <div className="space-y-4">
       <NumberField
         id="startingBalance"
-        label="Starting savings balance (KES)"
+        label="Starting savings balance (Ksh)"
         value={startingBalance}
         onChange={setStartingBalance}
         placeholder="e.g. 2000000"
       />
       <NumberField
         id="monthlyWithdrawal"
-        label="Monthly withdrawal (KES)"
+        label="Monthly withdrawal (Ksh)"
         value={monthlyWithdrawal}
         onChange={setMonthlyWithdrawal}
         placeholder="e.g. 50000"

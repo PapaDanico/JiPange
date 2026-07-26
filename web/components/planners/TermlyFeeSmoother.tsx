@@ -124,7 +124,7 @@ export default function TermlyFeeSmoother() {
             className="h-12 w-full rounded-lg border border-border bg-white px-4 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
           />
           <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-sm text-ink-soft">
-            {perTerm ? "KES/term" : "KES/yr"}
+            {perTerm ? "Ksh/term" : "Ksh/yr"}
           </span>
         </div>
 
