@@ -100,3 +100,50 @@ export function collectionPageJsonLd({
     },
   };
 }
+
+/**
+ * An FAQ page, so the answers can surface directly in search results.
+ *
+ * Drawn from the same FAQS array the page renders — the anti-drift rule at the
+ * top of this file applies with extra force here, because a structured-data
+ * answer that has diverged from the visible one is a search engine quoting a
+ * claim the site no longer makes.
+ */
+export function faqPageJsonLd(faqs: { question: string; answer: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((f) => ({
+      "@type": "Question",
+      name: f.question,
+      acceptedAnswer: { "@type": "Answer", text: f.answer },
+    })),
+  };
+}
+
+/** A glossary, expressed as the defined-term set schema.org has for exactly this. */
+export function glossaryJsonLd({
+  name,
+  description,
+  path,
+  terms,
+}: {
+  name: string;
+  description: string;
+  path: string;
+  terms: { term: string; meaning: string }[];
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "DefinedTermSet",
+    name,
+    description,
+    url: `${SITE_URL}${path}`,
+    hasDefinedTerm: terms.map((t) => ({
+      "@type": "DefinedTerm",
+      name: t.term,
+      description: t.meaning,
+      inDefinedTermSet: `${SITE_URL}${path}`,
+    })),
+  };
+}

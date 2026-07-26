@@ -28,6 +28,8 @@ const COLUMNS: { heading: string; links: { href: string; label: string }[] }[] =
     heading: "Company",
     links: [
       { href: "/partners", label: "Partners & products" },
+      { href: "/faq", label: "Money questions, answered" },
+      { href: "/glossary", label: "Money words, decoded" },
       { href: "/about", label: "About JiPange" },
       { href: "/terms", label: "Terms of use" },
       { href: "/privacy", label: "Privacy policy" },
