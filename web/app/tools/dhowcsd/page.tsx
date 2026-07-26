@@ -13,7 +13,7 @@ export default function DhowcsdPage() {
     <ToolLayout
       path="/tools/dhowcsd"
       title="DhowCSD T-Bill Ladder"
-      description="Three tenors, one ladder: quarterly liquidity and a blended yield — after tax — that still clears the 3.23% bank average several times over."
+      description="Split capital across the 91, 182 and 364-day bills however suits you — weighted for liquidity, for yield, or evenly — and see the blended return after tax."
       insights={[
         {
           icon: "⚠️",
