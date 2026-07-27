@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+import { tbillRate } from "../rates-feed";
 import {
   PRODUCT_LINKS,
   YIELDS_AS_OF,
@@ -88,6 +89,57 @@ describe("the directory describes each product honestly", () => {
     for (const p of quoted) {
       expect(p.yieldPct, `${p.slug} quotes an implausible MMF yield`).toBeGreaterThan(5);
       expect(p.yieldPct, `${p.slug} quotes an implausible MMF yield`).toBeLessThan(25);
+    }
+  });
+
+  /**
+   * A URL is a promise that somebody opened the page.
+   *
+   * Six funds were added from a yield survey that carried rates and minimums
+   * but no links, and no provider site is reachable from where this runs. The
+   * temptation is to compose a plausible address from the manager's name —
+   * which on a financial product sends a reader looking to move money to a
+   * page nobody has loaded. Absent is the correct value, and both cards render
+   * facts instead of a button when it is absent.
+   */
+  it("never invents a provider URL", () => {
+    for (const p of PRODUCT_LINKS) {
+      if (p.url === undefined) continue;
+      expect(p.url, `${p.slug} has a malformed URL`).toMatch(/^https:\/\/[\w.-]+\.\w{2,}/);
+    }
+    // The survey funds are the ones with no verified link; if a URL ever
+    // appears on one, it should be because somebody opened it.
+    const unlinked = PRODUCT_LINKS.filter((p) => p.url === undefined).map((p) => p.slug);
+    expect(unlinked.length, "expected the survey-sourced funds to carry no URL").toBeGreaterThan(0);
+  });
+
+  /**
+   * A money market fund cannot out-earn what it holds.
+   *
+   * MMFs invest in Treasury bills and bank deposits, so a fund's gross yield
+   * sits near the short bill plus a thin spread, and then management fees take
+   * a bite. It cannot sit eight points above the instrument it is made of.
+   *
+   * This check exists because the directory briefly carried 14.8-18.2% while
+   * the 91-day bill was paying 9.30%. Those figures came from a survey labelled
+   * with a recent date but produced in a much higher rate environment — Kenyan
+   * bills were above 16% not long before — and nothing in the codebase could
+   * tell the difference, because a plausible-looking percentage with a recent
+   * date beside it passes every check that only asks "is this a number?".
+   *
+   * The live feed is the anchor precisely because it cannot be typed in wrong.
+   */
+  it("quotes no MMF yield that the underlying T-bill cannot support", () => {
+    const bill = tbillRate(91);
+    expect(bill, "no 91-day bill in the feed to sanity-check against").toBeTruthy();
+    const ceiling = bill!.grossEAY + 4;
+    for (const p of PRODUCT_LINKS.filter((x) => x.type === "mmf" && x.yieldPct !== undefined)) {
+      expect(
+        p.yieldPct,
+        `${p.slug} quotes ${p.yieldPct}% gross while the 91-day bill pays ` +
+          `${bill!.grossEAY.toFixed(2)}% — an MMF cannot durably beat the paper it holds ` +
+          `by that much, so this figure is from an older rate environment`
+      ).toBeLessThanOrEqual(ceiling);
     }
   });
 

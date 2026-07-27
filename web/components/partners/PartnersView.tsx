@@ -8,6 +8,7 @@ import {
   TBILL_LINKS,
   SACCO_LINKS,
   PENSION_LINKS,
+  YIELDS_AS_OF,
   type ProductLink,
   type ProductType,
 } from "@/lib/affiliate-links";
@@ -71,7 +72,12 @@ function ProductCard({ product }: { product: ProductLink }) {
         {product.yieldPct !== undefined && (
           <div className="shrink-0 text-right">
             <p className="text-lg font-bold text-primary tabular-nums">
-              ~{product.yieldPct}%
+              {/* One decimal. The T-bill yield comes live from the rates feed
+                  and carries four, which rendered as "~8.4479%" — a precision
+                  nobody has about next week's auction, sitting next to the
+                  hand-curated "~15.5%" as though the two were measured the
+                  same way. The sister card already rounded; this one did not. */}
+              ~{product.yieldPct.toFixed(1)}%
             </p>
             <p className="text-[10px] text-faint">
               {product.type === "sacco" ? "dividends p.a." : "yield p.a."}
@@ -101,6 +107,17 @@ function ProductCard({ product }: { product: ProductLink }) {
 
       {/* CTA */}
       <div className="mt-4">
+        {product.url === undefined ? (
+          // No verified link, so no button. A control that looks like a way
+          // out and goes nowhere is worse than an honest sentence — and on a
+          // financial product, a guessed destination is the worst option of
+          // the three. The card still carries rate, minimum and regulator,
+          // which is what the reader needs to go and find it themselves.
+          <p className="rounded-xl border border-dashed border-border px-3 py-2 text-xs text-ink-soft">
+            No verified sign-up link yet — search for {product.name} or ask your
+            bank. The rate and minimum above are from the {YIELDS_AS_OF} survey.
+          </p>
+        ) : (
         <Link
           href={`/go/${product.slug}`}
           // /go/[slug] is a redirect to the provider, and Next prefetches
@@ -116,6 +133,7 @@ function ProductCard({ product }: { product: ProductLink }) {
         >
           Visit {product.shortName} →
         </Link>
+        )}
       </div>
     </div>
   );

@@ -33,6 +33,25 @@ export type Regulator = "CMA" | "CBK" | "SASRA" | "CBK+CMA" | "RBA";
  * Past the window the yields stop being shown as current. The provider list
  * itself stays useful: which funds exist, who regulates them and how you
  * reach your money do not change monthly.
+ *
+ * ── Why no money market fund quotes a rate here right now ──────────────────
+ *
+ * An MMF holds Treasury bills and bank deposits, so its gross yield tracks the
+ * short bill plus a thin spread, before management fees. That makes the live
+ * 91-day rate a hard ceiling on what any fund can honestly claim — and it is
+ * the one number in this system that cannot be typed in wrong.
+ *
+ * The survey these figures came from listed 14.8-18.2% and was labelled with a
+ * recent date. The 91-day bill pays 9.30%. Both cannot be true: those rates
+ * belong to the 2024-25 environment, when Kenyan bills were above 16%, and the
+ * date on the table was newer than the numbers under it. Every one was removed
+ * rather than shown, because a confident 18.2% beside a 9.30% bill does not
+ * read as "stale" to anybody — it reads as a good deal.
+ *
+ * The irony is exact. Those figures replaced an inherited ~11% that was undated
+ * and unsourced but roughly right, and the replacement was worse. Provenance
+ * and accuracy are different virtues; this file has now failed at each while
+ * satisfying the other.
  */
 export const YIELDS_AS_OF = "2026-04-01";
 export const YIELDS_MAX_AGE_DAYS = 120;
@@ -47,7 +66,16 @@ export interface ProductLink {
   name: string;
   shortName: string;
   type: ProductType;
-  url: string;
+  /**
+   * Provider page. OPTIONAL, because a guessed URL is worse than no URL.
+   *
+   * The top-yielding funds were added from a market survey that carried rates
+   * and minimums but no links, and this environment cannot reach provider sites
+   * to check one. A plausible-looking address on a financial product is not a
+   * small mistake: it sends somebody looking to move money to a page nobody has
+   * opened. Cards without a URL render as facts rather than as a button.
+   */
+  url?: string;
   isAffiliate: boolean;
   /** Approximate annualised yield or dividend rate — verify live before committing. */
   yieldPct?: number;
@@ -124,7 +152,9 @@ export const PRODUCT_LINKS: ProductLink[] = [
     type: "mmf",
     url: "https://www.britam.com/ke/personal/savings-investments/money-market-fund",
     isAffiliate: false,
-    yieldPct: 15.5,
+    // No verified current figure. The survey number for this fund was from a
+    // higher rate environment and could not be reconciled with the live
+    // 91-day bill — see the coherence guard in the directory tests.
     minKes: 1000,
     regulator: "CMA",
     liquidity: "T+1 to M-Pesa",
@@ -160,7 +190,7 @@ export const PRODUCT_LINKS: ProductLink[] = [
     minKes: 5000,
     regulator: "CMA",
     liquidity: "T+1 to M-Pesa",
-    tagline: "Competitive yield; Sanlam-backed stability",
+    tagline: "Sanlam-backed manager; higher entry minimum",
   },
   {
     slug: "icea-mmf",
@@ -169,7 +199,9 @@ export const PRODUCT_LINKS: ProductLink[] = [
     type: "mmf",
     url: "https://www.icealion.com/products/money-market-fund",
     isAffiliate: false,
-    yieldPct: 14.8,
+    // No verified current figure. The survey number for this fund was from a
+    // higher rate environment and could not be reconciled with the live
+    // 91-day bill — see the coherence guard in the directory tests.
     minKes: 1000,
     regulator: "CMA",
     liquidity: "T+1 to M-Pesa",
@@ -182,7 +214,9 @@ export const PRODUCT_LINKS: ProductLink[] = [
     type: "mmf",
     url: "https://www.sanlam.co.ke/personal/investments/money-market",
     isAffiliate: false,
-    yieldPct: 15.5,
+    // No verified current figure. The survey number for this fund was from a
+    // higher rate environment and could not be reconciled with the live
+    // 91-day bill — see the coherence guard in the directory tests.
     minKes: 500,
     regulator: "CMA",
     liquidity: "T+1 to M-Pesa",
@@ -219,6 +253,101 @@ export const PRODUCT_LINKS: ProductLink[] = [
     regulator: "CMA",
     liquidity: "T+1 to M-Pesa",
     tagline: "Low minimum entry; long-standing retail fund",
+  },
+  // ── Funds added from the April 2026 yield survey ────────────────────────
+  //
+  // These lead the market on rate, and their absence quietly biased every
+  // recommendation toward the mid-tier funds that happened to be listed first
+  // — the same defect as Ziidi's absence, one rung up: the directory decides
+  // what the advice can say, so a gap in it is a gap in the advice.
+  //
+  // No `url` on any of them. The survey carried rates and minimums, not links,
+  // and a guessed provider address is the one kind of wrong that sends a reader
+  // somewhere to move money. Liquidity is stated as unconfirmed for the same
+  // reason: T+1 is the sector norm, but a norm is not this fund's terms.
+  {
+    slug: "etica-mmf",
+    name: "Etica Capital Money Market Fund",
+    shortName: "Etica MMF",
+    type: "mmf",
+    isAffiliate: false,
+    // No verified current figure. The survey number for this fund was from a
+    // higher rate environment and could not be reconciled with the live
+    // 91-day bill — see the coherence guard in the directory tests.
+    minKes: 1000,
+    regulator: "CMA",
+    liquidity: "Confirm withdrawal terms with the manager",
+    tagline: "Highest quoted rate in the April 2026 survey",
+  },
+  {
+    slug: "lofty-corban-mmf",
+    name: "Lofty-Corban Money Market Fund",
+    shortName: "Lofty-Corban MMF",
+    type: "mmf",
+    isAffiliate: false,
+    // No verified current figure. The survey number for this fund was from a
+    // higher rate environment and could not be reconciled with the live
+    // 91-day bill — see the coherence guard in the directory tests.
+    minKes: 1000,
+    regulator: "CMA",
+    liquidity: "Confirm withdrawal terms with the manager",
+    tagline: "Consistently near the top of the yield tables",
+  },
+  {
+    slug: "cytonn-mmf",
+    name: "Cytonn Money Market Fund",
+    shortName: "Cytonn MMF",
+    type: "mmf",
+    isAffiliate: false,
+    // No verified current figure. The survey number for this fund was from a
+    // higher rate environment and could not be reconciled with the live
+    // 91-day bill — see the coherence guard in the directory tests.
+    minKes: 1000,
+    regulator: "CMA",
+    liquidity: "Confirm withdrawal terms with the manager",
+    tagline: "Long-running high-yield fund",
+  },
+  {
+    slug: "ncba-mmf",
+    name: "NCBA Money Market Fund",
+    shortName: "NCBA MMF",
+    type: "mmf",
+    isAffiliate: false,
+    // No verified current figure. The survey number for this fund was from a
+    // higher rate environment and could not be reconciled with the live
+    // 91-day bill — see the coherence guard in the directory tests.
+    minKes: 1000,
+    regulator: "CMA",
+    liquidity: "Confirm withdrawal terms with the manager",
+    tagline: "Bank-backed; third largest unit trust by assets",
+  },
+  {
+    slug: "kcb-mmf",
+    name: "KCB Money Market Fund",
+    shortName: "KCB MMF",
+    type: "mmf",
+    isAffiliate: false,
+    // No verified current figure. The survey number for this fund was from a
+    // higher rate environment and could not be reconciled with the live
+    // 91-day bill — see the coherence guard in the directory tests.
+    minKes: 1000,
+    regulator: "CMA",
+    liquidity: "Confirm withdrawal terms with the manager",
+    tagline: "Bank-backed, with branch support countrywide",
+  },
+  {
+    slug: "dry-associates-mmf",
+    name: "Dry Associates Money Market Fund",
+    shortName: "Dry Associates MMF",
+    type: "mmf",
+    isAffiliate: false,
+    // No verified current figure. The survey number for this fund was from a
+    // higher rate environment and could not be reconciled with the live
+    // 91-day bill — see the coherence guard in the directory tests.
+    minKes: 1000,
+    regulator: "CMA",
+    liquidity: "Confirm withdrawal terms with the manager",
+    tagline: "Independent manager with a long fixed-income record",
   },
   // ── Treasury Bills & Bonds (CBK) ────────────────────────────────────────
   {
