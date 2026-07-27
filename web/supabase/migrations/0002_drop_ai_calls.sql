@@ -1,0 +1,24 @@
+-- Drop the AI cost/monitoring log.
+--
+-- ai_calls existed to record token spend and failures for every Claude API
+-- call made by /api/generate-plan. That route is gone: the action plan and the
+-- goal strategy are now computed on the device by lib/native-plan.ts, so no
+-- call is ever made and no row could ever be written. A table that can only
+-- ever be empty is a claim about the system that is no longer true — the same
+-- defect class as a privacy notice describing a transfer that no longer
+-- happens, and it is corrected the same way.
+--
+-- A NEW MIGRATION RATHER THAN AN EDIT TO 0001
+-- -------------------------------------------
+-- 0001_init.sql may already have been applied. Migration history is a record
+-- of what was run, not a description of the current schema, so it is never
+-- rewritten — that is how an environment silently diverges from its own
+-- history. `if exists` makes this safe in both worlds: it drops the table
+-- where 0001 ran, and is a no-op where the project was never provisioned.
+--
+-- The policies go with the table automatically; they are named here only so a
+-- reader of this file knows nothing was left behind.
+--   - "Users read their own ai_calls"
+--   - "Users insert their own ai_calls"
+
+drop table if exists public.ai_calls;
