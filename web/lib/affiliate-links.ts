@@ -14,6 +14,26 @@ export type ProductType = "mmf" | "tbill" | "sacco" | "pension";
 export type YieldBasis = "gross" | "net";
 export type Regulator = "CMA" | "CBK" | "SASRA" | "CBK+CMA" | "RBA";
 
+/**
+ * When the quoted yields below were last checked against the providers.
+ *
+ * They carried no date at all, which is the defect this codebase keeps
+ * finding: a figure that was true once and got quietly outrun. MMF yields
+ * move monthly — faster than almost anything else quoted in either product —
+ * so an undated 11.8% is a liability, not information.
+ *
+ * Past the window the yields stop being shown as current. The provider list
+ * itself stays useful: which funds exist, who regulates them and how you
+ * reach your money do not change monthly.
+ */
+export const YIELDS_AS_OF = "2026-07-27";
+export const YIELDS_MAX_AGE_DAYS = 120;
+
+export function yieldsAreStale(now = new Date()): boolean {
+  const asOf = new Date(YIELDS_AS_OF);
+  return (now.getTime() - asOf.getTime()) / 86_400_000 > YIELDS_MAX_AGE_DAYS;
+}
+
 export interface ProductLink {
   slug: string;
   name: string;
@@ -36,6 +56,25 @@ export interface ProductLink {
 
 export const PRODUCT_LINKS: ProductLink[] = [
   // ── Money Market Funds (CMA-regulated) ─────────────────────────────────
+  {
+    // Listed first because reach, not yield, is what decides whether somebody
+    // actually starts. A fund reachable from the M-PESA menu removes the
+    // onboarding step that ends most saving plans before they begin.
+    //
+    // yieldPct and minKes are deliberately ABSENT rather than estimated: this
+    // is the largest fund in the market and a wrong number here would be the
+    // most consequential wrong number in the file. Both consumers already
+    // render a product without a yield. Fill them in once verified.
+    slug: "ziidi-mmf",
+    name: "Ziidi Money Market Fund",
+    shortName: "Ziidi MMF",
+    type: "mmf",
+    url: "https://www.safaricom.co.ke/",
+    isAffiliate: false,
+    regulator: "CMA",
+    liquidity: "Withdraw to M-PESA",
+    tagline: "Reachable from the M-PESA app — no separate onboarding",
+  },
   {
     slug: "britam-mmf",
     name: "Britam Money Market Fund",
