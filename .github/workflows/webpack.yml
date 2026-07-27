@@ -30,6 +30,21 @@ jobs:
     - name: Lint
       run: cd web && npm run lint
 
+    # Typecheck EVERYTHING, not just what next build compiles.
+    #
+    # `next build` typechecks the app and injects its own compiler settings, so
+    # it stays green on errors in files it never compiles — lib/__tests__ above
+    # all, which is where most of this project's guards now live. The only
+    # typecheck in CI was typecheck:e2e, whose tsconfig includes e2e/** and
+    # playwright.config.ts and nothing else.
+    #
+    # So the app's own sources and every unit test were unchecked. Each type
+    # error caught today was caught by running tsc by hand; CI would have
+    # reported none of them. The sister repository hit exactly this and left a
+    # comment about it, and this one never got the lesson.
+    - name: Typecheck
+      run: cd web && npm run typecheck
+
     - name: Unit tests
       run: cd web && npm run test
 
