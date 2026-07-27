@@ -43,14 +43,52 @@ describe("the directory describes each product honestly", () => {
     }
   });
 
-  it("carries the M-PESA-reachable money market fund", () => {
+  it("carries the M-PESA-reachable money market fund, marked as such", () => {
     // Reach decides whether somebody starts at all. A fund openable from a
     // menu the reader already has beats basis points they never collect
     // because the onboarding defeated them.
-    const reachable = PRODUCT_LINKS.filter(
-      (p) => p.type === "mmf" && /M-PESA/i.test(p.liquidity)
-    );
-    expect(reachable.length, "no MMF reachable from M-PESA is listed").toBeGreaterThan(0);
+    //
+    // Asserted on the explicit flag, not on the liquidity prose: every fund
+    // here says "T+1 to M-Pesa", so a /M-PESA/i match identifies nothing.
+    // The earlier version of this check passed for that empty reason.
+    const reachable = PRODUCT_LINKS.filter((p) => p.type === "mmf" && p.walletNative);
+    expect(reachable.length, "no MMF marked walletNative is listed").toBeGreaterThan(0);
+    for (const p of reachable) {
+      expect(p.liquidity, `${p.slug} is walletNative but never mentions M-PESA`).toMatch(/M-PESA/i);
+    }
+  });
+
+  /**
+   * The refusal is part of the data, so it is pinned like any other fact.
+   *
+   * Two figures are in circulation for this fund and both are traps: its own
+   * 9.50% is from February 2025, and the 18.20% that appears next to the name
+   * "Zidi" in current survey tables belongs to Etica Capital's fund — a
+   * different manager, one letter away. Quoting either would overstate or
+   * misdate the largest fund in the market. If a verified current figure is
+   * ever added, this test should be deleted deliberately, not deleted because
+   * it started failing.
+   */
+  it("quotes no yield for the fund whose only available figures are wrong", () => {
+    const ziidi = PRODUCT_LINKS.find((p) => p.slug === "ziidi-mmf");
+    expect(ziidi, "ziidi-mmf is missing from the directory").toBeTruthy();
+    expect(
+      ziidi!.yieldPct,
+      "a yield appeared for Ziidi — confirm it is Safaricom's fund and current, not Etica's 'Zidi'"
+    ).toBeUndefined();
+    expect(ziidi!.minKes, "Ziidi's Ksh 100 minimum is its defining feature").toBe(100);
+  });
+
+  it("quotes no yield that predates the survey the date claims", () => {
+    // The stale-yield defect in its subtler form: a figure nobody re-checked
+    // sitting under a date somebody refreshed. Any fund carrying a number is
+    // asserting it was observed on YIELDS_AS_OF — funds outside that survey
+    // must carry nothing rather than an inherited figure wearing a new date.
+    const quoted = PRODUCT_LINKS.filter((p) => p.type === "mmf" && p.yieldPct !== undefined);
+    for (const p of quoted) {
+      expect(p.yieldPct, `${p.slug} quotes an implausible MMF yield`).toBeGreaterThan(5);
+      expect(p.yieldPct, `${p.slug} quotes an implausible MMF yield`).toBeLessThan(25);
+    }
   });
 
   it("still claims no affiliate arrangement anywhere, as the terms state", () => {

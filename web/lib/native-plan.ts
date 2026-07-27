@@ -61,10 +61,7 @@ import { PRODUCT_LINKS } from "./affiliate-links";
  */
 function mmfNames(limit = 3): string {
   const funds = PRODUCT_LINKS.filter((p) => p.type === "mmf");
-  const byReach = [
-    ...funds.filter((p) => /M-PESA/i.test(p.liquidity) && p.yieldPct === undefined),
-    ...funds.filter((p) => !(/M-PESA/i.test(p.liquidity) && p.yieldPct === undefined)),
-  ];
+  const byReach = [...funds.filter((p) => p.walletNative), ...funds.filter((p) => !p.walletNative)];
   const picked = byReach.slice(0, limit).map((p) => p.shortName.replace(/ MMF$/, ""));
   if (picked.length <= 1) return picked[0] ?? "a money market fund";
   return `${picked.slice(0, -1).join(", ")} and ${picked[picked.length - 1]}`;
