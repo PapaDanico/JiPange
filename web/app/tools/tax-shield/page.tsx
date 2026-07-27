@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import ToolLayout from "@/components/tools/ToolLayout";
 import TaxShieldCalculator from "@/components/tools/TaxShieldCalculator";
+import { pensionReliefSavingAnnual } from "@/lib/tool-stats";
 
 export const metadata: Metadata = {
   title: "KRA Tax Shield & Net-Pay Optimizer Kenya",
@@ -25,9 +26,9 @@ export default function TaxShieldPage() {
         {
           icon: "💸",
           tone: "hopeful",
-          stat: "Ksh 72,000",
+          stat: `Ksh ${pensionReliefSavingAnnual().toLocaleString("en-KE")}`,
           label: "back per year — the legal PAYE saving from maxing your pension contribution alone at higher salary bands.",
-          source: "KRA Tax Relief Schedule 2025/26",
+          source: "Income Tax Act s.15(3) cap, at the 30% band — computed by JiPange",
         },
       ]}
     >
