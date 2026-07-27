@@ -28,7 +28,9 @@ import { profileSchema } from "@/lib/types";
  */
 
 const read = (p: string) => readFileSync(`${process.cwd()}/${p}`, "utf8");
-const claude = read("lib/claude.ts");
+const nativePlan = read("lib/native-plan.ts");
+const actionPlanUi = read("components/onboarding/ActionPlan.tsx");
+const goalPlannerUi = read("components/planners/GoalPlanner.tsx");
 const sync = read("lib/supabase/sync.ts");
 const saveMyPlan = read("components/onboarding/SaveMyPlan.tsx");
 const page = read("app/privacy/page.tsx");
@@ -45,14 +47,26 @@ const pageProse = page.replace(/\/\*[\s\S]*?\*\//g, "");
 
 describe("the claims that were false are now checked against the code", () => {
   /**
-   * The teeth. If anyone puts the name back into the AI prompt, the notice
-   * saying it is excluded becomes a lie — and this fails first.
+   * The teeth, upgraded. The old test proved the AI prompt excluded the
+   * reader's name; the plan is now generated on the device and the notice says
+   * the figures go NOWHERE. So the check is stronger: the plan path must make
+   * no network call at all. If anyone wires a fetch back into it, the notice
+   * becomes a lie — and this fails first.
    */
-  it("does not send the reader's name to the AI, as section 2 of the notice claims", () => {
-    expect(claude).not.toMatch(/Name:\s*\$\{profile\.fullName\}/);
-    expect(claude).not.toMatch(/\$\{profile\.fullName\}/);
-    const aiDisclosure = SENT_FOR_THE_AI_PLAN.map((d) => d.what).join(" ").toLowerCase();
-    expect(aiDisclosure).not.toContain("name");
+  it("the plan is computed on-device: no network call anywhere in the path, as section 2 claims", () => {
+    for (const [name, src] of [
+      ["lib/native-plan.ts", nativePlan],
+      ["components/onboarding/ActionPlan.tsx", actionPlanUi],
+    ] as const) {
+      expect(src, `${name} must not fetch — the notice says nothing leaves the device`).not.toMatch(
+        /fetch\s*\(|XMLHttpRequest|axios/
+      );
+    }
+    // GoalPlanner keeps unrelated code; only the strategy must not travel.
+    expect(goalPlannerUi).not.toMatch(/api\/goal-strategy|api\/generate-plan/);
+    expect(nativePlan).not.toMatch(/fullName/);
+    const aiDisclosure = SENT_FOR_THE_AI_PLAN.map((d) => d.destination).join(" ").toLowerCase();
+    expect(aiDisclosure).toContain("nowhere");
   });
 
   it("discloses every profile field the form actually collects", () => {
@@ -120,8 +134,14 @@ describe("it meets the shape section 29 asks for", () => {
   });
 
   it("names every third party that can receive data, and where it is", () => {
-    for (const name of ["Netlify", "Anthropic", "Supabase"]) {
+    // Anthropic left this list when the plan moved on-device: a processor that
+    // processes nothing must not be named, for the same s.29 reason a missing
+    // one must be.
+    for (const name of ["Netlify", "Supabase"]) {
       expect(PROCESSORS.map((p) => p.name)).toContain(name);
+    }
+    expect(PROCESSORS.map((p) => p.name)).not.toContain("Anthropic");
+    {
     }
     // Cross-border transfer is a distinct duty; each must say where it sits.
     for (const p of PROCESSORS) expect(p.where).toBeTruthy();
