@@ -30,7 +30,7 @@ function ProductCard({ product }: { product: ProductLink }) {
             </span>
           )}
           {product.minKes !== undefined && (
-            <span className="text-xs text-muted">from KES {product.minKes.toLocaleString("en-KE")}</span>
+            <span className="text-xs text-muted">from Ksh {product.minKes.toLocaleString("en-KE")}</span>
           )}
         </div>
       </div>

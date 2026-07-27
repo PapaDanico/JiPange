@@ -44,16 +44,26 @@ describe("currency labels", () => {
           // Comments are not read by anyone using the app, and this file's own
           // note quotes the bug.
           if (/^\s*(\/\/|\*|\/\*)/.test(line)) return;
-          // Legitimate: "en-KE" is a locale, `currency`/`priceCurrency` take the
-          // ISO code and are what MAKE Intl print "Ksh", and identifiers such as
-          // formatKES or minKes are never displayed.
-          if (/"en-KE"|currency:\s*["']KES["']|priceCurrency/.test(line)) return;
           // Strip trailing comments too — `const MAX = 1e11; // 100B KES` is a
           // note to a developer, not a label, and the leading-marker check
           // above cannot see it.
+          //
+          // Legitimate tokens are REMOVED, not used to excuse the whole line.
+          // The first version skipped any line containing "en-KE", and every
+          // offender in the codebase read
+          //   KES {product.minKes.toLocaleString("en-KE")}
+          // — label and locale on one line, so the locale waved the label
+          // through. An allowlist that pardons a line instead of a token
+          // cannot see a violation standing next to a legitimate use, which
+          // is exactly where violations live.
           const stripped = line
             .replace(/\/\/.*$/, "")
-            .replace(/\b(formatKES|minKes|amountKES|\w+Kes)\b/g, "");
+            .replace(/"en-KE"/g, "")
+            // Both forms take the ISO code and are what MAKE Intl and
+            // schema.org render "Ksh" — strip the key AND its value, or the
+            // orphaned "KES" trips the check it is exempt from.
+            .replace(/\b\w*[Cc]urrency:\s*["']KES["']/g, "")
+            .replace(/\b(formatKES|minKes|amountKES|\w+Kes|\w+KES)\b/g, "");
           if (/\bKES\b|\bKSh\b/.test(stripped)) {
             offenders.push(`${file.replace(ROOT, "")}:${i + 1}  ${line.trim().slice(0, 88)}`);
           }

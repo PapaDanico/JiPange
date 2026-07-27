@@ -189,6 +189,20 @@ test("payday router: shows weekly limit", async ({ page }) => {
   await expect(page.getByTestId("weekly-limit")).toBeVisible();
 });
 
+test("payday router: answers the overspent case instead of going blank", async ({ page }) => {
+  // Found by driving the tool, not by reading it: with outflows above salary
+  // the page rendered its inputs and nothing else. The user in the worst
+  // position got the least information.
+  await page.goto("/tools/payday-router");
+  const inputs = page.getByRole("spinbutton");
+  await inputs.nth(0).fill("60000");
+  await inputs.nth(1).fill("70000");
+  await expect(page.getByTestId("weekly-limit")).toHaveCount(0);
+  const shortfall = page.getByTestId("router-shortfall");
+  await expect(shortfall).toBeVisible();
+  await expect(shortfall).toContainText("Ksh 10,000");
+});
+
 // ─── Fuliza Cost ───────────────────────────────────────────────────────────
 
 test("fuliza cost: shows true cost", async ({ page }) => {
