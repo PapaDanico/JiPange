@@ -1,5 +1,6 @@
 import { FULIZA_DAILY_RATE } from "./fuliza";
 import { currentInflation } from "./rates-feed";
+import { assumedMmfYield } from "./mmf-assumption";
 
 /**
  * The 90-second journey funnel: 5 tap-only questions → a deterministic
@@ -101,7 +102,12 @@ export const JOURNEY_QUESTIONS: JourneyQuestion[] = [
 // ── Engine constants (Rule Block B, per spec) ──
 
 export const ASSUMED_CURRENT_YIELD = 0.0323; // bank savings average
-export const TARGET_MMF_YIELD = 0.115; // local index baseline
+/**
+ * Derived from the live 91-day bill — see lib/mmf-assumption.ts for why a
+ * hand-typed MMF yield is a promise the market stops keeping the moment rates
+ * move, and why three calculators held three different ones.
+ */
+export const TARGET_MMF_YIELD = assumedMmfYield();
 /**
  * The published inflation rate, read from the rates feed.
  *
@@ -111,8 +117,16 @@ export const TARGET_MMF_YIELD = 0.115; // local index baseline
  * see lib/rates-feed.ts for why we consume this rather than assume it.
  */
 export const CURRENT_INFLATION = currentInflation();
-// Spec states "+8.2%"; 11.5 − 3.23 = 8.27, truncated (not rounded) to match.
-export const YIELD_UPSIDE_POINTS = Math.floor((TARGET_MMF_YIELD - ASSUMED_CURRENT_YIELD) * 1000) / 10; // 8.2
+/**
+ * The MMF-over-bank gap in percentage points, truncated to one decimal.
+ *
+ * The original spec stated "+8.2%", which was 11.5 − 3.23 truncated to match a
+ * figure written when bills paid far more. With the MMF assumption anchored to
+ * the live 91-day rate this moves with the market, as it always should have —
+ * the gap between a fund and a bank account is not a constant of nature.
+ */
+export const YIELD_UPSIDE_POINTS =
+  Math.floor((TARGET_MMF_YIELD - ASSUMED_CURRENT_YIELD) * 1000) / 10;
 
 // ── Income-tier tables (documented assumptions, all user-visible copy says "estimated") ──
 

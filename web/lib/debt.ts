@@ -1,3 +1,5 @@
+import { assumedMmfYield } from "./mmf-assumption";
+
 /**
  * Multi-loan debt escape planner using the avalanche method (highest effective
  * monthly rate first). Designed for the Kenyan mobile loan context where lenders
@@ -16,10 +18,10 @@ export const PRESET_LENDERS: { name: string; monthlyRatePct: number }[] = [
   { name: "Other mobile lender", monthlyRatePct: 10 },
 ];
 
-// Independently-set from lib/journey.ts's TARGET_MMF_YIELD (0.115) — this
-// tool's own MMF assumption for the post-payoff projection; harmonizing it
-// is a product call, not a mechanical fix.
-const MMF_ANNUAL_RATE = 0.118;
+// The shared, feed-anchored assumption. This was 0.118 under a comment
+// calling the divergence from TARGET_MMF_YIELD a product call rather than a
+// mechanical fix — it was neither. See lib/mmf-assumption.ts.
+const MMF_ANNUAL_RATE = assumedMmfYield();
 const MAX_MONTHS = 120;
 
 export interface LoanInput {

@@ -1,5 +1,5 @@
 import { solveYearsToTarget } from "./goal-planner";
-import { CURRENT_INFLATION, TARGET_MMF_YIELD } from "./journey";
+import { ASSUMED_CURRENT_YIELD, CURRENT_INFLATION, TARGET_MMF_YIELD } from "./journey";
 import { TBILL_RATES } from "./rates-feed";
 
 /**
@@ -40,7 +40,15 @@ export const MAX_SALARY_DEBT_LIMIT = 0.33; // one-third gross pay rule
  * contract notes. See that file for why we read an answer instead of copying
  * a formula.
  */
-export const BANK_SAVINGS_BASELINE = 0.0323;
+/**
+ * Re-exported, not re-typed.
+ *
+ * This held its own literal 0.0323 while journey.ts held ASSUMED_CURRENT_YIELD
+ * = 0.0323 — the same figure written twice, so a future correction to the bank
+ * savings average would land in one file and silently disagree with the other.
+ * Two constants holding one fact is a divergence that has not happened yet.
+ */
+export const BANK_SAVINGS_BASELINE = ASSUMED_CURRENT_YIELD;
 
 // ── Module 1: the localized FIRE engine ──
 
