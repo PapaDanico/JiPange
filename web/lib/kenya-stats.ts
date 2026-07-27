@@ -1,28 +1,56 @@
 /**
- * Kenya financial research constants — sourced from publicly available surveys and reports.
- * Used on the landing page and throughout the app for contextual education.
+ * Kenya research constants, under the names the app already imports.
+ *
+ * The numbers no longer live here. They live in sources.ts, each attached to
+ * the publication it came from and the date it must be re-checked. This module
+ * remains because a constant with a familiar name reads better at a call site
+ * than a lookup, and because moving the values should not have meant touching
+ * every page that shows one.
+ *
+ * Anything derived — a complement, a share, a per-user average — is COMPUTED
+ * here rather than typed. The pair that used to read
+ *
+ *     FINACCESS_LITERACY_PASS_PCT = 42.1
+ *     FINACCESS_LITERACY_FAIL_PCT = 57.9
+ *
+ * could be corrected one at a time, and for as long as anyone left it that way
+ * they would have summed to something other than 100 with nothing to say so.
  */
 
-// ── FinAccess Household Survey 2024 (CBK / FSD Kenya / KNBS) ──
-export const FINACCESS_FORMAL_INCLUSION_PCT = 84.8; // % with access to formal financial services
-export const FINACCESS_LITERACY_PASS_PCT = 42.1;    // % who passed all 3 literacy questions (inflation, compound interest, risk)
-export const FINACCESS_LITERACY_FAIL_PCT = 57.9;    // complement — majority couldn't pass
+import { SOURCES, figure, fulizaPerUserKsh, mmfShareOfDepositsPct } from "./sources";
 
-// ── RBA Pensioners Survey 2024 / RBA Statistical Digest 2024 ──
-export const RBA_NO_PENSION_PCT = 81;                // % of Kenya workforce with no active pension contribution
-export const RBA_PENSIONER_DISSATISFIED_PCT = 65;   // % of retirees dissatisfied with what they receive
+// ── FinAccess Household Survey 2024 (CBK / KNBS / FSD Kenya) ──
+export const FINACCESS_FORMAL_INCLUSION_PCT = figure("finaccessFormalInclusionPct");
+/** Passed all three questions: inflation, INTEREST RATES, risk diversification. */
+export const FINACCESS_LITERACY_PASS_PCT = figure("finaccessLiteracyPassPct");
+/** The complement, derived — never a second number to keep in step by hand. */
+export const FINACCESS_LITERACY_FAIL_PCT =
+  Math.round((100 - FINACCESS_LITERACY_PASS_PCT) * 10) / 10;
 
-// ── Kenya Informal Sector (KIPPRA 2024 / Pension Policy International) ──
-export const INFORMAL_WORKERS_MILLIONS = 18.1;       // million Kenyans in informal sector
-export const INFORMAL_PENSION_COVERAGE_PCT = 2.5;   // % with any pension coverage
+// ── Retirement Benefits Authority ──
+export const RBA_NO_PENSION_PCT = figure("rbaNoPensionPct");
+export const RBA_COVERAGE_OF_WORKING_AGE_PCT = figure("rbaCoverageOfWorkingAgePct");
+/** Retirees whose income covers daily needs, and the majority for whom it does not. */
+export const RBA_INCOME_MEETS_NEEDS_PCT = figure("rbaIncomeMeetsNeedsPct");
+export const RBA_INCOME_FALLS_SHORT_PCT =
+  Math.round((100 - RBA_INCOME_MEETS_NEEDS_PCT) * 10) / 10;
 
-// ── Safaricom FY2026 (Techweez / Nation Africa) ──
-export const FULIZA_USERS_MILLIONS = 17.7;           // million Kenyans who used Fuliza in the year
-export const FULIZA_VOLUME_TRILLION_KSH = 1.46;     // Ksh trillion borrowed through Fuliza
-export const FULIZA_AVG_TICKET_KSH = 254;           // average Fuliza borrow per transaction
+// ── KNBS Economic Survey ──
+export const INFORMAL_WORKERS_MILLIONS = figure("informalWorkersMillions");
 
-// ── CMA Collective Investment Schemes, July 2026 / Business Daily Africa ──
-export const BANK_DEPOSITS_TRILLION_KSH = 5;        // Ksh trillion in Kenyan bank accounts
-export const MMF_AUM_BILLION_KSH = 370;             // Ksh billion in money market funds
-// Gap: 5T − 0.37T = 4.63T (rounds to 4.6T in copy)
-export const BANK_SAVINGS_EARNING_BELOW_INFLATION_TRILLION = 4.6;
+// ── Safaricom FY2026 ──
+export const FULIZA_USERS_MILLIONS = figure("fulizaUsersMillions");
+export const FULIZA_VOLUME_TRILLION_KSH = figure("fulizaVolumeTrillionKsh");
+/** Borrowed per user across the year. Not a per-transaction ticket — see sources.ts. */
+export const FULIZA_PER_USER_KSH = Math.round(fulizaPerUserKsh());
+
+// ── Where the money sits: CBK banking aggregates, CMA's quarterly CIS report ──
+export const BANK_DEPOSITS_TRILLION_KSH = figure("bankDepositsTrillionKsh");
+export const MMF_AUM_BILLION_KSH = figure("mmfAumBillionKsh");
+/** Share of bank deposits held in MMFs instead, to one decimal. */
+export const MMF_SHARE_OF_DEPOSITS_PCT = Math.round(mmfShareOfDepositsPct() * 10) / 10;
+/** The remainder, sitting in accounts that pay below inflation. Ksh trillion. */
+export const BANK_SAVINGS_EARNING_BELOW_INFLATION_TRILLION =
+  Math.round((BANK_DEPOSITS_TRILLION_KSH - MMF_AUM_BILLION_KSH / 1000) * 10) / 10;
+
+export { SOURCES };
