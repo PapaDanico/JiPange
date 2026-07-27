@@ -112,7 +112,12 @@ export function KplcOptimizer() {
       )}
 
       <p className="rounded-2xl bg-accent-soft p-4 text-sm text-ink-soft">
-        ⚡ <em>Splitting your purchase does not help.</em> KPLC counts units across the whole
+        {/* Explicit space: the literal one after </em> was being dropped at
+            render, so the sentence read "does not help.KPLC counts". Caught by
+            looking at the page, not by any test — assertions use toContainText
+            on one side of the join or the other and never see the seam. */}
+        ⚡ <em>Splitting your purchase does not help.</em>{" "}
+        KPLC counts units across the whole
         calendar month, so two Ksh 500 buys are charged exactly like one Ksh 1,000 buy. The
         levers that do work: use less in total, remember your tariff category follows a
         three-month rolling average, and don&apos;t make your first buy of the month tiny —

@@ -247,7 +247,10 @@ test("kplc band checker: no longer claims splitting a purchase saves anything", 
 }) => {
   await page.goto("/tools/kplc-optimizer");
   const body = page.locator("body");
-  await expect(body).toContainText("Splitting your purchase does not help");
+  // The full sentence across the <em> boundary, because the space after
+  // </em> was silently dropped at render ("does not help.KPLC counts").
+  // Asserting either half alone passes straight over the seam.
+  await expect(body).toContainText("does not help. KPLC counts units");
   // Scoped to the claim, not the word: the site describes its calculators as
   // free throughout, so a bare /free/i match fails on the nav and proves
   // nothing about this tool.
