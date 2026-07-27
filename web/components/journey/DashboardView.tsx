@@ -157,7 +157,7 @@ export default function DashboardView() {
           <p className="mt-2 text-sm text-canvas">
             First target: a{" "}
             <span className="font-semibold text-white">
-              KSh {model.microFundTarget.toLocaleString("en-KE")}
+              Ksh {model.microFundTarget.toLocaleString("en-KE")}
             </span>{" "}
             micro-emergency fund, so the next surprise doesn&apos;t land on the overdraft.
           </p>

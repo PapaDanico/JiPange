@@ -29,7 +29,7 @@ export function KplcOptimizer() {
                 : "border-border bg-white text-ink-soft hover:bg-canvas"
             }`}
           >
-            KSh {b.toLocaleString("en-KE")}
+            Ksh {b.toLocaleString("en-KE")}
           </button>
         ))}
       </div>
@@ -82,6 +82,25 @@ export function PaydayRouter() {
             <strong>{kes(surplus)}</strong> surplus out of your main M-Pesa wallet and
             into a locked savings pocket or MMF <em>on payday</em> before lifestyle creep handles
             it for you.
+          </p>
+        </div>
+      )}
+      {Number(salary) > 0 && surplus <= 0 && (
+        // The tool used to render nothing here — no card, no sentence — which
+        // silently abandoned the one user it most needs to reach: the person
+        // whose rent and bills already exceed their salary. A blank screen
+        // reads as "you typed something wrong", not "here is your number".
+        <div className="rounded-2xl bg-white p-5 shadow-sm" data-testid="router-shortfall">
+          <p className="text-sm text-ink-soft">
+            Your rent and bills come to{" "}
+            <strong>{kes((Number(rent) || 0) + (Number(bills) || 0))}</strong> against a{" "}
+            {kes(Number(salary))} salary — a shortfall of{" "}
+            <strong className="text-lg text-primary">{kes(Math.abs(surplus))}</strong> every month.
+          </p>
+          <p className="mt-2 text-xs text-ink-soft">
+            There is no surplus to route, so routing is not the fix. The gap has to close on one of
+            the two fixed lines before a weekly limit means anything — rent is usually the larger
+            and the more movable of the two.
           </p>
         </div>
       )}

@@ -170,7 +170,7 @@ export default function TakeHomePayCalculator() {
               className="mt-3 flex items-baseline justify-between"
             >
               <span className="text-sm text-ink-soft">
-                KES {whatIfGrossValue.toLocaleString("en-KE")} gross
+                Ksh {whatIfGrossValue.toLocaleString("en-KE")} gross
               </span>
               <span className="text-base font-semibold text-success">
                 → {formatKES(whatIfNetPay ?? 0)}
