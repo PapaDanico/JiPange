@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import ToolLayout from "@/components/tools/ToolLayout";
 import SalaryNegotiationCalculator from "@/components/tools/SalaryNegotiationCalculator";
+import { raiseWorthAnnual, EXAMPLE_RAISE_KES } from "@/lib/tool-stats";
 
 export const metadata: Metadata = {
   title: "Salary Negotiation Calculator — What Gross Should I Ask For?",
@@ -25,8 +26,8 @@ export default function SalaryNegotiationPage() {
         {
           icon: "🎯",
           tone: "hopeful",
-          stat: "Ksh 108,000",
-          label: "extra per year — what a Ksh 15,000 gross raise delivers after deductions. Compounding with each promotion.",
+          stat: `Ksh ${raiseWorthAnnual().toLocaleString("en-KE")}`,
+          label: `extra per year — what a Ksh ${EXAMPLE_RAISE_KES.toLocaleString("en-KE")} gross raise delivers after deductions. Compounding with each promotion.`,
           source: "JiPange PAYE calculation",
         },
       ]}

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import ToolLayout from "@/components/tools/ToolLayout";
 import TakeHomePayCalculator from "@/components/tools/TakeHomePayCalculator";
+import { pensionReliefSavingMonthly } from "@/lib/tool-stats";
 
 export const metadata: Metadata = {
   title: "Take-Home Pay Calculator (KRA PAYE 2025/26)",
@@ -25,9 +26,9 @@ export default function TakeHomePayPage() {
         {
           icon: "💡",
           tone: "hopeful",
-          stat: "Ksh 4,500",
+          stat: `Ksh ${pensionReliefSavingMonthly().toLocaleString("en-KE")}`,
           label: "is the monthly PAYE saving you can unlock by maxing your pension contribution — legally, every month, right now.",
-          source: "KRA Tax Relief Bands 2025/26",
+          source: "Income Tax Act s.15(3) cap, at the 30% band — computed by JiPange",
         },
       ]}
     >
