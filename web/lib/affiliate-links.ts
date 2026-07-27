@@ -33,6 +33,25 @@ export type Regulator = "CMA" | "CBK" | "SASRA" | "CBK+CMA" | "RBA";
  * Past the window the yields stop being shown as current. The provider list
  * itself stays useful: which funds exist, who regulates them and how you
  * reach your money do not change monthly.
+ *
+ * ── Why no money market fund quotes a rate here right now ──────────────────
+ *
+ * An MMF holds Treasury bills and bank deposits, so its gross yield tracks the
+ * short bill plus a thin spread, before management fees. That makes the live
+ * 91-day rate a hard ceiling on what any fund can honestly claim — and it is
+ * the one number in this system that cannot be typed in wrong.
+ *
+ * The survey these figures came from listed 14.8-18.2% and was labelled with a
+ * recent date. The 91-day bill pays 9.30%. Both cannot be true: those rates
+ * belong to the 2024-25 environment, when Kenyan bills were above 16%, and the
+ * date on the table was newer than the numbers under it. Every one was removed
+ * rather than shown, because a confident 18.2% beside a 9.30% bill does not
+ * read as "stale" to anybody — it reads as a good deal.
+ *
+ * The irony is exact. Those figures replaced an inherited ~11% that was undated
+ * and unsourced but roughly right, and the replacement was worse. Provenance
+ * and accuracy are different virtues; this file has now failed at each while
+ * satisfying the other.
  */
 export const YIELDS_AS_OF = "2026-04-01";
 export const YIELDS_MAX_AGE_DAYS = 120;
@@ -133,7 +152,9 @@ export const PRODUCT_LINKS: ProductLink[] = [
     type: "mmf",
     url: "https://www.britam.com/ke/personal/savings-investments/money-market-fund",
     isAffiliate: false,
-    yieldPct: 15.5,
+    // No verified current figure. The survey number for this fund was from a
+    // higher rate environment and could not be reconciled with the live
+    // 91-day bill — see the coherence guard in the directory tests.
     minKes: 1000,
     regulator: "CMA",
     liquidity: "T+1 to M-Pesa",
@@ -178,7 +199,9 @@ export const PRODUCT_LINKS: ProductLink[] = [
     type: "mmf",
     url: "https://www.icealion.com/products/money-market-fund",
     isAffiliate: false,
-    yieldPct: 14.8,
+    // No verified current figure. The survey number for this fund was from a
+    // higher rate environment and could not be reconciled with the live
+    // 91-day bill — see the coherence guard in the directory tests.
     minKes: 1000,
     regulator: "CMA",
     liquidity: "T+1 to M-Pesa",
@@ -191,7 +214,9 @@ export const PRODUCT_LINKS: ProductLink[] = [
     type: "mmf",
     url: "https://www.sanlam.co.ke/personal/investments/money-market",
     isAffiliate: false,
-    yieldPct: 15.5,
+    // No verified current figure. The survey number for this fund was from a
+    // higher rate environment and could not be reconciled with the live
+    // 91-day bill — see the coherence guard in the directory tests.
     minKes: 500,
     regulator: "CMA",
     liquidity: "T+1 to M-Pesa",
@@ -246,7 +271,9 @@ export const PRODUCT_LINKS: ProductLink[] = [
     shortName: "Etica MMF",
     type: "mmf",
     isAffiliate: false,
-    yieldPct: 18.2,
+    // No verified current figure. The survey number for this fund was from a
+    // higher rate environment and could not be reconciled with the live
+    // 91-day bill — see the coherence guard in the directory tests.
     minKes: 1000,
     regulator: "CMA",
     liquidity: "Confirm withdrawal terms with the manager",
@@ -258,7 +285,9 @@ export const PRODUCT_LINKS: ProductLink[] = [
     shortName: "Lofty-Corban MMF",
     type: "mmf",
     isAffiliate: false,
-    yieldPct: 17.5,
+    // No verified current figure. The survey number for this fund was from a
+    // higher rate environment and could not be reconciled with the live
+    // 91-day bill — see the coherence guard in the directory tests.
     minKes: 1000,
     regulator: "CMA",
     liquidity: "Confirm withdrawal terms with the manager",
@@ -270,7 +299,9 @@ export const PRODUCT_LINKS: ProductLink[] = [
     shortName: "Cytonn MMF",
     type: "mmf",
     isAffiliate: false,
-    yieldPct: 16.9,
+    // No verified current figure. The survey number for this fund was from a
+    // higher rate environment and could not be reconciled with the live
+    // 91-day bill — see the coherence guard in the directory tests.
     minKes: 1000,
     regulator: "CMA",
     liquidity: "Confirm withdrawal terms with the manager",
@@ -282,7 +313,9 @@ export const PRODUCT_LINKS: ProductLink[] = [
     shortName: "NCBA MMF",
     type: "mmf",
     isAffiliate: false,
-    yieldPct: 16.2,
+    // No verified current figure. The survey number for this fund was from a
+    // higher rate environment and could not be reconciled with the live
+    // 91-day bill — see the coherence guard in the directory tests.
     minKes: 1000,
     regulator: "CMA",
     liquidity: "Confirm withdrawal terms with the manager",
@@ -294,7 +327,9 @@ export const PRODUCT_LINKS: ProductLink[] = [
     shortName: "KCB MMF",
     type: "mmf",
     isAffiliate: false,
-    yieldPct: 15.8,
+    // No verified current figure. The survey number for this fund was from a
+    // higher rate environment and could not be reconciled with the live
+    // 91-day bill — see the coherence guard in the directory tests.
     minKes: 1000,
     regulator: "CMA",
     liquidity: "Confirm withdrawal terms with the manager",
@@ -306,7 +341,9 @@ export const PRODUCT_LINKS: ProductLink[] = [
     shortName: "Dry Associates MMF",
     type: "mmf",
     isAffiliate: false,
-    yieldPct: 15.2,
+    // No verified current figure. The survey number for this fund was from a
+    // higher rate environment and could not be reconciled with the live
+    // 91-day bill — see the coherence guard in the directory tests.
     minKes: 1000,
     regulator: "CMA",
     liquidity: "Confirm withdrawal terms with the manager",
