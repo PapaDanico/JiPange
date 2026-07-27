@@ -158,7 +158,7 @@ export const PRODUCT_LINKS: ProductLink[] = [
     minKes: 1000,
     regulator: "CMA",
     liquidity: "T+1 to M-Pesa",
-    tagline: "Consistent top-tier yield; Paybill 500005",
+    tagline: "Long-established fund; contribute via Paybill 500005",
   },
   {
     slug: "cic-mmf",
@@ -374,12 +374,16 @@ export const PRODUCT_LINKS: ProductLink[] = [
     type: "tbill",
     url: "https://dhowcsd.centralbank.go.ke",
     isAffiliate: false,
-    // Infrastructure bond coupons are withholding-tax exempt, so this gross
-    // figure IS the net one. Left as an approximate benchmark rather than
-    // wired to the feed: the published bond bands blend taxable and tax-free
-    // paper, so quoting a band median as "the IFB yield" would be a guess
-    // wearing a live number's clothes.
-    yieldPct: 14.0,
+    // Infrastructure bond coupons are withholding-tax exempt, so the tax
+    // advantage is structural and worth stating. The NUMBER is not: this read
+    // 14.0% "as an approximate benchmark" while the 364-day bill pays 9.94%
+    // gross and 8.45% net. A tax-free 14% against that is not a benchmark, it
+    // is the best trade in the market — and it was a figure from the 2024-25
+    // rate environment, exactly like the MMF yields removed alongside it.
+    //
+    // Old IFBs really do carry coupons that high, but a reader meeting "~14%"
+    // on a card headed "highest net yield" reads it as what they can buy today.
+    // The advantage stays described; the number waits for a real issue.
     yieldBasis: "net",
     minKes: 50000,
     regulator: "CBK",
@@ -387,6 +391,15 @@ export const PRODUCT_LINKS: ProductLink[] = [
     tagline: "Tax-free coupons — highest net yield for high earners",
   },
   // ── SACCOs (SASRA-regulated) ─────────────────────────────────────────────
+  //
+  // The T-bill ceiling that governs the MMF figures above does NOT apply here,
+  // and the difference is worth stating so nobody "corrects" these downward.
+  // A SACCO dividend is a share of the society's annual surplus — lending
+  // income, not money-market income — declared once a year at an AGM. It is
+  // not the short bill plus a spread, so double-digit dividends can coexist
+  // with single-digit bills. These figures are still undated and unsourced,
+  // which is its own defect; they are a dividend HISTORY, and should carry the
+  // year they were declared.
   {
     slug: "stima-sacco",
     name: "Stima Sacco",

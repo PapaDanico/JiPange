@@ -84,7 +84,15 @@ describe("Rule Block B — the Inflation Drag calculator", () => {
     expect(drag.netLossAnnual).toBe(
       Math.round(drag.medianSavings * (CURRENT_INFLATION - ASSUMED_CURRENT_YIELD))
     );
-    expect(drag.upsidePoints).toBeCloseTo(8.2, 5);
+    // Derived from the constants, not pinned at 8.2. That literal was
+    // (11.5 - 3.23) frozen into the test, so it asserted the value of a
+    // hardcoded MMF yield rather than the arithmetic the card performs — and
+    // it failed the moment that yield became anchored to the live bill, which
+    // is the one change it should have been indifferent to.
+    expect(drag.upsidePoints).toBeCloseTo(
+      Math.floor((TARGET_MMF_YIELD - ASSUMED_CURRENT_YIELD) * 1000) / 10,
+      5
+    );
     expect(drag.mmfExtraAnnual).toBe(
       Math.round(drag.medianSavings * (TARGET_MMF_YIELD - ASSUMED_CURRENT_YIELD))
     );

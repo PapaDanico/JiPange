@@ -6,13 +6,19 @@
  */
 
 import { futureValue } from "./projections";
+import { assumedMmfYield } from "./mmf-assumption";
 
-// Independently-set from lib/journey.ts's TARGET_MMF_YIELD (0.115) — both
-// quote a "Serrari-style" MMF baseline but for different calculators;
-// harmonizing them would change this tool's displayed subsidy numbers, so
-// that's a product call rather than a mechanical fix.
-/** Serrari-style KES MMF average used for the fee-smoothing subsidy maths. */
-export const SMOOTHER_MMF_RATE = 0.12;
+/**
+ * The same anchored assumption every other calculator now uses.
+ *
+ * This used to be 0.12 with a comment calling the divergence from
+ * TARGET_MMF_YIELD "a product call rather than a mechanical fix". It was
+ * neither: three calculators carried three MMF rates because three people
+ * typed one, and the comment made that look intentional. The displayed subsidy
+ * does change, and it should — it was quoting a return the market no longer
+ * offers.
+ */
+export const SMOOTHER_MMF_RATE = assumedMmfYield();
 
 /** Recommended floating buffer per child for ad-hoc CBC project costs. */
 export const CBC_CUSHION_PER_CHILD = 5_000;

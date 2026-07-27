@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { mmfFeeSubsidy, termlyMonthlyTarget } from "../school-fees";
+import { mmfFeeSubsidy, termlyMonthlyTarget, SMOOTHER_MMF_RATE } from "../school-fees";
 
 describe("termlyMonthlyTarget", () => {
   it("spreads the annual bill across 12 months per child", () => {
@@ -15,10 +15,16 @@ describe("termlyMonthlyTarget", () => {
 
 describe("mmfFeeSubsidy", () => {
   it("computes one year of monthly-compounded interest on the contributions", () => {
-    // m = 10,000/mo at 12%: FV = 10000 × ((1.01^12 − 1)/0.01) ≈ 126,825 → ~6,825 interest
+    // Bounds derived from the rate in force rather than the 6,500-7,200 band
+    // that assumed a hardcoded 12%. An annuity of m per month for 12 months at
+    // monthly rate i returns m × ((1+i)^12 − 1)/i; the interest is that minus
+    // the contributions. Written out so the test checks the compounding, not a
+    // remembered answer from a rate environment that has since moved.
+    const m = 10_000;
+    const i = SMOOTHER_MMF_RATE / 12;
+    const expected = m * ((Math.pow(1 + i, 12) - 1) / i) - m * 12;
     const subsidy = mmfFeeSubsidy(120_000, 1);
-    expect(subsidy).toBeGreaterThan(6_500);
-    expect(subsidy).toBeLessThan(7_200);
+    expect(subsidy).toBeCloseTo(expected, 0);
   });
 
   it("scales linearly with children", () => {
