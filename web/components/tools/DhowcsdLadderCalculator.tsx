@@ -19,6 +19,7 @@ import ResetLink from "./ResetLink";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
 import { TBILL_LINKS, MMF_LINKS } from "@/lib/affiliate-links";
+import { verdictFor } from "@/lib/mmf-vs-tbill";
 import { attribution, daysSinceRefresh, isStale } from "@/lib/rates-feed";
 
 /**
@@ -71,6 +72,9 @@ export default function DhowcsdLadderCalculator() {
   // reader who has weighted everything into one tenor is entitled to see it.
   // Gating on the full ladder minimum hid a plan they could actually place.
   const belowMinimum = parsed > 0 && parsed < DHOWCSD_BILL_MINIMUM;
+  // Against the 364-day bill: the longest lock the ladder builds, and so the
+  // hardest case for a fund that pays out in a day.
+  const crossover = verdictFor(parsed, 364);
   const ladder = useMemo(
     () => (parsed >= DHOWCSD_BILL_MINIMUM ? dhowcsdLadder(parsed, weights) : null),
     [parsed, weights],
@@ -171,6 +175,48 @@ export default function DhowcsdLadderCalculator() {
             products={MMF_LINKS.slice(0, 2)}
             heading="MMFs to park in while building to Ksh 50,000"
           />
+        </div>
+      )}
+
+      {/* THE QUESTION THIS TOOL RAISES AND NEVER ANSWERED.
+          A reader here is deciding between locking money in bills and leaving
+          it in a fund. The tool told them to "park smaller amounts in an MMF"
+          without ever saying which pays more — and the honest answer today is
+          that nobody can tell them, because the gap is smaller than the
+          assumption underneath it. Saying so is more useful than a ranking. */}
+      {crossover && (
+        <div className="rounded-xl border border-line bg-surface-sub p-4 text-sm">
+          <p className="font-semibold text-ink">MMF or T-Bill?</p>
+          {crossover.kind === "below-minimum" ? (
+            <p className="mt-1 leading-relaxed text-ink-soft">
+              At this amount there is no choice to weigh. A Treasury bill cannot be bought for
+              less than <strong>{formatKES(crossover.minimumKES)}</strong>, so a money market fund
+              is not the better option — it is the only one. No yield estimate is involved in
+              that.
+            </p>
+          ) : crossover.kind === "too-close" ? (
+            <p className="mt-1 leading-relaxed text-ink-soft">
+              Too close to call on yield, and worth knowing why. A fund holds Treasury bills, so
+              its return is the short bill plus a thin spread — we assume{" "}
+              <strong>{crossover.comparison.assumedSpreadPp.toFixed(2)}pp</strong>. That assumption
+              is bigger than the{" "}
+              <strong>{Math.abs(crossover.comparison.edgePp).toFixed(2)}pp</strong> difference it
+              produces, and the two would tie at a spread of{" "}
+              <strong>{crossover.comparison.breakEvenSpreadPp.toFixed(2)}pp</strong>. Decide on the
+              things that are certain instead: the bill locks your money for{" "}
+              {crossover.comparison.billTenorDays} days, the fund pays out in about a day.
+            </p>
+          ) : (
+            <p className="mt-1 leading-relaxed text-ink-soft">
+              On current rates the{" "}
+              {crossover.kind === "mmf-ahead" ? "fund" : `${crossover.comparison.billTenorDays}-day bill`}{" "}
+              is ahead by{" "}
+              <strong>{Math.abs(crossover.comparison.edgePp).toFixed(2)}pp</strong> after
+              withholding tax — but the fund side rests on an assumed spread of{" "}
+              {crossover.comparison.assumedSpreadPp.toFixed(2)}pp, and the two tie at{" "}
+              {crossover.comparison.breakEvenSpreadPp.toFixed(2)}pp.
+            </p>
+          )}
         </div>
       )}
 
