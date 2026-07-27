@@ -15,18 +15,26 @@ export type YieldBasis = "gross" | "net";
 export type Regulator = "CMA" | "CBK" | "SASRA" | "CBK+CMA" | "RBA";
 
 /**
- * When the quoted yields below were last checked against the providers.
+ * The observation date of the FIGURES, not the day somebody edited this file.
  *
- * They carried no date at all, which is the defect this codebase keeps
- * finding: a figure that was true once and got quietly outrun. MMF yields
- * move monthly — faster than almost anything else quoted in either product —
- * so an undated 11.8% is a liability, not information.
+ * The yields carried no date at all to begin with — the defect this codebase
+ * keeps finding, a figure true once and quietly outrun. MMF yields move
+ * monthly, faster than almost anything else quoted in either product, so an
+ * undated 11.8% is a liability rather than information.
+ *
+ * The first fix was worse than the problem it named: this read 2026-07-27, the
+ * day the constant was added, above yields that were still the inherited ~11%.
+ * A market survey then put the same funds at 14.8-17.5%. Stamping today's date
+ * on figures nobody had checked did not make them current — it made stale
+ * numbers look fresh and disarmed the very guard built to catch them. The date
+ * now belongs to the survey the numbers came from, and a fund with no figure
+ * in that survey carries no figure at all.
  *
  * Past the window the yields stop being shown as current. The provider list
  * itself stays useful: which funds exist, who regulates them and how you
  * reach your money do not change monthly.
  */
-export const YIELDS_AS_OF = "2026-07-27";
+export const YIELDS_AS_OF = "2026-04-01";
 export const YIELDS_MAX_AGE_DAYS = 120;
 
 export function yieldsAreStale(now = new Date()): boolean {
@@ -47,6 +55,20 @@ export interface ProductLink {
   yieldBasis?: YieldBasis;
   /** Minimum entry in KES. */
   minKes?: number;
+  /**
+   * Reachable from the M-PESA menu itself, with no separate account opening.
+   *
+   * An explicit fact, because the code that needed it was inferring it from
+   * `/M-PESA/i.test(liquidity) && yieldPct === undefined` — which worked only
+   * while exactly one fund happened to lack a yield. Every other fund's
+   * liquidity string reads "T+1 to M-Pesa", so it matched the regex too, and
+   * the real discriminator was the missing figure. The moment four more funds
+   * lost their yields, the wallet-native set silently grew from one to five and
+   * the advice would have described ordinary funds as reachable from the M-PESA
+   * app. A product fact inferred from an unrelated gap is a coincidence waiting
+   * to be corrected.
+   */
+  walletNative?: boolean;
   regulator: Regulator;
   /** Short liquidity description shown on product cards. */
   liquidity: string;
@@ -61,19 +83,39 @@ export const PRODUCT_LINKS: ProductLink[] = [
     // actually starts. A fund reachable from the M-PESA menu removes the
     // onboarding step that ends most saving plans before they begin.
     //
-    // yieldPct and minKes are deliberately ABSENT rather than estimated: this
-    // is the largest fund in the market and a wrong number here would be the
-    // most consequential wrong number in the file. Both consumers already
-    // render a product without a yield. Fill them in once verified.
+    // minKes is confirmed at 100 — the lowest entry of any fund listed here,
+    // and the whole point of the product.
+    //
+    // yieldPct stays ABSENT, and that is now a considered refusal rather than
+    // a gap. Two candidate figures exist and neither can be used:
+    //
+    //   9.50%  — Ziidi's own quoted rate, but from February 2025. Older than
+    //            this file's staleness window by more than a year.
+    //   18.20% — from a current survey, but it belongs to ETICA CAPITAL's MMF,
+    //            listed there as "Zidi". One 'i' apart from this fund and a
+    //            different manager entirely. Attributing it to Safaricom's
+    //            Ziidi would overstate the largest fund in the market by nearly
+    //            nine points, on the strength of a spelling.
+    //
+    // Ziidi is also known to trail the market on yield while leading it on
+    // reach, so borrowing a top-quartile number would be wrong in the exact
+    // direction a reader would be harmed by.
     slug: "ziidi-mmf",
     name: "Ziidi Money Market Fund",
     shortName: "Ziidi MMF",
     type: "mmf",
+    // Deliberately the root, not a deep link I have not opened. You do not
+    // sign up for this fund on the web at all — you reach it from the M-PESA
+    // menu or *334# — so a plausible-looking product URL would be a guess
+    // pointing at a page that may not exist. The tagline carries the real
+    // route in.
     url: "https://www.safaricom.co.ke/",
     isAffiliate: false,
+    minKes: 100,
+    walletNative: true,
     regulator: "CMA",
-    liquidity: "Withdraw to M-PESA",
-    tagline: "Reachable from the M-PESA app — no separate onboarding",
+    liquidity: "Withdraw to M-PESA, no fee",
+    tagline: "M-PESA app or *334# — from Ksh 100, no separate onboarding",
   },
   {
     slug: "britam-mmf",
@@ -82,7 +124,7 @@ export const PRODUCT_LINKS: ProductLink[] = [
     type: "mmf",
     url: "https://www.britam.com/ke/personal/savings-investments/money-market-fund",
     isAffiliate: false,
-    yieldPct: 11.8,
+    yieldPct: 15.5,
     minKes: 1000,
     regulator: "CMA",
     liquidity: "T+1 to M-Pesa",
@@ -95,7 +137,10 @@ export const PRODUCT_LINKS: ProductLink[] = [
     type: "mmf",
     url: "https://www.cicinsurancegroup.com/personal/savings-and-investments/cic-money-market-fund",
     isAffiliate: false,
-    yieldPct: 11.5,
+    // No figure in the April 2026 survey. The inherited ~11% is dropped
+    // rather than carried: leaving it in place would silently stamp it
+    // with a survey date it was never part of, which is the same defect
+    // as the undated yields this file was built to fix.
     minKes: 1000,
     regulator: "CMA",
     liquidity: "T+1 to M-Pesa",
@@ -108,7 +153,10 @@ export const PRODUCT_LINKS: ProductLink[] = [
     type: "mmf",
     url: "https://www.nabocapital.com/products/nabo-money-market-fund",
     isAffiliate: false,
-    yieldPct: 11.6,
+    // No figure in the April 2026 survey. The inherited ~11% is dropped
+    // rather than carried: leaving it in place would silently stamp it
+    // with a survey date it was never part of, which is the same defect
+    // as the undated yields this file was built to fix.
     minKes: 5000,
     regulator: "CMA",
     liquidity: "T+1 to M-Pesa",
@@ -121,7 +169,7 @@ export const PRODUCT_LINKS: ProductLink[] = [
     type: "mmf",
     url: "https://www.icealion.com/products/money-market-fund",
     isAffiliate: false,
-    yieldPct: 11.2,
+    yieldPct: 14.8,
     minKes: 1000,
     regulator: "CMA",
     liquidity: "T+1 to M-Pesa",
@@ -134,8 +182,8 @@ export const PRODUCT_LINKS: ProductLink[] = [
     type: "mmf",
     url: "https://www.sanlam.co.ke/personal/investments/money-market",
     isAffiliate: false,
-    yieldPct: 11.0,
-    minKes: 1000,
+    yieldPct: 15.5,
+    minKes: 500,
     regulator: "CMA",
     liquidity: "T+1 to M-Pesa",
     tagline: "USSD access makes it easy from any phone",
@@ -147,7 +195,10 @@ export const PRODUCT_LINKS: ProductLink[] = [
     type: "mmf",
     url: "https://www.oldmutual.co.ke/personal/investments/money-market-fund",
     isAffiliate: false,
-    yieldPct: 10.9,
+    // No figure in the April 2026 survey. The inherited ~11% is dropped
+    // rather than carried: leaving it in place would silently stamp it
+    // with a survey date it was never part of, which is the same defect
+    // as the undated yields this file was built to fix.
     minKes: 1000,
     regulator: "CMA",
     liquidity: "T+1 to M-Pesa",
@@ -160,11 +211,14 @@ export const PRODUCT_LINKS: ProductLink[] = [
     type: "mmf",
     url: "https://www.zimele.net",
     isAffiliate: false,
-    yieldPct: 11.0,
+    // No figure in the April 2026 survey. The inherited ~11% is dropped
+    // rather than carried: leaving it in place would silently stamp it
+    // with a survey date it was never part of, which is the same defect
+    // as the undated yields this file was built to fix.
     minKes: 500,
     regulator: "CMA",
     liquidity: "T+1 to M-Pesa",
-    tagline: "Lowest minimum entry — ideal for beginners",
+    tagline: "Low minimum entry; long-standing retail fund",
   },
   // ── Treasury Bills & Bonds (CBK) ────────────────────────────────────────
   {

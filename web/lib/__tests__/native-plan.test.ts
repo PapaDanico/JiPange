@@ -173,7 +173,7 @@ describe("the plan names only providers that exist in the directory", () => {
    */
   it("names the M-PESA-reachable fund in the action plan itself", () => {
     const reachable = PRODUCT_LINKS.find(
-      (p) => p.type === "mmf" && /M-PESA/i.test(p.liquidity) && p.yieldPct === undefined
+      (p) => p.type === "mmf" && p.walletNative
     );
     expect(reachable, "no M-PESA-reachable MMF in the directory").toBeTruthy();
     const short = reachable!.shortName.replace(/ MMF$/, "");
@@ -182,11 +182,30 @@ describe("the plan names only providers that exist in the directory", () => {
     const mmfItem = plan.find((p) => /money market fund/i.test(p.title));
     expect(mmfItem, "no MMF recommendation in a plan with a healthy surplus").toBeTruthy();
     expect(mmfItem!.description, "the action plan does not name the reachable fund").toContain(short);
+
+    // FIRST, not merely present. Asserting presence alone could not see the
+    // ordering code at all: the wallet-native fund happens to sit first in the
+    // directory array, so deleting the sort entirely still passed. Reach is
+    // the reason this fund leads the sentence, and reach is what breaks if
+    // someone reorders the directory for an unrelated reason.
+    const others = PRODUCT_LINKS.filter(
+      (p) => p.type === "mmf" && !p.walletNative
+    ).map((p) => p.shortName.replace(/ MMF$/, ""));
+    const firstOther = others
+      .map((n) => mmfItem!.description.indexOf(n))
+      .filter((i) => i >= 0)
+      .sort((a, b) => a - b)[0];
+    if (firstOther !== undefined) {
+      expect(
+        mmfItem!.description.indexOf(short),
+        "a fund needing separate onboarding is named before the wallet-native one"
+      ).toBeLessThan(firstOther);
+    }
   });
 
   it("names it in the goal strategy too", () => {
     const reachable = PRODUCT_LINKS.find(
-      (p) => p.type === "mmf" && /M-PESA/i.test(p.liquidity) && p.yieldPct === undefined
+      (p) => p.type === "mmf" && p.walletNative
     )!;
     const short = reachable.shortName.replace(/ MMF$/, "");
     const s = buildGoalStrategy({
