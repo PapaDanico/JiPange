@@ -60,10 +60,9 @@ export default function TermsPage() {
             <h2 className="text-base font-semibold text-primary">5. Data and privacy</h2>
             <p className="mt-2">
               JiPange does not require registration to use any calculator, and every
-              calculator computes in your browser. Two optional features do send data: asking
-              for an AI action plan sends your figures — but not your name — to our server and
-              on to Anthropic, and saving a plan across devices requires an email address. You
-              never have to use either. See our{" "}
+              calculator — including the action plan — computes in your browser. One optional
+              feature does send data: saving a plan across devices requires an email address.
+              You never have to use it. See our{" "}
               <Link href="/privacy" className="underline hover:text-primary">
                 Privacy Policy
               </Link>{" "}
@@ -82,10 +81,9 @@ export default function TermsPage() {
           <section>
             <h2 className="text-base font-semibold text-primary">7. Third-party services and affiliate links</h2>
             <p className="mt-2">
-              JiPange relies on third-party providers to operate: Netlify (hosting),
-              Anthropic (generating an AI action plan, when you ask for one) and Supabase
-              (sign-in and saved plans, if you choose to save one). Each processes outside
-              Kenya. Your use of features that rely on them is also subject to their own terms
+              JiPange relies on third-party providers to operate: Netlify (hosting) and
+              Supabase (sign-in and saved plans, if you choose to save one). Each processes
+              outside Kenya. Your use of features that rely on them is also subject to their own terms
               and policies, and our{" "}
               <Link href="/privacy" className="underline hover:text-primary">
                 privacy notice

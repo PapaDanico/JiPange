@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Link from "next/link";
 import {
   getStoredCalculations,
@@ -10,7 +10,7 @@ import {
 } from "@/lib/storage";
 import { useStorageValue } from "@/lib/hooks";
 import { buildRetirementComparison } from "@/lib/projections";
-import type { Calculations, Profile } from "@/lib/types";
+import { buildActionPlan } from "@/lib/native-plan";
 import SaveMyPlan from "./SaveMyPlan";
 import WhatsAppShare from "./WhatsAppShare";
 
@@ -32,45 +32,25 @@ export default function ActionPlan() {
   const profile = useStorageValue(getStoredProfile, () => null);
   const calculations = useStorageValue(getStoredCalculations, () => null);
   const plan = useStorageValue(getStoredPlan, () => null);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
 
+  /**
+   * The plan is computed here, on the device, from the same seven fields the
+   * API used to forward to a model. No fetch, no loading state, no
+   * "temporarily unavailable" — a deterministic engine cannot be down, costs
+   * nothing at any scale, and the figures never leave the browser. See
+   * lib/native-plan.ts for what that trades away (prose variety) and why that
+   * is the right trade for financial guidance.
+   */
   useEffect(() => {
     if (!profile || !calculations || plan) return;
-    void generatePlan(profile, calculations);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profile, calculations]);
-
-  async function generatePlan(currentProfile: Profile, currentCalculations: Calculations) {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await fetch("/api/generate-plan", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          profile: currentProfile,
-          calculations: {
-            netMonthly: currentCalculations.netMonthly,
-            savingsCapacity: currentCalculations.savingsCapacity,
-          },
-        }),
-      });
-
-      if (!response.ok) {
-        const responseBody = await response.json().catch(() => null);
-        throw new Error(responseBody?.error ?? "Something went wrong");
-      }
-
-      const data = await response.json();
-      // setStoredPlan notifies subscribers, so `plan` above picks this up on its own.
-      setStoredPlan(data.recommendations);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
-    } finally {
-      setLoading(false);
-    }
-  }
+    setStoredPlan(
+      buildActionPlan({
+        profile,
+        net: calculations.netMonthly,
+        surplus: calculations.savingsCapacity,
+      })
+    );
+  }, [profile, calculations, plan]);
 
   // Quiz-only (or brand-new) visitors: the AI plan needs real salary numbers.
   // Invite them into the deep profile instead of bouncing them off the page.
@@ -113,36 +93,11 @@ export default function ActionPlan() {
 
   return (
     <div className="w-full max-w-2xl space-y-6 pb-28">
-      {loading && (
-        <div className="space-y-4">
-          <p className="text-center text-sm text-ink-soft">
-            JiPange is thinking about your situation...
-          </p>
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="h-32 animate-pulse rounded-2xl bg-canvas" />
-          ))}
-        </div>
-      )}
-
-      {error && !loading && !plan && (
-        <div className="rounded-2xl bg-danger-soft p-6 text-center print:hidden">
-          <p className="text-sm text-danger">{error}</p>
-          <button
-            onClick={() => void generatePlan(profile, calculations)}
-            className="mt-3 h-11 rounded-full bg-primary px-4 text-sm font-medium text-white"
-          >
-            Try again
-          </button>
-        </div>
-      )}
-
-      {error && !loading && plan && (
-        <p className="text-center text-xs text-danger">
-          {error} Showing your last successful plan below.
-        </p>
-      )}
-
-      {plan && !loading && (
+      {/* No loading skeleton and no error state on purpose: generation is a
+          synchronous local computation now, so there is no moment to spin
+          through and no network to fail. The one-render gap before the effect
+          runs is imperceptible. */}
+      {plan && (
         <div className="space-y-4">
           {plan.map((item) => (
             <div key={item.rank} className="rounded-2xl bg-white p-5 shadow-sm">
@@ -161,12 +116,16 @@ export default function ActionPlan() {
             </div>
           ))}
 
-          <button
-            onClick={() => void generatePlan(profile, calculations)}
-            className="h-11 w-full rounded-full border border-border text-sm font-medium text-ink-soft"
+          {/* "Try different recommendations" died with the model call: a
+              deterministic engine gives the same answer to the same numbers,
+              and pretending otherwise would be a slot machine. A different
+              plan comes from different numbers, so that is the door offered. */}
+          <Link
+            href="/profile/full"
+            className="flex h-11 w-full items-center justify-center rounded-full border border-border text-sm font-medium text-ink-soft"
           >
-            Try different recommendations
-          </button>
+            Update my numbers to change the plan
+          </Link>
 
           <div className="print:hidden"><SaveMyPlan /></div>
         </div>

@@ -66,11 +66,10 @@ export default function PrivacyPage() {
         <p className="mt-1 text-sm text-ink-soft">Last updated: July 2026</p>
 
         <div className="mt-4 rounded-2xl border border-[#CFE3CF] bg-[#f0f7f0] px-5 py-4 text-sm text-success-deep">
-          <strong>Short version:</strong> every calculator runs entirely in your browser and
-          sends nothing anywhere. Two things are different, and both are optional and asked
-          for: requesting an <strong>AI action plan</strong> sends your figures — but not your
-          name — to our server and on to Anthropic; and <strong>saving a plan</strong> requires
-          an email address. You never have to do either.
+          <strong>Short version:</strong> every calculator — and the action plan — runs
+          entirely in your browser and sends nothing anywhere. One thing is different, and it
+          is optional and asked for: <strong>saving a plan across devices</strong> requires an
+          email address. You never have to do it.
         </div>
 
         <div className="mt-8 space-y-10 text-sm leading-relaxed text-ink-soft">
@@ -103,12 +102,15 @@ export default function PrivacyPage() {
 
           <section>
             <h2 className="text-base font-semibold text-primary">
-              2. What is sent when you ask for an AI action plan
+              2. The action plan — now computed on your device
             </h2>
             <p className="mt-2">
-              Only when you request one. Your <strong>name is not included</strong> — it was
-              removed because it changed nothing about the plan, and section 25(c) of the Act
-              asks that data be limited to what is necessary.
+              Earlier versions of this notice explained that requesting a plan sent your
+              figures to our server and on to an AI provider outside Kenya. That is no longer
+              how it works: since July 2026 the plan is generated <strong>on your device</strong>,
+              by a deterministic engine. Section 25(c) of the Act asks that data be limited to
+              what is necessary — and the necessary amount to transmit turned out to be none.
+              The figures below are what the engine reads, and they go nowhere.
             </p>
             <Table items={SENT_FOR_THE_AI_PLAN} />
           </section>

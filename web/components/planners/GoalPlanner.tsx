@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { formatKES } from "@/lib/budget";
 import {
   buildMultiGoalPlan,
@@ -8,6 +8,7 @@ import {
   type GoalConfig,
   type PlanItemInput,
 } from "@/lib/goal-planner";
+import { buildGoalStrategy } from "@/lib/native-plan";
 import { inflationAdjust } from "@/lib/projections";
 import { getStoredCalculations, getStoredProfile, saveStoredGoal } from "@/lib/storage";
 import type { GoalStrategy } from "@/lib/types";
@@ -80,8 +81,6 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
   const [capacityFromProfile, setCapacityFromProfile] = useState(false);
 
   const [strategy, setStrategy] = useState<GoalStrategy | null>(null);
-  const [strategyLoading, setStrategyLoading] = useState(false);
-  const [strategyError, setStrategyError] = useState<string | null>(null);
   const [goalSaved, setGoalSaved] = useState(false);
 
   // Prefill from the onboarding journey when it exists. One-time seed into
@@ -205,17 +204,13 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
   // Bumping the sequence also invalidates any request still in flight. The
   // ref bump has to happen here (mutating a ref during render isn't safe —
   // a render can be discarded and retried without committing), and the
-  // state resets have to land in the same tick as the bump or a resolving
-  // in-flight request could apply a stale result before it's invalidated —
-  // so this stays a single effect rather than an in-render reset.
-  const strategyRequestSeq = useRef(0);
+  // A shown strategy must not outlive the numbers it was computed from. With
+  // generation synchronous there is no in-flight request to invalidate any
+  // more — the reset is all that is left of the old sequencing machinery.
   const itemsKey = items.map((i) => `${i.todayValue}:${i.years}`).join("|");
   useEffect(() => {
-    strategyRequestSeq.current++;
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- must run in the same tick as the ref bump above; see comment above
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- deliberate reset when the inputs change
     setStrategy(null);
-    setStrategyError(null);
-    setStrategyLoading(false);
     setGoalSaved(false);
   }, [itemsKey, parsedSavings, parsedCapacity]);
 
@@ -277,42 +272,26 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
   const canApplyTimeline =
     singleItem?.yearsAtCapacity != null && Math.ceil(singleItem.yearsAtCapacity) <= maxYears;
 
-  async function fetchStrategy() {
+  /**
+   * Computed on the device — no fetch, no request sequencing, no mid-flight
+   * cancellation, because there is no flight. The strategy comes from the same
+   * numbers the planner just showed the reader, through lib/native-plan.ts.
+   */
+  function fetchStrategy() {
     if (!multi) return;
-    const seq = ++strategyRequestSeq.current;
-    setStrategyLoading(true);
-    setStrategyError(null);
-    try {
-      const response = await fetch("/api/goal-strategy", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          goalType: config.type,
-          goalTitle: config.title,
-          targetAmount: nominalTarget,
-          years: displayYears,
-          currentSavings: parsedSavings,
-          requiredMonthly: multi.totalRequiredMonthly,
-          feasibility: multi.feasibility,
-          monthlyCapacity: parsedCapacity > 0 ? parsedCapacity : null,
-          context: buildContext(),
-        }),
-      });
-
-      if (!response.ok) {
-        const responseBody = await response.json().catch(() => null);
-        throw new Error(responseBody?.error ?? "Something went wrong");
-      }
-
-      const data = await response.json();
-      if (seq !== strategyRequestSeq.current) return; // inputs changed mid-flight
-      setStrategy(data.strategy);
-    } catch (err) {
-      if (seq !== strategyRequestSeq.current) return;
-      setStrategyError(err instanceof Error ? err.message : "Something went wrong");
-    } finally {
-      if (seq === strategyRequestSeq.current) setStrategyLoading(false);
-    }
+    setStrategy(
+      buildGoalStrategy({
+        goalType: config.type,
+        goalTitle: config.title,
+        targetAmount: nominalTarget,
+        years: displayYears,
+        currentSavings: parsedSavings,
+        requiredMonthly: multi.totalRequiredMonthly,
+        feasibility: multi.feasibility,
+        monthlyCapacity: parsedCapacity > 0 ? parsedCapacity : null,
+        context: buildContext(),
+      })
+    );
   }
 
   const badge =
@@ -805,39 +784,17 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
 
           {/* ── AI strategy ── */}
           <div aria-live="polite">
-          {!strategy && !strategyLoading && (
+          {!strategy && (
             <button
               type="button"
-              onClick={() => void fetchStrategy()}
+              onClick={fetchStrategy}
               className="h-12 w-full rounded-full bg-primary text-base font-medium text-white transition-colors hover:bg-primary-deep"
             >
               Where should this money live? Get my strategy →
             </button>
           )}
 
-          {strategyLoading && (
-            <div className="space-y-3">
-              <p className="text-center text-sm text-ink-soft">
-                JiPange is thinking about your goal...
-              </p>
-              <div className="h-40 animate-pulse rounded-2xl bg-canvas" />
-            </div>
-          )}
-
-          {strategyError && !strategyLoading && (
-            <div className="rounded-2xl bg-danger-soft p-5 text-center">
-              <p className="text-sm text-danger">{strategyError}</p>
-              <button
-                type="button"
-                onClick={() => void fetchStrategy()}
-                className="mt-3 h-11 rounded-full bg-primary px-4 text-sm font-medium text-white"
-              >
-                Try again
-              </button>
-            </div>
-          )}
-
-          {strategy && !strategyLoading && (
+          {strategy && (
             <div className="space-y-4">
               <div className="rounded-2xl border-2 border-accent bg-accent-soft p-5">
                 <h3 className="text-sm font-semibold uppercase tracking-wide text-accent-ink">

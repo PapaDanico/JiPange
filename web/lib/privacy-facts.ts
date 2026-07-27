@@ -55,15 +55,20 @@ export const DEVICE_ONLY: DataItem[] = [
 ];
 
 /** The optional AI plan. Leaves the device; carries no name. */
+/**
+ * The action plan used to be the notice's section 2: figures travelled to our
+ * server and on to a processor outside Kenya. It is now computed on the
+ * device, so that section describes data that no longer moves — the strongest
+ * outcome minimisation allows, and the entry says so rather than vanishing,
+ * because a reader who remembers the old notice deserves the explanation.
+ */
 export const SENT_FOR_THE_AI_PLAN: DataItem[] = [
   {
     what: "Age, county, gross and net monthly salary, savings capacity, number of dependants, whether you are in a chama",
-    purpose:
-      "To generate the three tailored recommendations you asked for. Requested only when you ask for a plan.",
+    purpose: "To generate the three tailored recommendations you asked for.",
     destination:
-      "Our server, then Anthropic's Claude API to write the plan text. Anthropic processes outside Kenya.",
-    retention:
-      "Not stored by us. Anthropic and Netlify keep infrastructure logs for security and abuse monitoring.",
+      "Nowhere. Since July 2026 the plan is computed on your device by a deterministic engine — no server, no AI provider, no cross-border transfer.",
+    retention: "The plan and its inputs stay in your browser's storage until you clear them.",
   },
 ];
 
@@ -130,11 +135,6 @@ export const PROCESSORS = [
   {
     name: "Netlify",
     role: "Hosts the site and runs the server functions",
-    where: "Outside Kenya",
-  },
-  {
-    name: "Anthropic",
-    role: "Generates the AI action plan text, when you ask for one",
     where: "Outside Kenya",
   },
   {
