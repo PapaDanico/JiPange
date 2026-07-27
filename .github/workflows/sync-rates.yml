@@ -9,10 +9,22 @@ name: Sync rates from Mwangaza Yield
 # verify — unknown schema, missing tenor, implausible yield or an implausible
 # one-day move — and leaves the existing snapshot untouched, so a bad upstream
 # day costs us freshness, never correctness.
+#
+# WHY IT RUNS TWICE
+# -----------------
+# The ordering above is an assumption about two independent cron jobs, and
+# GitHub does not guarantee either fires on time — scheduled runs drift by
+# hours under load. On 27 July the upstream refresh landed at 06:33 UTC, well
+# after this job's 05:00, so the sync took figures two days old and nothing
+# reported it. Widening the gap would only move the race; a second run late in
+# the day means a delayed upstream refresh is still collected the same day.
+# The real backstop is the test that fails when the shipped snapshot goes
+# stale, because a job can stop firing altogether and no schedule fixes that.
 
 on:
   schedule:
     - cron: '0 5 * * 1-5' # 8am EAT weekdays, ~2h after Mwangaza's refresh
+    - cron: '0 11 * * 1-5' # 2pm EAT, for the mornings when that ordering slips
   workflow_dispatch:
     inputs:
       reason:

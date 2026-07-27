@@ -24,6 +24,13 @@ import { dhowcsdLadder, BANK_SAVINGS_BASELINE } from "@/lib/market-2026";
  * refactor cannot reintroduce it.
  */
 
+/**
+ * Tighter than the UI's staleness notice on purpose: we want to know the
+ * pipeline has stopped a week before a reader would see a warning about it.
+ * Wide enough to absorb the weekend, since the sync runs weekdays only.
+ */
+const SNAPSHOT_MAX_AGE_DAYS = 7;
+
 describe("the snapshot is a contract we understand", () => {
   it("declares the schema this build was written against", () => {
     expect(RATES.schema).toBe(SUPPORTED_SCHEMA);
@@ -129,6 +136,38 @@ describe("freshness is surfaced, not assumed", () => {
 
     const wayLater = new Date(at.getTime() + (STALE_AFTER_DAYS + 2) * 86_400_000);
     expect(isStale(wayLater)).toBe(true);
+  });
+
+  /**
+   * The shipped snapshot itself must be fresh, not merely the function that
+   * judges freshness.
+   *
+   * Everything above tests isStale() against synthetic dates, which it passes
+   * whether or not anyone is still refreshing the file. That is the gap a dead
+   * sync falls through: the workflow stops, the snapshot ages, every test stays
+   * green, and the app quietly serves a fixed rate that the code describes as
+   * live. The MMF assumption now derives from these figures, so a frozen
+   * snapshot is a hardcoded yield wearing a live number's clothes — precisely
+   * what removing the four typed MMF rates was meant to end.
+   *
+   * It failed once already, and quietly: the sync runs at 05:00 UTC on the
+   * assumption that Mwangaza's 03:00 scrape has finished, but GitHub's
+   * scheduled runs drift under load. On 27 July the upstream refresh landed at
+   * 06:33, so the sync had already run and taken figures two days old. Nothing
+   * anywhere reported it.
+   *
+   * A red build is the alarm. If this fails, run the "Sync rates from Mwangaza
+   * Yield" workflow manually and find out why the schedule stopped working.
+   */
+  it("ships a snapshot that something is still refreshing", () => {
+    const age = daysSinceRefresh();
+    expect(
+      age,
+      `rates-snapshot.json is ${age} days old (generated ${RATES.generatedAt}). ` +
+        "The sync workflow has not landed a refresh — run it manually and check " +
+        "whether its schedule is still firing before this reaches the UI's " +
+        `${STALE_AFTER_DAYS}-day stale notice.`
+    ).toBeLessThanOrEqual(SNAPSHOT_MAX_AGE_DAYS);
   });
 
   it("every rate names the auction it came from", () => {
