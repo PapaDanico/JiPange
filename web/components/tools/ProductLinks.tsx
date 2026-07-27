@@ -9,12 +9,25 @@ const REGULATOR_COLORS: Record<string, string> = {
 
 function ProductCard({ product }: { product: ProductLink }) {
   const regulatorClass = REGULATOR_COLORS[product.regulator] ?? "bg-canvas text-ink-soft";
+  // Funds added from the yield survey carry no verified provider link, so
+  // their card is a card and not a button. Rendering an anchor with an
+  // "Open →" affordance that lands somewhere else is the dead-control defect
+  // this codebase keeps finding; the facts on the card are the useful part.
+  const Wrapper = product.url === undefined ? "div" : "a";
+  const linkProps =
+    product.url === undefined
+      ? {}
+      : {
+          href: `/go/${product.slug}`,
+          target: "_blank",
+          rel: "noopener noreferrer sponsored",
+        };
   return (
-    <a
-      href={`/go/${product.slug}`}
-      target="_blank"
-      rel="noopener noreferrer sponsored"
-      className="flex items-center justify-between rounded-xl bg-white px-4 py-3 shadow-sm hover:shadow-md transition-shadow"
+    <Wrapper
+      {...linkProps}
+      className={`flex items-center justify-between rounded-xl bg-white px-4 py-3 shadow-sm transition-shadow ${
+        product.url === undefined ? "" : "hover:shadow-md"
+      }`}
     >
       <div className="min-w-0">
         <p className="text-sm font-semibold text-primary leading-tight">{product.shortName}</p>
@@ -38,9 +51,11 @@ function ProductCard({ product }: { product: ProductLink }) {
         <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${regulatorClass}`}>
           {product.regulator}
         </span>
-        <span className="text-xs text-primary font-medium">Open →</span>
+        {product.url !== undefined && (
+          <span className="text-xs text-primary font-medium">Open →</span>
+        )}
       </div>
-    </a>
+    </Wrapper>
   );
 }
 

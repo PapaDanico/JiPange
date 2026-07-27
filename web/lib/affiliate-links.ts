@@ -47,7 +47,16 @@ export interface ProductLink {
   name: string;
   shortName: string;
   type: ProductType;
-  url: string;
+  /**
+   * Provider page. OPTIONAL, because a guessed URL is worse than no URL.
+   *
+   * The top-yielding funds were added from a market survey that carried rates
+   * and minimums but no links, and this environment cannot reach provider sites
+   * to check one. A plausible-looking address on a financial product is not a
+   * small mistake: it sends somebody looking to move money to a page nobody has
+   * opened. Cards without a URL render as facts rather than as a button.
+   */
+  url?: string;
   isAffiliate: boolean;
   /** Approximate annualised yield or dividend rate — verify live before committing. */
   yieldPct?: number;
@@ -160,7 +169,7 @@ export const PRODUCT_LINKS: ProductLink[] = [
     minKes: 5000,
     regulator: "CMA",
     liquidity: "T+1 to M-Pesa",
-    tagline: "Competitive yield; Sanlam-backed stability",
+    tagline: "Sanlam-backed manager; higher entry minimum",
   },
   {
     slug: "icea-mmf",
@@ -219,6 +228,89 @@ export const PRODUCT_LINKS: ProductLink[] = [
     regulator: "CMA",
     liquidity: "T+1 to M-Pesa",
     tagline: "Low minimum entry; long-standing retail fund",
+  },
+  // ── Funds added from the April 2026 yield survey ────────────────────────
+  //
+  // These lead the market on rate, and their absence quietly biased every
+  // recommendation toward the mid-tier funds that happened to be listed first
+  // — the same defect as Ziidi's absence, one rung up: the directory decides
+  // what the advice can say, so a gap in it is a gap in the advice.
+  //
+  // No `url` on any of them. The survey carried rates and minimums, not links,
+  // and a guessed provider address is the one kind of wrong that sends a reader
+  // somewhere to move money. Liquidity is stated as unconfirmed for the same
+  // reason: T+1 is the sector norm, but a norm is not this fund's terms.
+  {
+    slug: "etica-mmf",
+    name: "Etica Capital Money Market Fund",
+    shortName: "Etica MMF",
+    type: "mmf",
+    isAffiliate: false,
+    yieldPct: 18.2,
+    minKes: 1000,
+    regulator: "CMA",
+    liquidity: "Confirm withdrawal terms with the manager",
+    tagline: "Highest quoted rate in the April 2026 survey",
+  },
+  {
+    slug: "lofty-corban-mmf",
+    name: "Lofty-Corban Money Market Fund",
+    shortName: "Lofty-Corban MMF",
+    type: "mmf",
+    isAffiliate: false,
+    yieldPct: 17.5,
+    minKes: 1000,
+    regulator: "CMA",
+    liquidity: "Confirm withdrawal terms with the manager",
+    tagline: "Consistently near the top of the yield tables",
+  },
+  {
+    slug: "cytonn-mmf",
+    name: "Cytonn Money Market Fund",
+    shortName: "Cytonn MMF",
+    type: "mmf",
+    isAffiliate: false,
+    yieldPct: 16.9,
+    minKes: 1000,
+    regulator: "CMA",
+    liquidity: "Confirm withdrawal terms with the manager",
+    tagline: "Long-running high-yield fund",
+  },
+  {
+    slug: "ncba-mmf",
+    name: "NCBA Money Market Fund",
+    shortName: "NCBA MMF",
+    type: "mmf",
+    isAffiliate: false,
+    yieldPct: 16.2,
+    minKes: 1000,
+    regulator: "CMA",
+    liquidity: "Confirm withdrawal terms with the manager",
+    tagline: "Bank-backed; third largest unit trust by assets",
+  },
+  {
+    slug: "kcb-mmf",
+    name: "KCB Money Market Fund",
+    shortName: "KCB MMF",
+    type: "mmf",
+    isAffiliate: false,
+    yieldPct: 15.8,
+    minKes: 1000,
+    regulator: "CMA",
+    liquidity: "Confirm withdrawal terms with the manager",
+    tagline: "Bank-backed, with branch support countrywide",
+  },
+  {
+    slug: "dry-associates-mmf",
+    name: "Dry Associates Money Market Fund",
+    shortName: "Dry Associates MMF",
+    type: "mmf",
+    isAffiliate: false,
+    yieldPct: 15.2,
+    minKes: 1000,
+    regulator: "CMA",
+    liquidity: "Confirm withdrawal terms with the manager",
+    tagline: "Independent manager with a long fixed-income record",
   },
   // ── Treasury Bills & Bonds (CBK) ────────────────────────────────────────
   {

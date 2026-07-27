@@ -91,6 +91,38 @@ describe("the directory describes each product honestly", () => {
     }
   });
 
+  /**
+   * A URL is a promise that somebody opened the page.
+   *
+   * Six funds were added from a yield survey that carried rates and minimums
+   * but no links, and no provider site is reachable from where this runs. The
+   * temptation is to compose a plausible address from the manager's name —
+   * which on a financial product sends a reader looking to move money to a
+   * page nobody has loaded. Absent is the correct value, and both cards render
+   * facts instead of a button when it is absent.
+   */
+  it("never invents a provider URL", () => {
+    for (const p of PRODUCT_LINKS) {
+      if (p.url === undefined) continue;
+      expect(p.url, `${p.slug} has a malformed URL`).toMatch(/^https:\/\/[\w.-]+\.\w{2,}/);
+    }
+    // The survey funds are the ones with no verified link; if a URL ever
+    // appears on one, it should be because somebody opened it.
+    const unlinked = PRODUCT_LINKS.filter((p) => p.url === undefined).map((p) => p.slug);
+    expect(unlinked.length, "expected the survey-sourced funds to carry no URL").toBeGreaterThan(0);
+  });
+
+  it("carries the funds that lead the market, not only the ones listed first", () => {
+    // Their absence biased every recommendation toward mid-tier funds. The
+    // directory decides what the advice can say, so a gap here is a gap there.
+    const best = Math.max(
+      ...PRODUCT_LINKS.filter((p) => p.type === "mmf" && p.yieldPct !== undefined).map(
+        (p) => p.yieldPct!
+      )
+    );
+    expect(best, "no MMF above 16% — the top of the market is missing").toBeGreaterThan(16);
+  });
+
   it("still claims no affiliate arrangement anywhere, as the terms state", () => {
     expect(PRODUCT_LINKS.filter((p) => p.isAffiliate).map((p) => p.slug)).toEqual([]);
   });

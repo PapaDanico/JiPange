@@ -7,9 +7,13 @@ export async function GET(
 ) {
   const { slug } = await params;
   const product = getProductLink(slug);
-  if (!product) {
+  // A product with no verified URL is as much a dead end here as an unknown
+  // slug — `redirect(undefined)` would throw, and inventing a destination is
+  // the exact thing the missing URL is protecting against. Both land back on
+  // the directory, which is where the reader can see the fund's real details.
+  if (!product?.url) {
     const fallback = new URL(req.url);
-    fallback.pathname = "/tools";
+    fallback.pathname = product ? "/partners" : "/tools";
     fallback.search = "";
     return NextResponse.redirect(fallback);
   }
