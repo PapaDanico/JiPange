@@ -54,6 +54,30 @@ export type Regulator = "CMA" | "CBK" | "SASRA" | "CBK+CMA" | "RBA";
  * satisfying the other.
  */
 export const YIELDS_AS_OF = "2026-04-01";
+
+/**
+ * SACCO dividends are dated separately, because they move on a different
+ * clock: declared once a year at an AGM, not repriced monthly like a fund.
+ *
+ * Sector context from SASRA's supervisory data to Q4 2025 — interest on member
+ * deposits commonly 8-12%, dividends on share capital commonly 10-15% among
+ * the stronger societies. The figures below sit inside that range.
+ */
+export const SACCO_RATES_AS_OF = "2025-12-31";
+export const SACCO_RATES_SOURCE =
+  "SASRA Supervision Annual Report and Quarterly Statistical & Soundness Reports to Q4 2025";
+/** The sector range SASRA reports for dividends on share capital. */
+export const SACCO_DIVIDEND_RANGE_PCT = { low: 8, high: 15 } as const;
+
+/**
+ * The Deposit Guarantee Fund provided for under the Sacco Societies Act — up
+ * to Ksh 100,000 per member on deposits, not on shares — is NOT yet
+ * operational. The Sacco Societies (Amendment) Bill 2025 seeks to activate it,
+ * possibly within the KDIC structure. Until then a SACCO deposit carries no
+ * live statutory guarantee, which is a fact a reader comparing it against a
+ * Treasury bill needs and cannot get from a yield.
+ */
+export const SACCO_DEPOSIT_GUARANTEE_OPERATIONAL = false;
 export const YIELDS_MAX_AGE_DAYS = 120;
 
 export function yieldsAreStale(now = new Date()): boolean {
@@ -97,6 +121,29 @@ export interface ProductLink {
    * to be corrected.
    */
   walletNative?: boolean;
+  /**
+   * What the quoted rate is actually paid ON.
+   *
+   * A SACCO card showed "13% dividends p.a." beside "min entry Ksh 1,000",
+   * which reads as 13% on everything you put in. It is not: the dividend is
+   * declared on SHARE CAPITAL, while member deposits earn a separate and
+   * lower interest rate — around 8-12% against 10-15% on shares, per SASRA's
+   * sector data. A member's actual return depends on how their money splits
+   * between the two, and quoting only the higher number is the same class of
+   * error as quoting a gross yield beside a net one.
+   */
+  yieldApplies?: string;
+  /**
+   * What happens to the money if the institution fails.
+   *
+   * Left unsaid, every card implied the same answer. They do not have the same
+   * answer: a Treasury bill is a sovereign obligation, an MMF is a
+   * CMA-regulated fund whose value can fall, and a SACCO deposit is covered by
+   * a Deposit Guarantee Fund that the Act provides for but which is NOT yet
+   * operational. That last one is a live gap, not a technicality, and a reader
+   * comparing a 13% SACCO against a 9% bill is owed it.
+   */
+  protection?: string;
   regulator: Regulator;
   /** Short liquidity description shown on product cards. */
   liquidity: string;
@@ -397,9 +444,12 @@ export const PRODUCT_LINKS: ProductLink[] = [
   // A SACCO dividend is a share of the society's annual surplus — lending
   // income, not money-market income — declared once a year at an AGM. It is
   // not the short bill plus a spread, so double-digit dividends can coexist
-  // with single-digit bills. These figures are still undated and unsourced,
-  // which is its own defect; they are a dividend HISTORY, and should carry the
-  // year they were declared.
+  // with single-digit bills.
+  //
+  // These now carry their date and their source. They sit inside the range
+  // SASRA reports for the sector, and they are indicative of recent
+  // declarations rather than a promise: a dividend is voted at an AGM out of
+  // a surplus that has not been earned yet.
   {
     slug: "stima-sacco",
     name: "Stima Sacco",
@@ -409,6 +459,8 @@ export const PRODUCT_LINKS: ProductLink[] = [
     isAffiliate: false,
     yieldPct: 13,
     minKes: 1000,
+    yieldApplies: "share capital — member deposits earn a separate, lower rate",
+    protection: "No operational deposit guarantee — see the directory notes",
     regulator: "SASRA",
     liquidity: "30–60 day notice on withdrawals",
     tagline: "3× deposit multiplier; strong dividend history",
@@ -422,6 +474,8 @@ export const PRODUCT_LINKS: ProductLink[] = [
     isAffiliate: false,
     yieldPct: 11,
     minKes: 500,
+    yieldApplies: "share capital — member deposits earn a separate, lower rate",
+    protection: "No operational deposit guarantee — see the directory notes",
     regulator: "SASRA",
     liquidity: "30-day notice on withdrawals",
     tagline: "Low entry; telco-sector membership open to many",
@@ -435,6 +489,8 @@ export const PRODUCT_LINKS: ProductLink[] = [
     isAffiliate: false,
     yieldPct: 10,
     minKes: 1000,
+    yieldApplies: "share capital — member deposits earn a separate, lower rate",
+    protection: "No operational deposit guarantee — see the directory notes",
     regulator: "SASRA",
     liquidity: "30–60 day notice on withdrawals",
     tagline: "Kenya's largest Sacco by deposits; educators and beyond",
