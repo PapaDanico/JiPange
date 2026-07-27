@@ -214,13 +214,46 @@ test("fuliza cost: shows true cost", async ({ page }) => {
   await expect(visibleText(page, "Total cost of borrowing")).toBeVisible();
 });
 
-// ─── KPLC Optimizer ────────────────────────────────────────────────────────
+// ─── KPLC Token Band Checker ───────────────────────────────────────────────
 
-test("kplc optimizer: shows kWh savings", async ({ page }) => {
+/**
+ * The old test asserted that a "savings" figure appeared, which is exactly the
+ * assertion that kept a false claim green: the tool told people two purchases
+ * beat one, the number rendered, and the test was satisfied. KPLC counts units
+ * across the whole calendar month, so that saving was always zero.
+ *
+ * This drives the real question instead — what a reader's own receipt implies
+ * about the band their month lands in.
+ */
+test("kplc band checker: derives the true unit rate and the month's band", async ({ page }) => {
   await page.goto("/tools/kplc-optimizer");
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-  await page.getByRole("spinbutton").first().fill("3000");
-  await expect(page.getByTestId("kplc-extra")).toContainText("kWh");
+
+  const inputs = page.getByRole("spinbutton");
+  await inputs.nth(0).fill("2000"); // monthly budget
+  await inputs.nth(1).fill("1000"); // last purchase
+  await inputs.nth(2).fill("50"); // units received → Ksh 20/unit
+
+  const card = page.getByTestId("kplc-band");
+  await expect(card).toBeVisible();
+  await expect(card).toContainText("Ksh 20");
+  // 2000 / 20 = 100 units, the DC2 ceiling.
+  await expect(page.getByTestId("kplc-units")).toContainText("100.0");
+  await expect(card).toContainText("DC2");
+});
+
+test("kplc band checker: no longer claims splitting a purchase saves anything", async ({
+  page,
+}) => {
+  await page.goto("/tools/kplc-optimizer");
+  const body = page.locator("body");
+  await expect(body).toContainText("Splitting your purchase does not help");
+  // Scoped to the claim, not the word: the site describes its calculators as
+  // free throughout, so a bare /free/i match fails on the nav and proves
+  // nothing about this tool.
+  for (const claim of [/for free/i, /free units/i, /extra units/i, /gaining you an extra/i]) {
+    await expect(body).not.toContainText(claim);
+  }
 });
 
 // ─── SACCO vs Bank ────────────────────────────────────────────────────────
