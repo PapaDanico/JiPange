@@ -132,18 +132,63 @@ describe("the directory describes each product honestly", () => {
    * date beside it passes every check that only asks "is this a number?".
    *
    * The live feed is the anchor precisely because it cannot be typed in wrong.
+   *
+   * WHY THIS BAND HAS TWO SIDES
+   * ---------------------------
+   * It had one. It only asked whether a quote was too HIGH — which caught the
+   * defect that prompted it and would have slept through the mirror image: a
+   * fund carried at 5.8% while the bill it holds pays 9.30%. That is not a
+   * conservative fund, it is a stale or mistyped number, and it fails in the
+   * worse direction: it keeps a reader's money in a bank account by making the
+   * alternative look pointless. An MMF can lag its bills by fees and a cash
+   * drag; it cannot lag them by a third.
+   *
+   * A one-sided band is a check that half works, which is the kind most likely
+   * to be trusted as though it worked.
    */
   it("quotes no MMF yield that the underlying T-bill cannot support", () => {
     const bill = tbillRate(91);
     expect(bill, "no 91-day bill in the feed to sanity-check against").toBeTruthy();
-    const ceiling = bill!.grossEAY + 4;
-    for (const p of PRODUCT_LINKS.filter((x) => x.type === "mmf" && x.yieldPct !== undefined)) {
+    const anchor = bill!.grossEAY;
+    /* Above: a thin spread over the bill, plus room for a genuinely good fund.
+     * Below: fees and cash drag, which are real but bounded — a fund holding
+     * 9.30% paper does not return 6%. */
+    const ceiling = anchor + 4;
+    const floor = anchor - 2.5;
+    const quoted = PRODUCT_LINKS.filter((x) => x.type === "mmf" && x.yieldPct !== undefined);
+
+    /* A tripwire on the empty state, not a demand that it be non-empty.
+     *
+     * Today the directory quotes NO MMF yield at all — every candidate figure
+     * was either stale or belonged to a differently-spelled fund, and each was
+     * refused in writing at its entry in affiliate-links.ts. So the band below
+     * currently iterates over nothing, and a loop over nothing passes.
+     *
+     * Asserting "there must be some" would turn that careful refusal into a red
+     * build and pressure somebody into quoting a number to make CI happy, which
+     * is the worst outcome available. Asserting the count instead means the day
+     * a sourced yield IS added, this line fails, whoever added it reads this
+     * comment, deletes the line — and the band starts genuinely guarding on the
+     * same commit. Silence stays honest; it just cannot stay unnoticed. */
+    expect(
+      quoted.length,
+      "an MMF now carries a yield. The band below will check it from here on; " +
+        "delete this assertion (and this comment) as part of that change."
+    ).toBe(0);
+
+    for (const p of quoted) {
       expect(
         p.yieldPct,
         `${p.slug} quotes ${p.yieldPct}% gross while the 91-day bill pays ` +
-          `${bill!.grossEAY.toFixed(2)}% — an MMF cannot durably beat the paper it holds ` +
+          `${anchor.toFixed(2)}% — an MMF cannot durably beat the paper it holds ` +
           `by that much, so this figure is from an older rate environment`
       ).toBeLessThanOrEqual(ceiling);
+      expect(
+        p.yieldPct,
+        `${p.slug} quotes ${p.yieldPct}% gross while the 91-day bill pays ` +
+          `${anchor.toFixed(2)}% — fees and cash drag do not cost that much, so this ` +
+          `figure is stale or mistyped, and it understates the case for moving money`
+      ).toBeGreaterThanOrEqual(floor);
     }
   });
 

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import ToolLayout from "@/components/tools/ToolLayout";
 import InvestmentReturnsCalculator from "@/components/tools/InvestmentReturnsCalculator";
+import { BANK_SAVINGS_EARNING_BELOW_INFLATION_TRILLION } from "@/lib/kenya-stats";
 
 export const metadata: Metadata = {
   title: "Investment Returns Calculator — Compound Growth Kenya",
@@ -18,9 +19,9 @@ export default function InvestmentReturnsPage() {
         {
           icon: "⚠️",
           tone: "caution",
-          stat: "Ksh 4.6T",
+          stat: `Ksh ${BANK_SAVINGS_EARNING_BELOW_INFLATION_TRILLION}T`,
           label: "sits in Kenyan bank accounts earning 3.23% — below inflation — silently losing real value every day.",
-          source: "CMA Collective Investment Schemes, July 2026",
+          source: "CMA Collective Investment Schemes Quarterly Report, Q1 2026 · CBK",
         },
         {
           icon: "🚀",

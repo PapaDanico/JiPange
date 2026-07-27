@@ -13,10 +13,28 @@ import {
   FINACCESS_FORMAL_INCLUSION_PCT,
   FINACCESS_LITERACY_PASS_PCT,
   RBA_NO_PENSION_PCT,
+  RBA_COVERAGE_OF_WORKING_AGE_PCT,
+  RBA_INCOME_MEETS_NEEDS_PCT,
+  RBA_INCOME_FALLS_SHORT_PCT,
   INFORMAL_WORKERS_MILLIONS,
-  INFORMAL_PENSION_COVERAGE_PCT,
   FULIZA_USERS_MILLIONS,
+  FULIZA_VOLUME_TRILLION_KSH,
+  FULIZA_PER_USER_KSH,
+  BANK_DEPOSITS_TRILLION_KSH,
+  MMF_AUM_BILLION_KSH,
+  MMF_SHARE_OF_DEPOSITS_PCT,
+  BANK_SAVINGS_EARNING_BELOW_INFLATION_TRILLION,
 } from "@/lib/kenya-stats";
+
+/**
+ * Ksh with thousands separators, for figures quoted inside prose.
+ *
+ * Every number in the cards below is now interpolated rather than typed. The
+ * previous version stated "Ksh 370 billion (7%)" and "Average ticket: Ksh 254"
+ * as literal text beside constants that this file did not import, so the
+ * constants and the copy could — and did — disagree for a year.
+ */
+const ksh = (n: number) => `Ksh ${n.toLocaleString("en-KE")}`;
 
 const pct = (rate: number) => `${parseFloat((rate * 100).toFixed(2))}%`;
 
@@ -57,8 +75,9 @@ const REALITY_STATS: {
     dataSuffix: "%",
     color: "text-[#86CBA5]",
     label: "Kenya MMF baseline return",
-    detail: `Same shillings, right vehicle. Yet Ksh 5 trillion sits in bank accounts — only Ksh 370 billion (7%) is in money market funds.`,
-    source: "CMA Collective Investment Schemes, July 2026",
+    detail: `Same shillings, right vehicle. Yet Ksh ${BANK_DEPOSITS_TRILLION_KSH} trillion sits in bank accounts — only Ksh ${MMF_AUM_BILLION_KSH} billion (${MMF_SHARE_OF_DEPOSITS_PCT}%) is in money market funds.`,
+    source:
+      "CMA Collective Investment Schemes Quarterly Report, Q1 2026 · CBK banking sector data",
     cta: "See the compounding →",
     href: "/tools/investment-returns",
   },
@@ -68,9 +87,8 @@ const REALITY_STATS: {
     dataSuffix: "M",
     color: "text-[#F0C060]",
     label: "Kenyans who used Fuliza in a year",
-    detail:
-      "Ksh 1.46 trillion borrowed — mostly for food, rent and school fees. Average ticket: Ksh 254. This is a planning gap, not a cash-flow accident.",
-    source: "Safaricom FY2026 · Nation Africa",
+    detail: `Ksh ${FULIZA_VOLUME_TRILLION_KSH} trillion borrowed — mostly for food, rent and school fees. That is ${ksh(FULIZA_PER_USER_KSH)} per borrower across the year. This is a planning gap, not a cash-flow accident.`,
+    source: "Safaricom PLC FY2026 Annual Results",
     cta: "Calculate Fuliza's true cost →",
     href: "/tools/fuliza-cost",
   },
@@ -83,17 +101,17 @@ const RESEARCH_CARDS = [
     dataSuffix: "%",
     tone: "danger" as const,
     label: "of Kenya's workforce has no active pension contribution",
-    body: "Only 19% of working Kenyans actively contribute to a pension scheme. Of those who do and eventually retire, 65% are dissatisfied with what they receive — despite saving for 30–40 years.",
-    cite: "Retirement Benefits Authority Pensioners Survey 2024 · RBA Statistical Digest 2024",
+    body: `Only ${100 - RBA_NO_PENSION_PCT}% of working Kenyans actively contribute to a pension scheme. And of those who do reach retirement, just ${RBA_INCOME_MEETS_NEEDS_PCT}% say their retirement income covers their daily needs — ${RBA_INCOME_FALLS_SHORT_PCT}% say it does not, after saving for 30–40 years.`,
+    cite: "Retirement Benefits Authority — Pensioners Survey 2024 (427 recent retirees)",
   },
   {
-    figure: `${INFORMAL_PENSION_COVERAGE_PCT}%`,
-    dataCount: INFORMAL_PENSION_COVERAGE_PCT,
+    figure: `${RBA_COVERAGE_OF_WORKING_AGE_PCT}%`,
+    dataCount: RBA_COVERAGE_OF_WORKING_AGE_PCT,
     dataSuffix: "%",
     tone: "danger" as const,
-    label: `pension coverage rate for Kenya's ${INFORMAL_WORKERS_MILLIONS}M informal workers`,
-    body: "Side hustles, chamas, small businesses — 18.1 million Kenyans in the informal sector are building their livelihoods with almost no formal retirement safety net.",
-    cite: "Kenya Pensions Paradox — Pension Policy International · KIPPRA 2024",
+    label: "of working-age Kenyans are enrolled in any retirement scheme at all",
+    body: `And enrolled is not the same as paying in — that figure counts dormant members too, which is why ${RBA_NO_PENSION_PCT}% make no active contribution. Side hustles, chamas, small businesses: ${INFORMAL_WORKERS_MILLIONS} million Kenyans in the informal sector are building their livelihoods with almost no formal retirement safety net.`,
+    cite: "Retirement Benefits Authority — industry brief, half-year to June 2025 · KNBS Economic Survey",
   },
   {
     figure: `${FINACCESS_FORMAL_INCLUSION_PCT}%`,
@@ -110,7 +128,7 @@ const RESEARCH_CARDS = [
     dataSuffix: "%",
     tone: "success" as const,
     label: "of Kenyans passed all 3 financial literacy questions",
-    body: `Questions covered inflation, compound interest, and risk. ${FINACCESS_LITERACY_FAIL_PCT}% could not pass — meaning the majority are making daily financial decisions without the tools to understand the consequences. JiPange is the missing tool.`,
+    body: `Questions covered inflation, interest rates, and risk diversification. ${FINACCESS_LITERACY_FAIL_PCT}% could not pass — meaning the majority are making daily financial decisions without the tools to understand the consequences. JiPange is the missing tool.`,
     cite: "FinAccess Household Survey 2024 — CBK / FSD Kenya / KNBS",
   },
 ];
@@ -472,11 +490,11 @@ export default function Home() {
                 <p className="text-[0.8125rem] leading-relaxed text-muted">
                   Ksh 6.50/day on Ksh 600 feels like loose change. Annualised, it&apos;s the most
                   expensive credit product most Kenyans ever use — more than bank overdrafts, more
-                  than credit cards. Kenyans borrowed Ksh 1.46 trillion through Fuliza in the year
-                  to March 2026.
+                  than credit cards. Kenyans borrowed Ksh {FULIZA_VOLUME_TRILLION_KSH} trillion
+                  through Fuliza in the year to March 2026.
                 </p>
                 <p className="mt-3 text-[0.6875rem] italic text-danger-deep">
-                  Safaricom FY2026 · Techweez · Nation Africa
+                  Safaricom PLC FY2026 Annual Results
                 </p>
               </div>
 
@@ -492,18 +510,19 @@ export default function Home() {
                   className="text-4xl font-black leading-none tracking-tighter text-success-deep"
                   style={{ fontVariantNumeric: "tabular-nums" }}
                 >
-                  Ksh 4.6T
+                  Ksh {BANK_SAVINGS_EARNING_BELOW_INFLATION_TRILLION}T
                 </p>
                 <p className="mt-1.5 mb-3 text-[0.875rem] font-semibold text-ink-soft">
                   in bank accounts earning below inflation
                 </p>
                 <p className="text-[0.8125rem] leading-relaxed text-muted">
-                  Of Ksh 5 trillion in Kenyan bank savings, only Ksh 370 billion is in money market
-                  funds — earning 9–12% vs. bank rates of {pct(ASSUMED_CURRENT_YIELD)}. The
-                  difference at Ksh 100,000 over 5 years is over Ksh 50,000 earned or lost.
+                  Of Ksh {BANK_DEPOSITS_TRILLION_KSH} trillion in Kenyan bank savings, only Ksh{" "}
+                  {MMF_AUM_BILLION_KSH} billion is in money market funds — earning 9–12% vs. bank
+                  rates of {pct(ASSUMED_CURRENT_YIELD)}. The difference at Ksh 100,000 over 5 years
+                  is over Ksh 50,000 earned or lost.
                 </p>
                 <p className="mt-3 text-[0.6875rem] italic text-success-deep">
-                  CMA 2026 · Business Daily Africa
+                  CMA Collective Investment Schemes Quarterly Report, Q1 2026 · CBK
                 </p>
               </div>
             </div>
