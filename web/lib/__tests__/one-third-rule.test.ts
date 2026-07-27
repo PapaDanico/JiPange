@@ -30,13 +30,56 @@ describe("checkOneThirdRule", () => {
     expect(result.excessDeduction).toBeCloseTo(4_716.67, 2);
   });
 
-  it("treats zero non-statutory deductions as compliant by construction", () => {
-    const result = checkOneThirdRule({
-      basicSalary: 50_000,
-      saccoDeductions: 0,
-      loanDeductions: 0,
-    });
-    expect(result.compliant).toBe(true);
+  /**
+   * Compliant because statutory deductions are small, NOT by construction.
+   *
+   * The old name for this test said "by construction", which quietly asserted
+   * that statutory deductions cannot make anyone non-compliant because they are
+   * excluded from the cap. They are not excluded — they are simply never large
+   * enough. PAYE tops out at 30% of a band, NSSF is capped in shillings, SHIF
+   * is 2.75% and the housing levy 1.5%, so the statutory total asymptotes to
+   * roughly a third of gross and the floor needs two thirds.
+   *
+   * The distinction matters because it is the whole interpretation question.
+   */
+  it("is compliant on statutory deductions alone, at every salary", () => {
+    for (const basicSalary of [20_000, 50_000, 150_000, 250_000, 1_000_000]) {
+      const r = checkOneThirdRule({ basicSalary, saccoDeductions: 0, loanDeductions: 0 });
+      expect(r.compliant, `statutory alone tripped the floor at ${basicSalary}`).toBe(true);
+      // And the reason: they never come close to two thirds.
+      expect(r.statutoryDeductions / basicSalary).toBeLessThan(0.5);
+    }
+  });
+
+  /**
+   * Statutory deductions COUNT against the two-thirds cap.
+   *
+   * Employment Act s.19(3) caps "the total amount of all deductions which under
+   * the provisions of subsection (1) may be made", and subsection (1) reaches
+   * amounts deducted under any written law. The decisive evidence is what
+   * happened when the rates moved: the Auditor-General reports roughly 47,300
+   * national government employees below the one-third floor, a breach the
+   * police service attributes to mandatory NSSF, the housing levy and SHA. A
+   * statutory levy cannot breach a cap it is not counted against.
+   *
+   * The module docstring used to claim the opposite while the code did this.
+   * This test exists so that nobody reconciles the two in the wrong direction —
+   * it pins the reading, not just the arithmetic.
+   */
+  it("counts statutory deductions against the floor, not only voluntary ones", () => {
+    const basicSalary = 50_000;
+    const r = checkOneThirdRule({ basicSalary, saccoDeductions: 15_000, loanDeductions: 10_000 });
+
+    // Under the rejected reading, 25,000 of voluntary deductions sits well
+    // inside two thirds of 50,000 and this payslip would be lawful.
+    expect(r.nonStatutoryDeductions).toBe(25_000);
+    expect(r.nonStatutoryDeductions).toBeLessThan((basicSalary * 2) / 3);
+
+    // Under the statute as read here, the statutory deductions come off too,
+    // and the payslip breaches the floor.
+    expect(r.totalDeductions).toBeCloseTo(r.statutoryDeductions + r.nonStatutoryDeductions, 2);
+    expect(r.compliant).toBe(false);
+    expect(r.excessDeduction).toBeGreaterThan(0);
   });
 
   it("handles zero basic salary gracefully", () => {

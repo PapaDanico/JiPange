@@ -106,8 +106,10 @@ export default function OneThirdRuleCalculator() {
           </div>
 
           <p className="text-xs text-ink-soft">
-            Based on the Employment Act&apos;s one-third rule for non-statutory deductions. This is
-            a simplified guide, not legal advice — consult a labour officer or lawyer for disputes.
+            Employment Act s.19(3) caps <em>all</em> deductions at two-thirds of your wages —
+            statutory ones included, which is why PAYE, NSSF, SHIF and the housing levy are
+            counted above. This is a simplified guide, not legal advice — consult a labour
+            officer or lawyer for disputes.
           </p>
 
           <CalculatorDisclaimer />
