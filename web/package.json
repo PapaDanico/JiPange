@@ -12,7 +12,6 @@
     "typecheck:e2e": "tsc -p tsconfig.e2e.json"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.109.0",
     "@ducanh2912/next-pwa": "^10.2.9",
     "@netlify/blobs": "^10.7.9",
     "@supabase/ssr": "^0.12.0",
