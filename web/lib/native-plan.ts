@@ -40,6 +40,35 @@ import { formatKES } from "./budget";
 import { tbillRate } from "./rates-feed";
 import { ASSUMED_CURRENT_YIELD, TARGET_MMF_YIELD } from "./journey";
 import { PAYE_BANDS, PENSION_RELIEF_CAP_MONTHLY } from "./tax";
+import { PRODUCT_LINKS } from "./affiliate-links";
+
+/**
+ * The MMFs to name, from the product directory — never typed into this file.
+ *
+ * The first version of this engine said "CIC, Britam and Sanlam" in three
+ * separate strings. That was a second source of truth about which products
+ * exist, and it went out of date immediately: Ziidi, reachable from the
+ * M-PESA app and the largest fund in the market, was absent from the advice
+ * while sitting in the directory the rest of the app reads.
+ *
+ * Naming providers is a data question. The directory answers it, dates its
+ * yields, and records who regulates each one; this engine's job is to decide
+ * WHAT to recommend, not to keep a private list of WHO.
+ *
+ * Ordered by reach first: a fund a reader can open from a menu they already
+ * have beats thirty basis points they will never collect because the
+ * onboarding defeated them.
+ */
+function mmfNames(limit = 3): string {
+  const funds = PRODUCT_LINKS.filter((p) => p.type === "mmf");
+  const byReach = [
+    ...funds.filter((p) => /M-PESA/i.test(p.liquidity) && p.yieldPct === undefined),
+    ...funds.filter((p) => !(/M-PESA/i.test(p.liquidity) && p.yieldPct === undefined)),
+  ];
+  const picked = byReach.slice(0, limit).map((p) => p.shortName.replace(/ MMF$/, ""));
+  if (picked.length <= 1) return picked[0] ?? "a money market fund";
+  return `${picked.slice(0, -1).join(", ")} and ${picked[picked.length - 1]}`;
+}
 
 /** Round to a figure a person would actually set a standing order for. */
 function friendly(amount: number): number {
@@ -119,7 +148,7 @@ export function buildActionPlan({ profile, net, surplus }: NativePlanInput): Act
   candidates.push({
     title: "Build a one-month cushion in a money market fund",
     description:
-      `Open an MMF (CIC, Britam and Sanlam all take small minimums) and set a standing order of ${formatKES(emergencyMonthly)} for payday. Target: one month of net pay — ${formatKES(net)} — as your do-not-touch floor.`,
+      `Open an MMF — ${mmfNames()} all take small minimums — and set a standing order of ${formatKES(emergencyMonthly)} for payday. Target: one month of net pay — ${formatKES(net)} — as your do-not-touch floor.`,
     impact: `About ${formatKES(emergencyMonthly * 12)} of cushion in 12 months, earning ~${MMF_PCT}% instead of ~${BANK_PCT}% in a bank account — ${yieldGapPct} points of pure difference for the same shilling.`,
     effort: "low",
     category: "savings",
@@ -166,7 +195,7 @@ export function buildActionPlan({ profile, net, surplus }: NativePlanInput): Act
     candidates.push({
       title: "Put a floor under the people who depend on you",
       description:
-        `With ${profile.dependants} dependant${profile.dependants === 1 ? "" : "s"}, confirm your SHA registration is active and premiums current, then price simple term life cover — from roughly Ksh 500–1,500/month at your age from Britam, ICEA LION or CIC. Cover before compounding.`,
+        `With ${profile.dependants} dependant${profile.dependants === 1 ? "" : "s"}, confirm your SHA registration is active and premiums current, then price simple term life cover — from roughly Ksh 500–1,500/month at your age from the major Kenyan insurers. Cover before compounding.`,
       impact: "One hospital bill or worse, uninsured, can erase years of saving in a month. This is the cheapest large risk you can move off your family.",
       effort: "low",
       category: "insurance",
@@ -292,7 +321,7 @@ export function buildGoalStrategy(request: GoalStrategyRequest): GoalStrategy {
       title: overCapacity ? "Start at your real capacity — honestly" : "Open the vehicle this week",
       description: overCapacity
         ? `The required ${formatKES(requiredMonthly)}/month exceeds your stated capacity of ${formatKES(monthlyCapacity!)}. Do not pretend otherwise: start the standing order at ${formatKES(startMonthly)}, and either extend the timeline or trim the target — the plan that survives is the one you can actually pay.`
-        : `${goalType === "retirement" ? "Ask your employer about NSSF Tier 2 voluntary contributions, or open a personal pension with a registered manager (check the RBA register)" : "Open an MMF with CIC, Britam or Sanlam — small minimums, same-week access"}, and put the first ${formatKES(startMonthly)} in before the month ends.`,
+        : `${goalType === "retirement" ? "Ask your employer about NSSF Tier 2 voluntary contributions, or open a personal pension with a registered manager (check the RBA register)" : `Open an MMF (${mmfNames()}) — small minimums, same-week access`}, and put the first ${formatKES(startMonthly)} in before the month ends.`,
     },
     {
       step: 2,
