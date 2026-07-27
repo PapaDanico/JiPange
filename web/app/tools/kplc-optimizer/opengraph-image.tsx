@@ -1,6 +1,6 @@
 import { ogAlt, ogCard, ogContentType, ogSize } from "@/lib/og/card";
 
-const title = "KPLC Token Band Optimizer";
+const title = "KPLC Token Band Checker";
 
 export const size = ogSize;
 export const contentType = ogContentType;

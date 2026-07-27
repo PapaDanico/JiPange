@@ -148,8 +148,8 @@ export const CALCULATOR_GROUPS: ToolGroup[] = [
       {
         href: "/tools/kplc-optimizer",
         icon: "⚡",
-        title: "KPLC Token Band Optimizer",
-        description: "Split your monthly token budget into two buys and gain free units on the same spend.",
+        title: "KPLC Token Band Checker",
+        description: "Work out your true cost per unit and see which tariff band your month lands in.",
         insight: "Two half-month purchases keep you in the lower tariff band — same money, more kWh.",
         isNew: true,
       },

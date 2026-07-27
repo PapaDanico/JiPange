@@ -67,7 +67,7 @@ export const TOOL_META: Record<string, ToolMeta> = {
   "/tools/kplc-optimizer": {
     href: "/tools/kplc-optimizer",
     icon: "⚡",
-    name: "KPLC Optimizer",
+    name: "KPLC Token Checker",
     related: ["/tools/budget-split", "/tools/payday-router"],
     nextMove: { label: "Plan the rest of your budget →", href: "/tools/budget-split" },
   },

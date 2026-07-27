@@ -138,7 +138,7 @@ const TOOLS = [
   { href: "/tools/investment-returns", emoji: "📈", name: "Investment Returns", hook: "MMF vs bank vs T-Bill — see the compounding gap" },
   { href: "/tools/money-runway", emoji: "⏳", name: "Money Runway", hook: "How long your savings survive a job loss" },
   { href: "/tools/guarantor-shield", emoji: "🛡️", name: "Sacco Guarantor Shield", hook: "Your real unencumbered borrowing power" },
-  { href: "/tools/kplc-optimizer", emoji: "⚡", name: "KPLC Token Optimizer", hook: "Free units by splitting your token buys" },
+  { href: "/tools/kplc-optimizer", emoji: "⚡", name: "KPLC Token Checker", hook: "Your real cost per unit, from your own receipt" },
   { href: "/tools/fuliza-cost", emoji: "📱", name: "True Cost of Fuliza", hook: "What Ksh 6.50/day really costs you annually" },
 ];
 

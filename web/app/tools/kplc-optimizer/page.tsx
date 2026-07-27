@@ -3,31 +3,33 @@ import ToolLayout from "@/components/tools/ToolLayout";
 import { KplcOptimizer } from "@/components/tools/CashflowWidgets";
 
 export const metadata: Metadata = {
-  title: "KPLC Token Band Optimizer",
+  title: "KPLC Token Band Checker",
   description:
-    "Buy KPLC tokens in two half-month purchases to stay in a lower tariff band and get extra units on the same budget.",
+    "Work out your real cost per unit from your last token receipt, and see which KPLC tariff band your month lands in.",
 };
 
 export default function KplcOptimizerPage() {
   return (
     <ToolLayout
       path="/tools/kplc-optimizer"
-      title="⚡ KPLC Token Band Optimizer"
-      description="Same budget, more units — split your token purchases to stay in the cheaper tariff band."
+      title="⚡ KPLC Token Band Checker"
+      description="Your real cost per unit, from your own receipt — and which band your month actually lands in."
       insights={[
         {
           icon: "⚠️",
           tone: "caution",
-          stat: "~40%",
-          label: "more per unit is what most Kenyans pay by buying Ksh 1,000+ at once and jumping into the higher tariff band.",
-          source: "KPLC Tariff Structure 2025",
+          stat: "1 month",
+          label:
+            "is the Pre-paid Unit Purchase Period — units accumulate across every purchase in a calendar month, so splitting a buy in two changes nothing.",
+          source: "EPRA/KPLC domestic tariff schedule",
         },
         {
           icon: "⚡",
           tone: "hopeful",
-          stat: "~15 units",
-          label: "of extra electricity per month — free — by splitting Ksh 1,000 into two Ksh 500 purchases on the same budget.",
-          source: "KPLC Band 1 vs Band 2 rates, 2025",
+          stat: "3 months",
+          label:
+            "of rolling average consumption set your tariff category, so a heavy month raises what you pay in the months after it.",
+          source: "EPRA/KPLC domestic tariff schedule",
         },
       ]}
     >
