@@ -4,6 +4,10 @@ import {
   PRODUCT_LINKS,
   YIELDS_AS_OF,
   YIELDS_MAX_AGE_DAYS,
+  SACCO_RATES_AS_OF,
+  SACCO_RATES_SOURCE,
+  SACCO_DIVIDEND_RANGE_PCT,
+  SACCO_DEPOSIT_GUARANTEE_OPERATIONAL,
   yieldsAreStale,
 } from "../affiliate-links";
 
@@ -141,6 +145,51 @@ describe("the directory describes each product honestly", () => {
           `by that much, so this figure is from an older rate environment`
       ).toBeLessThanOrEqual(ceiling);
     }
+  });
+
+  /**
+   * SACCO figures answer to SASRA, not to the Treasury bill.
+   *
+   * The MMF ceiling above must never be applied here — a dividend is a share
+   * of a society's annual lending surplus, voted at an AGM, so double digits
+   * can sit honestly beside a 9% bill. What they do owe is a date, a source,
+   * and a range they cannot silently leave.
+   */
+  it("dates and sources every SACCO dividend, inside the range SASRA reports", () => {
+    const saccos = PRODUCT_LINKS.filter((p) => p.type === "sacco" && p.yieldPct !== undefined);
+    expect(saccos.length, "no SACCO dividends to check").toBeGreaterThan(0);
+    expect(Number.isNaN(new Date(SACCO_RATES_AS_OF).getTime())).toBe(false);
+    expect(SACCO_RATES_SOURCE, "the figures cite no supervisory source").toMatch(/SASRA/i);
+    for (const p of saccos) {
+      expect(
+        p.yieldPct,
+        `${p.slug} quotes ${p.yieldPct}%, outside the ${SACCO_DIVIDEND_RANGE_PCT.low}-${SACCO_DIVIDEND_RANGE_PCT.high}% range SASRA reports for the sector`
+      ).toBeGreaterThanOrEqual(SACCO_DIVIDEND_RANGE_PCT.low);
+      expect(p.yieldPct).toBeLessThanOrEqual(SACCO_DIVIDEND_RANGE_PCT.high);
+    }
+  });
+
+  /**
+   * The two things a yield cannot tell you.
+   *
+   * "13% dividends p.a." beside "min entry Ksh 1,000" reads as 13% on
+   * everything you put in — but the dividend is declared on share capital
+   * while deposits earn a separate, lower rate. And the Deposit Guarantee
+   * Fund the Act provides for is not operational, so a SACCO deposit has no
+   * live statutory cover while a bank deposit has KDIC. A reader comparing a
+   * 13% SACCO against a 9% bill is owed both facts, and neither is derivable
+   * from the number on the card.
+   */
+  it("says what the SACCO rate is paid on, and that deposits are unguaranteed", () => {
+    for (const p of PRODUCT_LINKS.filter((x) => x.type === "sacco")) {
+      expect(p.yieldApplies, `${p.slug} does not say what its rate is paid on`).toMatch(
+        /share capital/i
+      );
+      expect(p.protection, `${p.slug} does not disclose the deposit guarantee gap`).toBeTruthy();
+    }
+    // If the Fund is ever operationalised this flips, and the cards should
+    // stop warning about it — a stale warning is its own kind of wrong.
+    expect(SACCO_DEPOSIT_GUARANTEE_OPERATIONAL).toBe(false);
   });
 
   it("still claims no affiliate arrangement anywhere, as the terms state", () => {

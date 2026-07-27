@@ -7,6 +7,9 @@ import {
   MMF_LINKS,
   TBILL_LINKS,
   SACCO_LINKS,
+  SACCO_RATES_AS_OF,
+  SACCO_RATES_SOURCE,
+  SACCO_DIVIDEND_RANGE_PCT,
   PENSION_LINKS,
   YIELDS_AS_OF,
   type ProductLink,
@@ -104,6 +107,20 @@ function ProductCard({ product }: { product: ProductLink }) {
           <p>liquidity</p>
         </div>
       </div>
+
+      {(product.yieldApplies || product.protection) && (
+        <div className="mt-3 space-y-1 text-[11px] leading-relaxed text-ink-soft">
+          {product.yieldApplies && (
+            // "13% dividends p.a." beside "min entry Ksh 1,000" reads as 13%
+            // on everything you put in. It is paid on share capital; deposits
+            // earn a separate, lower rate.
+            <p>Paid on {product.yieldApplies}.</p>
+          )}
+          {product.protection && (
+            <p className="text-[#7a4a00]">⚠ {product.protection}.</p>
+          )}
+        </div>
+      )}
 
       {/* CTA */}
       <div className="mt-4">
@@ -252,6 +269,20 @@ export default function PartnersView() {
           <li>
             JiPange does not currently receive referral fees from any listed provider unless
             marked <strong>★ Partner</strong>.
+          </li>
+          <li>
+            <strong>SACCO deposits are not currently guaranteed.</strong> The Sacco Societies
+            Act provides for a Deposit Guarantee Fund of up to Ksh 100,000 per member — on
+            deposits, not on shares — but it is <strong>not yet operational</strong>; the Sacco
+            Societies (Amendment) Bill 2025 seeks to activate it. Bank deposits have KDIC
+            cover today and SACCO deposits do not, which is a difference no yield figure shows.
+          </li>
+          <li>
+            SACCO dividends are declared once a year at an AGM out of a surplus that has not
+            been earned yet, so a past rate is history rather than a rate on offer. The figures
+            here are dated {SACCO_RATES_AS_OF} and sit inside the{" "}
+            {SACCO_DIVIDEND_RANGE_PCT.low}–{SACCO_DIVIDEND_RANGE_PCT.high}% range SASRA reports
+            for the sector. Source: {SACCO_RATES_SOURCE}.
           </li>
           <li>
             This is a curated information directory — not financial advice or an endorsement.
