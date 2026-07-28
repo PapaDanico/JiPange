@@ -31,18 +31,34 @@ test("take-home pay: shows net salary for valid input", async ({ page }) => {
 });
 
 /**
- * The export button must produce an actual PDF.
+ * The export button must produce an actual PDF — and exactly one page of it.
  *
  * The assertion is the %PDF- magic bytes and the page structure, not "a
  * download fired with a plausible size" — the sister product held that weaker
  * check green for months while the button emitted a .png, and the user's
  * report ("I still cannot generate PDFs") was accurate the whole time.
+ *
+ * WHY THIS FLIPPED FROM "MORE THAN ONE PAGE" TO "EXACTLY ONE"
+ * ----------------------------------------------------------
+ * It used to assert `pages > 1`, guarding a deliberate choice: rather than
+ * shrink a long card to an unreadable sliver, the exporter cut it into
+ * page-height bands. That was the right call for what it was exporting — a
+ * phone-shaped column of cards with no document structure.
+ *
+ * It also produced a completely blank second page on real exports, because the
+ * band cut landed a few pixels into empty space. Two sample PDFs came back
+ * that way, and a blank sheet is the first thing a reader notices.
+ *
+ * The export is now a document rather than a photograph of a card: a fixed A4
+ * sheet with a header, the inputs, a grid of results and a methodology
+ * footnote, laid out to fit. One page is the contract, so that is what this
+ * checks. The old assertion is not weakened here, it is REPLACED — a
+ * requirement changed, and the two cannot both be true.
  */
-test("take-home pay: the PDF button downloads a real, paginated PDF", async ({ page }) => {
+test("take-home pay: the PDF button downloads a real, single-page PDF", async ({ page }) => {
   // A phone viewport on purpose: it is what most readers are on, and it is the
-  // case that makes the card tall enough to need more than one A4 page. At the
-  // desktop default the same card is wide and short and fits on one — also
-  // correct, but it would not exercise the pagination path.
+  // case that used to overflow onto a second sheet. If one page holds here, it
+  // holds at desktop width too.
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/tools/take-home-pay");
   await page.getByRole("spinbutton").first().fill("150000");
@@ -56,10 +72,27 @@ test("take-home pay: the PDF button downloads a real, paginated PDF", async ({ p
   const path = await download.path();
   const bytes = readFileSync(path);
   expect(bytes.subarray(0, 5).toString("latin1")).toBe("%PDF-");
-  // A long result is cut across A4 pages rather than shrunk to an unreadable
-  // sliver on one, so this card yields more than a single /Type /Page.
-  const pages = (bytes.toString("latin1").match(/\/Type\s*\/Page[^s]/g) ?? []).length;
-  expect(pages).toBeGreaterThan(1);
+
+  const raw = bytes.toString("latin1");
+  const pages = (raw.match(/\/Type\s*\/Page[^s]/g) ?? []).length;
+  expect(pages, "the export is a one-page document; a second page means content overflowed").toBe(1);
+
+  /* The sheet is A4, in one orientation or the other. Without this, a future
+   * change that fitted everything onto one page by emitting a page the shape
+   * of the card would satisfy the count above and stop being a document. */
+  const box = raw.match(/\/MediaBox\s*\[([^\]]*)\]/);
+  expect(box, "no MediaBox — the PDF has no page geometry").toBeTruthy();
+  const [, , w, h] = box![1].trim().split(/\s+/).map(Number);
+  const a4 = (a: number, b: number) => Math.abs(a - 595.28) < 2 && Math.abs(b - 841.89) < 2;
+  expect(
+    a4(w, h) || a4(h, w),
+    `page is ${Math.round(w)}x${Math.round(h)}pt, which is not A4 in either orientation`
+  ).toBe(true);
+
+  /* And it is not a blank sheet. One page containing nothing would pass every
+   * assertion above — which is exactly the failure the old two-page export
+   * shipped, one page too late. */
+  expect(bytes.byteLength, "the PDF is too small to contain a rendered sheet").toBeGreaterThan(20_000);
 });
 
 // ─── Savings Goal ──────────────────────────────────────────────────────────
