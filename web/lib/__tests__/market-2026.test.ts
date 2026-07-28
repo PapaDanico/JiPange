@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 import {
   KENYAN_INFLATION,
   dhowcsdLadder,
-  localizedFire,
   mjengoPlan,
 } from "../market-2026";
 import { maxSafeMonthlyDraw, nextCycleRunway } from "../hustle";
@@ -11,35 +10,6 @@ import {
   marginalPayeRate,
   taxShield,
 } from "../tax-shield";
-
-describe("localizedFire (5% SWR, 6.4% inflation)", () => {
-  const fire = localizedFire({
-    currentMonthlyExpenses: 80_000,
-    currentAge: 30,
-    targetRetirementAge: 50,
-  });
-
-  it("uses the 20x multiplier for today's money", () => {
-    expect(fire.currentAnnualExpenses).toBe(960_000);
-    expect(fire.todaysMoneyFireNumber).toBe(19_200_000);
-  });
-
-  it("inflates expenses to the retirement year before applying 20x", () => {
-    const expected = 960_000 * Math.pow(1 + KENYAN_INFLATION, 20);
-    expect(fire.futureAnnualExpenses).toBeCloseTo(expected, 4);
-    expect(fire.nominalFutureFireNumber).toBeCloseTo(expected * 20, 2);
-  });
-
-  it("clamps a past retirement age to zero years", () => {
-    const late = localizedFire({
-      currentMonthlyExpenses: 50_000,
-      currentAge: 65,
-      targetRetirementAge: 60,
-    });
-    expect(late.yearsToRetirement).toBe(0);
-    expect(late.nominalFutureFireNumber).toBe(late.todaysMoneyFireNumber);
-  });
-});
 
 describe("mjengoPlan (3x Sacco multiplier)", () => {
   it("requires a third of the property value as deposits", () => {

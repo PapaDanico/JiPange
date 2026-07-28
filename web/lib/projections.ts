@@ -18,14 +18,6 @@
  * the divergence from CURRENT_INFLATION is deliberate rather than an oversight.
  */
 export const DEFAULT_INFLATION_RATE = 0.065; // long-run Kenya CPI average, per annum
-/**
- * Bengen (1994) 4% safe withdrawal rate. This was calibrated on US market
- * and inflation history — JiPange surfaces it as a rough guide only, not
- * a Kenya-specific guarantee.
- */
-export const SAFE_WITHDRAWAL_RATE = 0.04;
-export const SAFE_WITHDRAWAL_RATE_NOTE =
-  "The 4% rule is based on US historical market data (Bengen, 1994). Kenyan inflation and market returns differ — treat this as a rough guide, not a guarantee.";
 
 export const DEFAULT_RETIREMENT_AGE = 60;
 export const DEFAULT_WITH_PLAN_RETURN_RATE = 0.1;
