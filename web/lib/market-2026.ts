@@ -20,7 +20,6 @@ export const KENYAN_INFLATION = CURRENT_INFLATION;
 // one shared constant so the FIRE calculator and the journey funnel never
 // silently disagree on the MMF baseline they're both quoting.
 export const NOMINAL_RETIREMENT_YIELD = TARGET_MMF_YIELD;
-export const LOCAL_SAFE_WITHDRAWAL_RATE = 0.05; // localized SWR (net real return)
 export const SACCO_LEVERAGE_MULTIPLIER = 3.0;
 export const MAX_SALARY_DEBT_LIMIT = 0.33; // one-third gross pay rule
 /**
@@ -52,34 +51,7 @@ export const BANK_SAVINGS_BASELINE = ASSUMED_CURRENT_YIELD;
 
 // ── Module 1: the localized FIRE engine ──
 
-export interface LocalizedFire {
-  yearsToRetirement: number;
-  currentAnnualExpenses: number;
-  /** 20× annual expenses — the 5% localized SWR multiplier, today's money. */
-  todaysMoneyFireNumber: number;
-  futureAnnualExpenses: number;
-  /** The headline target: 20× expenses as they will actually be at retirement. */
-  nominalFutureFireNumber: number;
-}
 
-export function localizedFire(params: {
-  currentMonthlyExpenses: number;
-  currentAge: number;
-  targetRetirementAge: number;
-}): LocalizedFire {
-  const yearsToRetirement = Math.max(0, params.targetRetirementAge - params.currentAge);
-  const currentAnnualExpenses = params.currentMonthlyExpenses * 12;
-  const multiplier = 1 / LOCAL_SAFE_WITHDRAWAL_RATE; // 20×
-  const futureAnnualExpenses =
-    currentAnnualExpenses * Math.pow(1 + KENYAN_INFLATION, yearsToRetirement);
-  return {
-    yearsToRetirement,
-    currentAnnualExpenses,
-    todaysMoneyFireNumber: currentAnnualExpenses * multiplier,
-    futureAnnualExpenses,
-    nominalFutureFireNumber: futureAnnualExpenses * multiplier,
-  };
-}
 
 /** Post-retirement structural allocation shown with the FIRE target. */
 export const FIRE_ALLOCATION = [

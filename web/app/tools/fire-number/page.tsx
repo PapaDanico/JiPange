@@ -2,8 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import ToolLayout from "@/components/tools/ToolLayout";
 import FireNumberCalculator from "@/components/tools/FireNumberCalculator";
+import FireEducation from "@/components/tools/FireEducation";
 import {
   earlyStartMultiple,
+  earlyStartMultipleReal,
+  earlyStartWealthRealKES,
   EARLY_START_AGE,
   LATE_START_AGE,
   RETIRE_AT_AGE,
@@ -12,8 +15,15 @@ import {
 
 export const metadata: Metadata = {
   title: "FIRE Number Calculator — Financial Independence Kenya",
+  /* This used to name the 4% safe-withdrawal rule.
+   *
+   * The tool carries a section headed "Why there is no 20× or 25× rule here",
+   * and 4% IS the 25× rule — so the description promised in search results the
+   * one thing the page then declines to do, and sized the pot roughly 25%
+   * above what this app's own model produces. No code implemented that rule
+   * either: the constant was referenced nowhere. */
   description:
-    "Find your FIRE number and how many years until Financial Independence, based on the 4% safe withdrawal rule.",
+    "Work out what you need to retire in Kenya, in today's money — priced as the real cost of your years in retirement, with medical care rising faster than everything else.",
 };
 
 export default function FireNumberPage() {
@@ -33,9 +43,13 @@ export default function FireNumberPage() {
         {
           icon: "🌅",
           tone: "hopeful",
-          stat: `${earlyStartMultiple()}× more`,
-          label: `wealth at ${RETIRE_AT_AGE} by starting Ksh ${EARLY_START_MONTHLY_KES.toLocaleString("en-KE")}/month at ${EARLY_START_AGE} vs ${LATE_START_AGE} — at 10% return. Starting early is the single biggest lever.`,
-          source: "Computed by JiPange at an assumed 10% p.a., compounded monthly",
+          /* Real, not nominal — the calculator directly below this works
+           * entirely in today's money and says so. The nominal version of this
+           * same figure is 3.1×, and quoting it here put two incompatible sets
+           * of shillings on one screen. */
+          stat: `${earlyStartMultipleReal()}× more`,
+          label: `spending power at ${RETIRE_AT_AGE} by starting Ksh ${EARLY_START_MONTHLY_KES.toLocaleString("en-KE")}/month at ${EARLY_START_AGE} rather than ${LATE_START_AGE} — about Ksh ${earlyStartWealthRealKES().toLocaleString("en-KE")} in today's money. Starting early is still the single biggest lever.`,
+          source: `Computed by JiPange at 10% p.a. compounded monthly, then deflated by inflation published by Mwangaza Yield. In nominal shillings the same figure reads ${earlyStartMultiple()}× — same money, different units.`,
         },
       ]}
       deeper={{
@@ -46,6 +60,7 @@ export default function FireNumberPage() {
       }}
     >
       <FireNumberCalculator />
+      <FireEducation />
       <div className="mt-6 rounded-2xl bg-canvas p-4 text-sm text-ink-soft print:hidden">
         <p className="font-semibold text-primary">Ready to build toward this number?</p>
         <p className="mt-1 text-xs">

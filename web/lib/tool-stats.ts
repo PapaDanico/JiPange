@@ -1,5 +1,6 @@
 import { calculateNetPay, PENSION_RELIEF_CAP_MONTHLY } from "./tax";
 import { futureValue, DEFAULT_WITH_PLAN_RETURN_RATE } from "./projections";
+import { currentInflation } from "./rates-feed";
 import { assumedMmfYield } from "./mmf-assumption";
 import { calculateLandPurchase } from "./land";
 import { calculateFulizaCost } from "./fuliza";
@@ -176,17 +177,50 @@ export const EARLY_START_MONTHLY_KES = 3_000;
 export const EARLY_START_RETURN = DEFAULT_WITH_PLAN_RETURN_RATE;
 
 /**
- * How much more wealth ten earlier years buy.
+ * How much more wealth ten earlier years buy, IN NOMINAL SHILLINGS.
  *
- * The page said "2× more". It is 3.09×, so the claim understated the single
- * biggest lever the tool exists to demonstrate — the one error today that cost
- * the argument rather than inflating it, and therefore the one nobody would
- * ever have complained about.
+ * History worth keeping, because it is a lesson about fixing numbers.
+ *
+ * The page once said "2× more". That was corrected UP to 3.09× on the grounds
+ * that it "understated the single biggest lever the tool exists to
+ * demonstrate". The arithmetic was right and the correction was wrong: 3.09×
+ * is the multiple at a 10% NOMINAL return, and the calculator it introduces
+ * works entirely in today's money. In real terms the multiple is about 1.9× —
+ * so the original understatement was nearer the truth than the fix.
+ *
+ * The mistake was changing a value without questioning its basis. A number can
+ * be recomputed correctly and still answer the wrong question, and "this
+ * understates our own argument" is exactly the reasoning that makes a figure
+ * feel safe to raise.
+ *
+ * Kept, because the nominal/real gap is now the most useful thing on the page.
+ * The card shows earlyStartMultipleReal below.
  */
 export function earlyStartMultiple(): number {
   const early = futureValue(0, EARLY_START_MONTHLY_KES, EARLY_START_RETURN, RETIRE_AT_AGE - EARLY_START_AGE);
   const late = futureValue(0, EARLY_START_MONTHLY_KES, EARLY_START_RETURN, RETIRE_AT_AGE - LATE_START_AGE);
   return Math.round((early / late) * 10) / 10;
+}
+
+/**
+ * The same lever, in today's money — the terms the calculator below it uses.
+ *
+ * Deflating the same 10% nominal assumption by Mwangaza's published inflation
+ * gives the real rate; the multiple follows from that alone, since the early
+ * and late starter earn the same rate. Starting early still wins by a wide
+ * margin. It wins by the amount that is actually true.
+ */
+export function earlyStartMultipleReal(): number {
+  const real = (1 + EARLY_START_RETURN) / (1 + currentInflation()) - 1;
+  const early = futureValue(0, EARLY_START_MONTHLY_KES, real, RETIRE_AT_AGE - EARLY_START_AGE);
+  const late = futureValue(0, EARLY_START_MONTHLY_KES, real, RETIRE_AT_AGE - LATE_START_AGE);
+  return Math.round((early / late) * 10) / 10;
+}
+
+/** What the early starter accumulates, in today's shillings. */
+export function earlyStartWealthRealKES(): number {
+  const real = (1 + EARLY_START_RETURN) / (1 + currentInflation()) - 1;
+  return Math.round(futureValue(0, EARLY_START_MONTHLY_KES, real, RETIRE_AT_AGE - EARLY_START_AGE));
 }
 
 export const EMERGENCY_FUND_TARGET_KES = 30_000;

@@ -65,6 +65,28 @@ export interface MacroReading {
   source: string;
 }
 
+/**
+ * A bond-yield band, bucketed by REMAINING term at the auction date.
+ *
+ * Mwangaza buckets by remaining term rather than by the tenor in the issue
+ * code, because most recent auctions are re-openings whose label overstates
+ * how long the paper actually has left to run.
+ *
+ * `medianClearingRate` is null when too few auctions fell in the band to quote
+ * one. That is a deliberate refusal rather than missing data, so a caller must
+ * skip the band rather than borrow a neighbour's figure.
+ */
+export interface BondBand {
+  label: string;
+  fromYears: number;
+  toYears: number;
+  auctions: number;
+  medianClearingRate: number | null;
+  lowClearingRate: number | null;
+  highClearingRate: number | null;
+  latestAuctionDate: string | null;
+}
+
 export interface RatesFeed {
   schema: number;
   generatedAt: string;
@@ -74,6 +96,17 @@ export interface RatesFeed {
     centralBankRate: MacroReading | null;
     inflation: MacroReading | null;
     usdKes: MacroReading | null;
+  };
+  /* Published by Mwangaza since the feed's first release, but missing from
+   * this interface until something needed it — so any reader wanting a bond
+   * yield had to reach past the type. Declared here rather than cast at the
+   * call site: a shape asserted in one consumer is a shape nothing checks.
+   * Optional, because a snapshot generated before the field existed is still
+   * valid under schema 1. */
+  bondAuctionBenchmarks?: {
+    windowDays: number;
+    minSample: number;
+    bands: BondBand[];
   };
 }
 
