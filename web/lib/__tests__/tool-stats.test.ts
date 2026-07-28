@@ -201,14 +201,13 @@ describe("figures we attribute to ourselves are actually ours", () => {
     "education-savings:Ksh 1,500/mo",
     "fuliza-cost:~400%",
     "fuliza-cost:Ksh 3,000",
-    "land-purchase:8–12%",
     "sha-health:Ksh 1,500–3,500/mo",
   ]);
 
   it("records exactly the known-unverified figures, and no more", () => {
     // If this shrinks, delete the entry — the list must never claim debt that
     // has been paid, or it becomes a place figures hide.
-    expect(UNVERIFIED.size).toBe(6);
+    expect(UNVERIFIED.size).toBe(5);
   });
 
   it("states no JiPange-attributed figure as a literal, on any tool page", () => {
@@ -252,6 +251,11 @@ describe("figures we attribute to ourselves are actually ours", () => {
    * wolf on correct code is worse than none.
    */
   const RETIRED = [
+    {
+      slug: "land-purchase",
+      value: "8–12%",
+      was: "a flat band hiding a regressive cost — 27.7% on a Ksh 300,000 plot, 7% on a Ksh 10m one",
+    },
     {
       slug: "savings-goal",
       value: "Ksh 100,000+",
