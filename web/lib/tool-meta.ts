@@ -130,17 +130,13 @@ export const TOOL_META: Record<string, ToolMeta> = {
     href: "/tools/school-fees-lifetime",
     icon: "🏫",
     name: "Full Cost of Private School",
-    related: ["/tools/education-savings", "/planners/education", "/tools/take-home-pay"],
-    nextMove: { label: "Smooth this year's termly shocks →", href: "/planners/education" },
+    /* The education sequence, in the order a parent meets it: this year's
+     * cash-flow problem, then the whole liability, then how to fund it. The
+     * three are complementary rather than alternatives, and listing them in
+     * order is the cheapest way to say so. */
+    related: ["/planners/education", "/tools/savings-goal", "/tools/take-home-pay"],
+    nextMove: { label: "Smooth this year's termly bills →", href: "/planners/education" },
     primaryFields: ["children"],
-  },
-  "/tools/education-savings": {
-    href: "/tools/education-savings",
-    icon: "🎓",
-    name: "Education Savings",
-    related: ["/tools/savings-goal", "/planners/education", "/tools/investment-returns"],
-    nextMove: { label: "Smooth out the termly fee shocks →", href: "/planners/education" },
-    primaryFields: ["jssFees", "sssFees"],
   },
   "/tools/dhowcsd": {
     href: "/tools/dhowcsd",

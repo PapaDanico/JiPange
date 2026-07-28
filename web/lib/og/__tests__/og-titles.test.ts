@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
+import { TOOL_META } from "../../tool-meta";
 
 /**
  * Drift guard for the OG share cards. Each tool's card title is a colocated
@@ -44,8 +45,28 @@ const toolDirs = readdirSync(TOOLS_DIR, { withFileTypes: true })
   .filter((dir) => existsSync(join(dir, "opengraph-image.tsx")));
 
 describe("OG card titles", () => {
-  it("covers every tool directory", () => {
-    expect(toolDirs.length).toBeGreaterThanOrEqual(25);
+  /**
+   * Counted against the registry rather than against a number typed here.
+   *
+   * This asserted ">= 25" and went red when /tools/education-savings was
+   * deliberately retired — the guard could not tell a removal from a scan that
+   * had stopped finding anything, which is the only failure it exists to
+   * catch. A hardcoded floor also drifts upward silently every time a tool is
+   * added and nobody updates it.
+   *
+   * Reading TOOL_META gives it a real referent: every tool the app registers
+   * with an OG image must have a card, and a scan that finds nothing still
+   * fails because the registry is never empty. Tools without an
+   * opengraph-image.tsx are excluded rather than demanded, which is the
+   * existing behaviour of the filter above.
+   */
+  it("covers every registered tool that ships an OG image", () => {
+    const registered = Object.keys(TOOL_META).filter((h) => h.startsWith("/tools/"));
+    expect(registered.length, "the tool registry is empty").toBeGreaterThan(15);
+    const withCards = registered.filter((h) =>
+      existsSync(join(TOOLS_DIR, h.replace("/tools/", ""), "opengraph-image.tsx"))
+    );
+    expect(toolDirs.length).toBe(withCards.length);
   });
 
   it.each(toolDirs.map((dir) => [dir.split("/").pop(), dir]))(

@@ -213,3 +213,37 @@ describe("the architecture is not yet enforcing anything", () => {
     ).toEqual([]);
   });
 });
+
+/**
+ * The cross-links have to point somewhere, and not at themselves.
+ *
+ * A self-reference is what a careless find-and-replace leaves behind: retiring
+ * /tools/education-savings meant repointing every mention of it, and one of
+ * those mentions was inside school-fees-lifetime's own `related` list — which
+ * turned into a card inviting the reader to visit the page they are already
+ * on. Nothing crashes, no test noticed, and it looks exactly like a link.
+ */
+describe("tool cross-links", () => {
+  it("never lists a tool as related to itself", () => {
+    const offenders = Object.entries(TOOL_META)
+      .filter(([href, meta]) => (meta.related ?? []).includes(href as never))
+      .map(([href]) => href);
+    expect(offenders, `these link to themselves:\n${offenders.join("\n")}`).toEqual([]);
+  });
+
+  it("points every related link and next move at something that exists", () => {
+    const known = new Set(Object.keys(TOOL_META));
+    const dangling: string[] = [];
+    for (const [href, meta] of Object.entries(TOOL_META)) {
+      for (const r of meta.related ?? []) {
+        // Planners live outside TOOL_META; they are checked by the route tests.
+        if (!known.has(r) && !r.startsWith("/planners")) dangling.push(`${href} -> ${r}`);
+      }
+      const next = meta.nextMove?.href;
+      if (next && !known.has(next) && !next.startsWith("/planners")) {
+        dangling.push(`${href} -> ${next} (nextMove)`);
+      }
+    }
+    expect(dangling, `broken cross-links:\n${dangling.join("\n")}`).toEqual([]);
+  });
+});
