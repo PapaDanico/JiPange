@@ -4,7 +4,37 @@ const withPWAConfig = withPWA({
   dest: "public",
   disable: process.env.NODE_ENV === "development",
   cacheOnFrontEndNav: true,
-  aggressiveFrontEndNavCaching: true,
+  /* Deliberately OFF.
+   *
+   * swe-worker-*.js is spawned by cacheOnFrontEndNav above and stays either
+   * way. This flag is what makes that worker ALSO warm-cache a cached page's
+   * sub-assets — by fetching the HTML AS TEXT and regex-scanning it:
+   *
+   *     /<link.*?href=['"](.*?)['"].*?>/g
+   *
+   * Two things go wrong with that. The pattern is lazy and `.` spans the gap
+   * between tags, so a match starting at a <link rel="preload" as="image">
+   * runs on until it finds an href in a LATER tag — and the rel="stylesheet"
+   * test then passes on text belonging to a different element. And because it
+   * reads raw HTML rather than the DOM, `&amp;` is never entity-decoded, so
+   * the URL it caches is
+   *
+   *     /_next/image?url=%2Flogo-lockup.webp&amp;w=3840&amp;q=75
+   *
+   * which Next's image route rejects with 400 `"w" parameter (width) is
+   * required` — the query key parsed as `amp;w`, so there is no width at all.
+   *
+   * Measured: two 400s on every page load, on all 25 tools and 6 planners.
+   * Invisible to the user (the real <img> loads fine) and invisible to page
+   * -level devtools too, because the worker's fetches are not attributed to
+   * the page — which is why this survived until something diffed the network
+   * log against what the page actually needs.
+   *
+   * cacheOnFrontEndNav above is kept: that is the page cache offline browsing
+   * depends on. Verified after the change — visit a tool, go offline, reload,
+   * and the page still serves from cache. What is given up is only the
+   * pre-warming of CSS/JS that this regex was supposed to do and did badly. */
+  aggressiveFrontEndNavCaching: false,
   reloadOnOnline: true,
   workboxOptions: {
     disableDevLogs: true,
