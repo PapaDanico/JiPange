@@ -95,12 +95,6 @@ function rotationSlotValues(
 }
 
 /**
- * Merry-go-round (rotation) chama:
- * Every month, all members contribute. One member receives the full pool
- * (minus an emergency buffer held back by the group). After N months every
- * member has had one rotation.
- */
-/**
  * The most members this will model.
  *
  * The member count is a cycle length and therefore an iteration count, taken
@@ -111,15 +105,29 @@ function rotationSlotValues(
  */
 export const MAX_CHAMA_MEMBERS = 200;
 
+/**
+ * Merry-go-round (rotation) chama:
+ * Every month, all members contribute. One member receives the full pool
+ * (minus an emergency buffer held back by the group). After N months every
+ * member has had one rotation.
+ */
 export function calculateMerryGoRound(
   memberCount: number,
   monthlyContributionPerMember: number,
   emergencyBufferPercent: number
 ): ChamaMerryGoRoundResult {
-  const monthlyPool = memberCount * monthlyContributionPerMember;
+  /* Enforced here, not only in the form.
+   *
+   * The cap started life as a constant next to a comment and a check in the
+   * calculator — which bounds the one caller that exists today and nothing
+   * else. Hoisting the inner sum made this linear rather than quadratic, but
+   * linear in a trillion is still a frozen tab and an array nobody can hold,
+   * so the guarantee has to live where the loop does. */
+  const members = Math.min(Math.max(0, Math.floor(memberCount)), MAX_CHAMA_MEMBERS);
+  const monthlyPool = members * monthlyContributionPerMember;
   const bufferAmount = monthlyPool * (emergencyBufferPercent / 100);
   const rotationPayout = monthlyPool - bufferAmount;
-  const cycleMonths = memberCount;
+  const cycleMonths = members;
   const emergencyFundPerCycle = bufferAmount * cycleMonths;
 
   // Every member pays X for every month of the full cycle — the advantage of going

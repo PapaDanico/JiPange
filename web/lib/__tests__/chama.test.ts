@@ -106,8 +106,27 @@ describe("the rotation valuation", () => {
   });
 
   it("returns promptly for an absurd membership instead of hanging", () => {
+    /* The engine, not the form.
+     *
+     * The cap was first written as a constant beside a comment plus a check in
+     * the calculator — which bounds the one caller that exists today and
+     * nothing else, while the commit claimed no caller could hang through
+     * here. Hoisting the inner sum made this linear rather than quadratic, but
+     * linear in a trillion is still a frozen tab, so the guarantee has to be
+     * asserted against the function itself. */
     const started = performance.now();
-    calculateMerryGoRound(MAX_CHAMA_MEMBERS, 1_000, 0);
+    const r = calculateMerryGoRound(999_999_999_999, 1_000, 0);
     expect(performance.now() - started).toBeLessThan(250);
+    expect(r.slotPresentValues).toHaveLength(MAX_CHAMA_MEMBERS);
+    expect(r.cycleMonths).toBe(MAX_CHAMA_MEMBERS);
+  });
+
+  it("leaves an ordinary chama exactly as it was", () => {
+    // The mutation check: clamping everything to 200 would satisfy the test
+    // above while silently rewriting every real group.
+    const r = calculateMerryGoRound(12, 5_000, 0);
+    expect(r.cycleMonths).toBe(12);
+    expect(r.slotPresentValues).toHaveLength(12);
+    expect(r.monthlyPool).toBe(60_000);
   });
 });
