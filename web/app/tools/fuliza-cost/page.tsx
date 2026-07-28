@@ -3,8 +3,11 @@ import ToolLayout from "@/components/tools/ToolLayout";
 import FulizaCostCalculator from "@/components/tools/FulizaCostCalculator";
 import {
   fulizaAprAt,
+  fulizaFloatAnnualSavingKES,
   FULIZA_SMALL_BORROW_KES,
   FULIZA_LARGE_BORROW_KES,
+  FULIZA_FLOAT_KES,
+  FULIZA_CARRIED_DAYS,
 } from "@/lib/tool-stats";
 
 export const metadata: Metadata = {
@@ -30,9 +33,9 @@ export default function FulizaCostPage() {
         {
           icon: "💡",
           tone: "hopeful",
-          stat: "Ksh 3,000",
-          label: "as a standing M-Pesa float — funded once from savings — eliminates most Fuliza use and saves Ksh 2,000–4,000/year in fees.",
-          source: "JiPange calculation",
+          stat: `Ksh ${FULIZA_FLOAT_KES.toLocaleString("en-KE")}`,
+          label: `as a standing M-PESA float — funded once from savings — saves about Ksh ${fulizaFloatAnnualSavingKES().toLocaleString("en-KE")} a year for someone who otherwise carries that overdraft ${FULIZA_CARRIED_DAYS} days a month.`,
+          source: "Computed by JiPange from the published Fuliza tariff",
         },
       ]}
     >

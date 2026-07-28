@@ -196,16 +196,13 @@ describe("figures we attribute to ourselves are actually ours", () => {
    * last three deductible before PAYE), so 37% looks high rather than merely
    * unverified.
    */
-  const UNVERIFIED = new Set([
-    "education-savings:Ksh 1,500/mo",
-    "fuliza-cost:Ksh 3,000",
-    "sha-health:Ksh 1,500–3,500/mo",
+  const UNVERIFIED = new Set<string>([
   ]);
 
   it("records exactly the known-unverified figures, and no more", () => {
     // If this shrinks, delete the entry — the list must never claim debt that
     // has been paid, or it becomes a place figures hide.
-    expect(UNVERIFIED.size).toBe(3);
+    expect(UNVERIFIED.size).toBe(0);
   });
 
   it("states no JiPange-attributed figure as a literal, on any tool page", () => {
@@ -249,6 +246,16 @@ describe("figures we attribute to ourselves are actually ours", () => {
    * wolf on correct code is worse than none.
    */
   const RETIRED = [
+    {
+      slug: "education-savings",
+      value: "Ksh 165,000",
+      was: "a market figure for Junior Secondary, which is capitated; the Ministry sets senior school at 53,554 boarding",
+    },
+    {
+      slug: "sha-health",
+      value: "JiPange 2026 market survey",
+      was: "a survey nobody could produce — replaced by published insurer premiums, marked indicative",
+    },
     {
       slug: "fuliza-cost",
       value: "~400%",
