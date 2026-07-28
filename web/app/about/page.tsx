@@ -156,10 +156,10 @@ export default function AboutPage() {
               Spotted an error in a calculation? Have a tool idea that would help everyday
               Kenyans? We&apos;d genuinely like to hear it.{" "}
               <a
-                href="mailto:hello@jipangefinance.app"
+                href="mailto:hello@jipangefinance.org"
                 className="font-medium text-primary underline"
               >
-                hello@jipangefinance.app
+                hello@jipangefinance.org
               </a>
             </p>
           </section>

@@ -3,6 +3,8 @@ import Link from "next/link";
 import ResumeToast from "@/components/onboarding/ResumeToast";
 import ReturningUserRedirect from "@/components/onboarding/ReturningUserRedirect";
 import LandingInteractivity from "@/components/landing/LandingInteractivity";
+import { fulizaDailyFee } from "@/lib/fuliza";
+import { TOOL_META } from "@/lib/tool-meta";
 import {
   ASSUMED_CURRENT_YIELD,
   CURRENT_INFLATION,
@@ -25,6 +27,22 @@ import {
   MMF_SHARE_OF_DEPOSITS_PCT,
   BANK_SAVINGS_EARNING_BELOW_INFLATION_TRILLION,
 } from "@/lib/kenya-stats";
+
+/* Counts and headline figures, derived rather than typed.
+ *
+ * This page said "All 18 calculators", lib/tiers.ts said 26, and there were
+ * 25 — three numbers for one fact. And the Fuliza headline read "Ksh 6.50/day
+ * ... 400%" while lib/fuliza.ts computes Ksh 6.00 for a Ksh 600 balance
+ * (Ksh 5.00 band fee plus 20% excise), which annualises to 365%. The tool was
+ * corrected and the shop window was not.
+ *
+ * Both now read from the source of truth, so a tariff change or a new
+ * calculator moves the homepage with it. */
+const TOOL_COUNT = Object.keys(TOOL_META).filter((h) => h.startsWith("/tools/")).length;
+
+const FULIZA_EXAMPLE_BALANCE = 600;
+const FULIZA_EXAMPLE_DAILY = fulizaDailyFee(FULIZA_EXAMPLE_BALANCE);
+const FULIZA_EXAMPLE_APR = Math.round((FULIZA_EXAMPLE_DAILY * 365) / FULIZA_EXAMPLE_BALANCE * 100);
 
 /**
  * Ksh with thousands separators, for figures quoted inside prose.
@@ -157,7 +175,7 @@ const TOOLS = [
   { href: "/tools/money-runway", emoji: "⏳", name: "Money Runway", hook: "How long your savings survive a job loss" },
   { href: "/tools/guarantor-shield", emoji: "🛡️", name: "Sacco Guarantor Shield", hook: "Your real unencumbered borrowing power" },
   { href: "/tools/kplc-optimizer", emoji: "⚡", name: "KPLC Token Checker", hook: "Your real cost per unit, from your own receipt" },
-  { href: "/tools/fuliza-cost", emoji: "📱", name: "True Cost of Fuliza", hook: "What Ksh 6.50/day really costs you annually" },
+  { href: "/tools/fuliza-cost", emoji: "📱", name: "True Cost of Fuliza", hook: `What Ksh ${FULIZA_EXAMPLE_DAILY.toFixed(2)}/day really costs you annually` },
 ];
 
 const PLANNERS = [
@@ -482,13 +500,13 @@ export default function Home() {
                   className="text-4xl font-black leading-none tracking-tighter text-danger-deep"
                   style={{ fontVariantNumeric: "tabular-nums" }}
                 >
-                  ≈400%
+                  ≈{FULIZA_EXAMPLE_APR}%
                 </p>
                 <p className="mt-1.5 mb-3 text-[0.875rem] font-semibold text-ink-soft">
                   Real annualised cost of Fuliza
                 </p>
                 <p className="text-[0.8125rem] leading-relaxed text-muted">
-                  Ksh 6.50/day on Ksh 600 feels like loose change. Annualised, it&apos;s the most
+                  Ksh {FULIZA_EXAMPLE_DAILY.toFixed(2)}/day on Ksh {FULIZA_EXAMPLE_BALANCE} feels like loose change. Annualised, it&apos;s the most
                   expensive credit product most Kenyans ever use — more than bank overdrafts, more
                   than credit cards. Kenyans borrowed Ksh {FULIZA_VOLUME_TRILLION_KSH} trillion
                   through Fuliza in the year to March 2026.
@@ -587,7 +605,7 @@ export default function Home() {
               href="/tools"
               className="inline-flex min-h-11 items-center text-sm font-semibold text-primary underline underline-offset-4 hover:text-accent"
             >
-              All 18 calculators →
+              All {TOOL_COUNT} calculators →
             </Link>
           </div>
 

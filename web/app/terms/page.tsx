@@ -143,10 +143,10 @@ export default function TermsPage() {
             <p className="mt-2">
               Questions about these Terms can be sent to{" "}
               <a
-                href="mailto:hello@jipangefinance.app"
+                href="mailto:hello@jipangefinance.org"
                 className="font-medium text-primary underline"
               >
-                hello@jipangefinance.app
+                hello@jipangefinance.org
               </a>
               .
             </p>
