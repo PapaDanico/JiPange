@@ -419,19 +419,23 @@ export default function SchoolFeesLifetimeCalculator() {
                 result.monthly
               )}\n\nWork out yours → jipangefinance.org/tools/school-fees-lifetime`}
             />
-          </div>
 
-          <button
-            type="button"
-            onClick={() => setShowSchedule((v) => !v)}
-            aria-expanded={showSchedule}
-            className="h-12 w-full rounded-full border border-border text-sm font-semibold text-primary hover:bg-canvas"
-          >
-            {showSchedule ? "Hide the year-by-year bill" : "Show the year-by-year bill"}
-          </button>
+            {/* The schedule lives INSIDE the exported node and is always
+                rendered, hidden on screen only when collapsed.
 
-          {showSchedule && (
-            <div className="overflow-x-auto rounded-2xl border border-border bg-white">
+                It used to sit outside the capture, so the year-by-year bill —
+                the one part of this a school bursar or a SACCO loans officer
+                would actually read — never reached the PDF, and the sheet had
+                a third of a page of white space where it should have been.
+                `data-export-include` tells the sheet builder to reveal it
+                regardless of the on-screen toggle: what you export should not
+                depend on which disclosures you happened to open. */}
+            <div
+              data-export-include
+              className={`overflow-x-auto rounded-2xl border border-border bg-white ${
+                showSchedule ? "" : "hidden"
+              }`}
+            >
               <table className="w-full min-w-[420px] text-left text-sm">
                 <caption className="sr-only">
                   School fees due each year, escalated at {escalationPct}% a year
@@ -463,9 +467,43 @@ export default function SchoolFeesLifetimeCalculator() {
                 </tbody>
               </table>
             </div>
-          )}
+          </div>
 
-          <ExportCardButton containerRef={resultsRef} filename="school-fees-lifetime" />
+          <button
+            type="button"
+            onClick={() => setShowSchedule((v) => !v)}
+            aria-expanded={showSchedule}
+            className="h-12 w-full rounded-full border border-border text-sm font-semibold text-primary hover:bg-canvas"
+          >
+            {showSchedule ? "Hide the year-by-year bill" : "Show the year-by-year bill"}
+          </button>
+
+          <ExportCardButton
+            containerRef={resultsRef}
+            filename="school-fees-lifetime"
+            title="The Full Cost of Private School"
+            assumptions={[
+              {
+                label: "Children",
+                value: children
+                  .filter((c) => Number(c.annualFee) > 0)
+                  .map((c, i) => `${c.name.trim() || `Child ${i + 1}`} (${
+                    CBC_GRADES.find((g) => g.value === c.gradeValue)?.label ?? c.gradeValue
+                  })`)
+                  .join(", "),
+              },
+              { label: "Fee increase assumed", value: `${escalationPct}% a year` },
+              { label: "Return assumed", value: `${(returnRate * 100).toFixed(1)}% a year` },
+              { label: "Already saved", value: formatKES(Number(alreadySaved) || 0) },
+              ...(university ? [{ label: "University", value: `4 years at ${formatKES(Number(uniFee) || 0)}/yr` }] : []),
+              ...(frontLoaded ? [{ label: "Term 1", value: "Front-loaded (50/30/20)" }] : []),
+            ]}
+            notes={[
+              "The fee increase is an assumption you set, not a measured rate — over a fourteen-year horizon it drives the total more than the return does.",
+              "This year's fees are treated as already committed; the monthly figure funds every term from next January onward.",
+              "Returns are not guaranteed. A money market fund's yield moves with Treasury bill rates.",
+            ]}
+          />
 
           <CalculatorDisclaimer
             extraNotes={[

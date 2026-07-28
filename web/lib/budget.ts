@@ -50,10 +50,27 @@ export function calculateFinancials(grossMonthlySalary: number): Calculations {
   return { netMonthly, budgetSplit, savingsCapacity, savingsRate };
 }
 
+/**
+ * Money, written the way Kenyans write it.
+ *
+ * This used `style: "currency"` with `currency: "KES"`, which renders the ISO
+ * 4217 code: "KES 1,234". Every visible label in the app had already been
+ * moved to "Ksh" — but the FORMATTER had not, so the two disagreed wherever a
+ * figure sat beside prose, and the PDF exports came out in KES throughout
+ * while the page around them said Ksh.
+ *
+ * That is the shape of an incomplete rename: the strings a search finds get
+ * changed, and the function that generates the rest keeps its own answer.
+ *
+ * The sign goes OUTSIDE the unit — "-Ksh 500", not "Ksh -500" — because the
+ * latter reads as a quantity of some negative currency. Intl's currency mode
+ * did this correctly and hand-rolling the prefix is exactly where it gets
+ * lost, so it is done deliberately here and tested.
+ */
 export function formatKES(amount: number): string {
-  return new Intl.NumberFormat("en-KE", {
-    style: "currency",
-    currency: "KES",
+  const n = Number.isFinite(amount) ? amount : 0;
+  const digits = new Intl.NumberFormat("en-KE", {
     maximumFractionDigits: 0,
-  }).format(amount);
+  }).format(Math.abs(n));
+  return `${n < 0 ? "-" : ""}Ksh ${digits}`;
 }
