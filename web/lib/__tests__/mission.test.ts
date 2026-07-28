@@ -111,6 +111,9 @@ describe("money is never asked for before something has been given", () => {
       const permitted =
         rel.includes("app/support/") ||
         rel.includes("app/privacy/") || // a disclosure, not a solicitation
+        // Addressed to institutions, not readers: it explains who pays so that
+        // the reader does not have to. Not an ask in the sense this guards.
+        rel.includes("app/licensing/") ||
         rel.includes("Footer") ||
         rel.includes("ExportCardButton") ||
         rel.includes("ContributionNote");
@@ -128,5 +131,21 @@ describe("money is never asked for before something has been given", () => {
     expect(toolPages.length).toBeGreaterThan(20);
     const offenders = toolPages.filter((f) => ASKS_FOR_MONEY.test(rendered(f)));
     expect(offenders, `these tool pages ask for money:\n${offenders.join("\n")}`).toEqual([]);
+  });
+});
+
+/**
+ * A page nobody can navigate to is not shipped.
+ *
+ * /licensing was added with nothing linking to it — no footer entry, no nav,
+ * no sitemap reference. It existed at a URL and was reachable only by typing
+ * one, which for a page whose whole purpose is that an institution can find
+ * how to work with us is the same as not existing.
+ */
+describe("the business-facing page is reachable", () => {
+  it("is linked from the footer", async () => {
+    const { readFileSync } = await import("node:fs");
+    const footer = readFileSync(new URL("../../components/Footer.tsx", import.meta.url), "utf8");
+    expect(footer, "nothing links to /licensing").toMatch(/href="\/licensing"/);
   });
 });

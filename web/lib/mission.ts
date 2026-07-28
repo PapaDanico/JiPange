@@ -97,4 +97,14 @@ export const PERMITTED_ASK_SURFACES = [
    * links to the page where the till is. Suppressing a disclosure to satisfy
    * an anti-nagging rule would be the rule defeating its own purpose. */
   "/privacy",
+  /* The licensing page, which asks INSTITUTIONS and not readers.
+   *
+   * Flagged by this guard, correctly, and the distinction is worth stating
+   * rather than quietly allowlisting. ASK_AFTER_VALUE protects the reader from
+   * being solicited before they have been given anything. /licensing solicits
+   * nobody who reads the calculators: its whole argument is that the tools are
+   * free to them BECAUSE somebody else pays. A rule against nagging users
+   * should not forbid explaining who funds the thing — that is the disclosure
+   * the rule exists to make possible. */
+  "/licensing",
 ] as const;
