@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import ToolLayout from "@/components/tools/ToolLayout";
 import MoneyRunwayCalculator from "@/components/tools/MoneyRunwayCalculator";
+import {
+  emergencyFundMonths,
+  EMERGENCY_FUND_TARGET_KES,
+  EMERGENCY_FUND_MONTHLY_KES,
+} from "@/lib/tool-stats";
 
 export const metadata: Metadata = {
   title: "Money Runway Calculator — How Long Will My Savings Last",
@@ -25,9 +30,9 @@ export default function MoneyRunwayPage() {
         {
           icon: "🛡️",
           tone: "hopeful",
-          stat: "15 months",
-          label: "is all it takes to build a 3-month Ksh 30,000 emergency fund by saving Ksh 2,000/month — start today.",
-          source: "JiPange projection",
+          stat: `${emergencyFundMonths()} months`,
+          label: `is all it takes to build a 3-month Ksh ${EMERGENCY_FUND_TARGET_KES.toLocaleString("en-KE")} emergency fund by saving Ksh ${EMERGENCY_FUND_MONTHLY_KES.toLocaleString("en-KE")}/month — start today.`,
+          source: "Computed by JiPange — flat saving, no return assumed",
         },
       ]}
     >
