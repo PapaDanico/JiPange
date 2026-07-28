@@ -184,7 +184,10 @@ export const TIERS: readonly TierSpec[] = [
     summary:
       "Every calculator, every figure, every source. Complete, not a preview.",
     includes: [
-      "All 26 calculators and every planner",
+      // Derived, not typed. This said 26, the homepage said 18, and there
+      // were 25 — three numbers for one fact, none of them checkable by a
+      // reader who can count the tool pages.
+      `All ${allToolHrefs().length} calculators and every planner`,
       "Every number, with the workings and the sources behind it",
       "Share any result as an image",
       "One saved plan",
