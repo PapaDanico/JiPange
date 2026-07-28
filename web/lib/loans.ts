@@ -15,6 +15,26 @@ export interface LoanAmortization {
   schedule: AmortizationEntry[];
 }
 
+/**
+ * The longest schedule this will build, and why there is a limit at all.
+ *
+ * The loop below pushes one object per month, so the term is an iteration
+ * count taken straight from a text box. An extra digit in "Repayment period
+ * (years)" — 999999999999 rather than 9 — asks for twelve trillion objects,
+ * and the tab locks solid: no error, no result, nothing to cancel. On a phone
+ * that means force-quitting the browser.
+ *
+ * Six hundred months is fifty years, comfortably past any Kenyan mortgage (the
+ * longest run about twenty-five). Past that there is no loan to model, so this
+ * returns the same empty result as a zero term rather than inventing an answer
+ * or trying to compute one.
+ *
+ * The calculators bound their own fields, and that is where a reader learns
+ * the limit. This is the guarantee underneath it: no caller, present or
+ * future, can hang the browser through this function.
+ */
+export const MAX_TERM_MONTHS = 600;
+
 /** Standard reducing-balance amortization: equal monthly payments, interest on the declining balance. */
 export function calculateLoanAmortization(params: {
   principal: number;
@@ -23,7 +43,7 @@ export function calculateLoanAmortization(params: {
 }): LoanAmortization {
   const { principal, annualRate, termMonths } = params;
 
-  if (principal <= 0 || termMonths <= 0) {
+  if (principal <= 0 || termMonths <= 0 || termMonths > MAX_TERM_MONTHS) {
     return { monthlyPayment: 0, totalInterest: 0, totalPaid: 0, schedule: [] };
   }
 

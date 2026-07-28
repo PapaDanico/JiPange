@@ -69,11 +69,21 @@ function rotationSlotValues(
   const monthly = Math.pow(1 + annual, 1 / 12) - 1;
   const discount = (months: number) => 1 / Math.pow(1 + monthly, months);
 
+  /* The contributions cost the same whatever slot you draw.
+   *
+   * This inner sum was recomputed for every slot, and it does not depend on
+   * the slot — a member pays the same twelve instalments on the same dates
+   * regardless of when they collect. So the loop was quadratic in the member
+   * count for an answer that never changed, which at 999,999,999,999 members
+   * (an extra digit, nothing more) locked the tab solid with nothing to
+   * cancel. Hoisting it is not an optimisation of the maths; it is the maths.
+   * Every value below is identical to what the nested version produced. */
+  let contributionsPV = 0;
+  for (let m = 1; m <= cycleMonths; m++) contributionsPV += contribution * discount(m);
+
   const values: number[] = [];
   for (let slot = 1; slot <= cycleMonths; slot++) {
-    let pv = payout * discount(slot);
-    for (let m = 1; m <= cycleMonths; m++) pv -= contribution * discount(m);
-    values.push(pv);
+    values.push(payout * discount(slot) - contributionsPV);
   }
   return {
     values,
@@ -90,6 +100,17 @@ function rotationSlotValues(
  * (minus an emergency buffer held back by the group). After N months every
  * member has had one rotation.
  */
+/**
+ * The most members this will model.
+ *
+ * The member count is a cycle length and therefore an iteration count, taken
+ * straight from a text box. A chama of two hundred is already far past what
+ * the form is for — these are groups of friends, colleagues and neighbours,
+ * typically ten to thirty — so this is generous rather than restrictive, and
+ * it makes a mistyped digit harmless instead of fatal to the tab.
+ */
+export const MAX_CHAMA_MEMBERS = 200;
+
 export function calculateMerryGoRound(
   memberCount: number,
   monthlyContributionPerMember: number,

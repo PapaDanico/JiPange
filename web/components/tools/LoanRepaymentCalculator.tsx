@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { calculateLoanAmortization } from "@/lib/loans";
+import { calculateLoanAmortization, MAX_TERM_MONTHS } from "@/lib/loans";
 import { formatKES } from "@/lib/budget";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import NumberField from "./NumberField";
@@ -30,6 +30,10 @@ const RATE_CHIPS = [
   { label: "18% bank", value: "18" },
 ];
 
+/* Fifty years, from the engine's own ceiling on schedule length. Derived
+ * rather than retyped: a limit stated in two places is a limit that drifts. */
+const MAX_TERM_YEARS = MAX_TERM_MONTHS / 12;
+
 const TERM_CHIPS = [
   { label: "1 yr", value: "1" },
   { label: "2 yr", value: "2" },
@@ -54,7 +58,11 @@ export default function LoanRepaymentCalculator() {
   const result = useMemo(() => {
     const principalValue = Number(principal);
     const years = Number(termYears);
+    // The engine refuses a term past MAX_TERM_MONTHS, so stopping here keeps
+    // the field's own error message as the explanation rather than silently
+    // showing nothing.
     if (!principalValue || principalValue <= 0 || !years || years <= 0) return null;
+    if (years > MAX_TERM_YEARS) return null;
 
     return calculateLoanAmortization({
       principal: principalValue,
@@ -108,6 +116,7 @@ export default function LoanRepaymentCalculator() {
       <div>
         <NumberField
           id="termYears"
+          max={MAX_TERM_YEARS}
           label="Repayment period (years)"
           value={termYears}
           onChange={setTermYears}
