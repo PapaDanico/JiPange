@@ -69,11 +69,21 @@ function rotationSlotValues(
   const monthly = Math.pow(1 + annual, 1 / 12) - 1;
   const discount = (months: number) => 1 / Math.pow(1 + monthly, months);
 
+  /* The contributions cost the same whatever slot you draw.
+   *
+   * This inner sum was recomputed for every slot, and it does not depend on
+   * the slot — a member pays the same twelve instalments on the same dates
+   * regardless of when they collect. So the loop was quadratic in the member
+   * count for an answer that never changed, which at 999,999,999,999 members
+   * (an extra digit, nothing more) locked the tab solid with nothing to
+   * cancel. Hoisting it is not an optimisation of the maths; it is the maths.
+   * Every value below is identical to what the nested version produced. */
+  let contributionsPV = 0;
+  for (let m = 1; m <= cycleMonths; m++) contributionsPV += contribution * discount(m);
+
   const values: number[] = [];
   for (let slot = 1; slot <= cycleMonths; slot++) {
-    let pv = payout * discount(slot);
-    for (let m = 1; m <= cycleMonths; m++) pv -= contribution * discount(m);
-    values.push(pv);
+    values.push(payout * discount(slot) - contributionsPV);
   }
   return {
     values,
@@ -83,6 +93,17 @@ function rotationSlotValues(
       : "no published rate available",
   };
 }
+
+/**
+ * The most members this will model.
+ *
+ * The member count is a cycle length and therefore an iteration count, taken
+ * straight from a text box. A chama of two hundred is already far past what
+ * the form is for — these are groups of friends, colleagues and neighbours,
+ * typically ten to thirty — so this is generous rather than restrictive, and
+ * it makes a mistyped digit harmless instead of fatal to the tab.
+ */
+export const MAX_CHAMA_MEMBERS = 200;
 
 /**
  * Merry-go-round (rotation) chama:
@@ -95,10 +116,18 @@ export function calculateMerryGoRound(
   monthlyContributionPerMember: number,
   emergencyBufferPercent: number
 ): ChamaMerryGoRoundResult {
-  const monthlyPool = memberCount * monthlyContributionPerMember;
+  /* Enforced here, not only in the form.
+   *
+   * The cap started life as a constant next to a comment and a check in the
+   * calculator — which bounds the one caller that exists today and nothing
+   * else. Hoisting the inner sum made this linear rather than quadratic, but
+   * linear in a trillion is still a frozen tab and an array nobody can hold,
+   * so the guarantee has to live where the loop does. */
+  const members = Math.min(Math.max(0, Math.floor(memberCount)), MAX_CHAMA_MEMBERS);
+  const monthlyPool = members * monthlyContributionPerMember;
   const bufferAmount = monthlyPool * (emergencyBufferPercent / 100);
   const rotationPayout = monthlyPool - bufferAmount;
-  const cycleMonths = memberCount;
+  const cycleMonths = members;
   const emergencyFundPerCycle = bufferAmount * cycleMonths;
 
   // Every member pays X for every month of the full cycle — the advantage of going

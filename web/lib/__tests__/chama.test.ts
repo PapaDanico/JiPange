@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { calculateMerryGoRound, calculateChamaInvestment } from "../chama";
+import { calculateMerryGoRound, calculateChamaInvestment, MAX_CHAMA_MEMBERS } from "../chama";
 import { futureValue } from "../projections";
 
 /**
@@ -64,5 +64,69 @@ describe("investment chama", () => {
     expect(r.value1Yr).toBe(0);
     expect(r.perMemberShare1Yr).toBe(0);
     expect(Number.isFinite(r.perMemberShare5Yr)).toBe(true);
+  });
+});
+
+/**
+ * The rotation valuation, bounded — and proved unchanged.
+ *
+ * The slot values were computed with a nested loop: for every slot, sum the
+ * present value of every contribution. The inner sum does not depend on the
+ * slot — a member pays the same instalments on the same dates whenever they
+ * collect — so it was quadratic in the member count for an answer that never
+ * varied. At 999,999,999,999 members, which is one mistyped digit, the tab
+ * locked solid.
+ *
+ * Hoisting the sum is therefore not an approximation, and this asserts that
+ * rather than claiming it: the result is checked against a direct, deliberately
+ * naive re-implementation of the original nested form.
+ */
+describe("the rotation valuation", () => {
+  it("matches a naive nested recomputation exactly", () => {
+    for (const members of [2, 5, 12, 30]) {
+      const contribution = 5_000;
+      const r = calculateMerryGoRound(members, contribution, 0);
+      const payout = members * contribution;
+      const monthly = Math.pow(1 + r.discountRate, 1 / 12) - 1;
+      const disc = (m: number) => 1 / Math.pow(1 + monthly, m);
+      for (let slot = 1; slot <= members; slot++) {
+        let pv = payout * disc(slot);
+        for (let m = 1; m <= members; m++) pv -= contribution * disc(m);
+        expect(r.slotPresentValues[slot - 1]).toBeCloseTo(pv, 6);
+      }
+    }
+  });
+
+  it("keeps slot 1 worth the most and slot N the least", () => {
+    // The property the module's own comment says falls out of money having a
+    // price. If the hoist had broken the ordering this would catch it.
+    const r = calculateMerryGoRound(12, 5_000, 0);
+    const v = r.slotPresentValues;
+    for (let i = 1; i < v.length; i++) expect(v[i]).toBeLessThan(v[i - 1]);
+  });
+
+  it("returns promptly for an absurd membership instead of hanging", () => {
+    /* The engine, not the form.
+     *
+     * The cap was first written as a constant beside a comment plus a check in
+     * the calculator — which bounds the one caller that exists today and
+     * nothing else, while the commit claimed no caller could hang through
+     * here. Hoisting the inner sum made this linear rather than quadratic, but
+     * linear in a trillion is still a frozen tab, so the guarantee has to be
+     * asserted against the function itself. */
+    const started = performance.now();
+    const r = calculateMerryGoRound(999_999_999_999, 1_000, 0);
+    expect(performance.now() - started).toBeLessThan(250);
+    expect(r.slotPresentValues).toHaveLength(MAX_CHAMA_MEMBERS);
+    expect(r.cycleMonths).toBe(MAX_CHAMA_MEMBERS);
+  });
+
+  it("leaves an ordinary chama exactly as it was", () => {
+    // The mutation check: clamping everything to 200 would satisfy the test
+    // above while silently rewriting every real group.
+    const r = calculateMerryGoRound(12, 5_000, 0);
+    expect(r.cycleMonths).toBe(12);
+    expect(r.slotPresentValues).toHaveLength(12);
+    expect(r.monthlyPool).toBe(60_000);
   });
 });

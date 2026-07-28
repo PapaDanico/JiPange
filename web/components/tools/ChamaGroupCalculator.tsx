@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import {
   calculateChamaInvestment,
   calculateMerryGoRound,
+  MAX_CHAMA_MEMBERS,
 } from "@/lib/chama";
 import { formatKES } from "@/lib/budget";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
@@ -63,7 +64,7 @@ export default function ChamaGroupCalculator() {
     // Clamp matches the slider's 0-20 range below — the slider is the only
     // way to set this value, so the two must agree.
     const b = Math.min(20, Math.max(0, Number(bufferPercent) || 0));
-    if (!m || m < 2 || !c || c <= 0) return null;
+    if (!m || m < 2 || m > MAX_CHAMA_MEMBERS || !c || c <= 0) return null;
     return calculateMerryGoRound(m, c, b);
   }, [members, contribution, bufferPercent]);
 
@@ -71,7 +72,7 @@ export default function ChamaGroupCalculator() {
     const m = Number(members);
     const c = Number(contribution);
     const r = Math.max(0, Number(annualReturn) || 0);
-    if (!m || m < 2 || !c || c <= 0) return null;
+    if (!m || m < 2 || m > MAX_CHAMA_MEMBERS || !c || c <= 0) return null;
     return calculateChamaInvestment(m, c, r);
   }, [members, contribution, annualReturn]);
 
@@ -126,6 +127,7 @@ export default function ChamaGroupCalculator() {
       <div>
         <NumberField
           id="members"
+          max={MAX_CHAMA_MEMBERS}
           label="Number of chama members"
           value={members}
           onChange={setMembers}

@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { compareLoanProducts, type LoanProductTier } from "@/lib/loan-comparison";
+import { MAX_TERM_MONTHS } from "@/lib/loans";
 import { formatKES } from "@/lib/budget";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
@@ -43,6 +44,7 @@ export default function SaccoVsBankCalculator() {
     const principal = Number(amount);
     const months = Number(termMonths);
     if (!principal || principal <= 0 || !months || months <= 0) return null;
+    if (months > MAX_TERM_MONTHS) return null;
     return compareLoanProducts(principal, months);
   }, [amount, termMonths]);
 
@@ -75,6 +77,7 @@ export default function SaccoVsBankCalculator() {
       <div>
         <NumberField
           id="termMonths"
+          max={MAX_TERM_MONTHS}
           label="Repayment period (months)"
           value={termMonths}
           onChange={setTermMonths}
