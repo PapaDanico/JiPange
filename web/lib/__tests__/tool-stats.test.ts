@@ -247,7 +247,11 @@ describe("figures we attribute to ourselves are actually ours", () => {
    */
   const RETIRED = [
     {
-      slug: "education-savings",
+      /* Followed the claim to its successor. /tools/education-savings was
+       * retired and redirects to school-fees-lifetime, so that is now the page
+       * where this figure could plausibly reappear — and a retired-value guard
+       * pointed at a deleted file guards nothing. */
+      slug: "school-fees-lifetime",
       value: "Ksh 165,000",
       was: "a market figure for Junior Secondary, which is capitated; the Ministry sets senior school at 53,554 boarding",
     },

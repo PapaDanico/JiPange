@@ -351,14 +351,20 @@ test("dhowcsd: shows t-bill ladder allocation", async ({ page }) => {
 
 // ─── Education Savings ────────────────────────────────────────────────────
 
-test("education savings: shows monthly target", async ({ page }) => {
+/**
+ * The retired tool still answers, by pointing at its successor.
+ *
+ * /tools/education-savings modelled fees as two lump sums at the CBC
+ * transitions with no escalation — right for the public track, wrong by about
+ * six times for a family already paying private fees. It redirects rather than
+ * 404s, because the URL has been shared and indexed, and a dead link would
+ * punish the readers who trusted it most.
+ */
+test("education savings: the retired URL redirects to its successor", async ({ page }) => {
   await page.goto("/tools/education-savings");
+  await expect(page).toHaveURL(/\/tools\/school-fees-lifetime/);
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-  await page.getByRole("spinbutton").first().fill("30000");
-  await expect(visibleText(page, /monthly savings for|combined monthly savings/i)).toBeVisible();
 });
-
-// ─── Hustle Smoother ──────────────────────────────────────────────────────
 
 test("hustle smoother: shows smoothed salary for variable income", async ({ page }) => {
   await page.goto("/tools/hustle-smoother");

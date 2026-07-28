@@ -296,21 +296,16 @@ export function fulizaFloatAnnualSavingKES(): number {
 export const SENIOR_SCHOOL_BOARDING_ANNUAL_KES = 53_554;
 export const SENIOR_SCHOOL_DAY_ANNUAL_KES = 9_374;
 export const SENIOR_SCHOOL_YEARS = 3;
-export const EDUCATION_SAVING_MONTHLY_KES = 1_500;
-export const EDUCATION_SAVING_YEARS = 6;
+/* EDUCATION_SAVING_MONTHLY_KES / _YEARS and the two functions derived from
+ * them lived here solely for /tools/education-savings, which was retired in
+ * favour of /tools/school-fees-lifetime. They described a saving habit aimed
+ * at one CBC transition; the successor models the whole liability and derives
+ * its own figures from lib/education-plan.ts.
+ *
+ * The Ministry constants below stay: they are the anchor for the public-track
+ * fee presets in education-plan.ts, and a test asserts the two agree. */
 
 export function seniorSchoolBoardingTotalKES(): number {
   return SENIOR_SCHOOL_BOARDING_ANNUAL_KES * SENIOR_SCHOOL_YEARS;
 }
 
-/** What the page's saving habit actually reaches, at the anchored MMF rate. */
-export function educationSavingsPotKES(): number {
-  return Math.round(
-    futureValue(0, EDUCATION_SAVING_MONTHLY_KES, mmfAssumedReturn(), EDUCATION_SAVING_YEARS)
-  );
-}
-
-/** Share of three years' boarding the habit covers. Not "fully" — most. */
-export function educationCoveragePct(): number {
-  return Math.round((educationSavingsPotKES() / seniorSchoolBoardingTotalKES()) * 100);
-}

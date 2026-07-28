@@ -96,13 +96,6 @@ export const CALCULATOR_GROUPS: ToolGroup[] = [
         insight: "Multiplying this year's fee by the years left understates a 14-year private education by roughly half.",
         isNew: true,
       },
-      {
-        href: "/tools/education-savings",
-        icon: "🎓",
-        title: "Kids' Education Savings Calculator",
-        description: "Plan monthly savings for Junior and Senior Secondary fees, CBC-aware.",
-        insight: "CBC's 6-year secondary system means two fee step-ups, not one — plan for both.",
-      },
     ],
   },
   {
