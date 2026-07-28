@@ -52,18 +52,34 @@ describe("Rule Block A — the Debt Intercept", () => {
     expect(model.suppressedNote).toBeTruthy();
   });
 
-  it("scales the Fuliza tax estimate with income tier", () => {
-    const low = mapJourney({
-      ...base,
-      liquidity_leak: "mobile_loans",
-      income_bracket: "under_50k",
-    }).fulizaTax!;
-    const high = mapJourney({
-      ...base,
-      liquidity_leak: "mobile_loans",
-      income_bracket: "above_250k",
-    }).fulizaTax!;
-    expect(high.estMonthlyCost).toBeGreaterThan(low.estMonthlyCost);
+  /**
+   * The Fuliza tax does NOT scale with income, and that is the finding.
+   *
+   * This test used to assert that a higher earner pays more. Under the real
+   * tariff they do not: the daily maintenance fee is a flat shilling amount per
+   * balance band, and every income tier this app models — carrying Ksh 3,000 up
+   * to Ksh 25,000 — sits inside the same 2,501-70,000 band at Ksh 25 a day
+   * before excise.
+   *
+   * So the overdraft costs a Ksh 40,000 earner exactly what it costs a Ksh
+   * 300,000 earner, in shillings. As a share of income that is steeply
+   * regressive, which is a sharper thing to tell a reader than the old
+   * assumption that the cost rises with what you make.
+   */
+  it("costs the same in shillings across every income tier in one band", () => {
+    const cost = (income_bracket: string) =>
+      mapJourney({
+        ...base,
+        liquidity_leak: "mobile_loans",
+        income_bracket,
+      } as never).fulizaTax!;
+
+    const low = cost("under_50k");
+    const high = cost("above_250k");
+    expect(high.dailyFee).toBe(low.dailyFee);
+    expect(high.estMonthlyCost).toBe(low.estMonthlyCost);
+    // The balances genuinely differ; it is the tariff that flattens them.
+    expect(high.estOutstanding).toBeGreaterThan(low.estOutstanding);
     expect(low.estAnnualCost).toBe(low.estMonthlyCost * 12);
   });
 

@@ -1,4 +1,4 @@
-import { FULIZA_DAILY_RATE } from "./fuliza";
+import { fulizaDailyFee } from "./fuliza";
 import { currentInflation } from "./rates-feed";
 import { assumedMmfYield } from "./mmf-assumption";
 
@@ -289,7 +289,8 @@ export function mapJourney(answers: JourneyAnswers): DashboardModel {
   if (recovery) {
     microFundTarget = MICRO_FUND_TARGET[answers.income_bracket];
     const estOutstanding = FULIZA_EST_OUTSTANDING[answers.income_bracket];
-    const dailyFee = estOutstanding * FULIZA_DAILY_RATE;
+    // Flat fee for the band the balance falls in, not a percentage of it.
+    const dailyFee = fulizaDailyFee(estOutstanding);
     const estMonthlyCost = Math.round(dailyFee * FULIZA_CARRIED_DAYS_PER_MONTH);
     fulizaTax = {
       estOutstanding,

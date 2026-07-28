@@ -1,6 +1,6 @@
 import { calculateLoanAmortization } from "./loans";
 import { round2 } from "./money";
-import { FULIZA_APR, FULIZA_DAILY_RATE } from "./fuliza";
+import { calculateFulizaCost, FULIZA_MAX_LIMIT } from "./fuliza";
 
 export type LoanProductTier = "green" | "amber" | "red";
 
@@ -46,7 +46,10 @@ export function compareLoanProducts(principal: number, termMonths: number): Loan
   const mobileTotalRepaid = round2(principal + mobileTotalInterest);
 
   const termDays = termMonths * 30;
-  const fulizaTotalInterest = round2(principal * FULIZA_DAILY_RATE * termDays);
+  /* Real tariff: banded flat fee, three free days at or below Ksh 1,000,
+   * plus the one-off access fee. */
+  const fulizaCost = calculateFulizaCost(principal, termDays);
+  const fulizaTotalInterest = fulizaCost.totalFee;
   const fulizaTotalRepaid = round2(principal + fulizaTotalInterest);
 
   const mshwariTotalInterest = round2(principal * MSHWARI_FACILITY_FEE_PER_CYCLE * termMonths);
@@ -81,8 +84,10 @@ export function compareLoanProducts(principal: number, termMonths: number): Loan
       tier: "red",
       estimated: true,
     },
-    {
-      name: "Fuliza (1.083% per day)",
+    // Fuliza only appears when it could actually be drawn — see FULIZA_MAX_LIMIT.
+    ...(principal <= FULIZA_MAX_LIMIT
+      ? [{
+      name: "Fuliza (banded daily fee)",
       monthlyPayment: null,
       totalRepaid: fulizaTotalRepaid,
       totalInterest: fulizaTotalInterest,
@@ -90,10 +95,11 @@ export function compareLoanProducts(principal: number, termMonths: number): Loan
       // computed on the non-compounding daily fee just above). The compounded
       // figure used to sit here, so the table showed a 30-day repayment of
       // 1.32x principal beside an APR of 4,999% that could not produce it.
-      apr: FULIZA_APR,
-      tier: "red",
+      apr: fulizaCost.annualisedApr / 100,
+      tier: "red" as const,
       estimated: true,
-    },
+    }]
+      : []),
     {
       name: "M-Shwari (7.5% facility fee)",
       monthlyPayment: null,

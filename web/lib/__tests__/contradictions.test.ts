@@ -1,10 +1,5 @@
 import { describe, it, expect } from "vitest";
-import {
-  FULIZA_APR,
-  FULIZA_DAILY_RATE,
-  FULIZA_ROLLED_ANNUAL_COST,
-  calculateFulizaCost,
-} from "@/lib/fuliza";
+import { calculateFulizaCost, fulizaDailyFee } from "@/lib/fuliza";
 import { compareLoanProducts } from "@/lib/loan-comparison";
 import {
   DHOWCSD_BILL_MINIMUM,
@@ -32,38 +27,64 @@ import { round2 } from "@/lib/money";
 
 describe("Fuliza: one screen, one APR", () => {
   /**
-   * The tool's headline card said "~400%". The engine returned
-   * (1 + 0.01083)^365 − 1 ≈ 4,999%, and the calculator's share button
-   * broadcast THAT to WhatsApp. Twelve times apart, side by side.
+   * This block used to police a contradiction between two annualisations of a
+   * flat 1.083%-per-day model — "~400%" on the card against ~4,999% in the
+   * share message. Both are now gone, because the model underneath them was
+   * wrong: Fuliza charges a flat shilling fee per balance band, not a
+   * percentage, and gives three free days at or below Ksh 1,000.
+   *
+   * The contradiction this file exists to catch has therefore moved. It is no
+   * longer "two different annualisations of one rate" but "an APR that does
+   * not follow from the fees on the same screen", which is what the tests
+   * below check — against a tariff where the APR legitimately differs by band.
    */
-  it("reports the simple annualisation as the APR", () => {
-    expect(FULIZA_APR).toBeCloseTo(FULIZA_DAILY_RATE * 365, 10);
-    // The headline card claims ~400%; the engine must agree with it.
-    expect(FULIZA_APR * 100).toBeGreaterThan(380);
-    expect(FULIZA_APR * 100).toBeLessThan(410);
-  });
-
-  it("keeps the compounded figure, but never calls it the APR", () => {
-    expect(FULIZA_ROLLED_ANNUAL_COST).toBeCloseTo(
-      Math.pow(1 + FULIZA_DAILY_RATE, 365) - 1,
-      10,
-    );
-    // It is a genuine and much larger number — that is the point of naming it
-    // separately rather than deleting it.
-    expect(FULIZA_ROLLED_ANNUAL_COST).toBeGreaterThan(FULIZA_APR * 10);
-  });
-
   it("the APR is one a reader could derive from the fees shown", () => {
-    // Borrow 600 for 30 days: fees / principal, scaled to a year.
+    /* Borrow 600 for 30 days. The APR annualises the MAINTENANCE fee over the
+     * days it is actually charged — the access fee is a one-off, and rolling
+     * it into an annual rate would make a one-day borrowing look like a
+     * different product from a thirty-day one at the same price. */
     const r = calculateFulizaCost(600, 30);
-    const impliedApr = (r.totalFee / 600) * (365 / 30);
+    const maintenance = r.totalFee - r.accessFee;
+    const impliedApr = (maintenance / 600) * (365 / r.chargeableDays) * 100;
     expect(r.annualisedApr).toBeCloseTo(impliedApr, 2);
   });
 
-  it("returns both figures even on the zero-input guard path", () => {
+  it("charges nothing on the zero-input guard path", () => {
     const zero = calculateFulizaCost(0, 0);
-    expect(zero.annualisedApr).toBe(FULIZA_APR);
-    expect(zero.rolledAnnualCost).toBe(FULIZA_ROLLED_ANNUAL_COST);
+    expect(zero.totalFee).toBe(0);
+    expect(zero.accessFee).toBe(0);
+    expect(zero.annualisedApr).toBe(0);
+  });
+
+  /**
+   * There is no single Fuliza APR, and pretending otherwise was the deeper
+   * error in the old model.
+   *
+   * The fee is a flat sum per balance band, so the annualised cost FALLS
+   * steeply as the principal rises — roughly 730% on Ksh 150 against 110% on
+   * Ksh 10,000. The smallest borrowers pay by far the most, and they are who
+   * this tool is for.
+   */
+  it("shows the tariff is regressive rather than one flat rate", () => {
+    const small = calculateFulizaCost(150, 30).annualisedApr;
+    const large = calculateFulizaCost(10_000, 30).annualisedApr;
+    expect(small).toBeGreaterThan(large * 3);
+  });
+
+  /**
+   * The cliff at Ksh 1,000, which the old percentage model could not express.
+   *
+   * One shilling more than 1,000 loses the three free days AND jumps from Ksh
+   * 5 a day to Ksh 18 before excise. Borrowing 1,001 for three days costs
+   * several times what borrowing 1,000 does.
+   */
+  it("prices the cliff either side of Ksh 1,000", () => {
+    expect(fulizaDailyFee(1_000)).toBeLessThan(fulizaDailyFee(1_001));
+    const under = calculateFulizaCost(1_000, 3);
+    const over = calculateFulizaCost(1_001, 3);
+    expect(under.chargeableDays).toBe(0);
+    expect(over.chargeableDays).toBe(3);
+    expect(over.totalFee).toBeGreaterThan(under.totalFee * 3);
   });
 
   it("the comparison table's Fuliza APR matches its own repayment figure", () => {
@@ -71,11 +92,13 @@ describe("Fuliza: one screen, one APR", () => {
     // APR of 4,999%, which that repayment cannot produce.
     const rows = compareLoanProducts(10_000, 1);
     const fuliza = rows.find((r) => r.name.startsWith("Fuliza"))!;
-    expect(fuliza.apr).toBeCloseTo(FULIZA_APR, 10);
-    // Scale on a 365-day year, matching FULIZA_APR. A 30-day month times 12
-    // is a 360-day year and lands 1.4% low — the two conventions must not be
-    // mixed, which is the whole lesson of this file.
-    const impliedApr = (fuliza.totalInterest / 10_000) * (365 / 30);
+    const cost = calculateFulizaCost(10_000, 30);
+    expect(fuliza.apr).toBeCloseTo(cost.annualisedApr / 100, 10);
+    // Derived from the maintenance fee over the days it is charged, on a
+    // 365-day year. A 30-day month times 12 is a 360-day year and lands 1.4%
+    // low — the two conventions must not be mixed, which is this file's point.
+    const maintenance = cost.totalFee - cost.accessFee;
+    const impliedApr = (maintenance / 10_000) * (365 / cost.chargeableDays);
     expect(fuliza.apr).toBeCloseTo(impliedApr, 2);
   });
 });

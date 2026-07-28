@@ -197,9 +197,7 @@ describe("figures we attribute to ourselves are actually ours", () => {
    * unverified.
    */
   const UNVERIFIED = new Set([
-    "debt-escape:32%/month",
     "education-savings:Ksh 1,500/mo",
-    "fuliza-cost:~400%",
     "fuliza-cost:Ksh 3,000",
     "sha-health:Ksh 1,500–3,500/mo",
   ]);
@@ -207,7 +205,7 @@ describe("figures we attribute to ourselves are actually ours", () => {
   it("records exactly the known-unverified figures, and no more", () => {
     // If this shrinks, delete the entry — the list must never claim debt that
     // has been paid, or it becomes a place figures hide.
-    expect(UNVERIFIED.size).toBe(5);
+    expect(UNVERIFIED.size).toBe(3);
   });
 
   it("states no JiPange-attributed figure as a literal, on any tool page", () => {
@@ -251,6 +249,16 @@ describe("figures we attribute to ourselves are actually ours", () => {
    * wolf on correct code is worse than none.
    */
   const RETIRED = [
+    {
+      slug: "fuliza-cost",
+      value: "~400%",
+      was: "one APR for a banded tariff — it is 730% on Ksh 150 and 110% on Ksh 10,000",
+    },
+    {
+      slug: "debt-escape",
+      value: "32%/month",
+      was: "a flat-percentage model; the real tariff costs 17.4% on Ksh 1,000 over 30 days",
+    },
     {
       slug: "land-purchase",
       value: "8–12%",

@@ -9,7 +9,7 @@ import {
   mapJourney,
   type DashboardModel,
 } from "@/lib/journey";
-import { FULIZA_DAILY_RATE } from "@/lib/fuliza";
+
 import { getStoredJourneyAnswers } from "@/lib/storage";
 import { useStorageValue } from "@/lib/hooks";
 import { formatKES as kes } from "@/lib/budget";
@@ -33,7 +33,7 @@ function AnalystCard({ model }: { model: DashboardModel }) {
   if (model.fulizaTax) {
     rows.push(
       ["Est. Fuliza outstanding (income-bracket table)", kes(model.fulizaTax.estOutstanding)],
-      ["Daily fee rate", `${parseFloat((FULIZA_DAILY_RATE * 100).toFixed(3))}%/day → ${kes(model.fulizaTax.dailyFee)}/day`],
+      ["Daily fee", `${kes(model.fulizaTax.dailyFee)}/day for this balance band`],
       ["Est. monthly cost (~20 borrowed days)", kes(model.fulizaTax.estMonthlyCost)],
       ["Annualised", kes(model.fulizaTax.estAnnualCost)]
     );

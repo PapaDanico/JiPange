@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import ToolLayout from "@/components/tools/ToolLayout";
 import DebtEscapeCalculator from "@/components/tools/DebtEscapeCalculator";
+import {
+  fulizaMonthlyCostPct,
+  FULIZA_EXAMPLE_KES,
+  FULIZA_EXAMPLE_DAYS,
+} from "@/lib/tool-stats";
 
 export const metadata: Metadata = {
   title: "Debt Stack Buster — Escape Mobile Loans Faster",
@@ -18,9 +23,9 @@ export default function DebtEscapePage() {
         {
           icon: "⚠️",
           tone: "caution",
-          stat: "32%/month",
-          label: "is Fuliza's effective monthly rate — Ksh 1,000 borrowed for 30 days costs Ksh 320 in fees alone. Clearing it first saves the most money.",
-          source: "Safaricom Fuliza tariff · JiPange calculation",
+          stat: `${fulizaMonthlyCostPct()}%/month`,
+          label: `is what Ksh ${FULIZA_EXAMPLE_KES.toLocaleString("en-KE")} carried for ${FULIZA_EXAMPLE_DAYS} days costs in Fuliza fees. Clearing it first saves the most money.`,
+          source: "Computed by JiPange from the published Fuliza tariff",
         },
         {
           icon: "💡",
