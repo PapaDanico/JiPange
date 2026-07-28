@@ -126,6 +126,14 @@ export const TOOL_META: Record<string, ToolMeta> = {
     nextMove: { label: "Automate this split on payday →", href: "/tools/payday-router" },
     primaryFields: ["gross"],
   },
+  "/tools/school-fees-lifetime": {
+    href: "/tools/school-fees-lifetime",
+    icon: "🏫",
+    name: "Full Cost of Private School",
+    related: ["/tools/education-savings", "/planners/education", "/tools/take-home-pay"],
+    nextMove: { label: "Smooth this year's termly shocks →", href: "/planners/education" },
+    primaryFields: ["children"],
+  },
   "/tools/education-savings": {
     href: "/tools/education-savings",
     icon: "🎓",

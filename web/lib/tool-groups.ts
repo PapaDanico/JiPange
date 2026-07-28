@@ -89,6 +89,14 @@ export const CALCULATOR_GROUPS: ToolGroup[] = [
         isNew: true,
       },
       {
+        href: "/tools/school-fees-lifetime",
+        icon: "🏫",
+        title: "The Full Cost of Private School",
+        description: "Every year of fees from your child's current grade to Grade 12, increases compounded, across all your children.",
+        insight: "Multiplying this year's fee by the years left understates a 14-year private education by roughly half.",
+        isNew: true,
+      },
+      {
         href: "/tools/education-savings",
         icon: "🎓",
         title: "Kids' Education Savings Calculator",
