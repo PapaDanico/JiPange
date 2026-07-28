@@ -44,10 +44,40 @@ const blankChild = (n: number): ChildRow => ({
   annualFee: "",
 });
 
+/**
+ * The next free row id — one past the highest in use, not the row count.
+ *
+ * Counting rows collides. Add a second child (c2), remove the first, and the
+ * list is [c2] with a length of one, so the next "new" row is c2 again. Two
+ * rows then share a React key AND a DOM id: React applies edits meant for one
+ * to the other, and `<label for>` resolves to whichever field the browser
+ * finds first, so tapping the second child's label focuses the first child's
+ * input. Caught by driving the add/remove/add sequence, which is exactly the
+ * order a parent fixing a mistake would use.
+ */
+export function nextChildId(rows: readonly ChildRow[]): string {
+  const highest = rows.reduce((max, r) => {
+    const n = Number.parseInt(r.id.replace(/^c/, ""), 10);
+    return Number.isFinite(n) && n > max ? n : max;
+  }, 0);
+  return `c${highest + 1}`;
+}
+
+/**
+ * Hoisted so the array identity is stable across renders.
+ *
+ * `useStickyState` feeds its default into a `useSyncExternalStore` snapshot.
+ * A fresh `[blankChild(1)]` literal on every render is a new reference every
+ * time, which is the shape that makes a snapshot look permanently changed.
+ * lib/storage.ts caches parsed reads specifically to avoid that, but the
+ * default never goes through the cache — so it has to be stable here.
+ */
+const INITIAL_CHILDREN: ChildRow[] = [blankChild(1)];
+
 export default function SchoolFeesLifetimeCalculator() {
   const [children, setChildren] = useStickyState<ChildRow[]>(
     "jipange:tool:school-fees-lifetime:children",
-    [blankChild(1)]
+    INITIAL_CHILDREN
   );
   const [escalationPct, setEscalationPct] = useStickyState(
     "jipange:tool:school-fees-lifetime:escalation",
@@ -144,7 +174,7 @@ export default function SchoolFeesLifetimeCalculator() {
     university;
 
   function handleReset() {
-    setChildren([blankChild(1)]);
+    setChildren(INITIAL_CHILDREN);
     setEscalationPct(String(Math.round(DEFAULT_FEE_ESCALATION * 100)));
     setAlreadySaved("0");
     setNetPay("");
@@ -244,7 +274,7 @@ export default function SchoolFeesLifetimeCalculator() {
       {children.length < MAX_CHILDREN && (
         <button
           type="button"
-          onClick={() => setChildren([...children, blankChild(children.length + 1)])}
+          onClick={() => setChildren([...children, blankChild(Number(nextChildId(children).slice(1)))])}
           className="h-12 w-full rounded-full border border-dashed border-primary text-sm font-semibold text-primary hover:bg-canvas"
         >
           + Add another child
