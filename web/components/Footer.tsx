@@ -74,6 +74,15 @@ export default function Footer() {
           <Link href="/privacy" className="underline hover:text-primary">
             Privacy
           </Link>
+          {/* Reachable, or it is not shipped.
+            *
+            * /licensing went in with nothing linking to it — no footer entry,
+            * no nav, no sitemap reference. A page you can only reach by typing
+            * the URL is a page nobody reaches, and the whole point of it is
+            * that an institution can find how to work with us. */}
+          <Link href="/licensing" className="underline hover:text-primary">
+            Licensing
+          </Link>
         </div>
       </div>
     </footer>

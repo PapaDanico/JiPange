@@ -133,3 +133,19 @@ describe("money is never asked for before something has been given", () => {
     expect(offenders, `these tool pages ask for money:\n${offenders.join("\n")}`).toEqual([]);
   });
 });
+
+/**
+ * A page nobody can navigate to is not shipped.
+ *
+ * /licensing was added with nothing linking to it — no footer entry, no nav,
+ * no sitemap reference. It existed at a URL and was reachable only by typing
+ * one, which for a page whose whole purpose is that an institution can find
+ * how to work with us is the same as not existing.
+ */
+describe("the business-facing page is reachable", () => {
+  it("is linked from the footer", async () => {
+    const { readFileSync } = await import("node:fs");
+    const footer = readFileSync(new URL("../../components/Footer.tsx", import.meta.url), "utf8");
+    expect(footer, "nothing links to /licensing").toMatch(/href="\/licensing"/);
+  });
+});
