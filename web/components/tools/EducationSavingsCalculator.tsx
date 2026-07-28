@@ -202,7 +202,26 @@ export default function EducationSavingsCalculator() {
             message={`🎓 *My Kids' Education Savings Plan*\n\nCombined monthly savings needed: ${formatKES(result.combinedMonthly)}\n\nCalculate yours → jipangefinance.org/tools/education-savings`}
           />
         </div>
-        <ExportCardButton containerRef={resultsRef} filename="education-savings" />
+        <ExportCardButton
+          containerRef={resultsRef}
+          filename="education-savings"
+          title="Kids' Education Savings Plan"
+          assumptions={[
+            { label: "Child's level", value: grade?.label ?? gradeValue },
+            ...(grade && grade.yearsToJSS > 0
+              ? [{ label: "Junior Secondary", value: `${formatKES(Number(jssFees) || 0)} in ${grade.yearsToJSS} yrs` }]
+              : []),
+            ...(grade && grade.yearsToSSS > 0
+              ? [{ label: "Senior Secondary", value: `${formatKES(Number(sssFees) || 0)} in ${grade.yearsToSSS} yrs` }]
+              : []),
+            { label: "Already saved", value: formatKES(Number(currentSavings) || 0) },
+            { label: "Return assumed", value: `${annualReturn}% a year` },
+          ]}
+          notes={[
+            "Fees are entered at today's prices and are not escalated here — school fee structures are set by individual schools and reviewed annually, so re-run this each January.",
+            "The current savings figure is applied to whichever transition comes first; the later one starts from zero, because the same shilling cannot be counted twice.",
+          ]}
+        />
         <CalculatorDisclaimer
           extraNotes={[
             "CBC fee structures are set by individual schools and reviewed annually. Re-run this calculator each January when your school publishes fees for the year.",

@@ -1,6 +1,7 @@
 "use client";
 
 import { RefObject, useState } from "react";
+import { buildSheet, prefersLandscape, A4_PORTRAIT, A4_LANDSCAPE } from "@/lib/export-sheet";
 
 /**
  * Getting a result off the device — as a PDF, or as an image.
@@ -29,12 +30,35 @@ import { RefObject, useState } from "react";
  * figures drifting from the on-screen ones — the class of bug this codebase
  * keeps finding. One renderer, one layout, one set of numbers.
  */
+/** "school-fees-lifetime" -> "School Fees Lifetime". */
+function titleFromFilename(name: string): string {
+  const words = name.replace(/[-_]+/g, " ").replace(/\s+/g, " ").trim();
+  if (!words) return "Result";
+  return words.replace(/\b[a-z]/g, (c) => c.toUpperCase());
+}
+
 export default function ExportCardButton({
   containerRef,
   filename = "jipange-result",
+  title,
+  assumptions,
+  notes,
+  orientation,
 }: {
   containerRef: RefObject<HTMLDivElement | null>;
   filename?: string;
+  /**
+   * Document title. Optional so every tool keeps working while titles are
+   * wired through one at a time; where absent it is derived from the filename,
+   * which is always a slug of the tool's own name. A derived title is a worse
+   * title than a written one, but it is never "undefined" on a printed page.
+   */
+  title?: string;
+  /** What the reader entered, printed so the sheet can be reproduced. */
+  assumptions?: { label: string; value: string }[];
+  /** Method and caveats, printed small at the foot. */
+  notes?: string[];
+  orientation?: "portrait" | "landscape";
 }) {
   const [loading, setLoading] = useState<"pdf" | "image" | null>(null);
   /**
@@ -174,46 +198,68 @@ export default function ExportCardButton({
       }
 
       const { jsPDF } = await import("jspdf");
-      const pdf = new jsPDF({ unit: "mm", format: "a4", orientation: "portrait" });
+      const landscape = orientation
+        ? orientation === "landscape"
+        : prefersLandscape(el);
+      const page = landscape ? A4_LANDSCAPE : A4_PORTRAIT;
+      const pdf = new jsPDF({
+        unit: "mm",
+        format: "a4",
+        orientation: landscape ? "landscape" : "portrait",
+      });
       const pageW = pdf.internal.pageSize.getWidth();
       const pageH = pdf.internal.pageSize.getHeight();
 
-      // Fit to width, then PAGINATE — do not scale a long card down to fit one
-      // sheet. These results run long: the retirement plan card rasterises at
-      // 780x3524, which shrunk-to-fit lands as a 65mm-wide sliver of 4pt text
-      // on a 210mm page. Legible on nobody's screen and useless printed. So the
-      // card is cut into page-height bands at full width and each band gets its
-      // own A4 page, which is what a document is supposed to do.
-      const imgW = pageW;
-      const naturalH = (out.height * imgW) / out.width;
-      if (naturalH <= pageH) {
-        pdf.addImage(out.toDataURL("image/jpeg", 0.92), "JPEG", 0, 0, imgW, naturalH);
-      } else {
-        // Source pixels per page of output, from the width-fit scale factor.
-        const sliceH = Math.floor((pageH * out.width) / pageW);
-        const band = document.createElement("canvas");
-        const bctx = band.getContext("2d");
-        band.width = out.width;
-        for (let y = 0; y < out.height; y += sliceH) {
-          const h = Math.min(sliceH, out.height - y);
-          band.height = h;
-          if (!bctx) break;
-          // Repaint the background: the last band is short, and without this
-          // it inherits whatever was in the reused buffer.
-          bctx.fillStyle = "#FAFAF8";
-          bctx.fillRect(0, 0, band.width, h);
-          bctx.drawImage(out, 0, y, out.width, h, 0, 0, out.width, h);
-          if (y > 0) pdf.addPage();
-          pdf.addImage(
-            band.toDataURL("image/jpeg", 0.92),
-            "JPEG",
-            0,
-            0,
-            imgW,
-            (h * imgW) / out.width,
-          );
-        }
+      /* The document sheet, rasterised whole and placed on ONE page.
+       *
+       * The old path fitted the card to the page WIDTH and then cut the
+       * overflow into further pages. On a phone-shaped stack of cards that
+       * reliably produced a second page holding a few stray pixels — both
+       * sample exports came back with a completely blank sheet 2, which is
+       * the first thing a reader notices and the last thing you want on a
+       * document going to a bursar.
+       *
+       * A sheet is a fixed A4 aspect by construction, so it is placed once and
+       * scaled to fit whichever dimension binds. If content genuinely overruns
+       * the sheet it is scaled down rather than split: these are one-page
+       * summaries, and half a summary on a second page is worse than slightly
+       * smaller type.
+       */
+      const { node, dispose } = buildSheet({
+        title: title?.trim() || titleFromFilename(filename),
+        body: el,
+        assumptions,
+        notes,
+        orientation: landscape ? "landscape" : "portrait",
+      });
+      let shot: HTMLCanvasElement;
+      try {
+        const { default: html2canvas } = await import("html2canvas-pro");
+        shot = await html2canvas(node, {
+          scale: 2,
+          useCORS: true,
+          logging: false,
+          backgroundColor: "#FFFFFF",
+          width: page.w,
+          height: page.h,
+          windowWidth: page.w,
+          windowHeight: page.h,
+        });
+      } finally {
+        dispose();
       }
+
+      const fit = Math.min(pageW / shot.width, pageH / shot.height);
+      const drawW = shot.width * fit;
+      const drawH = shot.height * fit;
+      pdf.addImage(
+        shot.toDataURL("image/jpeg", 0.94),
+        "JPEG",
+        (pageW - drawW) / 2,
+        0,
+        drawW,
+        drawH,
+      );
       pdf.save(`${filename}.pdf`);
     } catch (err) {
       const what = as === "pdf" ? "PDF" : "image";

@@ -58,7 +58,7 @@ export default function FulizaCostCalculator() {
             <ResultCard
               label="Total cost of borrowing"
               value={formatKES(result.totalFee)}
-              sublabel={`Borrowing ${formatKES(Number(amount))} for ${days} days costs ${formatKES(result.totalFee)} — equivalent to roughly ${Math.round(result.annualisedApr * 100)}% APR.`}
+              sublabel={`Borrowing ${formatKES(Number(amount))} for ${days} days costs ${formatKES(result.totalFee)} — equivalent to roughly ${Math.round(result.annualisedApr)}% APR.`}
               tone="danger"
             />
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -91,7 +91,7 @@ export default function FulizaCostCalculator() {
                 And if you never clear it
               </p>
               <p className="mt-1.5 text-xs leading-relaxed text-ink-soft">
-                The {Math.round(result.annualisedApr * 100)}% above is the APR — the daily fee
+                The {Math.round(result.annualisedApr)}% above is the APR — the daily fee
                 annualised, which is what the facility contractually costs. Roll the balance for a
                 whole year without clearing it and the fees keep landing on a balance that never
                 shrinks: the compounded cost reaches roughly{" "}
@@ -103,10 +103,24 @@ export default function FulizaCostCalculator() {
             <CalculatorDisclaimer />
 
             <ShareResultButton
-              message={`📱 *True Cost of Fuliza*\n\nBorrowing ${formatKES(Number(amount))} for ${days} days costs ${formatKES(result.totalFee)} in fees.\nThat's about ${Math.round(result.annualisedApr * 100)}% APR.\n\nCalculate yours → jipangefinance.org/tools/fuliza-cost`}
+              message={`📱 *True Cost of Fuliza*\n\nBorrowing ${formatKES(Number(amount))} for ${days} days costs ${formatKES(result.totalFee)} in fees.\nThat's about ${Math.round(result.annualisedApr)}% APR.\n\nCalculate yours → jipangefinance.org/tools/fuliza-cost`}
             />
           </div>
-          <ExportCardButton containerRef={resultsRef} filename="fuliza-cost" />
+          <ExportCardButton
+            containerRef={resultsRef}
+            filename="fuliza-cost"
+            title="The True Cost of Fuliza"
+            assumptions={[
+              { label: "Amount borrowed", value: formatKES(Number(amount) || 0) },
+              { label: "Days carried", value: `${days} days` },
+              { label: "Chargeable days", value: `${result?.chargeableDays ?? 0}` },
+              { label: "Daily fee", value: formatKES(result?.dailyFee ?? 0) },
+            ]}
+            notes={[
+              "Priced on Safaricom's published Fuliza tariff: a flat daily maintenance fee set by balance band, a one-off 1% access fee, and 20% excise duty on both. Balances of Ksh 1,000 or less carry three free days.",
+              "The APR annualises the daily maintenance fee only. The access fee is a one-off, and annualising it would make a one-day borrowing look like a far more expensive product than it is.",
+            ]}
+          />
           <ProductLinks products={MMF_LINKS.slice(0, 2)} heading="Build an emergency float in an MMF instead" />
         </>
       )}
