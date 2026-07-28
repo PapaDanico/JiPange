@@ -89,6 +89,31 @@ export const ONLY_IF_YOU_SIGN_IN: DataItem[] = [
 ];
 
 /** Collected by the infrastructure rather than by us, and unavoidable. */
+/**
+ * Only if you choose to contribute. Nothing here is required to use the app.
+ *
+ * Worth being precise about, because the honest answer improved in March 2026
+ * and the lazy answer would be to keep claiming we receive nothing. We do
+ * receive something — we simply receive less than we used to.
+ *
+ * Since 24 March 2026 Safaricom masks payer details on Till, PayBill and
+ * peer-to-peer payments: a merchant sees two names and a partially obscured
+ * number, e.g. 0722**000*. A name is still personal data and this notice says
+ * so rather than rounding it down to nothing.
+ */
+export const ONLY_IF_YOU_CONTRIBUTE: DataItem[] = [
+  {
+    what:
+      "Two of your names and a partially masked phone number, from the M-PESA confirmation",
+    purpose:
+      "Nothing. We do not need it and do not ask for it — Safaricom includes it in the payment confirmation and there is no way to decline it.",
+    destination:
+      "It reaches our M-PESA statement and nowhere else. It is never matched to anything you did in the app, because the app sends us nothing to match it against.",
+    retention:
+      "It stays in the M-PESA statement, which Safaricom keeps as the record of a payment. We do not copy it into any list of our own.",
+  },
+];
+
 export const COLLECTED_BY_HOSTING: DataItem[] = [
   {
     what: "Your IP address and browser user-agent, in server logs",

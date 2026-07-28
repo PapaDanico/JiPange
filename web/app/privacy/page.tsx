@@ -6,6 +6,7 @@ import {
   DEVICE_ONLY,
   DPA_RIGHTS,
   ODPC,
+  ONLY_IF_YOU_CONTRIBUTE,
   ONLY_IF_YOU_SIGN_IN,
   PROCESSORS,
   SENT_FOR_THE_AI_PLAN,
@@ -129,14 +130,31 @@ export default function PrivacyPage() {
 
           <section>
             <h2 className="text-base font-semibold text-primary">
-              4. What the hosting collects regardless
+              4. What we receive if you choose to contribute
+            </h2>
+            <p className="mt-2">
+              The calculators and their documents are free, and nothing in JiPange asks
+              you to pay. If you do choose to send something to the till on our{" "}
+              <Link href="/support" className="underline hover:text-primary">
+                support page
+              </Link>
+              , Safaricom includes some of your details in the confirmation and there is
+              no way for us to decline them. Since March 2026 that is two of your names
+              and a partially masked number rather than the full one.
+            </p>
+            <Table items={ONLY_IF_YOU_CONTRIBUTE} />
+          </section>
+
+          <section>
+            <h2 className="text-base font-semibold text-primary">
+              5. What the hosting collects regardless
             </h2>
             <Table items={COLLECTED_BY_HOSTING} />
           </section>
 
           <section>
             <h2 className="text-base font-semibold text-primary">
-              5. Who else can receive your data
+              6. Who else can receive your data
             </h2>
             <p className="mt-2">
               These are all of them. Each processes outside Kenya, which the Act treats as a
@@ -163,7 +181,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-base font-semibold text-primary">6. Cookies</h2>
+            <h2 className="text-base font-semibold text-primary">7. Cookies</h2>
             <p className="mt-2">
               JiPange sets no advertising or analytics cookies. If you sign in, Supabase sets a
               session cookie so you stay signed in; that is the only cookie, and it exists only
@@ -172,7 +190,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-base font-semibold text-primary">7. How it is protected</h2>
+            <h2 className="text-base font-semibold text-primary">8. How it is protected</h2>
             <p className="mt-2">
               Everything is served over HTTPS. The AI endpoint accepts only a fixed, validated
               set of fields — anything else is rejected rather than forwarded — and it is rate
@@ -184,7 +202,7 @@ export default function PrivacyPage() {
 
           <section>
             <h2 className="text-base font-semibold text-primary">
-              8. Your rights under the Act
+              9. Your rights under the Act
             </h2>
             <p className="mt-2">
               Section 26 of the Data Protection Act, 2019 gives you these rights:
@@ -206,7 +224,7 @@ export default function PrivacyPage() {
           <DataControls />
 
           <section>
-            <h2 className="text-base font-semibold text-primary">9. Complaints</h2>
+            <h2 className="text-base font-semibold text-primary">10. Complaints</h2>
             <p className="mt-2">
               {ODPC.what} The{" "}
               <a
@@ -223,7 +241,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-base font-semibold text-primary">10. Children</h2>
+            <h2 className="text-base font-semibold text-primary">11. Children</h2>
             <p className="mt-2">
               JiPange is built for adults managing their own money, and the profile form does
               not accept an age under 18. We do not knowingly collect data from children. The
@@ -233,7 +251,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-base font-semibold text-primary">11. Changes</h2>
+            <h2 className="text-base font-semibold text-primary">12. Changes</h2>
             <p className="mt-2">
               If the processing described here changes, this page changes with it and the date
               at the top moves. The disclosures are generated from a file in the codebase that
