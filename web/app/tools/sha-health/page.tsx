@@ -25,9 +25,9 @@ export default function ShaHealthPage() {
         {
           icon: "💡",
           tone: "hopeful",
-          stat: "Ksh 1,500–3,500/mo",
-          label: "is the typical SHA top-up cost for a single person. Paired with SHA, it gives full private hospital access at a fraction of standalone cover.",
-          source: "JiPange 2026 market survey",
+          stat: "Ksh 400–1,500/mo",
+          label: "is what individual private cover is advertised at in Kenya — entry plans from about Ksh 400 a month, inpatient-focused cover nearer Ksh 700–1,500. Paired with SHA it buys private hospital access; premiums rise with age and benefit limits, so treat this as a starting point and get a quote.",
+          source: "Published individual premiums, Kenyan insurers 2026 — indicative, verify with a provider",
         },
       ]}
     >

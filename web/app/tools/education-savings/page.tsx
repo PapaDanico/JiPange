@@ -1,6 +1,15 @@
 import type { Metadata } from "next";
 import ToolLayout from "@/components/tools/ToolLayout";
 import EducationSavingsCalculator from "@/components/tools/EducationSavingsCalculator";
+import {
+  educationSavingsPotKES,
+  educationCoveragePct,
+  seniorSchoolBoardingTotalKES,
+  SENIOR_SCHOOL_BOARDING_ANNUAL_KES,
+  SENIOR_SCHOOL_YEARS,
+  EDUCATION_SAVING_MONTHLY_KES,
+  EDUCATION_SAVING_YEARS,
+} from "@/lib/tool-stats";
 
 export const metadata: Metadata = {
   title: "Kids' School Fees Savings Calculator Kenya (CBC)",
@@ -18,16 +27,16 @@ export default function EducationSavingsPage() {
         {
           icon: "⚠️",
           tone: "caution",
-          stat: "Ksh 165,000",
-          label: "per year is the top-end cost for CBC Junior Secondary. Most families discover this in January — and borrow.",
-          source: "MoE School Fees Guidelines 2025",
+          stat: `Ksh ${SENIOR_SCHOOL_BOARDING_ANNUAL_KES.toLocaleString("en-KE")}`,
+          label: `a year is the government\u2019s uniform boarding fee for Senior School, Grades 10 to 12. Junior Secondary is capitated; this is the bill that actually arrives \u2014 and most families meet it in January, by borrowing.`,
+          source: "Ministry of Education, uniform senior school fees for 2026",
         },
         {
           icon: "🎓",
           tone: "hopeful",
-          stat: "Ksh 1,500/mo",
-          label: "saved in an MMF from Standard 5 fully covers Junior Secondary fees — no loans, no scrambling every term.",
-          source: "JiPange projection at 11% p.a.",
+          stat: `Ksh ${EDUCATION_SAVING_MONTHLY_KES.toLocaleString("en-KE")}/mo`,
+          label: `saved in an MMF for ${EDUCATION_SAVING_YEARS} years reaches Ksh ${educationSavingsPotKES().toLocaleString("en-KE")} \u2014 about ${educationCoveragePct()}% of the Ksh ${seniorSchoolBoardingTotalKES().toLocaleString("en-KE")} that ${SENIOR_SCHOOL_YEARS} years of senior school boarding costs. Most of it, without loans.`,
+          source: "Computed by JiPange \u2014 MMF rate anchored to the CBK 91-day bill; fees per the Ministry of Education",
         },
       ]}
       deeper={{

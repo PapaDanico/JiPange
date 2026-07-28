@@ -260,3 +260,57 @@ export function fulizaAprAt(principal: number): number {
 export function fulizaMonthlyCostPct(): number {
   return calculateFulizaCost(FULIZA_EXAMPLE_KES, FULIZA_EXAMPLE_DAYS).percentOfPrincipal;
 }
+
+/* ── The last three, decided on research rather than left unverified ────── */
+
+/** Days a month an overdraft is typically carried before payday clears it. */
+export const FULIZA_CARRIED_DAYS = 20;
+/** A standing M-PESA float big enough to stop reaching for Fuliza. */
+export const FULIZA_FLOAT_KES = 3_000;
+
+/**
+ * What a standing float is worth per year, at the real tariff.
+ *
+ * The page claimed "saves Ksh 2,000–4,000/year". Carrying Ksh 3,000 for twenty
+ * days a month costs Ksh 636 a month — Ksh 7,632 a year. The old range
+ * UNDERSTATED the saving by about half, which is the rarer direction and the
+ * one nobody complains about: it undersold the very behaviour the page is
+ * recommending.
+ */
+export function fulizaFloatAnnualSavingKES(): number {
+  return calculateFulizaCost(FULIZA_FLOAT_KES, FULIZA_CARRIED_DAYS).totalFee * 12;
+}
+
+/**
+ * Senior school fees, as the government published them for 2026.
+ *
+ * The education page was built around "Junior Secondary", where under CBC the
+ * state now pays a capitation and most families face no tuition bill. The fee
+ * shock moved to SENIOR school — Grades 10 to 12 — and the Ministry set it
+ * uniformly: Ksh 53,554 a year boarding, Ksh 9,374 day.
+ *
+ * So the page was pointing parents at the wrong stage AND quoting Ksh 165,000
+ * a year for it. These are official, uniform and checkable, which is the whole
+ * reason to prefer them to a plausible-sounding market figure.
+ */
+export const SENIOR_SCHOOL_BOARDING_ANNUAL_KES = 53_554;
+export const SENIOR_SCHOOL_DAY_ANNUAL_KES = 9_374;
+export const SENIOR_SCHOOL_YEARS = 3;
+export const EDUCATION_SAVING_MONTHLY_KES = 1_500;
+export const EDUCATION_SAVING_YEARS = 6;
+
+export function seniorSchoolBoardingTotalKES(): number {
+  return SENIOR_SCHOOL_BOARDING_ANNUAL_KES * SENIOR_SCHOOL_YEARS;
+}
+
+/** What the page's saving habit actually reaches, at the anchored MMF rate. */
+export function educationSavingsPotKES(): number {
+  return Math.round(
+    futureValue(0, EDUCATION_SAVING_MONTHLY_KES, mmfAssumedReturn(), EDUCATION_SAVING_YEARS)
+  );
+}
+
+/** Share of three years' boarding the habit covers. Not "fully" — most. */
+export function educationCoveragePct(): number {
+  return Math.round((educationSavingsPotKES() / seniorSchoolBoardingTotalKES()) * 100);
+}
