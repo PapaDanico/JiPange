@@ -2,7 +2,14 @@ import { describe, it, expect } from "vitest";
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { calculateNetPay, PENSION_RELIEF_CAP_MONTHLY } from "../tax";
+import { futureValue } from "../projections";
 import {
+  savingsGoalFutureValueKES,
+  mmfAssumedReturn,
+  savingsGoalContributedKES,
+  earlyStartMultiple,
+  EARLY_START_RETURN,
+  emergencyFundMonths,
   statutoryShareOfGrossPct,
   pensionReliefSavingMonthly,
   pensionReliefSavingAnnual,
@@ -87,6 +94,41 @@ describe("the headline figures come from the engine", () => {
     expect(statutoryShareOfGrossPct(100_000)).toBeCloseTo(29.56, 2);
   });
 
+  /**
+   * The projection headlines, against the engine that draws the charts.
+   *
+   * Two of these three were wrong when checked, and in OPPOSITE directions —
+   * savings-goal overstated by 18%, fire-number understated by a third. Worth
+   * keeping in mind: only the flattering error would ever have been reported
+   * by a reader, so a bug list built from complaints is systematically biased
+   * towards the ones that make you look good.
+   */
+  it("computes the savings-goal headline from the projection engine", () => {
+    const fv = savingsGoalFutureValueKES();
+    expect(fv).toBeCloseTo(futureValue(0, 2_000, mmfAssumedReturn(), 3), 0);
+    // Compounding must beat the flat contributions, and not by a silly margin.
+    expect(fv).toBeGreaterThan(savingsGoalContributedKES());
+    expect(fv).toBeLessThan(savingsGoalContributedKES() * 1.5);
+  });
+
+  it("computes the early-start multiple rather than asserting one", () => {
+    const m = earlyStartMultiple();
+    const early = futureValue(0, 3_000, EARLY_START_RETURN, 27);
+    const late = futureValue(0, 3_000, EARLY_START_RETURN, 17);
+    expect(m).toBeCloseTo(Math.round((early / late) * 10) / 10, 6);
+    /* Ten extra years of compounding at 10% cannot leave you worse off, and
+     * cannot plausibly multiply your wealth tenfold. The old "2×" sat outside
+     * the true value; this band would not have caught that on its own, which
+     * is why the equality above is the real check and this is only a sanity
+     * rail against a units slip. */
+    expect(m).toBeGreaterThan(1);
+    expect(m).toBeLessThan(10);
+  });
+
+  it("keeps the emergency-fund figure equal to the division it describes", () => {
+    expect(emergencyFundMonths()).toBe(Math.ceil(30_000 / 2_000));
+  });
+
   it("values a raise by running both salaries, not by summing rates", () => {
     const before = calculateNetPay(EXAMPLE_BASE_SALARY_KES).netMonthly;
     const after = calculateNetPay(EXAMPLE_BASE_SALARY_KES + EXAMPLE_RAISE_KES).netMonthly;
@@ -157,19 +199,16 @@ describe("figures we attribute to ourselves are actually ours", () => {
   const UNVERIFIED = new Set([
     "debt-escape:32%/month",
     "education-savings:Ksh 1,500/mo",
-    "fire-number:2× more",
     "fuliza-cost:~400%",
     "fuliza-cost:Ksh 3,000",
     "land-purchase:8–12%",
-    "money-runway:15 months",
-    "savings-goal:Ksh 100,000+",
     "sha-health:Ksh 1,500–3,500/mo",
   ]);
 
   it("records exactly the known-unverified figures, and no more", () => {
     // If this shrinks, delete the entry — the list must never claim debt that
     // has been paid, or it becomes a place figures hide.
-    expect(UNVERIFIED.size).toBe(9);
+    expect(UNVERIFIED.size).toBe(6);
   });
 
   it("states no JiPange-attributed figure as a literal, on any tool page", () => {
@@ -213,6 +252,16 @@ describe("figures we attribute to ourselves are actually ours", () => {
    * wolf on correct code is worse than none.
    */
   const RETIRED = [
+    {
+      slug: "savings-goal",
+      value: "Ksh 100,000+",
+      was: "a 19% overstatement — Ksh 2,000/month for three years at the anchored MMF rate reaches about Ksh 84,000",
+    },
+    {
+      slug: "fire-number",
+      value: "2× more",
+      was: "an understatement — ten earlier years buy 3.1x, not 2x",
+    },
     {
       slug: "salary",
       value: "≈37%",

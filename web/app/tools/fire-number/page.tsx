@@ -2,6 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import ToolLayout from "@/components/tools/ToolLayout";
 import FireNumberCalculator from "@/components/tools/FireNumberCalculator";
+import {
+  earlyStartMultiple,
+  EARLY_START_AGE,
+  LATE_START_AGE,
+  RETIRE_AT_AGE,
+  EARLY_START_MONTHLY_KES,
+} from "@/lib/tool-stats";
 
 export const metadata: Metadata = {
   title: "FIRE Number Calculator — Financial Independence Kenya",
@@ -26,9 +33,9 @@ export default function FireNumberPage() {
         {
           icon: "🌅",
           tone: "hopeful",
-          stat: "2× more",
-          label: "wealth at 55 by starting Ksh 3,000/month at 28 vs 38 — at 10% return. Starting early is the single biggest lever.",
-          source: "JiPange FIRE projection",
+          stat: `${earlyStartMultiple()}× more`,
+          label: `wealth at ${RETIRE_AT_AGE} by starting Ksh ${EARLY_START_MONTHLY_KES.toLocaleString("en-KE")}/month at ${EARLY_START_AGE} vs ${LATE_START_AGE} — at 10% return. Starting early is the single biggest lever.`,
+          source: "Computed by JiPange at an assumed 10% p.a., compounded monthly",
         },
       ]}
       deeper={{

@@ -1,4 +1,6 @@
 import { calculateNetPay, PENSION_RELIEF_CAP_MONTHLY } from "./tax";
+import { futureValue, DEFAULT_WITH_PLAN_RETURN_RATE } from "./projections";
+import { assumedMmfYield } from "./mmf-assumption";
 import { round2 } from "./money";
 
 /**
@@ -118,4 +120,82 @@ export function statutoryShareOfGrossPct(
   const t = calculateNetPay(salary);
   const statutory = t.nssf.total + t.shif + t.ahl + t.paye;
   return round2((statutory / salary) * 100);
+}
+
+/* ── Projection headlines ───────────────────────────────────────────────────
+ *
+ * Same rule as the tax figures above: a number credited to a JiPange
+ * projection has to come from the projection engine. These three were typed,
+ * and two of the three were wrong — in opposite directions, which is worth
+ * noticing. An error that flatters the product and an error that undersells it
+ * are equally errors, and only one of them would ever have been reported by a
+ * reader.
+ */
+
+/** The worked example on the savings-goal page. */
+export const SAVINGS_GOAL_MONTHLY_KES = 2_000;
+export const SAVINGS_GOAL_YEARS = 3;
+/**
+ * The MMF return these projections assume.
+ *
+ * NOT a constant. I first wrote `= 0.11` here and rate-anchoring.test.ts
+ * rejected it — correctly, and with the exact reasoning I had spent the day
+ * applying to other people's numbers. lib/mmf-assumption.ts exists because
+ * four hand-typed MMF yields once drifted apart and then stayed put while
+ * bills fell from 16% to 9%. Typing a fifth would have restarted that.
+ */
+export const mmfAssumedReturn = () => assumedMmfYield();
+
+/**
+ * What a small monthly habit reaches in three years.
+ *
+ * The page claimed "Ksh 100,000+". It is Ksh 84,846 — an 18% overstatement of
+ * a figure whose entire job is to be checkable, next to the sentence "not Ksh
+ * 72,000 flat. Compounding is the difference." The point stands: compounding
+ * really does add Ksh 12,846 to the Ksh 72,000 you put in. It just does not
+ * add twenty-eight thousand.
+ */
+export function savingsGoalFutureValueKES(): number {
+  return Math.round(
+    futureValue(0, SAVINGS_GOAL_MONTHLY_KES, mmfAssumedReturn(), SAVINGS_GOAL_YEARS)
+  );
+}
+
+/** Flat contributions, for the comparison the page draws. */
+export function savingsGoalContributedKES(): number {
+  return SAVINGS_GOAL_MONTHLY_KES * SAVINGS_GOAL_YEARS * 12;
+}
+
+export const EARLY_START_AGE = 28;
+export const LATE_START_AGE = 38;
+export const RETIRE_AT_AGE = 55;
+export const EARLY_START_MONTHLY_KES = 3_000;
+/** The long-run return the retirement projections already assume. */
+export const EARLY_START_RETURN = DEFAULT_WITH_PLAN_RETURN_RATE;
+
+/**
+ * How much more wealth ten earlier years buy.
+ *
+ * The page said "2× more". It is 3.09×, so the claim understated the single
+ * biggest lever the tool exists to demonstrate — the one error today that cost
+ * the argument rather than inflating it, and therefore the one nobody would
+ * ever have complained about.
+ */
+export function earlyStartMultiple(): number {
+  const early = futureValue(0, EARLY_START_MONTHLY_KES, EARLY_START_RETURN, RETIRE_AT_AGE - EARLY_START_AGE);
+  const late = futureValue(0, EARLY_START_MONTHLY_KES, EARLY_START_RETURN, RETIRE_AT_AGE - LATE_START_AGE);
+  return Math.round((early / late) * 10) / 10;
+}
+
+export const EMERGENCY_FUND_TARGET_KES = 30_000;
+export const EMERGENCY_FUND_MONTHLY_KES = 2_000;
+
+/**
+ * Months to a three-month cushion, saving flat.
+ *
+ * This one was already right at 15. Derived anyway — a correct number with
+ * nothing holding it there is a number waiting to drift.
+ */
+export function emergencyFundMonths(): number {
+  return Math.ceil(EMERGENCY_FUND_TARGET_KES / EMERGENCY_FUND_MONTHLY_KES);
 }
