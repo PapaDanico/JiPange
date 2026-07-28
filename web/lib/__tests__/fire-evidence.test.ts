@@ -8,7 +8,8 @@ import {
 } from '../fire-evidence';
 import { REAL_RETURN_DEFAULT } from '../retirement-kenya';
 import { currentInflation } from '../rates-feed';
-import { earlyStartMultiple, earlyStartMultipleReal } from '../tool-stats';
+import { earlyStartMultiple, earlyStartMultipleReal, RETIRE_AT_AGE } from '../tool-stats';
+import { DEFAULT_RETIREMENT_AGE } from '../projections';
 
 /**
  * The planning rate is justified by market conditions, so the justification
@@ -146,6 +147,24 @@ describe('the reasoning reaches the reader', () => {
       );
     }
     expect(read('lib/market-2026.ts')).not.toMatch(/localizedFire/);
+  });
+
+  it('names one retirement age, not three', () => {
+    /* There were three: the insight card illustrated 55, the calculator
+     * defaulted to 50, and DEFAULT_RETIREMENT_AGE said 60. No two of them
+     * contradicted outright — an illustration may pick an age — but a reader
+     * moving from the card to the tool met a different retirement each time.
+     *
+     * Asserted as an alias rather than an equal value, because two constants
+     * that happen to match today are two constants that can drift tomorrow;
+     * that is precisely how three of them appeared. */
+    expect(RETIRE_AT_AGE).toBe(DEFAULT_RETIREMENT_AGE);
+    const calc = read('components/tools/FireNumberCalculator.tsx');
+    expect(
+      calc,
+      'the calculator hard-codes a retirement age instead of using the shared default'
+    ).not.toMatch(/targetAge\s*!==\s*\d|setTargetAge\(\d+\)/);
+    expect(calc).toMatch(/DEFAULT_RETIREMENT_AGE/);
   });
 
   it('surfaces the deadline that expires before retirement does', () => {

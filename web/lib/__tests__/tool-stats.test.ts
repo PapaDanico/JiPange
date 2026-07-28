@@ -9,6 +9,10 @@ import {
   savingsGoalContributedKES,
   earlyStartMultiple,
   EARLY_START_RETURN,
+  EARLY_START_AGE,
+  LATE_START_AGE,
+  RETIRE_AT_AGE,
+  EARLY_START_MONTHLY_KES,
   emergencyFundMonths,
   statutoryShareOfGrossPct,
   pensionReliefSavingMonthly,
@@ -113,8 +117,25 @@ describe("the headline figures come from the engine", () => {
 
   it("computes the early-start multiple rather than asserting one", () => {
     const m = earlyStartMultiple();
-    const early = futureValue(0, 3_000, EARLY_START_RETURN, 27);
-    const late = futureValue(0, 3_000, EARLY_START_RETURN, 17);
+    /* Horizons derived, not typed.
+     *
+     * These read 27 and 17 — the spans to a retirement at 55 — and broke the
+     * moment the product settled on 60. A test named "computes rather than
+     * asserting one" was itself asserting two hand-written numbers: it did not
+     * check the multiple so much as check that nobody had moved the goalposts.
+     * The same defect it exists to catch, one level up. */
+    const early = futureValue(
+      0,
+      EARLY_START_MONTHLY_KES,
+      EARLY_START_RETURN,
+      RETIRE_AT_AGE - EARLY_START_AGE
+    );
+    const late = futureValue(
+      0,
+      EARLY_START_MONTHLY_KES,
+      EARLY_START_RETURN,
+      RETIRE_AT_AGE - LATE_START_AGE
+    );
     expect(m).toBeCloseTo(Math.round((early / late) * 10) / 10, 6);
     /* Ten extra years of compounding at 10% cannot leave you worse off, and
      * cannot plausibly multiply your wealth tenfold. The old "2×" sat outside

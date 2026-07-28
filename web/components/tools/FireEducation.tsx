@@ -137,8 +137,12 @@ export default function FireEducation() {
           the end.
         </p>
         <p className="mt-3 text-sm leading-relaxed text-ink-soft">
-          It usually lands near 20×, so the rule of thumb is not absurd — it is just an answer to a
-          question nobody in Kenya is asking, calibrated on a market nobody here is invested in.
+          Across a wide spread of incomes, ages and medical bills it lands around 20× in the middle
+          — so the rule of thumb is not absurd. But the range runs from about 18× to well over 30×,
+          and what moves it is almost entirely the medical bill. That spread is the argument: a
+          fixed multiple is not merely imprecise, it is most wrong exactly for the households
+          carrying the most health cost, who can least afford to be told a number that is too
+          small.
         </p>
         <p className="mt-3 text-sm">
           <Link href="/tools/inflation-reality" className="underline hover:text-primary">

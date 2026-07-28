@@ -1,5 +1,5 @@
 import { calculateNetPay, PENSION_RELIEF_CAP_MONTHLY } from "./tax";
-import { futureValue, DEFAULT_WITH_PLAN_RETURN_RATE } from "./projections";
+import { futureValue, DEFAULT_WITH_PLAN_RETURN_RATE, DEFAULT_RETIREMENT_AGE } from "./projections";
 import { currentInflation } from "./rates-feed";
 import { assumedMmfYield } from "./mmf-assumption";
 import { calculateLandPurchase } from "./land";
@@ -171,7 +171,20 @@ export function savingsGoalContributedKES(): number {
 
 export const EARLY_START_AGE = 28;
 export const LATE_START_AGE = 38;
-export const RETIRE_AT_AGE = 55;
+/**
+ * The retirement age this product talks about — one number, in one place.
+ *
+ * There were three: this illustration said 55, the FIRE calculator defaulted
+ * to 50, and DEFAULT_RETIREMENT_AGE said 60. None contradicted another
+ * outright, since an illustration may legitimately pick an age, but a reader
+ * moving between the card and the tool met a different retirement each time
+ * and nothing explained why.
+ *
+ * Aliased rather than re-typed, so the next person who changes the default
+ * cannot change it in one place and leave the other two behind — which is
+ * exactly how three of them appeared.
+ */
+export const RETIRE_AT_AGE = DEFAULT_RETIREMENT_AGE;
 export const EARLY_START_MONTHLY_KES = 3_000;
 /** The long-run return the retirement projections already assume. */
 export const EARLY_START_RETURN = DEFAULT_WITH_PLAN_RETURN_RATE;
@@ -183,10 +196,14 @@ export const EARLY_START_RETURN = DEFAULT_WITH_PLAN_RETURN_RATE;
  *
  * The page once said "2× more". That was corrected UP to 3.09× on the grounds
  * that it "understated the single biggest lever the tool exists to
- * demonstrate". The arithmetic was right and the correction was wrong: 3.09×
- * is the multiple at a 10% NOMINAL return, and the calculator it introduces
- * works entirely in today's money. In real terms the multiple is about 1.9× —
- * so the original understatement was nearer the truth than the fix.
+ * demonstrate". The arithmetic was right and the correction was wrong: that
+ * figure is the multiple at a 10% NOMINAL return, and the calculator it
+ * introduces works entirely in today's money. In real terms it is a little
+ * under 2× — so the original understatement was nearer the truth than the fix.
+ *
+ * (Exact values are deliberately not quoted here any more. They move with
+ * RETIRE_AT_AGE and with published inflation, and a comment naming today's
+ * number is the same stale-claim problem one level down.)
  *
  * The mistake was changing a value without questioning its basis. A number can
  * be recomputed correctly and still answer the wrong question, and "this

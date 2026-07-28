@@ -8,6 +8,7 @@ import {
   MEDICAL_REAL_ESCALATION,
 } from "@/lib/retirement-kenya";
 import { formatKES } from "@/lib/budget";
+import { DEFAULT_RETIREMENT_AGE } from "@/lib/projections";
 import { inflationAttribution } from "@/lib/rates-feed";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
@@ -47,7 +48,7 @@ export default function FireNumberCalculator() {
   );
   const [targetAge, setTargetAge] = useStickyState<number>(
     "jipange:tool:fire-number:targetAge",
-    50
+    DEFAULT_RETIREMENT_AGE
   );
   const [monthlyMedical, setMonthlyMedical] = useStickyState(
     "jipange:tool:fire-number:monthlyMedical",
@@ -70,13 +71,13 @@ export default function FireNumberCalculator() {
   const resultsRef = useScrollIntoView<HTMLDivElement>(fire !== null);
 
   const isDirty =
-    monthlyExpenses !== "" || monthlyMedical !== "" || currentAge !== 30 || targetAge !== 50;
+    monthlyExpenses !== "" || monthlyMedical !== "" || currentAge !== 30 || targetAge !== DEFAULT_RETIREMENT_AGE;
 
   function handleReset() {
     setMonthlyExpenses("");
     setMonthlyMedical("");
     setCurrentAge(30);
-    setTargetAge(50);
+    setTargetAge(DEFAULT_RETIREMENT_AGE);
   }
 
   return (

@@ -44,9 +44,10 @@ export default function FireNumberPage() {
           icon: "🌅",
           tone: "hopeful",
           /* Real, not nominal — the calculator directly below this works
-           * entirely in today's money and says so. The nominal version of this
-           * same figure is 3.1×, and quoting it here put two incompatible sets
-           * of shillings on one screen. */
+           * entirely in today's money and says so. The nominal version of the
+           * same figure is materially larger, and quoting that here put two
+           * incompatible sets of shillings on one screen. Both are rendered
+           * from the same functions, so neither can go stale. */
           stat: `${earlyStartMultipleReal()}× more`,
           label: `spending power at ${RETIRE_AT_AGE} by starting Ksh ${EARLY_START_MONTHLY_KES.toLocaleString("en-KE")}/month at ${EARLY_START_AGE} rather than ${LATE_START_AGE} — about Ksh ${earlyStartWealthRealKES().toLocaleString("en-KE")} in today's money. Starting early is still the single biggest lever.`,
           source: `Computed by JiPange at 10% p.a. compounded monthly, then deflated by inflation published by Mwangaza Yield. In nominal shillings the same figure reads ${earlyStartMultiple()}× — same money, different units.`,
