@@ -95,7 +95,7 @@ export default function FulizaCostCalculator() {
                 annualised, which is what the facility contractually costs. Roll the balance for a
                 whole year without clearing it and the fees keep landing on a balance that never
                 shrinks: the compounded cost reaches roughly{" "}
-                <strong>{Math.round(result.rolledAnnualCost * 100).toLocaleString("en-KE")}%</strong>.
+                <strong>{result.annualisedApr.toLocaleString("en-KE")}%</strong>.
                 That is not the advertised rate — it is what a permanent overdraft actually does.
               </p>
             </div>

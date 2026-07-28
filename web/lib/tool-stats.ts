@@ -2,6 +2,7 @@ import { calculateNetPay, PENSION_RELIEF_CAP_MONTHLY } from "./tax";
 import { futureValue, DEFAULT_WITH_PLAN_RETURN_RATE } from "./projections";
 import { assumedMmfYield } from "./mmf-assumption";
 import { calculateLandPurchase } from "./land";
+import { calculateFulizaCost } from "./fuliza";
 import { round2 } from "./money";
 
 /**
@@ -224,4 +225,38 @@ export function landCostSharePct(priceKes: number): number {
     landType: "urban_residential",
     usesAgent: false,
   }).hiddenCostPct;
+}
+
+/* ── Fuliza ─────────────────────────────────────────────────────────────── */
+
+/** A small borrowing, where the flat fee bites hardest. */
+export const FULIZA_SMALL_BORROW_KES = 150;
+/** A large one, at the top of the same flat band. */
+export const FULIZA_LARGE_BORROW_KES = 10_000;
+/** The worked example the debt page uses. */
+export const FULIZA_EXAMPLE_KES = 1_000;
+export const FULIZA_EXAMPLE_DAYS = 30;
+
+/**
+ * Fuliza's annualised cost at a given balance.
+ *
+ * There is no single Fuliza APR, and publishing one was the old error. Because
+ * the maintenance fee is a flat sum per band, the annualised cost collapses as
+ * the principal rises — about 730% on Ksh 150 against 110% on Ksh 10,000. The
+ * page said "~400%", which is true at roughly Ksh 550 and nowhere else, and it
+ * concealed that the smallest borrowers pay the most.
+ */
+export function fulizaAprAt(principal: number): number {
+  return calculateFulizaCost(principal, 30).annualisedApr;
+}
+
+/**
+ * What a month on the example borrowing really costs, as a share of it.
+ *
+ * The debt page claimed 32% a month on Ksh 1,000. On the real tariff — one
+ * access fee, three free days, then Ksh 5 a day plus excise — it is 17.4%.
+ * Still ruinous; roughly half what we were telling people.
+ */
+export function fulizaMonthlyCostPct(): number {
+  return calculateFulizaCost(FULIZA_EXAMPLE_KES, FULIZA_EXAMPLE_DAYS).percentOfPrincipal;
 }

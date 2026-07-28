@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import ToolLayout from "@/components/tools/ToolLayout";
 import FulizaCostCalculator from "@/components/tools/FulizaCostCalculator";
+import {
+  fulizaAprAt,
+  FULIZA_SMALL_BORROW_KES,
+  FULIZA_LARGE_BORROW_KES,
+} from "@/lib/tool-stats";
 
 export const metadata: Metadata = {
   title: "True Cost of Fuliza Calculator",
@@ -18,9 +23,9 @@ export default function FulizaCostPage() {
         {
           icon: "⚠️",
           tone: "caution",
-          stat: "~400%",
-          label: "is Fuliza's real annualised cost — the daily fee annualised. Ksh 6.50/day on a Ksh 600 borrow feels small; it's the most expensive credit most Kenyans ever use.",
-          source: "Safaricom FY2026 · JiPange APR calculation",
+          stat: `${fulizaAprAt(FULIZA_SMALL_BORROW_KES)}%`,
+          label: `is the annualised cost of a Ksh ${FULIZA_SMALL_BORROW_KES} overdraft — against ${fulizaAprAt(FULIZA_LARGE_BORROW_KES)}% on Ksh ${FULIZA_LARGE_BORROW_KES.toLocaleString("en-KE")}. The fee is a flat shilling amount per band, so the smallest borrowings cost by far the most.`,
+          source: "Computed by JiPange from the published Fuliza tariff — banded daily fee, 1% access fee, 20% excise",
         },
         {
           icon: "💡",
