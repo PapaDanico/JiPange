@@ -111,6 +111,9 @@ describe("money is never asked for before something has been given", () => {
       const permitted =
         rel.includes("app/support/") ||
         rel.includes("app/privacy/") || // a disclosure, not a solicitation
+        // Addressed to institutions, not readers: it explains who pays so that
+        // the reader does not have to. Not an ask in the sense this guards.
+        rel.includes("app/licensing/") ||
         rel.includes("Footer") ||
         rel.includes("ExportCardButton") ||
         rel.includes("ContributionNote");
