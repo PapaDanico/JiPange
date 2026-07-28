@@ -1,6 +1,7 @@
 import { calculateNetPay, PENSION_RELIEF_CAP_MONTHLY } from "./tax";
 import { futureValue, DEFAULT_WITH_PLAN_RETURN_RATE } from "./projections";
 import { assumedMmfYield } from "./mmf-assumption";
+import { calculateLandPurchase } from "./land";
 import { round2 } from "./money";
 
 /**
@@ -198,4 +199,29 @@ export const EMERGENCY_FUND_MONTHLY_KES = 2_000;
  */
 export function emergencyFundMonths(): number {
   return Math.ceil(EMERGENCY_FUND_TARGET_KES / EMERGENCY_FUND_MONTHLY_KES);
+}
+
+/* ── Land transaction costs ─────────────────────────────────────────────── */
+
+/** Prices the land headline contrasts: a modest plot against a large one. */
+export const LAND_SMALL_PLOT_KES = 300_000;
+export const LAND_LARGE_PLOT_KES = 10_000_000;
+
+/**
+ * Transaction costs as a share of price, at two ends of the market.
+ *
+ * The page claimed a flat "8–12%". There is no flat figure: the Advocates
+ * Remuneration Order carries a fixed Ksh 35,000 minimum, so the cost is
+ * REGRESSIVE. A Ksh 300,000 plot pays about 28% on top; a Ksh 10m one pays 7%.
+ * The buyers least able to absorb transaction costs pay much the largest share
+ * of them, and a band of "8–12%" concealed exactly that — understating the
+ * burden on the small buyer by a factor of three while overstating it for
+ * everyone else.
+ */
+export function landCostSharePct(priceKes: number): number {
+  return calculateLandPurchase({
+    plotPriceKes: priceKes,
+    landType: "urban_residential",
+    usesAgent: false,
+  }).hiddenCostPct;
 }

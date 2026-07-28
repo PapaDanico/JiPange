@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import ToolLayout from "@/components/tools/ToolLayout";
 import LandPurchaseCalculator from "@/components/tools/LandPurchaseCalculator";
+import {
+  landCostSharePct,
+  LAND_SMALL_PLOT_KES,
+  LAND_LARGE_PLOT_KES,
+} from "@/lib/tool-stats";
 
 export const metadata: Metadata = {
   title: "Kenya Land Purchase True Cost Calculator",
@@ -18,9 +23,9 @@ export default function LandPurchasePage() {
         {
           icon: "⚠️",
           tone: "caution",
-          stat: "8–12%",
-          label: "is the typical cost of transaction fees on top of the quoted land price in Kenya — stamp duty, legal fees, valuation, title transfer, and survey alone.",
-          source: "Stamp Duty Act Cap 480 · Advocates Remuneration Order · JiPange",
+          stat: `${landCostSharePct(LAND_SMALL_PLOT_KES)}%`,
+          label: `is what transaction fees add to a Ksh ${LAND_SMALL_PLOT_KES.toLocaleString("en-KE")} plot — against just ${landCostSharePct(LAND_LARGE_PLOT_KES)}% on a Ksh ${(LAND_LARGE_PLOT_KES / 1_000_000)}m one. The advocate\u2019s fixed minimum falls hardest on the smallest buyers.`,
+          source: "Computed by JiPange — Stamp Duty Act Cap 480 and the Advocates Remuneration Order scale, plus VAT",
         },
         {
           icon: "💡",
