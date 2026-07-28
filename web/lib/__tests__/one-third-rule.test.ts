@@ -36,9 +36,11 @@ describe("checkOneThirdRule", () => {
    * The old name for this test said "by construction", which quietly asserted
    * that statutory deductions cannot make anyone non-compliant because they are
    * excluded from the cap. They are not excluded — they are simply never large
-   * enough. PAYE tops out at 30% of a band, NSSF is capped in shillings, SHIF
-   * is 2.75% and the housing levy 1.5%, so the statutory total asymptotes to
-   * roughly a third of gross and the floor needs two thirds.
+   * enough. The statutory share rises with income and asymptotes near 37.7% —
+   * PAYE's top band is 35%, not the 30% I first wrote here, since 32.5% starts
+   * at 500,000 and 35% above 800,000 — while NSSF is capped in shillings and
+   * SHIF and the levy are flat. The floor needs two thirds. 37.7% never gets
+   * there, so the conclusion holds; only my arithmetic for it was wrong.
    *
    * The distinction matters because it is the whole interpretation question.
    */

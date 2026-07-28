@@ -87,3 +87,35 @@ export function raiseWorthAnnual(
   const after = calculateNetPay(base + raise).netMonthly;
   return round2((after - before) * 12);
 }
+
+/** The salary the headline deduction rate is quoted at. */
+export const DEDUCTION_RATE_EXAMPLE_SALARY_KES = 100_000;
+
+/**
+ * Share of gross taken by PAYE, NSSF, SHIF and the housing levy.
+ *
+ * The salary hub claimed "≈37%" of a Ksh 100,000 salary, sourced to "JiPange
+ * tax engine". The engine says 29.56%. It overstated what a reader loses by a
+ * quarter of the true figure — and on a page whose job is to show them where
+ * their money goes, that is the error that makes the product feel wrong when
+ * they check it against their own payslip.
+ *
+ * I first wrote here that 37% was unreachable at any salary. That was wrong,
+ * and the test below caught it: 37.04% arrives at Ksh 5,000,000 a month. I had
+ * forgotten that Kenya's bands do not stop at 30% — there is 32.5% from
+ * 500,000 and 35% above 800,000 — so the rate climbs to an asymptote near
+ * 37.7%, not 34%.
+ *
+ * Which makes the original figure a subtler mistake than "invented". It is a
+ * real rate, for a salary fifty times the one it is printed beside. Worth
+ * remembering next time a number looks impossible: check the bands before
+ * calling it impossible, because the confident version of that claim is
+ * exactly what I had just finished criticising elsewhere in this file.
+ */
+export function statutoryShareOfGrossPct(
+  salary = DEDUCTION_RATE_EXAMPLE_SALARY_KES
+): number {
+  const t = calculateNetPay(salary);
+  const statutory = t.nssf.total + t.shif + t.ahl + t.paye;
+  return round2((statutory / salary) * 100);
+}

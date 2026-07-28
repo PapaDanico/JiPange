@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import ToolLayout from "@/components/tools/ToolLayout";
 import SalaryPlannerHub from "@/components/tools/SalaryPlannerHub";
+import {
+  statutoryShareOfGrossPct,
+  DEDUCTION_RATE_EXAMPLE_SALARY_KES,
+} from "@/lib/tool-stats";
 
 export const metadata: Metadata = {
   title: "Salary & Pay Hub — Kenya Take-Home, Budget, Shield, Negotiate",
@@ -18,9 +22,9 @@ export default function SalaryHubPage() {
         {
           icon: "💸",
           tone: "caution",
-          stat: "≈37%",
-          label: "of a Ksh 100,000 gross salary goes to PAYE, NSSF, SHIF, and the Housing Levy before you see a shilling.",
-          source: "JiPange tax engine (Feb 2026 rates)",
+          stat: `${statutoryShareOfGrossPct()}%`,
+          label: `of a Ksh ${DEDUCTION_RATE_EXAMPLE_SALARY_KES.toLocaleString("en-KE")} gross salary goes to PAYE, NSSF, SHIF, and the Housing Levy before you see a shilling.`,
+          source: "Computed by the JiPange tax engine — Finance Act 2025/26 bands, NSSF Year 4",
         },
         {
           icon: "🛡️",

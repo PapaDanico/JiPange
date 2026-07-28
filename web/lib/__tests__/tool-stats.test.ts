@@ -3,6 +3,7 @@ import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { calculateNetPay, PENSION_RELIEF_CAP_MONTHLY } from "../tax";
 import {
+  statutoryShareOfGrossPct,
   pensionReliefSavingMonthly,
   pensionReliefSavingAnnual,
   raiseWorthAnnual,
@@ -47,6 +48,43 @@ describe("the headline figures come from the engine", () => {
      * PAYE forgone, so it can never exceed the contribution that bought it. */
     expect(pensionReliefSavingMonthly()).toBeLessThan(PENSION_RELIEF_CAP_MONTHLY);
     expect(pensionReliefSavingMonthly()).toBeGreaterThan(0);
+  });
+
+  /**
+   * The statutory take is bounded, and the old figure was outside the bound.
+   *
+   * This test earned its place by failing on my own reasoning. I asserted a
+   * ceiling of 35%, believing the statutory share could not pass it, and the
+   * run came back "5000000 produced an impossible 37.04%". Kenya's bands do not
+   * stop at 30%: 32.5% starts at 500,000 and 35% above 800,000, so the share
+   * asymptotes near 37.7%.
+   *
+   * So "≈37%" was never impossible — it is the rate at roughly Ksh 5,000,000 a
+   * month, printed beside a Ksh 100,000 salary where the true figure is 29.56%.
+   * Wrong by a factor of fifty in the input, not conjured from nothing.
+   *
+   * The assertions are therefore about shape: monotonic in income, and inside
+   * a bound derived from the actual top band rather than from memory.
+   */
+  it("keeps the statutory share inside what the rates can actually produce", () => {
+    const salaries = [20_000, 50_000, 100_000, 300_000, 1_000_000, 5_000_000];
+    const rates = salaries.map((s) => statutoryShareOfGrossPct(s));
+
+    for (let i = 1; i < rates.length; i++) {
+      expect(rates[i], `rate fell from ${salaries[i - 1]} to ${salaries[i]}`).toBeGreaterThan(
+        rates[i - 1]
+      );
+    }
+    /* Top PAYE band 35%, on a base already reduced by NSSF (capped in
+     * shillings), SHIF 2.75% and AHL 1.5%. That puts the ceiling just under
+     * 37.7% — 37.691% at fifty million a month. 38.5 leaves headroom without
+     * being so loose it would accept a broken engine. */
+    for (const [i, r] of rates.entries()) {
+      expect(r, `${salaries[i]} produced an impossible ${r}%`).toBeLessThan(38.5);
+      expect(r).toBeGreaterThan(0);
+    }
+    // And the specific claim the page now makes.
+    expect(statutoryShareOfGrossPct(100_000)).toBeCloseTo(29.56, 2);
   });
 
   it("values a raise by running both salaries, not by summing rates", () => {
@@ -124,7 +162,6 @@ describe("figures we attribute to ourselves are actually ours", () => {
     "fuliza-cost:Ksh 3,000",
     "land-purchase:8–12%",
     "money-runway:15 months",
-    "salary:≈37%",
     "savings-goal:Ksh 100,000+",
     "sha-health:Ksh 1,500–3,500/mo",
   ]);
@@ -132,7 +169,7 @@ describe("figures we attribute to ourselves are actually ours", () => {
   it("records exactly the known-unverified figures, and no more", () => {
     // If this shrinks, delete the entry — the list must never claim debt that
     // has been paid, or it becomes a place figures hide.
-    expect(UNVERIFIED.size).toBe(10);
+    expect(UNVERIFIED.size).toBe(9);
   });
 
   it("states no JiPange-attributed figure as a literal, on any tool page", () => {
@@ -176,6 +213,11 @@ describe("figures we attribute to ourselves are actually ours", () => {
    * wolf on correct code is worse than none.
    */
   const RETIRED = [
+    {
+      slug: "salary",
+      value: "≈37%",
+      was: "the rate at roughly Ksh 5,000,000 a month, printed beside a Ksh 100,000 salary where the true figure is 29.56%",
+    },
     {
       slug: "tax-shield",
       value: "Ksh 72,000",
