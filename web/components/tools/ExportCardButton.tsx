@@ -2,6 +2,7 @@
 
 import { RefObject, useState } from "react";
 import { buildSheet, prefersLandscape, A4_PORTRAIT, A4_LANDSCAPE } from "@/lib/export-sheet";
+import ContributionNote from "./ContributionNote";
 
 /**
  * Getting a result off the device — as a PDF, or as an image.
@@ -71,6 +72,10 @@ export default function ExportCardButton({
    * their device blocked it.
    */
   const [error, setError] = useState("");
+  /* Set only after a file has actually reached the reader. The note below is
+     the one place money is mentioned near a tool, and it may not appear until
+     something has been given — see lib/mission.ts. */
+  const [delivered, setDelivered] = useState(false);
 
   /**
    * Rasterise the result card, with the app's chrome and animations neutralised.
@@ -194,6 +199,8 @@ export default function ExportCardButton({
         link.download = `${filename}.png`;
         link.href = out.toDataURL("image/png");
         link.click();
+        setDelivered(true);
+        setDelivered(true);
         return;
       }
 
@@ -261,6 +268,8 @@ export default function ExportCardButton({
         drawH,
       );
       pdf.save(`${filename}.pdf`);
+      setDelivered(true);
+      setDelivered(true);
     } catch (err) {
       const what = as === "pdf" ? "PDF" : "image";
       setError(
@@ -275,6 +284,7 @@ export default function ExportCardButton({
 
   return (
     <div className="space-y-2 print:hidden">
+      {/* Rendered only once a file has reached the reader — never before. */}
       <div className="grid grid-cols-2 gap-2">
         <button
           type="button"
@@ -343,6 +353,7 @@ export default function ExportCardButton({
           {error}
         </p>
       )}
+      {delivered && !error && <ContributionNote />}
     </div>
   );
 }

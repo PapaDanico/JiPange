@@ -31,6 +31,7 @@ const COLUMNS: { heading: string; links: { href: string; label: string }[] }[] =
       { href: "/faq", label: "Money questions, answered" },
       { href: "/glossary", label: "Money words, decoded" },
       { href: "/about", label: "About JiPange" },
+      { href: "/support", label: "Supporting JiPange" },
       { href: "/terms", label: "Terms of use" },
       { href: "/privacy", label: "Privacy policy" },
     ],

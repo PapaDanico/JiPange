@@ -138,6 +138,20 @@ export interface TierSpec {
 
 export const VAT_INCLUSIVE = false; // flip when the entity registers for VAT
 
+/**
+ * The suggested contribution, and the fact that it is only a suggestion.
+ *
+ * Chosen over a fixed price deliberately. Kenyan willingness-to-pay research
+ * puts a quarter of people below a hundred shillings for anything digital, and
+ * a hard wall at that number turns them away from a document they have already
+ * earned by doing the work. Naming a figure and meaning it as a guess collects
+ * from those who can, costs almost nothing in expected revenue, and is far
+ * easier to say out loud — which matters, because this has to be said on a
+ * page and believed.
+ */
+export const PAY_WHAT_YOU_CAN = true;
+export const SUGGESTED_DOCUMENT_KES = 100;
+
 export const TIERS: readonly TierSpec[] = [
   {
     id: "free",
@@ -159,20 +173,34 @@ export const TIERS: readonly TierSpec[] = [
     priceKES: 100,
     unit: "per document",
     summary:
-      "The one-page PDF — dated, with your figures and the assumptions written on it.",
+      "The one-page PDF — dated, with your figures and the assumptions written on it. Pay what it was worth; a hundred shillings is a fair guess.",
     includes: [
       "A branded A4 document you can hand to somebody",
       "Your inputs printed on it, so the sheet can be checked",
       "Method and sources in the footer",
       "No account needed",
+      "Pay less, or nothing, if that is where you are",
     ],
   },
   {
+    /* A PASS, not a subscription.
+     *
+     * Framed as "per year" this was a subscription in everything but name, and
+     * M-PESA has no recurring debit — so it would have been a manual
+     * repurchase every twelve months, dressed as something automatic. The
+     * alternative considered was keeping it on the page purely as an anchor to
+     * make a hundred shillings look small, which is a decoy: showing a product
+     * you have no intention of selling.
+     *
+     * A one-year pass is the honest version of the same thing. One payment,
+     * twelve months, renew if it was worth it. Nothing to cancel, nothing that
+     * charges you while you are not looking. */
     id: "mpango",
     name: "Mpango",
     priceKES: 1_200,
-    unit: "per year",
-    summary: "For a household running several plans at once.",
+    unit: "once, valid a year",
+    summary:
+      "A single payment covering a year. Not a subscription — nothing renews on its own and there is nothing to cancel.",
     includes: [
       "Unlimited documents",
       "Unlimited saved plans",
