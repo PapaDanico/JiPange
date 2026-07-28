@@ -152,6 +152,29 @@ export const VAT_INCLUSIVE = false; // flip when the entity registers for VAT
 export const PAY_WHAT_YOU_CAN = true;
 export const SUGGESTED_DOCUMENT_KES = 100;
 
+/**
+ * Where a contribution goes, stated in full.
+ *
+ * The till is published with the REGISTERED NAME beside it, deliberately and
+ * together. Two reasons.
+ *
+ * The M-PESA confirmation says DANICO VENTURES LTD, which is the company
+ * behind JiPange and a name nobody contributing has any reason to recognise.
+ * On a page asking for money, an unexplained third-party name is the exact
+ * shape of a scam, and a reader who hesitates there is right to. Naming it
+ * first turns a red flag into a fact.
+ *
+ * And a till number on its own is trivially cloned — anyone can copy this page
+ * and change seven digits. Publishing the number and the name together gives a
+ * reader something to check against the confirmation they receive.
+ */
+export const TILL = {
+  number: "5248589",
+  registeredName: "Danico Ventures Ltd",
+  explanation:
+    "Your M-PESA confirmation will read DANICO VENTURES LTD — that is the company behind JiPange. If the name that comes back is anything else, you are not paying us.",
+} as const;
+
 export const TIERS: readonly TierSpec[] = [
   {
     id: "free",

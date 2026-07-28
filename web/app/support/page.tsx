@@ -4,7 +4,8 @@ import {
   TIERS,
   NEVER_PAID,
   SUPPORT_NARRATIVE,
-  tierSpec,
+  TILL,
+  SUGGESTED_DOCUMENT_KES,
 } from "@/lib/tiers";
 import { TOOL_META } from "@/lib/tool-meta";
 import { formatKES } from "@/lib/budget";
@@ -108,14 +109,52 @@ export default function SupportPage() {
           </ul>
         </section>
 
+        {/* ── How, if you want to ── */}
+        <section className="mt-10 rounded-2xl border border-border bg-white p-5">
+          <h2 className="text-base font-semibold text-primary">
+            If you would like to contribute
+          </h2>
+          <p className="mt-2 text-sm leading-relaxed text-ink-soft">
+            Send any amount to the M-PESA till below. There is nothing to unlock
+            and nothing to enter afterwards — everything on JiPange already works.
+            Ksh {SUGGESTED_DOCUMENT_KES} is a fair guess at what a document is
+            worth; less is fine, and so is nothing.
+          </p>
+
+          <div className="mt-4 rounded-xl bg-canvas p-4">
+            <p className="text-[11px] font-semibold uppercase tracking-widest text-faint">
+              Buy Goods &amp; Services — Till
+            </p>
+            <p className="mt-1 font-mono text-2xl font-bold tracking-wider text-primary">
+              {TILL.number}
+            </p>
+            <p className="mt-1 text-sm font-medium text-ink-soft">
+              {TILL.registeredName}
+            </p>
+          </div>
+
+          {/* The name is explained BEFORE they pay, not after they wonder. */}
+          <p className="mt-3 text-xs leading-relaxed text-faint">{TILL.explanation}</p>
+
+          <p className="mt-3 text-xs leading-relaxed text-faint">
+            Safaricom includes two of your names and a partly hidden number in the
+            confirmation it sends us. We do not ask for it, cannot switch it off,
+            and never match it to anything you did in the app — the app sends us
+            nothing to match it against. It is written up in the{" "}
+            <Link href="/privacy" className="underline hover:text-primary">
+              privacy notice
+            </Link>
+            .
+          </p>
+        </section>
+
         <p className="mt-8 text-sm leading-relaxed text-faint">
           {SUPPORT_NARRATIVE.closing}
         </p>
 
         <p className="mt-8 text-sm text-ink-soft">
-          Nothing is charged for today. This page describes where a contribution
-          would go if you chose to make one, and it is here first so you can
-          tell us if it reads wrong.{" "}
+          Nothing on JiPange is withheld pending payment, and nothing here
+          becomes payable later.{" "}
           <Link href="/tools" className="font-medium text-primary underline">
             Back to the calculators →
           </Link>

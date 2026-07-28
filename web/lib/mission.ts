@@ -89,4 +89,12 @@ export const PERMITTED_ASK_SURFACES = [
   "/support", // the page that explains it, which nobody is sent to unwillingly
   "after-export", // beside a document that has already been produced
   "footer", // one quiet link, alongside terms and privacy
+  /* The privacy notice, which is not an ask at all.
+   *
+   * Added after this guard flagged it, correctly and usefully. The notice has
+   * to describe what Safaricom sends us when somebody contributes — that is
+   * the notification duty under the Data Protection Act, and it necessarily
+   * links to the page where the till is. Suppressing a disclosure to satisfy
+   * an anti-nagging rule would be the rule defeating its own purpose. */
+  "/privacy",
 ] as const;

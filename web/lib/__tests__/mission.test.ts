@@ -110,6 +110,7 @@ describe("money is never asked for before something has been given", () => {
       const rel = f.replace(ROOT, "");
       const permitted =
         rel.includes("app/support/") ||
+        rel.includes("app/privacy/") || // a disclosure, not a solicitation
         rel.includes("Footer") ||
         rel.includes("ExportCardButton") ||
         rel.includes("ContributionNote");
