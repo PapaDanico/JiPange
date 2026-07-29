@@ -28,7 +28,13 @@
  * the one that gets corrected. Mwangaza derives them and we read the answer.
  */
 
-import { RATES, TBILL_RATES, currentInflation, attribution } from './rates-feed';
+import {
+  RATES,
+  TBILL_RATES,
+  currentInflation,
+  attribution,
+  inflationAttribution,
+} from './rates-feed';
 import { REAL_RETURN_DEFAULT } from './retirement-kenya';
 
 /** Fisher, not subtraction. At 6.4% inflation the difference is ~0.3pp. */
@@ -134,7 +140,14 @@ export function checkPlanningRatePremise(): PremiseCheck {
     aboveAllBills,
     holds,
     summary,
-    attribution: attribution(),
+    /* BOTH sources, because every figure in this table is a real yield.
+     *
+     * `attribution()` names the CBK auction the nominal rates came from. That
+     * was the whole citation, which quietly credited the auction for a number
+     * the auction only half determines: a real yield is a nominal rate
+     * deflated by an inflation reading, and that reading has its own source
+     * and its own caveat when KNBS is unreachable. */
+    attribution: `${attribution()}; inflation ${inflationAttribution()}`,
   };
 }
 

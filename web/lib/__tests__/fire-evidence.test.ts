@@ -7,7 +7,7 @@ import {
   nominalToToday,
 } from '../fire-evidence';
 import { REAL_RETURN_DEFAULT } from '../retirement-kenya';
-import { currentInflation } from '../rates-feed';
+import { currentInflation, inflationAttribution, RATES } from '../rates-feed';
 import { earlyStartMultiple, earlyStartMultipleReal, RETIRE_AT_AGE } from '../tool-stats';
 import { DEFAULT_RETIREMENT_AGE } from '../projections';
 
@@ -173,6 +173,47 @@ describe('the reasoning reaches the reader', () => {
     expect(edu).toMatch(/mid-sixties/i);
     expect(edu, 'the education section does not explain the return assumption').toMatch(
       /checkPlanningRatePremise/
+    );
+  });
+});
+
+/**
+ * A stand-in must be named as one.
+ *
+ * KNBS publishes Kenya's official CPI. When it is unreachable Mwangaza falls
+ * back to CBK — a sound substitution, and one the feed flags with
+ * `fallback: true` precisely so a consumer can say so.
+ *
+ * Mwangaza does say so. JiPange did not: `MacroReading` never declared the
+ * field, so `inflationAttribution()` rendered "CBK, 27 Jul 2026" — exactly the
+ * ordinary-looking citation that Mwangaza's own scraper comment warns about.
+ * Two products reading one number, one of them disclosing.
+ *
+ * It matters more here than it looks. That reading deflates the real-yield
+ * board, the planning-rate premise and the early-start multiple: it is the
+ * denominator under every "after inflation" figure this tool shows.
+ */
+describe('the inflation stand-in is disclosed', () => {
+  it('names KNBS as the source that could not be reached, when it could not', () => {
+    const reading = RATES.macro.inflation;
+    const text = inflationAttribution();
+    if (reading?.fallback) {
+      expect(text, 'a fallback reading is being cited as though it were primary').toMatch(/KNBS/);
+      expect(text).toMatch(/standing in|could not be reached/i);
+    } else {
+      // Not a fallback today: it must NOT claim one, or the caveat becomes noise.
+      expect(text).not.toMatch(/standing in/i);
+    }
+    expect(text).toMatch(/Mwangaza Yield/);
+  });
+
+  it('carries the inflation source into the real-yield table, not just the auction', () => {
+    // Every row there is a real yield: a nominal rate deflated by inflation.
+    // Citing only the auction credits it for half the calculation.
+    const p = checkPlanningRatePremise();
+    expect(p.attribution).toMatch(/CBK auction/);
+    expect(p.attribution, 'the inflation source is missing from a table of real yields').toMatch(
+      /inflation/i
     );
   });
 });
