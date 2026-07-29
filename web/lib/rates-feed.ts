@@ -63,6 +63,24 @@ export interface MacroReading {
   unit: string;
   date: string;
   source: string;
+  /**
+   * True when this is a STAND-IN, not the primary source.
+   *
+   * KNBS publishes Kenya's official CPI. When it cannot be reached, Mwangaza
+   * falls back to CBK, which republishes the same headline figure — a sound
+   * substitution, and one the reader is entitled to know about.
+   *
+   * Mwangaza's own scraper is explicit about why this is a separate field:
+   * "`fallback` is carried as its own field rather than smuggled into the
+   * source string: the UI cannot branch on prose, and 'CBK (KNBS unavailable)'
+   * was being rendered as though it were an ordinary citation."
+   *
+   * The feed has always carried it. This interface never declared it, so
+   * JiPange rendered exactly the citation that warning describes — while
+   * Mwangaza, reading the same field, told the reader it was a stand-in. Two
+   * products, one number, one of them disclosing.
+   */
+  fallback?: boolean;
 }
 
 /**
@@ -182,7 +200,16 @@ export function inflationAttribution(): string {
     month: "short",
     year: "numeric",
   });
-  return `${r.source}, ${when}, via Mwangaza Yield`;
+  /* The stand-in is named, not implied.
+   *
+   * This figure is load-bearing: the real-yield board, the planning-rate
+   * premise check and the early-start multiple all deflate by it. A reader
+   * weighing whether to trust a real return should know whether the inflation
+   * behind it came from the body that publishes it or from a substitute. */
+  const via = r.fallback
+    ? `${r.source} standing in for KNBS, which publishes the official CPI but could not be reached`
+    : r.source;
+  return `${via}, ${when}, via Mwangaza Yield`;
 }
 
 /** e.g. "CBK auction of 16 Jul 2026". Always shown next to a rate. */
