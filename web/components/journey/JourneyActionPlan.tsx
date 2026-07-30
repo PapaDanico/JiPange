@@ -61,7 +61,7 @@ function MicroMilestone({ answers }: { answers: JourneyAnswers }) {
       </div>
       <p className="mt-2 text-xs text-faint">
         Assumes an {(MILESTONE_YIELD * 100).toFixed(1)}% p.a. MMF baseline compounded monthly —
-        an assumption, not a promise. Check live rates before committing.
+        an assumption, not a promise. Check the fund's current published rate before committing.
       </p>
     </section>
   );
