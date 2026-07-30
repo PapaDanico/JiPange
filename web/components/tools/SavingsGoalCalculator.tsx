@@ -18,11 +18,12 @@ import ProductLinks from "./ProductLinks";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
 import { MMF_LINKS } from "@/lib/affiliate-links";
+import { assumedMmfYieldPct } from "@/lib/mmf-assumption";
 
 const RATE_PRESETS = [
   { label: "Bank 3.23%", value: "3.23" },
   { label: "Sacco ~9%", value: "9" },
-  { label: "MMF ~11.5%", value: "11.5" },
+  { label: `MMF ~${assumedMmfYieldPct()}%`, value: assumedMmfYieldPct() },
 ];
 
 export default function SavingsGoalCalculator() {
@@ -181,7 +182,7 @@ export default function SavingsGoalCalculator() {
         steps={[
           "Enter the amount you're saving toward and your deadline in years.",
           "Add anything already saved — it works for you the whole time and lowers the monthly figure.",
-          "Pick where the money will sit: the same goal needs far less per month in an MMF at ~11.5% than in a bank at 3.23%.",
+          `Pick where the money will sit: the same goal needs far less per month in an MMF at ~${assumedMmfYieldPct()}% than in a bank at 3.23%.`,
           "Compare the ±1 year cards — one extra year of patience is often the cheapest lever you have.",
         ]}
       />

@@ -100,9 +100,9 @@ export const FAQS: Faq[] = [
 
   /* ────────────────────────────────────────────────────── Investing */
   {
-    question: "An MMF advertises 11.5% and a T-bill quotes 9%. Is the MMF better?",
+    question: "A fund advertises 12% and a Treasury bill quotes 9%. Is the fund better?",
     answer:
-      "Not necessarily, because those two numbers are not the same kind of number. The MMF figure is gross — 15% withholding tax takes it to roughly 9.8%. The T-bill quote is a discount rate, which is not a return at all: the true yield after tax works out differently again. Comparing the headlines directly is the most common investing error in Kenya, and this app computes both on the same basis so you do not have to.",
+      "Not necessarily, because those two numbers are not the same kind of number. The fund figure is gross, so 15% withholding tax takes it to about 10.2%. The bill quote is a simple annual rate on the price you pay: hold a 91-day bill and roll it four times and you earn a little more than the quote, then the same 15% takes it well below. Whether the fund wins depends on the gap after both adjustments — and on this app that gap is usually smaller than the advertised headlines suggest. Comparing headlines directly is the most common investing error in Kenya, and this app computes both on the same basis so you do not have to.",
     topic: "Investing",
     toolPath: "/tools/dhowcsd",
     toolLabel: "Compare on the same basis",

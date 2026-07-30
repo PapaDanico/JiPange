@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { assumedMmfYield, assumedMmfYieldPct, monthlyContributionFV } from "@/lib/mmf-assumption";
 import ToolLayout from "@/components/tools/ToolLayout";
 import InvestmentReturnsCalculator from "@/components/tools/InvestmentReturnsCalculator";
 import { BANK_SAVINGS_EARNING_BELOW_INFLATION_TRILLION } from "@/lib/kenya-stats";
@@ -26,9 +27,13 @@ export default function InvestmentReturnsPage() {
         {
           icon: "🚀",
           tone: "hopeful",
-          stat: "Ksh 1.1M",
-          label: "is what Ksh 5,000/month grows to over 10 years at 11.5% MMF — vs Ksh 600,000 sitting flat in a bank.",
-          source: "Based on CIC Money Market Fund average yield, 2025/26",
+          /* Computed, not typed. This read "Ksh 1.1M" beside a rate that was
+           * itself hardcoded at 11.5%, so when the assumption moved the
+           * headline stayed — an illustration of compounding that had stopped
+           * compounding the number it illustrates. */
+          stat: `Ksh ${(monthlyContributionFV(5_000, assumedMmfYield(), 10) / 1_000_000).toFixed(1)}M`,
+          label: `is what Ksh 5,000/month grows to over 10 years at ~${assumedMmfYieldPct()}% MMF — vs Ksh 600,000 sitting flat in a bank.`,
+          source: "Assumed from the live CBK 91-day bill, via Mwangaza Yield",
         },
       ]}
       deeper={{

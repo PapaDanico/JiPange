@@ -1,6 +1,6 @@
 import { fulizaDailyFee } from "./fuliza";
 import { currentInflation } from "./rates-feed";
-import { assumedMmfYield } from "./mmf-assumption";
+import { assumedMmfYieldPct, assumedMmfYield } from "./mmf-assumption";
 
 /**
  * The 90-second journey funnel: 5 tap-only questions → a deterministic
@@ -178,7 +178,7 @@ export const VEHICLES: Record<VehicleId, Vehicle> = {
     examples: ["Britam", "ICEA Lion", "Sanlam"],
     minEntry: "From ~Ksh 500",
     liquidity: "T+1 withdrawals to M-Pesa",
-    yieldRange: "~11.5% local index baseline (varies)",
+    yieldRange: `~${assumedMmfYieldPct()}% assumed from the live 91-day bill (varies by fund)`,
     valueProps: [
       "Instant liquidity — money back on M-Pesa next business day",
       "Daily compounding interest",
