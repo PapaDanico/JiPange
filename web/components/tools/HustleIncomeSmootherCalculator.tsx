@@ -340,7 +340,7 @@ export default function HustleIncomeSmootherCalculator() {
                 href="/planners/hustle"
                 className="underline hover:text-primary"
               >
-                Hustle Income Smoother planner
+                Cycle Venture Planner
               </Link>{" "}
               — it handles lump-sum payouts and protects next-cycle seed capital.
             </p>

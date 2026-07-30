@@ -1,4 +1,5 @@
 import { readAny, writeAny } from "./storage";
+import { PLANNER_NAV_ITEMS } from "./planner-nav";
 
 export interface NextMove {
   label: string;
@@ -224,10 +225,17 @@ export const TOOL_META: Record<string, ToolMeta> = {
     related: ["/tools/savings-goal", "/tools/budget-split", "/tools/payday-router"],
     nextMove: { label: "Project where this streak leads →", href: "/tools/investment-returns" },
   },
-  // Planners (for cross-linking targets)
-  "/planners/emergency": { href: "/planners/emergency", icon: "🛡️", name: "Emergency Fund Planner", related: [] },
-  "/planners/education": { href: "/planners/education", icon: "🎓", name: "School Fees Smoother", related: [] },
 };
+
+/* Planners appear here only as cross-linking targets, and the two that were
+ * listed had been retyped rather than read: this file called /planners/education
+ * the "School Fees Smoother" while the planner itself is the Education Planner,
+ * and gave /planners/emergency a different shield emoji than the one the planner
+ * renders. A cross-link that renames its destination is how one product ends up
+ * with several names. Derived from the nav registry instead. */
+for (const item of PLANNER_NAV_ITEMS) {
+  TOOL_META[item.href] = { href: item.href, icon: item.icon, name: item.title, related: [] };
+}
 
 export const RECENT_TOOLS_KEY = "jipange_recent_tools";
 export const MAX_RECENT = 3;
