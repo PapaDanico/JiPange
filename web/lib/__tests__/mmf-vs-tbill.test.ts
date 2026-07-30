@@ -28,13 +28,45 @@ describe("the comparison knows what it rests on", () => {
     expect(c.breakEvenSpreadPp).toBeCloseTo(b364.grossEAY - b91.grossEAY, 6);
   });
 
-  it("declines to name a winner when the assumption outweighs the answer", () => {
+  it("declines to name a winner exactly when the gap is inside the noise", () => {
+    /* This asserted that the 364-day comparison IS too close to call, which
+     * was true when written and is a fact about the market rather than about
+     * the code. Mwangaza's pricing correction of 30 July 2026 dropped the
+     * 364-day net yield by about 76 basis points while leaving the MMF anchor
+     * — the 91-day bill — almost where it was, so the gap widened past the
+     * threshold and the card now names a winner. Nothing was broken; the test
+     * was holding a photograph of the market and calling it a specification.
+     *
+     * What the card actually promises is the rule: it refuses a verdict when
+     * the difference is smaller than the confidence we have in the MMF
+     * estimate, and gives one otherwise. That is asserted for every tenor. */
+    for (const days of [91, 182, 364] as const) {
+      const c = compareAt(days);
+      if (!c) continue;
+      const inside = Math.abs(c.edgePp) < SPREAD_CONFIDENCE_PP;
+      expect(
+        c.tooCloseToCall,
+        `${days}d: edge ${c.edgePp.toFixed(3)}pp against a ${SPREAD_CONFIDENCE_PP}pp threshold`
+      ).toBe(inside);
+
+      const v = verdictFor(1_000_000, days)!;
+      if (inside) expect(v.kind).toBe("too-close");
+      else expect(v.kind).not.toBe("too-close");
+    }
+  });
+
+  it("records where the comparison currently lands, so a shift is visible", () => {
+    /* Not a requirement — a tripwire. If this starts failing, the market moved
+     * and the copy around this card is worth re-reading; that is the whole
+     * reason the previous version of the test above was valuable, minus the
+     * part where it pretended to be a spec. */
     const c = compareAt(364)!;
-    // The premise, asserted rather than assumed: today the edge really is
-    // smaller than the assumption's own reliability.
-    expect(Math.abs(c.edgePp)).toBeLessThan(c.assumedSpreadPp);
-    expect(c.tooCloseToCall).toBe(true);
-    expect(verdictFor(500_000, 364)!.kind).toBe("too-close");
+    expect(
+      c.edgePp,
+      `the money market fund's edge over the 364-day bill is now ${c.edgePp.toFixed(2)}pp ` +
+        "— re-read the comparison copy if this has crossed zero"
+    ).toBeGreaterThan(0);
+    expect(c.billNetPct).toBeLessThan(c.mmfNetPct);
   });
 
   it("applies the same withholding to both sides", () => {

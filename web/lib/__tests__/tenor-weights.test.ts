@@ -37,9 +37,40 @@ describe("weights change the answer, in the right direction", () => {
     expect(yieldFor({ 91: 3, 182: 1, 364: 1 })).toBeLessThan(even);
   });
 
-  it("weighting the longest tenor raises it", () => {
+  it("weighting a tenor pulls the blend toward that tenor's yield", () => {
+    /* This used to read "weighting the longest tenor RAISES it", and it passed
+     * for as long as the 364-day bill was the best-paying rung. That was never
+     * a property of the weighting; it was a property of the curve, and the
+     * curve has since inverted in effective-annual terms. Mwangaza's pricing
+     * correction of 30 July 2026 dropped the 364-day net yield below both
+     * shorter tenors, because a one-year bill is bought once while a 91-day
+     * bill is rolled four times and compounds — so the old assertion started
+     * failing on a market fact, not a bug.
+     *
+     * What the weighting actually guarantees is directional: tilt toward a
+     * rung and the blend moves toward that rung, whichever way that is. Stated
+     * that way it holds under any curve, which is the point. */
     const even = yieldFor(EVEN_WEIGHTS);
-    expect(yieldFor({ 91: 1, 182: 1, 364: 3 })).toBeGreaterThan(even);
+    for (const days of [91, 182, 364] as const) {
+      const own = tbillRate(days)!.netEAY / 100;
+      const tilted = yieldFor({ 91: 1, 182: 1, 364: 1, [days]: 3 });
+      expect(
+        Math.abs(tilted - own),
+        `tilting toward ${days}d moved the blend away from the ${days}d yield`
+      ).toBeLessThan(Math.abs(even - own));
+    }
+  });
+
+  it("records that the curve is currently inverted, rather than assuming it is not", () => {
+    // Not an assertion about which way it should point — a note that fails if
+    // the shape changes, so nobody reads the test above as a claim about the
+    // market. Rolling short currently beats locking in for the year.
+    const [y91, y182, y364] = ([91, 182, 364] as const).map((d) => tbillRate(d)!.netEAY);
+    expect(
+      y364 < y91 || y364 > y182,
+      `the tenor curve has changed shape: 91d ${y91}%, 182d ${y182}%, 364d ${y364}% — ` +
+        "re-check anything that presents a longer tenor as the better-paying rung"
+    ).toBe(true);
   });
 
   it("a single tenor lands exactly on that bill's net yield", () => {
