@@ -73,6 +73,27 @@ export function sheetDate(d: Date = new Date()): string {
 }
 
 /**
+ * How far the body must shrink to fit the page, as a multiplier.
+ *
+ * Pulled out of buildSheet so the rule can be tested without a browser: this
+ * is the decision that separates a complete one-page document from one whose
+ * last paragraph is silently missing, and it was previously buried in a DOM
+ * measurement nothing could exercise.
+ *
+ * No generous floor. A floor that stops short of what the content needs does
+ * not protect legibility — it clips the bottom of the sheet, which is worse
+ * than small type because the reader cannot tell anything is gone. 0.5 is a
+ * backstop against a pathological input, not a design preference.
+ */
+export const MIN_FIT_SCALE = 0.5;
+
+export function fitScale(contentHeight: number, availableHeight: number): number {
+  if (!(availableHeight > 0) || !(contentHeight > 0)) return 1;
+  if (contentHeight <= availableHeight) return 1;
+  return Math.max(MIN_FIT_SCALE, availableHeight / contentHeight);
+}
+
+/**
  * Assembles the sheet off-screen and returns it, plus a disposer.
  *
  * Positioned far off-screen rather than `display:none`: html2canvas measures
@@ -233,6 +254,22 @@ export function buildSheet(input: SheetInput): { node: HTMLElement; dispose: () 
     Math.min(statCount || 1, maxCols)
   )}, minmax(0,1fr))`;
 
+  /* Big figures do not break across lines.
+   *
+   * On the Hustle Smoother sheet four of the five stat blocks rendered as
+   * "Ksh" on one line and the number on the next, because a phone layout's
+   * headline size meets a narrower column once the cards are re-flowed into a
+   * grid. A currency symbol orphaned from its amount is not a cosmetic
+   * complaint on a financial document — it reads, at a glance, as two figures.
+   *
+   * Applied by text size rather than by class, so it covers whatever the
+   * calculators call their headline number. */
+  clone.querySelectorAll<HTMLElement>("*").forEach((n) => {
+    if (n.children.length) return;
+    const size = parseFloat(window.getComputedStyle(n).fontSize || "0");
+    if (size >= 20) n.style.whiteSpace = "nowrap";
+  });
+
   slot.appendChild(clone);
   document.body.appendChild(sheet);
 
@@ -245,14 +282,24 @@ export function buildSheet(input: SheetInput): { node: HTMLElement; dispose: () 
    * it needed to be. Fitting the content to the box instead means the sheet
    * always fills the page edge to edge.
    */
-  const overflow = slot.scrollHeight - slot.clientHeight;
-  if (overflow > 0 && slot.clientHeight > 0) {
-    /* No generous floor. A floor that stops short of what the content needs
-     * does not protect legibility — it silently clips the bottom of the sheet,
-     * which is worse than small type because the reader cannot tell anything
-     * is missing. 0.5 is a backstop against a pathological input, not a
-     * design preference. */
-    const factor = Math.max(0.5, slot.clientHeight / slot.scrollHeight);
+  /* Measured from the CLONE as well as the slot, and the taller reading wins.
+   *
+   * The slot's own scroll metrics were the only signal, and the Hustle
+   * Smoother export showed why that is not enough: the three-step list came
+   * out cut off mid-item, under a footer that had rendered as though
+   * everything fitted. The slot reported no overflow, so no scaling was
+   * applied, so the fixed-height sheet simply clipped — the identical failure
+   * the comment above the slot describes, reached by a different route.
+   *
+   * `scrollHeight` on a containing block is a claim about that block, and a
+   * grid child can overrun it without the parent's number moving. The clone's
+   * own height is a direct measurement of the thing being fitted, so it cannot
+   * be defeated by whatever the container decides to report. Taking the larger
+   * of the two costs nothing when they agree and is the only correct answer
+   * when they do not. */
+  const contentHeight = Math.max(slot.scrollHeight, clone.scrollHeight, clone.offsetHeight);
+  const factor = fitScale(contentHeight, slot.clientHeight);
+  if (factor < 1) {
     clone.style.transformOrigin = "top left";
     clone.style.transform = `scale(${factor})`;
     clone.style.width = `${100 / factor}%`;

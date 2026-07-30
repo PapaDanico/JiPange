@@ -1,6 +1,7 @@
 "use client";
 
 import { RefObject, useState } from "react";
+import { TOOL_META } from "@/lib/tool-meta";
 import { buildSheet, prefersLandscape, A4_PORTRAIT, A4_LANDSCAPE } from "@/lib/export-sheet";
 import ContributionNote from "./ContributionNote";
 
@@ -31,8 +32,23 @@ import ContributionNote from "./ContributionNote";
  * figures drifting from the on-screen ones — the class of bug this codebase
  * keeps finding. One renderer, one layout, one set of numbers.
  */
-/** "school-fees-lifetime" -> "School Fees Lifetime". */
+/**
+ * The document's title, in order of preference: written, registered, derived.
+ *
+ * Title-casing the filename slug is a last resort and it showed: the Hustle
+ * Income Smoother's sheet was headed "Hustle Smoother", because the slug is
+ * `hustle-smoother` and the slug is not the name. On a document a reader may
+ * forward to a SACCO or a bursar, the masthead naming a tool that does not
+ * exist is not a small thing.
+ *
+ * TOOL_META already holds the canonical name for every tool, keyed by the same
+ * route the slug comes from, so the registry is consulted before falling back
+ * to string manipulation. Same move as the planner naming fix: read the name,
+ * do not reconstruct it.
+ */
 function titleFromFilename(name: string): string {
+  const registered = TOOL_META[`/tools/${name}`]?.name;
+  if (registered) return registered;
   const words = name.replace(/[-_]+/g, " ").replace(/\s+/g, " ").trim();
   if (!words) return "Result";
   return words.replace(/\b[a-z]/g, (c) => c.toUpperCase());
