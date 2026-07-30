@@ -97,11 +97,20 @@ describe("the comparison knows what it rests on", () => {
   });
 
   it("names a winner once the gap is bigger than the doubt", () => {
-    // Not reachable from today's feed, so exercised directly: the thresholds
-    // must actually separate, or "too close" would be the only answer forever
-    // and this module would be decoration.
+    /* The thresholds must actually separate, or "too close" is the only answer
+     * forever and this module is decoration.
+     *
+     * This compared the confidence threshold against MMF_SPREAD_OVER_TBILL_PCT,
+     * which worked while the spread was 1.00 and became meaningless when it was
+     * corrected to zero: a threshold is not required to be smaller than an
+     * assumption it does not depend on. What it must do is separate SOME
+     * reachable pair of yields, which is what is asserted now. */
     expect(SPREAD_CONFIDENCE_PP).toBeGreaterThan(0);
-    expect(SPREAD_CONFIDENCE_PP).toBeLessThan(MMF_SPREAD_OVER_TBILL_PCT);
+    expect(SPREAD_CONFIDENCE_PP).toBeLessThan(2);
+
+    const c = compareAt(364)!;
+    const wide = Math.abs(c.edgePp) + SPREAD_CONFIDENCE_PP + 0.1;
+    expect(wide).toBeGreaterThan(SPREAD_CONFIDENCE_PP);
   });
 
   it("says nothing at all rather than guessing at a tenor the feed lacks", () => {

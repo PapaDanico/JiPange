@@ -334,9 +334,22 @@ export default function HustleIncomeSmootherCalculator() {
                   Every time income arrives, transfer the full amount to an MMF.
                 </li>
                 <li>
+                  {/* Both spaces explicit.
+                    *
+                    * The space after the amount was an ordinary one in the
+                    * source and did not survive to the DOM: the rendered text
+                    * read "Ksh 17,400on the 1st of every month", and it read
+                    * that way on the page, not only in the PDF export where it
+                    * was first noticed and wrongly blamed on the rasteriser.
+                    *
+                    * An amount fused to the following word is worse here than
+                    * anywhere else on the page, because this line is an
+                    * instruction a reader is meant to copy into an M-Pesa
+                    * standing order. */}
                   Set a recurring M-Pesa withdrawal of exactly{" "}
-                  {formatKES(result.monthlyDraw)} on the 1st of every month — your
-                  salary, on time, regardless of that month&apos;s earnings.
+                  {formatKES(result.monthlyDraw)}{" "}
+                  on the 1st of every month — your salary, on time, regardless
+                  of that month&apos;s earnings.
                 </li>
                 <li>
                   Leave the rest in the MMF — surplus months build the buffer; lean
