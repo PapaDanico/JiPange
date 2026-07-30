@@ -25,8 +25,41 @@ import { tbillRate } from "./rates-feed";
  * deliberately conservative — funds add a little through bank deposits and take
  * a little back in management fees, and the two roughly offset. Being slightly
  * pessimistic about a projected return is the safe direction to be wrong in.
+ *
+ * THE SPREAD WAS 1.00, AND THE MARKET SAYS IT IS ABOUT ZERO
+ * --------------------------------------------------------
+ * The paragraph above argues that the pickup and the fees roughly offset, and
+ * then adds a full percentage point anyway. Nobody checked which was right
+ * until now, and the argument was the accurate half.
+ *
+ * Measured, July 2026:
+ *
+ *   MMF industry average, 32 funds, June 2026   9.10% gross EAY
+ *   91-day bill, gross EAY, this feed           9.08%
+ *   measured spread                             0.02pp
+ *
+ * So a fund on average returns what a rolled 91-day bill returns, which is
+ * unsurprising: bills are most of what it holds, the bank-deposit pickup is
+ * thin, and the management fee eats it. Assuming +1.00 overstated every
+ * projection in this app by about a percentage point — compounded over the
+ * horizons the FIRE and goal tools work in, that is not a rounding detail.
+ *
+ * Set to zero rather than to 0.02, because 0.02 is a spurious precision on a
+ * figure sampled once from an equal-weighted table. Zero states the finding
+ * honestly: there is no reliable pickup to assume.
+ *
+ * The dispersion is real and is NOT what this constant is for. The strongest
+ * funds were around 11.4% net in mid-2026 while the weakest sit below the
+ * bill. This is the conservative default a plan should be built on; a reader
+ * who has chosen a specific fund should enter its own rate, which every
+ * calculator here allows.
+ *
+ * Sources: CMA Collective Investment Schemes quarterly reporting and the
+ * published industry yield tables, cross-checked against this feed's own
+ * 91-day figure. Re-check when the CBR moves — the whole relationship is
+ * downstream of it.
  */
-export const MMF_SPREAD_OVER_TBILL_PCT = 1.0;
+export const MMF_SPREAD_OVER_TBILL_PCT = 0.0;
 
 /**
  * Used only when the feed carries no 91-day bill.

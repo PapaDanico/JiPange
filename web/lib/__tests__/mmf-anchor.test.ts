@@ -1,7 +1,12 @@
 import { describe, it, expect } from 'vitest';
 import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
-import { assumedMmfYield, assumedMmfYieldPct, monthlyContributionFV } from '../mmf-assumption';
+import {
+  assumedMmfYield,
+  assumedMmfYieldPct,
+  monthlyContributionFV,
+  MMF_SPREAD_OVER_TBILL_PCT,
+} from '../mmf-assumption';
 import { tbillRate } from '../rates-feed';
 
 /**
@@ -76,8 +81,12 @@ describe('the MMF figure the pages show is the one the tools use', () => {
 
 describe('the anchor itself', () => {
   it('is the live 91-day bill plus the stated spread, not a stored number', () => {
+    /* Reads the constant rather than repeating its value. The first version of
+     * this test typed 1.0, and when the spread was corrected to zero on
+     * evidence the test failed for having hardcoded the very thing it was
+     * written to stop being hardcoded. */
     const bill = tbillRate(91)!;
-    expect(assumedMmfYield() * 100).toBeCloseTo(bill.grossEAY + 1.0, 6);
+    expect(assumedMmfYield() * 100).toBeCloseTo(bill.grossEAY + MMF_SPREAD_OVER_TBILL_PCT, 6);
   });
 
   it('formats the label and the preset from one value', () => {
@@ -92,5 +101,49 @@ describe('the anchor itself', () => {
     expect(monthly).toBeGreaterThan(annual);
     expect(monthlyContributionFV(1_000, 0, 3)).toBe(36_000);
     expect(monthlyContributionFV(0, 0.1, 10)).toBe(0);
+  });
+});
+
+/**
+ * The spread was an assumption nobody had checked against the market.
+ *
+ * mmf-assumption.ts argued that a fund's bank-deposit pickup and its
+ * management fee "roughly offset" — and then added a full percentage point
+ * anyway. The argument was the accurate half.
+ *
+ *   MMF industry average, 32 funds, June 2026   9.10% gross EAY
+ *   91-day bill, gross EAY, this feed           9.08%
+ *   measured spread                             0.02pp
+ *
+ * A fund on average returns what a rolled 91-day bill returns, which is not
+ * surprising: bills are most of what it holds. Assuming +1.00 overstated every
+ * projection in this app by about a point, compounded over the horizons the
+ * FIRE and goal tools work in.
+ */
+describe('the assumed spread, against what funds actually pay', () => {
+  it('does not assume a pickup the market is not paying', () => {
+    /* Bounded rather than pinned to a value, so a future re-measurement can
+     * move it without editing a test — but not far, and never back to the
+     * unexamined point. If the CBR moves and funds genuinely open a gap, this
+     * failing is the signal to re-measure, which is the whole intent. */
+    expect(MMF_SPREAD_OVER_TBILL_PCT).toBeGreaterThanOrEqual(0);
+    expect(
+      MMF_SPREAD_OVER_TBILL_PCT,
+      'the assumed MMF pickup is back above the measured industry spread — re-check the CIS tables before widening it'
+    ).toBeLessThanOrEqual(0.5);
+  });
+
+  it('lands the assumption at or below the measured industry average', () => {
+    // 9.10% gross across 32 funds, June 2026. Being at or under the average is
+    // the conservative side to be on for a default a plan is built from.
+    const INDUSTRY_AVERAGE_GROSS_PCT = 9.1;
+    expect(assumedMmfYield() * 100).toBeLessThanOrEqual(INDUSTRY_AVERAGE_GROSS_PCT + 0.05);
+  });
+
+  it('still beats a bank savings account, which is the claim the app makes', () => {
+    // The comparison the journey and the inflation tool actually rest on. If a
+    // zero spread ever inverted this, several pages would be wrong.
+    const BANK_SAVINGS_PCT = 3.23;
+    expect(assumedMmfYield() * 100).toBeGreaterThan(BANK_SAVINGS_PCT);
   });
 });

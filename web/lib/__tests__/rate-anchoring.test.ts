@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+import { MMF_SPREAD_OVER_TBILL_PCT } from "@/lib/mmf-assumption";
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { tbillRate } from "../rates-feed";
@@ -31,10 +32,20 @@ describe("market rate assumptions are anchored to the feed", () => {
   it("the MMF assumption tracks the live 91-day bill", () => {
     const bill = tbillRate(91);
     expect(bill, "no 91-day bill in the feed").toBeTruthy();
-    // Moves WITH the bill, rather than merely sitting near it today: a
-    // hardcoded 0.103 would pass a range check and fail this one.
-    expect(assumedMmfYield() * 100).toBeGreaterThan(bill!.grossEAY);
+    /* Moves WITH the bill, rather than merely sitting near it today: a
+     * hardcoded 0.103 would pass a range check and fail this one.
+     *
+     * Asserted as "at least the bill" rather than "above it". The spread was
+     * corrected to zero in July 2026 on measurement — the industry average
+     * across 32 funds was 9.10% gross against a 9.08% bill — so a fund on
+     * average returns what a rolled 91-day bill returns. A strict inequality
+     * here was encoding the old assumption, not the relationship. */
+    expect(assumedMmfYield() * 100).toBeGreaterThanOrEqual(bill!.grossEAY);
     expect(assumedMmfYield() * 100).toBeLessThan(bill!.grossEAY + 3);
+    expect(assumedMmfYield() * 100 - bill!.grossEAY).toBeCloseTo(
+      MMF_SPREAD_OVER_TBILL_PCT,
+      6
+    );
   });
 
   it("every calculator uses that one assumption, not its own", () => {
