@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { smoothIncomes } from "@/lib/hustle-smoother";
+import { barScale, smoothIncomes } from "@/lib/hustle-smoother";
 import { TARGET_MMF_YIELD } from "@/lib/journey";
 import { formatKES } from "@/lib/budget";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
@@ -77,12 +77,12 @@ export default function HustleIncomeSmootherCalculator() {
 
   const resultsRef = useScrollIntoView<HTMLDivElement>(result !== null);
 
-  const maxBar = result
-    ? Math.max(
-        ...incomes.slice(0, count).map(Number).filter((v) => v > 0),
-        result.monthlyDraw
-      )
-    : 0;
+  /* Scaled by the ordinary months, not the exceptional one — see barScale.
+   * Using the largest month put four of six bars under 8% of the width and the
+   * salary line at 5%, on a chart whose only job is comparing the two. */
+  const bars = result
+    ? barScale(incomes.slice(0, count).map(Number), result.monthlyDraw)
+    : null;
 
   const isDirty =
     monthCount !== "6" || drawPct !== "80" || incomes.some((v) => v !== "");
@@ -195,13 +195,14 @@ export default function HustleIncomeSmootherCalculator() {
                 {incomes.slice(0, count).map((raw, i) => {
                   const income = Number(raw) || 0;
                   if (income <= 0) return null;
-                  const barPct = Math.round((income / maxBar) * 100);
-                  const linePct = Math.round((result.monthlyDraw / maxBar) * 100);
+                  const barPct = Math.round(bars!.width(income) * 100);
+                  const linePct = Math.round(bars!.width(result.monthlyDraw) * 100);
+                  const offScale = bars!.clipped(income);
                   const surplus = income - result.monthlyDraw;
                   const isLean = surplus < 0;
                   return (
                     <div key={i}>
-                      <div className="flex items-center justify-between text-xs">
+                      <div className="mb-1 flex items-center justify-between text-xs leading-tight">
                         <span className="text-ink-soft">{monthLabels[i]}</span>
                         <span
                           className={`font-medium ${
@@ -219,6 +220,17 @@ export default function HustleIncomeSmootherCalculator() {
                           }`}
                           style={{ width: `${barPct}%` }}
                         />
+                        {/* An outlier is drawn full width and SAID to be off
+                            the scale, rather than silently reading as merely
+                            the biggest month. The figure itself is beside it. */}
+                        {offScale && (
+                          <span
+                            className="absolute inset-y-0 right-1 flex items-center text-[9px] font-semibold text-white"
+                            title={`${formatKES(income)} — beyond this chart's scale`}
+                          >
+                            ▸ {formatKES(income)}
+                          </span>
+                        )}
                         {/* Salary draw line */}
                         <div
                           className="absolute inset-y-0 w-0.5 bg-primary"

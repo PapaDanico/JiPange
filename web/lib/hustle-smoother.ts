@@ -118,3 +118,64 @@ export function smoothIncomes(
     requiredStartingBuffer: Math.max(0, -lowestBuffer),
   };
 }
+
+/**
+ * The width one bar's worth of income should occupy, and whether it overran.
+ *
+ * The chart used to scale every bar by the largest month, which is the obvious
+ * choice and the wrong one for this data. Irregular income is irregular
+ * precisely because it has outliers: one 300,000 poultry payout beside five
+ * months near 20,000 pushed every ordinary month under 8% of the width, so
+ * four of six bars rendered as slivers and the salary-draw line — the single
+ * comparison the chart exists to make — sat at 5%, indistinguishable from the
+ * left edge. The exceptional month was drawn perfectly and everything the
+ * reader came to see was crushed against the axis.
+ *
+ * So the scale is set by the ordinary months rather than the exceptional one:
+ * a ceiling at 1.8x the median, never below the salary draw itself, since a
+ * draw off the right-hand edge would be worse than the problem being fixed.
+ * Months above the ceiling run the full width and are flagged, so an outlier
+ * reads as "off this scale" rather than as merely the biggest bar. Nothing is
+ * hidden — every bar still carries its own figure in the label beside it.
+ *
+ * When no month exceeds the ceiling the true maximum is used, so an even
+ * income does not get an arbitrary empty third of the chart.
+ */
+export const BAR_CEILING_MEDIAN_MULTIPLE = 1.8;
+
+export interface BarScale {
+  ceiling: number;
+  /** Fraction of full width, 0..1. */
+  width: (value: number) => number;
+  /** True when the value runs past the ceiling and is drawn full width. */
+  clipped: (value: number) => boolean;
+}
+
+export function barScale(values: number[], monthlyDraw: number): BarScale {
+  const positive = values.filter((v) => Number.isFinite(v) && v > 0).sort((a, b) => a - b);
+  if (!positive.length) {
+    return { ceiling: Math.max(monthlyDraw, 1), width: () => 0, clipped: () => false };
+  }
+
+  const mid = Math.floor(positive.length / 2);
+  const median =
+    positive.length % 2 ? positive[mid] : (positive[mid - 1] + positive[mid]) / 2;
+  const trueMax = positive[positive.length - 1];
+
+  /* The draw is applied LAST, after the true-max cap, not folded into the
+   * robust ceiling before it.
+   *
+   * Written the other way round the cap silently undid it: with months of
+   * 5,000-7,000 and a draw of 50,000 the ceiling came back as 7,000 and the
+   * reference line landed at 714% — off the chart entirely. That is precisely
+   * the case where the reader most needs to see it, because a draw above every
+   * month means the plan cannot be afforded at all. */
+  const robust = Math.min(trueMax, median * BAR_CEILING_MEDIAN_MULTIPLE);
+  const ceiling = Math.max(1, robust, monthlyDraw);
+
+  return {
+    ceiling,
+    width: (v) => (v > 0 ? Math.min(1, v / ceiling) : 0),
+    clipped: (v) => v > ceiling,
+  };
+}
