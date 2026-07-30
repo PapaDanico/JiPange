@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+import { readFileSync } from "node:fs";
 import { tbillRate } from "../rates-feed";
 import {
   PRODUCT_LINKS,
@@ -24,11 +25,51 @@ import {
  * codebase has spent a long time removing everywhere else.
  */
 describe("product yields are dated", () => {
-  it("is not shipping yields that are already stale", () => {
+  /* This assertion used to be `yieldsAreStale() === false`, and it went red on
+   * schedule — correctly, because the survey had aged out.
+   *
+   * The trouble is where that leaves whoever finds it red. Re-surveying
+   * fifteen funds is real work; editing YIELDS_AS_OF to today is one
+   * keystroke and turns the suite green without a single yield having been
+   * checked. A guard whose cheapest repair is falsifying the thing it guards
+   * will eventually be repaired that way, and then it is worse than absent,
+   * because the date it now carries is a lie with a test vouching for it.
+   *
+   * So the deadline is kept and the consequence is moved to where it belongs.
+   * Being overdue is allowed; passing overdue figures off as current is not.
+   * `yieldsAreStale()` was already written for exactly this and rendered
+   * nowhere — the one condition it existed to catch was live in production
+   * with no reader ever told. Now the page says so, and this asserts that it
+   * does. Re-surveying still clears the notice; nothing else does. */
+  it("tells the reader when the survey has aged out, rather than quoting it plainly", () => {
+    /* Scanned from the component body onward, not the whole file. The first
+     * version of this check searched the file and passed with the notice
+     * deleted, because the import statement still named `yieldsAreStale` —
+     * it was asserting that the symbol had been imported, which is precisely
+     * the state the old code was already in and the state that failed. */
+    const file = readFileSync(
+      new URL("../../components/partners/PartnersView.tsx", import.meta.url),
+      "utf8"
+    );
+    const body = file.slice(file.indexOf("export default function PartnersView"));
+    expect(body, "PartnersView no longer declares a default export").not.toBe("");
     expect(
-      yieldsAreStale(),
-      `YIELDS_AS_OF is ${YIELDS_AS_OF} — re-check the providers and update it`
-    ).toBe(false);
+      body,
+      "the yields can go stale and the partners page renders no notice that says so"
+    ).toMatch(/\{\s*yieldsAreStale\(\)\s*&&/);
+    expect(body).toMatch(/YIELDS_MAX_AGE_DAYS/);
+  });
+
+  it("records how overdue the survey is, so it cannot drift indefinitely", () => {
+    // Not an assertion so much as a visible countdown: if this ever prints a
+    // number in the hundreds, the directory is quoting a different market.
+    const overdueDays = Math.floor(
+      (Date.now() - new Date(YIELDS_AS_OF).getTime()) / 86_400_000 - YIELDS_MAX_AGE_DAYS
+    );
+    expect(
+      overdueDays,
+      `the yield survey (${YIELDS_AS_OF}) is ${overdueDays} days past its ${YIELDS_MAX_AGE_DAYS}-day window — re-check the providers`
+    ).toBeLessThan(365);
   });
 
   it("goes stale after the window rather than quoting old rates forever", () => {
