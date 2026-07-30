@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { assumedMmfYieldPct } from "@/lib/mmf-assumption";
 import ToolLayout from "@/components/tools/ToolLayout";
 import HustleIncomeSmootherCalculator from "@/components/tools/HustleIncomeSmootherCalculator";
 
@@ -26,10 +27,10 @@ export default function HustleSmootherPage() {
         {
           icon: "💡",
           tone: "hopeful",
-          stat: "11.5%",
+          stat: `${assumedMmfYieldPct()}%`,
           label:
             "is what your smoothing buffer earns in a Money Market Fund while it waits to cover lean months — your safety net pays you interest.",
-          source: "Kenya MMF average 2026",
+          source: "Assumed from the live CBK 91-day bill, via Mwangaza Yield",
         },
       ]}
     >

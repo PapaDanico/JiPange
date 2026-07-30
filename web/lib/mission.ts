@@ -108,3 +108,60 @@ export const PERMITTED_ASK_SURFACES = [
    * the rule exists to make possible. */
   "/licensing",
 ] as const;
+
+/**
+ * Claims this product does not make, and the reason each is barred.
+ *
+ * WHY A LIST RATHER THAN JUDGEMENT
+ * --------------------------------
+ * A brand pack arrived carrying the tagline "Plan. Save. Grow." and a sister
+ * banner promising "real-time Kenya sovereign yield curves". Both read well.
+ * Neither survives contact with what these products actually do or are
+ * permitted to say, and both were one copy-paste from being in the codebase —
+ * which is how a compliance problem enters a repository: not by argument, but
+ * because somebody had a nicer sentence.
+ *
+ * The words below are not banned for being ugly. Each names a specific claim
+ * that is either untrue of this software or is regulated language in Kenya:
+ *
+ *   grow / growth   Implies a return on money placed. These are calculators;
+ *                   they do not manage, hold or invest anything, and CMA
+ *                   licensing is what separates the two. The house tagline is
+ *                   "Plan. Save. Track." for exactly this reason.
+ *   real-time       Every figure here comes from a committed snapshot of a
+ *                   published CBK auction, refreshed daily and dated on the
+ *                   page. Nothing streams. "Real-time" would be false about
+ *                   the mechanism, not merely optimistic about it.
+ *   live market     Same defect, and worse next to a yield: it implies a
+ *                   tradeable price, which this project publishes none of.
+ *   guaranteed      No return here is guaranteed, and the SACCO deposit
+ *                   guarantee in particular is legislated but not yet
+ *                   operational — see SACCO_DEPOSIT_GUARANTEE_OPERATIONAL.
+ *
+ * Enforced by lib/__tests__/mission.test.ts against shipped source, comments
+ * stripped, so a note explaining the rule does not trip it.
+ */
+export const FORBIDDEN_CLAIMS: { pattern: RegExp; because: string }[] = [
+  {
+    pattern: /\bplan\.\s*save\.\s*grow\b/i,
+    because:
+      'the brand pack\'s tagline; the house line is "Plan. Save. Track." because this product does not grow anyone\'s money',
+  },
+  {
+    pattern: /\bgrow\s+(?:your|their|his|her)\s+(?:money|savings|wealth|cash)\b/i,
+    because: "promises a return on money placed, which is a licensed activity and not this one",
+  },
+  {
+    pattern: /\breal[-\s]?time\b/i,
+    because:
+      "every figure is a dated snapshot of a published auction, refreshed daily; nothing here streams",
+  },
+  {
+    pattern: /\blive\s+(?:market|rates?|prices?|yields?)\b/i,
+    because: "implies a tradeable price, and this project publishes no market prices at all",
+  },
+  {
+    pattern: /\bguaranteed\s+(?:returns?|yields?|profits?)\b/i,
+    because: "no return offered here is guaranteed, and saying so is regulated language",
+  },
+];

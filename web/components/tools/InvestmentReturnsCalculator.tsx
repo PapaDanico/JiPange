@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import { assumedMmfYieldPct } from "@/lib/mmf-assumption";
 import { futureValueWithStepUp, inflationAdjust } from "@/lib/projections";
 import { formatKES } from "@/lib/budget";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
@@ -58,7 +59,7 @@ function clampRate(percent: number): number {
 const RATE_PRESETS = [
   { label: "Bank 3.23%", value: "3.23" },
   { label: "T-Bill ~8.9%", value: "8.9" },
-  { label: "MMF ~11.5%", value: "11.5" },
+  { label: `MMF ~${assumedMmfYieldPct()}%`, value: assumedMmfYieldPct() },
 ];
 
 export default function InvestmentReturnsCalculator() {

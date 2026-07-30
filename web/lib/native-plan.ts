@@ -229,7 +229,8 @@ export function buildActionPlan({ profile, net, surplus }: NativePlanInput): Act
     title: "Price any mobile debt before it prices you",
     description:
       "Run whatever you owe — Fuliza, app loans, salary advances — through the Fuliza Cost and Loan Repayment tools once. Rolled-over mobile credit routinely exceeds 70% a year, which outruns anything your savings can earn.",
-    impact: "Clearing the most expensive debt first is the highest guaranteed return available to any saver.",
+    impact:
+      "Clearing the most expensive debt first beats any saving rate on offer, and unlike a yield the saving is certain — you keep interest you would otherwise have paid.",
     effort: "low",
     category: "debt",
     score: 2, // floor: seats only when nothing stronger qualifies

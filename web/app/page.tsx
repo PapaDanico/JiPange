@@ -183,7 +183,7 @@ const PLANNERS = [
   { href: "/planners/home", emoji: "🏠", label: "Plot & Mjengo" },
   { href: "/planners/emergency", emoji: "🛡️", label: "Emergency fund" },
   { href: "/planners/retirement", emoji: "🌅", label: "Retirement milestone" },
-  { href: "/planners/hustle", emoji: "💼", label: "Hustle income" },
+  { href: "/planners/hustle", emoji: "🌾", label: "Cycle venture" },
   { href: "/planners/business", emoji: "🚀", label: "Business capital" },
 ];
 

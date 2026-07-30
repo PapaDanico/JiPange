@@ -3,8 +3,12 @@ import Link from "next/link";
 import HustleSmoother from "@/components/planners/HustleSmoother";
 import JsonLd from "@/components/seo/JsonLd";
 import { breadcrumbJsonLd, softwareApplicationJsonLd } from "@/lib/structured-data";
+import { PLANNER_NAV_ITEMS } from "@/lib/planner-nav";
 
-const title = "Cycle Venture Planner";
+/* Name and icon come from the nav registry rather than a local constant: this
+ * page and the nav disagreed for as long as both held their own copy. */
+const nav = PLANNER_NAV_ITEMS.find((item) => item.href === "/planners/hustle")!;
+const title = nav.title;
 const description =
   "Lumpy cycle payouts in, steady monthly salary out — seed capital protected for the next round.";
 const path = "/planners/hustle";
@@ -30,7 +34,7 @@ export default function HustlePlannerPage() {
         <Link href="/planners" className="inline-flex min-h-11 items-center text-xs font-medium text-primary underline">
           ← All planners
         </Link>
-        <h1 className="mt-2 text-2xl font-semibold text-primary lg:text-3xl">🌾 {title}</h1>
+        <h1 className="mt-2 text-2xl font-semibold text-primary lg:text-3xl">{nav.icon} {title}</h1>
         <p className="mt-1 max-w-2xl text-sm text-ink-soft lg:text-base">{description}</p>
       </div>
       <div className="mt-8 w-full max-w-3xl">

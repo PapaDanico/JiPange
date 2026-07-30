@@ -5,22 +5,36 @@ import { assumedMmfYield, MMF_SPREAD_OVER_TBILL_PCT } from "./mmf-assumption";
  * Money market fund or Treasury bill — and how much the answer is worth.
  *
  * The obvious version of this comparison prints two net yields and declares a
- * winner. On today's figures that would say the MMF wins by 31 basis points,
- * and it would be an irresponsible thing to publish, because:
+ * winner. When this was written that would have said the MMF wins by 31 basis
+ * points, and publishing it would have been irresponsible, because:
  *
  *     assumed MMF gross      10.30%   = 91-day bill + 1.00 assumed spread
  *     364-day bill gross      9.94%
  *     gap between the bills   0.63pp  (91-day 9.30 -> 364-day 9.94)
  *
- * The verdict rests entirely on a spread this project ASSUMES. That assumption
- * is worth 1.00pp; the answer it produces is worth 0.31pp. Move the assumption
+ * The verdict rested entirely on a spread this project ASSUMES. That assumption
+ * is worth 1.00pp; the answer it produced was worth 0.31pp. Move the assumption
  * by two thirds of itself and the winner changes. A confident ranking built on
  * that is a number pretending to be a fact.
  *
+ * THE FIGURES ABOVE ARE NO LONGER THE MARKET, AND THE SHAPE CHANGED WITH THEM
+ * ---------------------------------------------------------------------------
+ * Mwangaza was pricing bills on a bank-discount basis when CBK prices them on
+ * a true-discount basis, and correcting it on 30 July 2026 cut the 364-day
+ * gross from 9.94% to about 9.02% while barely moving the 91-day. The bill
+ * curve is now INVERTED in effective-annual terms — rolling 91-day paper beats
+ * locking in for a year — so the third line above reads backwards today.
+ *
+ * The example is kept rather than restated because it is the argument for the
+ * threshold, not a claim about current rates: it shows what an assumption-led
+ * verdict looks like. The current gap is 0.91pp against a 0.35pp threshold, so
+ * the card does now name a winner. That is the mechanism working, not a
+ * different policy.
+ *
  * So this returns the comparison AND the assumption's leverage over it, and the
- * card says plainly when the two are too close to separate on yield. Which they
- * are today — and that is genuinely useful, because it moves the decision to
- * the things that are actually known: the lock-up and the minimum.
+ * card says plainly when the two are too close to separate on yield. When they
+ * are, that is genuinely useful, because it moves the decision to the things
+ * that are actually known: the lock-up and the minimum.
  *
  * WHAT IS ACTUALLY CERTAIN
  * ------------------------

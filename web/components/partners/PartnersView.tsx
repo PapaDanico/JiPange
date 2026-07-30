@@ -12,6 +12,8 @@ import {
   SACCO_DIVIDEND_RANGE_PCT,
   PENSION_LINKS,
   YIELDS_AS_OF,
+  YIELDS_MAX_AGE_DAYS,
+  yieldsAreStale,
   type ProductLink,
   type ProductType,
 } from "@/lib/affiliate-links";
@@ -223,6 +225,24 @@ export default function PartnersView() {
 
   return (
     <div className="w-full max-w-2xl">
+      {/* The survey has a shelf life, and it had passed it silently.
+        *
+        * `yieldsAreStale()` existed, was unit-tested, and was rendered
+        * nowhere — so the one thing it was written to prevent was the one
+        * thing that happened. A reader saw fund yields footnoted with a
+        * survey date and no indication that the date was past the point
+        * where this file itself stops vouching for them. Dating a figure is
+        * only half the disclosure; the other half is saying when the date
+        * stopped being good enough. */}
+      {yieldsAreStale() && (
+        <p className="mb-5 rounded-2xl border border-[#e0b000] bg-[#fff8e1] px-4 py-3 text-sm text-[#7a4a00]">
+          ⚠ The fund yields below were surveyed on {YIELDS_AS_OF} and have not
+          been re-checked within {YIELDS_MAX_AGE_DAYS} days. Treat them as
+          indicative and confirm the current rate with the provider before you
+          move any money. Minimums, regulators and protections are unaffected.
+        </p>
+      )}
+
       {/* Personalised strip — only when user has journey answers */}
       {recommendedVehicle && activeTab === "all" && (
         <RecommendedStrip vehicleId={recommendedVehicle} />
