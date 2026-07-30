@@ -5,11 +5,19 @@ import snapshot from "./rates-snapshot.json";
  *
  * WHY WE DO NOT COMPUTE THESE OURSELVES
  * -------------------------------------
- * CBK quotes Treasury bills as a *discount rate*, and it is neither the return
- * nor close to it. A bill quoted at 8.7986% earns that discount on a smaller
- * outlay, so the true gross yield is 9.30% — and 15% withholding tax then
- * pulls the net to 7.87%. Multiplying capital by 0.088 is wrong twice in
- * opposite directions and lands roughly 0.9 percentage points high.
+ * CBK quotes Treasury bills as a rate that is neither the return nor close to
+ * it. A 91-day bill quoted at 8.7882% can be rolled four times a year, so the
+ * true gross yield is 9.08% — and 15% withholding tax then pulls the net to
+ * 7.68%. Multiplying capital by 0.0879 is wrong twice in opposite directions
+ * and lands roughly 1.1 percentage points high.
+ *
+ * Those figures were themselves wrong until 30 July 2026, on the pricing
+ * convention rather than the arithmetic: the quote is a simple yield on the
+ * price paid, not a discount on face value, and treating it as the latter
+ * overstated every bill yield — by 84bps at 364 days. Which is the argument
+ * for this file, made against the file itself. One side derives the answer and
+ * publishes it; when that side is wrong, it is wrong in one place and corrected
+ * in one place.
  *
  * This file exists because we were doing precisely that. The DhowCSD ladder
  * held three hardcoded quoted rates and projected income straight from them,
