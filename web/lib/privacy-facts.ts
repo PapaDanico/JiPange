@@ -188,13 +188,36 @@ export const PROCESSORS = [
  * because the operator supplied a name and not a form.
  */
 export const CONTROLLER = {
-  name: "Danico Ventures",
+  name: "Danico Ventures Ltd",
   operates: "JiPange and Mwangaza Yield",
   contact: "hello@jipangefinance.org",
-  /** Recorded so the absence is a decision on the record rather than an oversight. */
+  /** From the certificate of incorporation, which is a public record at the BRS. */
+  registrationNumber: "PVT-EYUM572",
+  incorporated: "10 March 2019, under the Companies Act, 2015",
+  /**
+   * The BUSINESS address, deliberately not the registered office.
+   *
+   * The certificate gives a registered office on the Ongata Rongai–Kitengela
+   * Bypass. That is a public record and anyone can pull it by searching the
+   * company number at the BRS — but it is not where this business is run from,
+   * and a privacy notice needs an address a reader can actually write to, not
+   * the one a form was filed with.
+   *
+   * Labelled "business address" for that reason. Calling JKIA Cargo Centre the
+   * registered office would be false, and the fix for a personal address on a
+   * public page is never to relabel a different one. If somebody later
+   * "corrects" this back to the certificate address believing it a mistake:
+   * it was not.
+   */
+  businessAddress: "JKIA Cargo Centre, Nairobi",
+  /**
+   * Taken from the certificate and NOT reproduced here: the director and
+   * shareholder's name, the share capital and shareholding, and the registry's
+   * "P.O. Box" field — which on this certificate holds a mobile number rather
+   * than a box number. Publishing a personal phone number because a government
+   * form put it in the wrong box would be our error, not the registry's.
+   */
   stillToPublish: [
-    "company registration number",
-    "registered office address",
     "ODPC registration status",
     "a named Data Protection Officer, if one is required",
   ],

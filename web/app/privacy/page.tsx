@@ -91,8 +91,9 @@ export default function PrivacyPage() {
               * and s.26 rights are unusable without it. */}
             <p className="mt-4 rounded-xl bg-canvas p-4">
               <strong className="text-primary">Who &ldquo;we&rdquo; is.</strong> {CONTROLLER.name}{" "}
+              (company no. {CONTROLLER.registrationNumber}, incorporated {CONTROLLER.incorporated})
               operates {CONTROLLER.operates} and is the data controller for the processing
-              described here. Reach us at{" "}
+              described here. Business address: {CONTROLLER.businessAddress}. Reach us at{" "}
               <a href={`mailto:${CONTROLLER.contact}`} className="underline hover:text-primary">
                 {CONTROLLER.contact}
               </a>
