@@ -93,7 +93,7 @@ export default function PrivacyPage() {
               <strong className="text-primary">Who &ldquo;we&rdquo; is.</strong> {CONTROLLER.name}{" "}
               (company no. {CONTROLLER.registrationNumber}, incorporated {CONTROLLER.incorporated})
               operates {CONTROLLER.operates} and is the data controller for the processing
-              described here. Registered office: {CONTROLLER.registeredOffice}. Reach us at{" "}
+              described here. Business address: {CONTROLLER.businessAddress}. Reach us at{" "}
               <a href={`mailto:${CONTROLLER.contact}`} className="underline hover:text-primary">
                 {CONTROLLER.contact}
               </a>

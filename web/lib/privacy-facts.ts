@@ -194,7 +194,22 @@ export const CONTROLLER = {
   /** From the certificate of incorporation, which is a public record at the BRS. */
   registrationNumber: "PVT-EYUM572",
   incorporated: "10 March 2019, under the Companies Act, 2015",
-  registeredOffice: "Plot No. 1, Ongata Rongai–Kitengela Bypass, Athi River",
+  /**
+   * The BUSINESS address, deliberately not the registered office.
+   *
+   * The certificate gives a registered office on the Ongata Rongai–Kitengela
+   * Bypass. That is a public record and anyone can pull it by searching the
+   * company number at the BRS — but it is not where this business is run from,
+   * and a privacy notice needs an address a reader can actually write to, not
+   * the one a form was filed with.
+   *
+   * Labelled "business address" for that reason. Calling JKIA Cargo Centre the
+   * registered office would be false, and the fix for a personal address on a
+   * public page is never to relabel a different one. If somebody later
+   * "corrects" this back to the certificate address believing it a mistake:
+   * it was not.
+   */
+  businessAddress: "JKIA Cargo Centre, Nairobi",
   /**
    * Taken from the certificate and NOT reproduced here: the director and
    * shareholder's name, the share capital and shareholding, and the registry's
