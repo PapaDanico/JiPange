@@ -31,43 +31,52 @@ const DEPOSIT_PERCENTAGES = [10, 15, 20, 30];
 const COVER_MONTHS = [3, 6, 9, 12];
 const RETIREMENT_INCOMES = [30_000, 50_000, 100_000, 150_000];
 /**
- * Pot = monthly income × 12 ÷ PERPETUAL_REAL_WITHDRAWAL.
+ * Two numbers decide a retirement pot, and conflating them is how this page
+ * went wrong twice in one day.
  *
- * WAS 300 — the 4% rule. Changed to 2% real (600×) in July 2026, and the
- * reason is not simply that 4% is American.
+ *   pot = (monthly spending NOW x REPLACEMENT) x 12 / WITHDRAWAL
  *
- * THE PAGE PROMISES A PERPETUITY. Its tagline is "the pot that pays you a
- * monthly income FOR LIFE". The 4% rule does not size a perpetuity: Bengen and
- * the Trinity study measured a 30-year DEPLETION of a US 60/40 portfolio, and
- * that literature's own failure rates climb past the 30-year horizon. For
- * someone retiring at 55 in Kenya, "for life" can be forty years. A pot that
- * never runs out is 1 ÷ real return, and nothing else.
+ * REPLACEMENT — how much of today's spending you still need once retired.
+ * WITHDRAWAL  — how much of the pot you draw each year, after inflation.
  *
- * THE APP HAD ALREADY DECIDED WHAT KENYAN REAL RETURN IT BELIEVES.
- * retirement-kenya.ts plans at 3% real (REAL_RETURN_DEFAULT), justified against
- * the live Mwangaza feed and re-checked by fire-evidence.ts whenever the market
- * moves. Using 4% here meant this app assumed 4% real in one module and 3% in
- * another, for the same saver in the same country.
+ * They pull in OPPOSITE directions, which is the trap. Lowering the withdrawal
+ * rate makes the pot BIGGER (pot = income / rate), so "be more conservative
+ * about returns" and "I need a smaller number" are not the same instruction.
+ * The page first shipped 4% with no replacement at all — implicitly assuming a
+ * retiree needs 100% of their working spending forever — and a first attempt at
+ * fixing it cut the withdrawal rate to 2%, which doubled the target rather than
+ * reducing it. Both are now explicit and both are adjustable, because the
+ * honest answer is that the reader's own two judgements drive this, not ours.
  *
- * WHY 2% AND NOT 3%. A perpetuity must be strictly more conservative than a
- * finite plan, because it has to survive reinvestment risk forever rather than
- * for thirty years. Measured on the feed at 6.41% CPI, Kenyan T-bills pay about
- * 1.2% real and long bonds 4.2–5.6% real — but a long bond matures and must be
- * rolled at a rate nobody knows, and Kenya issues NO inflation-linked
- * government bond, so no instrument here guarantees a real return at all. 2%
- * sits above the bills and below every bond: it assumes today's unusually good
- * real yields do not last, which is the premise retirement-kenya.ts already
- * states and the opposite of what 4% assumed.
+ * KENYAN DEFAULTS
  *
- * WHAT THIS DELIBERATELY DOES NOT MODEL. Spending falling in retirement is
- * real, and it argues for a SMALLER pot — but it is a different lever, and
- * retirement-kenya.ts already carries it as LIVING_REAL_DECLINE with a floor,
- * alongside MEDICAL_REAL_ESCALATION pushing the other way. Folding it in here
- * would double-count. This constant answers one question only: what multiple of
- * income is a pot that never runs out.
+ * 50% replacement. Retirement spending falls everywhere, and the Western
+ * literature's 70-80% replacement rules assume a mortgage that is gone, a
+ * commute that has stopped and children who have left — which understates the
+ * fall for a Kenyan household that also stops funding school fees, and
+ * overstates it where extended-family obligation continues. 50% is the
+ * operator's judgement for this market, sits below the Western band, and is a
+ * SLIDER precisely because it is a judgement.
+ *
+ * 4% withdrawal. Held rather than lowered, now that replacement carries the
+ * conservatism. Note what it makes this: a roughly 30-year DRAWDOWN, not an
+ * income that never stops — a pot that never depletes needs 1 / real return,
+ * which at a defensible Kenyan 2-3% real means 33-50x annual, not 25x. The
+ * page says which it is, and lowering the slider toward 2% turns it back into
+ * a perpetuity for a reader who wants that.
+ *
+ * See retirement-kenya.ts for the fuller model, which prices living costs and
+ * medical as separate streams instead of applying any multiple at all.
  */
-const PERPETUAL_REAL_WITHDRAWAL = 0.02;
-const POT_PER_MONTHLY_INCOME = Math.round(12 / PERPETUAL_REAL_WITHDRAWAL);
+const REPLACEMENT_DEFAULT = 0.5;
+const WITHDRAWAL_DEFAULT = 0.04;
+const REPLACEMENT_CHOICES = [0.4, 0.5, 0.6, 0.8, 1];
+const WITHDRAWAL_CHOICES = [0.02, 0.03, 0.04, 0.05];
+
+/** The one place the arithmetic lives. */
+function potFor(monthlyNow: number, replacement: number, withdrawal: number): number {
+  return Math.round((monthlyNow * replacement * 12) / withdrawal);
+}
 const MAX_CHILDREN = 5;
 const CHILD_TIMELINE_MAX = 18;
 
@@ -109,7 +118,9 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
   const [coverMonths, setCoverMonths] = useState(6); // emergency: months of cover
   const [price, setPrice] = useState(""); // home: property price
   const [depositPct, setDepositPct] = useState(20); // home: deposit %
-  const [income, setIncome] = useState(""); // retirement: monthly income wanted
+  const [income, setIncome] = useState(""); // retirement: monthly spending TODAY
+  const [replacement, setReplacement] = useState(REPLACEMENT_DEFAULT);
+  const [withdrawal, setWithdrawal] = useState(WITHDRAWAL_DEFAULT);
 
   const [currentSavings, setCurrentSavings] = useState("");
   const [annualReturn, setAnnualReturn] = useState(config.defaultAnnualReturn * 100);
@@ -159,10 +170,16 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
     if (p > 0) setAmount(String(Math.round((p * nextPct) / 100)));
   }
 
-  function applyIncome(nextIncome: string) {
+  function applyIncome(
+    nextIncome: string,
+    nextReplacement = replacement,
+    nextWithdrawal = withdrawal
+  ) {
     setIncome(nextIncome);
+    setReplacement(nextReplacement);
+    setWithdrawal(nextWithdrawal);
     const inc = Number(nextIncome);
-    if (inc > 0) setAmount(String(Math.round(inc * POT_PER_MONTHLY_INCOME)));
+    if (inc > 0) setAmount(String(potFor(inc, nextReplacement, nextWithdrawal)));
   }
 
   function updateChild(index: number, patch: Partial<ChildGoal>) {
@@ -514,7 +531,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
           <div className="space-y-3">
             <NumberField
               id="goal-income"
-              label="Monthly income you want in retirement (today's money)"
+              label="What you spend a month now (today's money)"
               value={income}
               onChange={(v) => applyIncome(v)}
               placeholder="e.g. 50000"
@@ -533,13 +550,63 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
                 </button>
               ))}
             </div>
-            <p className="text-xs text-faint">
-              Pot = income × {POT_PER_MONTHLY_INCOME}, i.e. drawing{" "}
-              {(PERPETUAL_REAL_WITHDRAWAL * 100).toFixed(0)}% a year after inflation. That is
-              deliberately more cautious than the familiar 4% rule, which measures a 30-year
-              drawdown of a US portfolio rather than an income that never stops — and Kenya
-              issues no inflation-linked bond, so no real return here is guaranteed. An
-              estimate, not a promise.
+
+            <div className="mt-4">
+              <p className="block text-sm font-medium text-ink-soft">
+                How much of that will you still need once retired?
+              </p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {REPLACEMENT_CHOICES.map((r) => (
+                  <button
+                    key={r}
+                    type="button"
+                    onClick={() => applyIncome(income, r, withdrawal)}
+                    aria-pressed={replacement === r}
+                    className={chipClass(replacement === r)}
+                  >
+                    {Math.round(r * 100)}%
+                  </button>
+                ))}
+              </div>
+              <p className="mt-1 text-xs text-faint">
+                Most spending falls: no commute, no school fees, usually no mortgage. Medical
+                goes the other way. 50% is our read for Kenya — move it if yours differs.
+              </p>
+            </div>
+
+            <div className="mt-4">
+              <p className="block text-sm font-medium text-ink-soft">
+                How much of the pot will you draw a year, after inflation?
+              </p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {WITHDRAWAL_CHOICES.map((w) => (
+                  <button
+                    key={w}
+                    type="button"
+                    onClick={() => applyIncome(income, replacement, w)}
+                    aria-pressed={withdrawal === w}
+                    className={chipClass(withdrawal === w)}
+                  >
+                    {Math.round(w * 100)}%
+                  </button>
+                ))}
+              </div>
+              <p className="mt-1 text-xs text-faint">
+                A lower rate needs a <strong>bigger</strong> pot, not a smaller one — it is the
+                slice you live on, so a thinner slice means a larger cake. At 4% the pot lasts
+                roughly 30 years; at 2–3% it need never run out, which is what Kenyan real
+                yields of 2–3% can support once today&apos;s unusually high rates normalise.
+              </p>
+            </div>
+
+            <p className="mt-3 rounded-xl bg-canvas p-3 text-xs text-ink-soft">
+              {formatKES(Number(income) || 0)}/mo now × {Math.round(replacement * 100)}% ={" "}
+              <strong>{formatKES(Math.round((Number(income) || 0) * replacement))}/mo</strong> in
+              retirement, drawn at {Math.round(withdrawal * 100)}% a year →{" "}
+              <strong>
+                {formatKES(potFor(Number(income) || 0, replacement, withdrawal))}
+              </strong>
+              . An estimate, not a promise.
             </p>
           </div>
         )}

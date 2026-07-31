@@ -289,7 +289,7 @@ export interface GoalConfig {
    * - "children": one row per child, each with a stage and timeline (education)
    * - "expenses-months": monthly expenses × months of cover (emergency)
    * - "price-deposit": property price × deposit % (home)
-   * - "income": desired monthly income × 600, a 2% real perpetual withdrawal
+   * - "income": spending now × replacement ÷ withdrawal (both adjustable)
    * - "presets": plain quick-pick amounts (business)
    */
   builder: "children" | "expenses-months" | "price-deposit" | "income" | "presets";
@@ -377,25 +377,29 @@ export const GOAL_CONFIGS: Record<GoalType, GoalConfig> = {
     type: "retirement",
     title: "Retirement Planner",
     emoji: "🌴",
-    tagline: "Reverse-engineer the pot that pays you a monthly income for life.",
+    tagline: "Reverse-engineer the pot behind the retirement you want.",
     defaultAnnualReturn: 0.1,
-    /* Pot sizes for a PERPETUITY at 2% real: monthly income × 12 ÷ 0.02, i.e.
-     * × 600. These were × 300 (the 4% rule) and are now doubled.
+    /* Pot sizes at the page's DEFAULTS: 50% replacement, 4% annual draw.
+     * pot = monthly now x 0.5 x 12 / 0.04 = monthly x 150.
      *
-     * The tagline one line above says "for life", and that is what forced the
-     * change: the 4% rule sizes a 30-year drawdown of a US 60/40 portfolio, not
-     * an income that never stops. A pot that never runs out is 1 ÷ real return.
+     * These have now been wrong in both directions in one day, which is the
+     * reason the arithmetic moved into potFor() and both rates became
+     * adjustable. They were x300 (the 4% rule with NO replacement — implicitly
+     * assuming a retiree needs every shilling of their working spending), then
+     * briefly x600 when the withdrawal rate was cut to 2% without touching
+     * replacement, which DOUBLED the target while trying to reduce it.
      *
-     * 2% real is the same direction retirement-kenya.ts already argues — it
-     * plans at 3% real for a FINITE thirty-year plan, and a perpetuity has to
-     * clear a lower bar than that because it carries reinvestment risk forever.
-     * See PERPETUAL_REAL_WITHDRAWAL in GoalPlanner.tsx for the full reasoning
-     * and the live yield board it is measured against. */
+     * The trap is that the two rates pull opposite ways: pot = income / rate,
+     * so lowering the draw enlarges the pot. Only replacement makes it smaller.
+     *
+     * Labels say "lifestyle" rather than "for life" deliberately. The figure a
+     * reader types is what they spend NOW, and at a 4% draw this is a ~30-year
+     * drawdown rather than an income that never stops. */
     amountPresets: [
-      { label: "Ksh 30k/month for life", amount: 18_000_000 },
-      { label: "Ksh 50k/month for life", amount: 30_000_000 },
-      { label: "Ksh 100k/month for life", amount: 60_000_000 },
-      { label: "Ksh 150k/month for life", amount: 90_000_000 },
+      { label: "Ksh 30k/month lifestyle", amount: 4_500_000 },
+      { label: "Ksh 50k/month lifestyle", amount: 7_500_000 },
+      { label: "Ksh 100k/month lifestyle", amount: 15_000_000 },
+      { label: "Ksh 150k/month lifestyle", amount: 22_500_000 },
     ],
     builder: "income",
     defaultYears: 25,
