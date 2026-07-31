@@ -16,6 +16,8 @@
  * evidence agreeing with the operator would be worse than no file.
  */
 
+import { LIVING_REPLACEMENT_AT_RETIREMENT } from "./retirement-kenya";
+
 export interface Evidence {
   claim: string;
   source: string;
@@ -101,12 +103,34 @@ export const MEDICAL_EVIDENCE: Evidence[] = [
  * app's job is to show the reader where their own assumption sits rather than
  * to pick for them.
  */
+/**
+ * The savings rate used to convert a share of SPENDING into a share of INCOME.
+ *
+ * A household saving 25% of income spends the other 75%, so a replacement rate
+ * quoted against spending is 0.75x the same rate quoted against income. This is
+ * the one number that makes the app's default comparable to the RBA's, and it
+ * is an assumption rather than an observation — stated as a constant so it can
+ * be argued with, instead of being buried inside a multiplication.
+ */
+export const ASSUMED_SAVINGS_RATE = 0.25;
+
+/** A share of spending, restated as the share of income the benchmarks use. */
+export const asShareOfIncome = (shareOfSpending: number): number =>
+  shareOfSpending * (1 - ASSUMED_SAVINGS_RATE);
+
 export const REPLACEMENT_BENCHMARKS = [
   { label: "RBA target", shareOfIncome: 0.75, note: "The regulator's stated goal for Kenya." },
   { label: "Kenya today", shareOfIncome: 0.43, note: "Observed average for middle-income earners." },
   {
+    /* DERIVED, not typed. This entry read 0.19 as a literal, which was correct
+     * only for as long as LIVING_REPLACEMENT_AT_RETIREMENT stayed at 25% — and
+     * that constant had already been changed twice in a day. A benchmark table
+     * that silently stops describing the app is worse than no benchmark table,
+     * because its whole purpose is to be trusted at a glance. */
     label: "This app's default",
-    shareOfIncome: 0.19,
-    note: "25% of spending, at a 25% savings rate — set by the operator with the two figures above in view, and paired with medical pre-funded separately.",
+    shareOfIncome: asShareOfIncome(LIVING_REPLACEMENT_AT_RETIREMENT),
+    note: `${Math.round(LIVING_REPLACEMENT_AT_RETIREMENT * 100)}% of spending, at a ${Math.round(
+      ASSUMED_SAVINGS_RATE * 100
+    )}% savings rate — set by the operator with the two figures above in view, and paired with medical pre-funded separately.`,
   },
 ] as const;

@@ -9,7 +9,12 @@ import {
   type PlanItemInput,
 } from "@/lib/goal-planner";
 import { buildGoalStrategy } from "@/lib/native-plan";
-import { LIVING_REPLACEMENT_AT_RETIREMENT } from "@/lib/retirement-kenya";
+import { LIVING_REPLACEMENT_AT_RETIREMENT, planKenyanRetirement } from "@/lib/retirement-kenya";
+import {
+  ASSUMED_SAVINGS_RATE,
+  REPLACEMENT_BENCHMARKS,
+  asShareOfIncome,
+} from "@/lib/retirement-evidence";
 import { inflationAdjust } from "@/lib/projections";
 import { getStoredCalculations, getStoredProfile, saveStoredGoal } from "@/lib/storage";
 import type { GoalStrategy } from "@/lib/types";
@@ -88,6 +93,37 @@ const WITHDRAWAL_CHOICES = [0.02, 0.03, 0.04, 0.05];
 function potFor(monthlyNow: number, replacement: number, withdrawal: number): number {
   return Math.round((monthlyNow * replacement * 12) / withdrawal);
 }
+
+/**
+ * How much MORE the full model asks for than this page does — measured, not
+ * asserted.
+ *
+ * The sentence pointing readers at /tools/fire-number claimed "roughly 15%
+ * more". It was true when written and was 65% by the time anyone checked: the
+ * replacement rate moved, and a hand-typed comparison between two tools cannot
+ * survive either of them changing. So it is computed here from the model
+ * itself, at a representative household.
+ *
+ * Representative, and the choices matter: a 35-year-old retiring at 60 with a
+ * tenth of spending going on medical cover. The gap is driven almost entirely
+ * by that medical share — the model prices medical as a rising stream while
+ * everything else falls — so a household spending more on cover sees a bigger
+ * gap than this. The number is rounded to the nearest 5% because presenting it
+ * to the percentage point would imply a precision the representative inputs do
+ * not have.
+ */
+const FULLER_MODEL_UPLIFT = (() => {
+  const income = 100_000;
+  const medical = income * 0.1;
+  const full = planKenyanRetirement({
+    currentAge: 35,
+    retirementAge: 60,
+    currentMonthlyExpenses: income - medical,
+    currentMonthlyMedical: medical,
+  }).capitalRequiredKes;
+  const quick = potFor(income, REPLACEMENT_DEFAULT, WITHDRAWAL_DEFAULT);
+  return Math.round(((full / quick - 1) * 100) / 5) * 5;
+})();
 const MAX_CHILDREN = 5;
 const CHILD_TIMELINE_MAX = 18;
 
@@ -587,11 +623,21 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
                 If you are NOT doing that, or you support family who will not retire when
                 you do, move this up.
               </p>
+              {/* Derived from the selected chip, not written down. This
+                * sentence used to carry a worked example built on a 50%
+                * replacement, a default that had since moved to 25% — so it
+                * quoted the reader a figure they were not on. Anything
+                * stated as a number here now comes from the same constants the
+                * arithmetic uses. */}
               <p className="mt-1 text-xs text-faint">
-                For scale: the Retirement Benefits Authority targets 75% of final{" "}
-                <em>income</em>, and Kenyan middle-income earners average about 43%. Because
-                you are entering <em>spending</em> rather than income, 50% here is roughly 37%
-                of income — already below what the regulator considers adequate.
+                For scale: the Retirement Benefits Authority targets{" "}
+                {Math.round(REPLACEMENT_BENCHMARKS[0].shareOfIncome * 100)}% of final{" "}
+                <em>income</em>, and Kenyan middle-income earners average about{" "}
+                {Math.round(REPLACEMENT_BENCHMARKS[1].shareOfIncome * 100)}%. Because you are
+                entering <em>spending</em> rather than income, the{" "}
+                {Math.round(replacement * 100)}% you have chosen is roughly{" "}
+                {Math.round(asShareOfIncome(replacement) * 100)}% of income — assuming you save
+                about {Math.round(ASSUMED_SAVINGS_RATE * 100)}% of what you earn.
               </p>
             </div>
 
@@ -627,8 +673,8 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
               <a href="/tools/fire-number" className="underline hover:text-primary">
                 retirement number tool
               </a>
-              . It asks for roughly 15% more, because it can see the medical bill
-              this page cannot.
+              . It asks for roughly {FULLER_MODEL_UPLIFT}% more, because it can see
+              the medical bill this page cannot.
             </p>
 
             <p className="mt-3 rounded-xl bg-canvas p-3 text-xs text-ink-soft">
