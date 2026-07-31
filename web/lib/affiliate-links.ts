@@ -84,49 +84,6 @@ export type Regulator = "CMA" | "CBK" | "SASRA" | "CBK+CMA" | "RBA";
  * thinks to check. It now says what it governs: the survey of minimums, terms,
  * and which providers are listed. */
 /**
- * PROVIDER SURVEY — 31 July 2026, and what it could and could not establish.
- *
- * Every provider site returns 403 to the build environment, through the
- * sandbox proxy and through direct fetch alike, so no page here was READ. What
- * was possible was a search restricted to each provider's own domain, which
- * surfaces the provider's own indexed pages rather than a third party quoting
- * them. That is better evidence than a blog and worse than the document.
- *
- * So the rule applied was: corroborate, never author. Where the search agreed
- * with the stored figure, the figure stayed and is now dated. Where it
- * disagreed, the figure was REMOVED rather than replaced — writing an unread
- * number under a survey date is the defect this file was built to stop.
- *
- *   Ziidi           100    agreed (Safaricom: "from as low as KSH 100")
- *   Britam        1,000    agreed (initial 1,000, top-up 1,000)
- *   Old Mutual    1,000    agreed
- *   NCBA          1,000    agreed — but see the naming note below
- *   Cytonn        1,000    agreed
- *   CIC           1,000    DISAGREED: 5,000 initial, 1,000 top-up. Removed.
- *   KCB           1,000    DISAGREED: 5,000 for the shilling fund. Removed.
- *   ICEA Lion     1,000    not published anywhere on icealion.com. Unverified.
- *   Sanlam          500    not found on sanlam.com. Unverified.
- *   Nabo, Zimele, Etica, Lofty-Corban, Dry Associates — not searched.
- *
- * Both disagreements ran the same way: our figure was LOWER than the
- * provider's. That is the direction that costs a reader something. An
- * overstated minimum loses a customer we never had; an understated one sends
- * somebody to a provider that turns them away after they have compared funds
- * and chosen. If a third case turns up, assume the pattern rather than the
- * coincidence — these numbers were gathered when minimums across the market
- * were lower.
- *
- * NAMING: search suggests the NCBA Money Market Fund now trades as the NCBA
- * Fixed Income Fund. Not changed here, because a rename is exactly the kind of
- * claim that needs the page rather than an index.
- *
- * LINK ROT: the Britam and CIC URLs in this file point at www.britam.com and
- * www.cicinsurancegroup.com; search returns ke.britam.com and
- * ke.cicinsurancegroup.com and never returns ours. Not changed, because
- * swapping a link I cannot fetch for another I cannot fetch is a lateral move.
- * Two clicks from anyone with an unrestricted browser would settle it.
- */
-/**
  * PROVIDER SURVEY - 31 July 2026. Nine of fourteen funds checked; five wrong.
  *
  * No page here was READ: every provider site returns 403 to this environment.
@@ -177,10 +134,40 @@ export type Regulator = "CMA" | "CBK" | "SASRA" | "CBK+CMA" | "RBA";
  * it may no longer be a money market fund at all. Liquidity strings, taglines
  * and the fund list itself remain unchecked, so the staleness notice stays up.
  *
+ * THE NAMES WERE WRONG TOO, AND FOR A REGULATORY REASON
+ *
+ * NCBA and Zimele no longer run money market funds. CMA's October 2020 CIS
+ * guidelines created a "fixed income fund" class — 60%+ of assets in fixed
+ * income — and reserved "money market fund" for the shorter, near-cash
+ * mandate. NCBA's minutes record the rename being approved by its trustee and
+ * the Authority; Zimele documents the same transition for its Savings Plan.
+ *
+ * That is not a label change. A money market fund is defined to avoid duration;
+ * a fixed income fund holds it, and therefore carries price risk. A directory
+ * whose purpose is saying what a thing actually is cannot file the second under
+ * the first. Both entries are renamed.
+ *
+ * IT ALSO MEANS THE REMAINING TWELVE ARE UNVERIFIED
+ *
+ * The rule is market-wide, so any fund here still labelled "money market" may
+ * have reclassified without us noticing — the same way these two did. Two found
+ * out of two looked at. `type: "mmf"` is left alone deliberately: it drives
+ * native-plan.ts and the journey mapping, and re-typing funds on the strength
+ * of a search index would push an unverified claim into the planning engine.
+ * The names are corrected because a name is a statement; the type is left
+ * because it is a behaviour.
+ *
+ * LIQUIDITY STRINGS
+ *
+ * One checked: Ziidi's "Withdraw to M-PESA, no fee" is corroborated —
+ * Safaricom's own pages describe the fund as zero-rated on both deposits and
+ * withdrawals. The other thirteen are unverified, and they are claims about how
+ * fast somebody can reach their own money, which is the thing a saver is most
+ * likely to be relying on when it matters.
+ *
  * STILL OPEN
- *   - Is the NCBA fund now the NCBA Fixed Income Fund? Zimele made the same
- *     move, so this looks like a market pattern rather than a typo. Needs a page.
- *   - Every `liquidity` string in this file is unverified.
+ *   - The CMA classification of the other twelve funds.
+ *   - Thirteen unverified `liquidity` strings.
  */
 export const PRODUCT_SURVEY_AS_OF = "2026-04-01";
 
@@ -433,8 +420,11 @@ export const PRODUCT_LINKS: ProductLink[] = [
   },
   {
     slug: "zimele-mmf",
-    name: "Zimele Money Market Fund",
-    shortName: "Zimele MMF",
+    // RENAMED for the same reason as NCBA — see that entry. Zimele's own site
+    // documents the transition of its Savings Plan from money market to fixed
+    // income.
+    name: "Zimele Fixed Income Fund (Savings Plan)",
+    shortName: "Zimele FIF",
     type: "mmf",
     url: "https://www.zimele.co.ke/savings-plan/",
     isAffiliate: false,
@@ -507,8 +497,15 @@ export const PRODUCT_LINKS: ProductLink[] = [
   },
   {
     slug: "ncba-mmf",
-    name: "NCBA Money Market Fund",
-    shortName: "NCBA MMF",
+    // RENAMED by the manager under CMA's October 2020 CIS guidelines, which
+    // created a "fixed income fund" class (60%+ of AUM in fixed income) and
+    // reserved "money market fund" for the shorter, near-cash mandate. NCBA's
+    // trustee and the Authority approved the change. Not cosmetic: a fixed
+    // income fund carries duration and therefore price risk that a money market
+    // fund is defined to avoid, and this directory exists to say what a thing
+    // actually is.
+    name: "NCBA Fixed Income Fund (Shilling)",
+    shortName: "NCBA FIF",
     type: "mmf",
     isAffiliate: false,
     // No verified current figure. The survey number for this fund was from a

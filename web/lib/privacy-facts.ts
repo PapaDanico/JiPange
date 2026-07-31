@@ -217,8 +217,23 @@ export const CONTROLLER = {
    * than a box number. Publishing a personal phone number because a government
    * form put it in the wrong box would be our error, not the registry's.
    */
+  /**
+   * ODPC registration may not be required at all.
+   *
+   * The Data Protection (Registration of Data Controllers and Data Processors)
+   * Regulations, 2021 exempt a controller whose annual turnover is below
+   * Ksh 5 million AND which employs fewer than ten people. Danico Ventures may
+   * well sit under both thresholds, in which case there is nothing to register
+   * and nothing to publish — which is a different answer from "not done yet".
+   *
+   * Left unstated either way. Claiming registration we do not hold would be a
+   * false regulatory claim; claiming exemption requires turnover and headcount
+   * figures that are not mine to assert. The threshold is recorded here so the
+   * question can be settled in a minute by somebody who knows them, rather than
+   * sitting as an open item nobody can action.
+   */
   stillToPublish: [
-    "ODPC registration status",
+    "whether ODPC registration is required (see the exemption thresholds above)",
     "a named Data Protection Officer, if one is required",
   ],
 } as const;
