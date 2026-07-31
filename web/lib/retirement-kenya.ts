@@ -288,6 +288,28 @@ export interface KenyanRetirement {
   yearsLeftToBuyCover: number;
   coverDeadlineAge: number;
   warnings: string[];
+  /**
+   * The same plan, split for a household that pre-funds medical separately.
+   *
+   * Not a different calculation — `medicalCapitalKes` is already the present
+   * value of the medical stream, so this is the SAME number shown as its own
+   * target rather than buried inside the pot. What changes is what a reader
+   * can act on: a pension pot and a medical fund are bought from different
+   * products, on different tax treatment, and a single combined figure hides
+   * that the second one is cheaper to fund than the first.
+   */
+  prmf: {
+    /** What the medical fund must hold at retirement, today's shillings. */
+    targetKes: number;
+    /** What the main pot drops to once medical is funded elsewhere. */
+    livingOnlyCapitalKes: number;
+    /** Level monthly contribution reaching targetKes by retirement. */
+    monthlyContributionKes: number;
+    /** Statutory cap on tax-deductible PRMF contributions, per month. */
+    monthlyReliefCapKes: number;
+    /** Whether the contribution above fits inside that cap. */
+    withinReliefCap: boolean;
+  };
 }
 
 /**
@@ -430,6 +452,22 @@ export function planKenyanRetirement(input: RetirementInputs): KenyanRetirement 
     warnings.push("Retirement age is not in the future, so there is nothing left to accumulate — this prices the spending only.");
   }
 
+  /* Level monthly contribution reaching the medical target by retirement,
+   * solved the same way the main plan solves its own: a real-return annuity.
+   *
+   * Uses realReturn rather than a fresh assumption. A medical fund and a
+   * pension fund buy the same paper, and a PRMF quietly assuming a better
+   * return than the pension beside it would be exactly the unexamined optimism
+   * this codebase keeps deleting. */
+  const prmfMonthly =
+    yearsToRetirement <= 0
+      ? medicalCapitalKes
+      : realReturn === 0
+        ? medicalCapitalKes / (yearsToRetirement * 12)
+        : (medicalCapitalKes * realReturn) /
+          (Math.pow(1 + realReturn, yearsToRetirement) - 1) /
+          12;
+
   return {
     yearsToRetirement,
     yearsInRetirement,
@@ -452,5 +490,12 @@ export function planKenyanRetirement(input: RetirementInputs): KenyanRetirement 
     yearsLeftToBuyCover,
     coverDeadlineAge,
     warnings,
+    prmf: {
+      targetKes: medicalCapitalKes,
+      livingOnlyCapitalKes: Math.max(0, capitalRequiredKes - medicalCapitalKes),
+      monthlyContributionKes: prmfMonthly,
+      monthlyReliefCapKes: PRMF_MONTHLY_TAX_RELIEF_CAP,
+      withinReliefCap: prmfMonthly <= PRMF_MONTHLY_TAX_RELIEF_CAP,
+    },
   };
 }

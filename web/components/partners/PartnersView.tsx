@@ -31,6 +31,7 @@ const TABS: { id: FilterTab; label: string; emoji: string }[] = [
   { id: "tbill", label: "T-Bills & Bonds", emoji: "🏛️" },
   { id: "sacco", label: "SACCOs", emoji: "🤝" },
   { id: "pension", label: "Pension", emoji: "🧓" },
+  { id: "prmf", label: "Retiree Medical", emoji: "🏥" },
 ];
 
 const TYPE_BADGE: Record<ProductType, { label: string; bg: string; text: string }> = {
@@ -38,6 +39,7 @@ const TYPE_BADGE: Record<ProductType, { label: string; bg: string; text: string 
   tbill: { label: "T-Bill/Bond", bg: "#EEF5F9", text: "#3A6B82" },
   sacco: { label: "SACCO", bg: "#FFF4DC", text: "#B45309" },
   pension: { label: "Pension", bg: "#F1ECE3", text: "#6B5B4D" },
+  prmf: { label: "Retiree medical", bg: "#EAF1FA", text: "#33557A" },
 };
 
 // Which vehicle IDs map to which product type for the "Recommended for you" strip.
