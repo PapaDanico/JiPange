@@ -21,7 +21,7 @@ import { DEFAULT_RETIREMENT_AGE } from '../projections';
  * bonds fell to 2% real the sentence would quietly become false while the app
  * kept quoting 3% with the same confidence.
  */
-describe('the 3% planning rate, against live Mwangaza rates', () => {
+describe('the 3% planning rate, against the current Mwangaza snapshot', () => {
   it('uses Fisher rather than subtracting inflation', () => {
     // At Kenyan rates the shortcut is worth ~0.3pp, which is 10% of the whole
     // planning rate — not a rounding detail at this magnitude.
