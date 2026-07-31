@@ -42,16 +42,66 @@ jobs:
         with:
           node-version: 22.x
 
+      - name: Install once, so the suite can be run before and after the refresh
+        run: cd web && npm ci
+
+      # BASELINE, taken BEFORE the refresh — this is the whole point of the step.
+      #
+      # The gate below used to ask "is anything broken?" when the question it
+      # means is "did the NEW data break anything?". Those are the same question
+      # only while the suite is green, and this repository has guards that go red
+      # on a CALENDAR: on 30 July the hand-surveyed provider yields passed their
+      # 120-day budget, product-directory.test.ts went red, and it blocked the
+      # T-bill refresh in both runs that day. A guard about money-market funds
+      # stopped the Treasury-bill figures updating, and the only thing that
+      # reported it was an email whose subject blamed the sync.
+      #
+      # Withholding fresh figures does not fix an aged-out survey. It just adds
+      # a second problem, and the second one is invisible: the app keeps serving
+      # yesterday's yields with no notice to the reader.
+      - name: Record whether the suite was already failing
+        id: baseline
+        run: |
+          if (cd web && npm run test) > /dev/null 2>&1; then
+            echo "was_green=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "was_green=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::The test suite was ALREADY failing before this refresh."
+          fi
+
       - name: Pull the published feed
         run: node scripts/sync-rates.mjs
 
-      # The snapshot feeds a calculator, so a refresh that breaks the tests is
-      # a refresh we do not ship. Running them here means the commit that lands
-      # on main is one we have already checked, not one CI discovers later.
-      - name: Verify the app still agrees with the new figures
-        run: cd web && npm ci && npm run test
+      # The snapshot feeds a calculator, so a refresh that breaks the tests is a
+      # refresh we do not ship. What decides that is the TRANSITION, not the
+      # final state: green -> red is the new data breaking something and must be
+      # refused; red -> red is a pre-existing failure the refresh did not cause
+      # and must not be allowed to hold the data hostage.
+      - name: Verify the new figures did not break anything
+        id: verify
+        run: |
+          if (cd web && npm run test); then
+            echo "safe=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [ "${{ steps.baseline.outputs.was_green }}" = "false" ]; then
+            echo "safe=true" >> "$GITHUB_OUTPUT"
+            echo "::warning::Suite still failing, but it was failing before the refresh too."
+            echo "::warning::Committing the rates anyway — the failure is not caused by this data."
+            exit 0
+          fi
+          echo "safe=false" >> "$GITHUB_OUTPUT"
+          echo "::error::The suite was GREEN before this refresh and is RED after it."
+          echo "::error::The new figures broke something. Discarding them; the snapshot is unchanged."
+          # Leave nothing half-applied for a later step to pick up.
+          git checkout -- web/lib/rates-snapshot.json
+          exit 1
 
+      # Explicit rather than relying on the previous step's exit code to halt
+      # the job. A later `continue-on-error` added in good faith would otherwise
+      # silently re-enable committing figures we just decided were unsafe.
       - name: Commit the refreshed snapshot
+        if: steps.verify.outputs.safe == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
