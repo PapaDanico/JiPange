@@ -30,6 +30,29 @@ function walk(dir: string): string[] {
 }
 
 describe("currency labels", () => {
+  /**
+   * The scan below collects offenders from a filesystem walk, so an EMPTY walk
+   * reports no offenders and passes. Rename a directory, restructure the app,
+   * or change DIRS, and this goes green having read nothing.
+   *
+   * Worth a guard because this rule is invisible when it breaks: "KES 1,200"
+   * beside "Ksh 1,200" looks like a style wobble, not a defect, so nobody
+   * reports it and only the test stands between the codebase and a slow drift
+   * back. A test that quietly stops looking is indistinguishable from a
+   * codebase that stays clean.
+   *
+   * Same shape as Mwangaza's NSE licensing guard, which had the identical hole
+   * and where pointing the walk at an empty directory left every other
+   * assertion in the file passing.
+   */
+  it("is actually reading files, so the scan below is not vacuous", () => {
+    const scanned = DIRS.flatMap((dir) => walk(join(ROOT, dir)));
+    expect(scanned.length, "the walk found nothing — the scan below proves nothing").toBeGreaterThan(
+      50
+    );
+    expect(DIRS.length, "DIRS was emptied").toBeGreaterThan(2);
+  });
+
   it("formatKES renders Ksh, which is what everything else must match", () => {
     expect(formatKES(1_200_000)).toContain("Ksh");
     expect(formatKES(1_200_000)).not.toContain("KES");
