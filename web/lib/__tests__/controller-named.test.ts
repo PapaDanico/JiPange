@@ -58,4 +58,27 @@ describe("the privacy notice identifies its data controller", () => {
       ).toBeUndefined();
     }
   });
+
+  it("publishes the company facts a reader can verify", () => {
+    // A registration number is checkable at the BRS; a name alone is not.
+    expect(CONTROLLER.registrationNumber).toMatch(/^PVT-[A-Z0-9]+$/);
+    expect(shipped).toContain("CONTROLLER.registrationNumber");
+    expect(shipped).toContain("CONTROLLER.registeredOffice");
+  });
+
+  it("does not carry the personal data that came with the certificate", () => {
+    /* The certificate of incorporation contains more than the company facts:
+     * the director's name, the shareholding, and a "P.O. Box" field that on
+     * this certificate holds a MOBILE NUMBER rather than a box number.
+     *
+     * That last one is the trap. It is labelled as an address by a government
+     * form, so it reads as publishable and is not. Publishing somebody's phone
+     * number because a registry put it in the wrong field would be our mistake,
+     * not theirs — and it would sit on a page whose subject is how carefully we
+     * handle personal data. */
+    const everything = JSON.stringify(CONTROLLER) + shipped;
+    expect(everything, "a Kenyan mobile number is present").not.toMatch(/\b07\d{8}\b/);
+    expect(everything, "the director is named").not.toMatch(/NGONGA|Ng'ong'a/i);
+    expect(everything, "shareholding detail is present").not.toMatch(/ORDINARY|share capital/i);
+  });
 });

@@ -83,6 +83,49 @@ export type Regulator = "CMA" | "CBK" | "SASRA" | "CBK+CMA" | "RBA";
  * Most will not, because a name that looks unambiguous is not a name anyone
  * thinks to check. It now says what it governs: the survey of minimums, terms,
  * and which providers are listed. */
+/**
+ * PROVIDER SURVEY — 31 July 2026, and what it could and could not establish.
+ *
+ * Every provider site returns 403 to the build environment, through the
+ * sandbox proxy and through direct fetch alike, so no page here was READ. What
+ * was possible was a search restricted to each provider's own domain, which
+ * surfaces the provider's own indexed pages rather than a third party quoting
+ * them. That is better evidence than a blog and worse than the document.
+ *
+ * So the rule applied was: corroborate, never author. Where the search agreed
+ * with the stored figure, the figure stayed and is now dated. Where it
+ * disagreed, the figure was REMOVED rather than replaced — writing an unread
+ * number under a survey date is the defect this file was built to stop.
+ *
+ *   Ziidi           100    agreed (Safaricom: "from as low as KSH 100")
+ *   Britam        1,000    agreed (initial 1,000, top-up 1,000)
+ *   Old Mutual    1,000    agreed
+ *   NCBA          1,000    agreed — but see the naming note below
+ *   Cytonn        1,000    agreed
+ *   CIC           1,000    DISAGREED: 5,000 initial, 1,000 top-up. Removed.
+ *   KCB           1,000    DISAGREED: 5,000 for the shilling fund. Removed.
+ *   ICEA Lion     1,000    not published anywhere on icealion.com. Unverified.
+ *   Sanlam          500    not found on sanlam.com. Unverified.
+ *   Nabo, Zimele, Etica, Lofty-Corban, Dry Associates — not searched.
+ *
+ * Both disagreements ran the same way: our figure was LOWER than the
+ * provider's. That is the direction that costs a reader something. An
+ * overstated minimum loses a customer we never had; an understated one sends
+ * somebody to a provider that turns them away after they have compared funds
+ * and chosen. If a third case turns up, assume the pattern rather than the
+ * coincidence — these numbers were gathered when minimums across the market
+ * were lower.
+ *
+ * NAMING: search suggests the NCBA Money Market Fund now trades as the NCBA
+ * Fixed Income Fund. Not changed here, because a rename is exactly the kind of
+ * claim that needs the page rather than an index.
+ *
+ * LINK ROT: the Britam and CIC URLs in this file point at www.britam.com and
+ * www.cicinsurancegroup.com; search returns ke.britam.com and
+ * ke.cicinsurancegroup.com and never returns ours. Not changed, because
+ * swapping a link I cannot fetch for another I cannot fetch is a lateral move.
+ * Two clicks from anyone with an unrestricted browser would settle it.
+ */
 export const PRODUCT_SURVEY_AS_OF = "2026-04-01";
 
 /**
@@ -419,7 +462,15 @@ export const PRODUCT_LINKS: ProductLink[] = [
     // No verified current figure. The survey number for this fund was from a
     // higher rate environment and could not be reconciled with the live
     // 91-day bill — see the coherence guard in the directory tests.
-    minKes: 1000,
+    //
+    // minKes REMOVED, July 2026, for the same reason as CIC. This read 1,000
+    // and the card renders it as "min entry"; KCB's own pages give KES 5,000
+    // for the shilling fund. Understating a minimum is the harmful direction —
+    // a reader arrives with 1,000 and is refused, having already chosen.
+    //
+    // Not corrected to 5,000: KCB's site returns 403 to this environment, so
+    // the figure is from a search index rather than the page. Dropped rather
+    // than carried, and the card shows no minimum until somebody reads it.
     regulator: "CMA",
     liquidity: "Confirm withdrawal terms with the manager",
     tagline: "Bank-backed, with branch support countrywide",

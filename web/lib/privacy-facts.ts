@@ -188,13 +188,21 @@ export const PROCESSORS = [
  * because the operator supplied a name and not a form.
  */
 export const CONTROLLER = {
-  name: "Danico Ventures",
+  name: "Danico Ventures Ltd",
   operates: "JiPange and Mwangaza Yield",
   contact: "hello@jipangefinance.org",
-  /** Recorded so the absence is a decision on the record rather than an oversight. */
+  /** From the certificate of incorporation, which is a public record at the BRS. */
+  registrationNumber: "PVT-EYUM572",
+  incorporated: "10 March 2019, under the Companies Act, 2015",
+  registeredOffice: "Plot No. 1, Ongata Rongai–Kitengela Bypass, Athi River",
+  /**
+   * Taken from the certificate and NOT reproduced here: the director and
+   * shareholder's name, the share capital and shareholding, and the registry's
+   * "P.O. Box" field — which on this certificate holds a mobile number rather
+   * than a box number. Publishing a personal phone number because a government
+   * form put it in the wrong box would be our error, not the registry's.
+   */
   stillToPublish: [
-    "company registration number",
-    "registered office address",
     "ODPC registration status",
     "a named Data Protection Officer, if one is required",
   ],
