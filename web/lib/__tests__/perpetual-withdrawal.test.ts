@@ -29,38 +29,27 @@ import { REAL_RETURN_DEFAULT } from "../retirement-kenya";
 const ROOT = new URL("../../", import.meta.url).pathname;
 const planner = readFileSync(`${ROOT}components/planners/GoalPlanner.tsx`, "utf8");
 
-/** The rate the component actually computes with, read from the source. */
-const declared = Number(
-  planner.match(/const PERPETUAL_REAL_WITHDRAWAL = ([\d.]+);/)?.[1] ?? NaN
-);
-const multiple = Math.round(12 / declared);
+/** Both rates, read from the source rather than restated here. */
+const replacement = Number(planner.match(/const REPLACEMENT_DEFAULT = ([\d.]+);/)?.[1] ?? NaN);
+const withdrawal = Number(planner.match(/const WITHDRAWAL_DEFAULT = ([\d.]+);/)?.[1] ?? NaN);
+const multiple = (replacement * 12) / withdrawal;
 
 describe("the retirement pot is sized for the income it promises", () => {
-  it("declares a perpetual withdrawal rate at all", () => {
-    expect(declared, "PERPETUAL_REAL_WITHDRAWAL not found in GoalPlanner.tsx").toBeGreaterThan(0);
-    expect(declared, "a perpetual real withdrawal above 5% is not a perpetuity").toBeLessThan(0.05);
+  it("declares both rates, because one alone cannot size a pot", () => {
+    expect(replacement, "REPLACEMENT_DEFAULT not found").toBeGreaterThan(0);
+    expect(replacement, "a replacement rate above 1 means spending MORE once retired").toBeLessThanOrEqual(1);
+    expect(withdrawal, "WITHDRAWAL_DEFAULT not found").toBeGreaterThan(0);
+    expect(withdrawal, "a withdrawal above 10% is not a retirement plan").toBeLessThan(0.1);
   });
 
-  it("is more conservative than the finite thirty-year plan", () => {
-    /* The direction is the point, not the exact gap. A pot that must last
-     * forever carries reinvestment risk the finite plan does not: its long
-     * bonds mature and roll at rates nobody can know, and Kenya issues no
-     * inflation-linked government bond to lock a real return against. If this
-     * ever rises above the finite-plan rate, the app is claiming a perpetuity
-     * is SAFER than a thirty-year drawdown, which is backwards. */
-    expect(
-      declared,
-      `perpetual rate ${declared} is not below the finite-plan rate ${REAL_RETURN_DEFAULT}`
-    ).toBeLessThan(REAL_RETURN_DEFAULT);
-  });
-
-  it("derives the multiple rather than hardcoding it", () => {
-    expect(planner, "the multiple is hardcoded instead of computed from the rate").toMatch(
-      /POT_PER_MONTHLY_INCOME = Math\.round\(12 \/ PERPETUAL_REAL_WITHDRAWAL\)/
+  it("keeps the arithmetic in one function rather than spread across the file", () => {
+    expect(planner, "potFor() is gone — the formula has been inlined somewhere").toMatch(
+      /function potFor\(monthlyNow: number, replacement: number, withdrawal: number\)/
     );
+    expect(planner).toMatch(/\(monthlyNow \* replacement \* 12\) \/ withdrawal/);
   });
 
-  it("has presets that match the multiple exactly", () => {
+  it("has presets that match both defaults exactly", () => {
     const retirement = Object.values(GOAL_CONFIGS).find((g) => g.builder === "income");
     expect(retirement, "no income-builder goal found").toBeDefined();
     const presets = retirement!.amountPresets ?? [];
@@ -71,27 +60,47 @@ describe("the retirement pot is sized for the income it promises", () => {
       expect(Number.isFinite(monthly), `cannot read a monthly figure from "${p.label}"`).toBe(true);
       expect(
         p.amount,
-        `"${p.label}" is Ksh ${p.amount.toLocaleString()} but ${monthly.toLocaleString()} × ${multiple} is ${(monthly * multiple).toLocaleString()}`
-      ).toBe(monthly * multiple);
+        `"${p.label}" is Ksh ${p.amount.toLocaleString()} but ${monthly.toLocaleString()} x ${replacement} x 12 / ${withdrawal} is ${(monthly * multiple).toLocaleString()}`
+      ).toBe(Math.round(monthly * multiple));
     }
   });
 
-  it("does not still tell the reader it is using the 4% rule", () => {
-    /* The copy is the part nobody re-reads after changing a constant, and it is
-     * the only part the saver ever sees. */
+  it("tells the reader which direction the withdrawal rate moves the pot", () => {
+    /* This is the whole reason both rates are on screen. Lowering the draw
+     * ENLARGES the pot — pot = income / rate — and the opposite is the
+     * intuition almost everyone brings, including the two people who changed
+     * this page today. A reader who drags the slider down expecting a smaller
+     * number must be told before they act on it. */
     const body = planner.slice(planner.indexOf("export default function"));
-    expect(body, "the planner still presents itself as the 4% rule").not.toMatch(
-      /the 4% rule\s*—\s*a rough guide/i
-    );
-    expect(body, "the on-screen multiple is hardcoded, so it can go stale").not.toMatch(
-      /income × 300/
+    expect(body, "the page does not warn that a lower draw needs a bigger pot").toMatch(
+      /bigger<\/strong> pot|bigger pot/i
     );
   });
 
-  it("catches a mismatch when one is introduced", () => {
-    /* Mutation check in both directions: the preset rule has to actually bind. */
-    expect(multiple).toBe(600);
-    expect(30_000 * multiple).toBe(18_000_000);
-    expect(30_000 * 300).not.toBe(30_000 * multiple);
+  it("promises an income for life only when the draw could actually sustain one", () => {
+    /* The test is against the app's OWN return assumption, not a hardcoded
+     * threshold. A pot lasts forever only if you withdraw no more than it
+     * earns in real terms; retirement-kenya.ts fixes that at
+     * REAL_RETURN_DEFAULT, justified against the live Mwangaza feed.
+     *
+     * Draw more than it earns and the pot depletes — which is fine, and is
+     * what the 4% default now is, but then the page must not say "for life".
+     * Keying on the constant means that if the feed ever justifies a different
+     * real return, this moves with it instead of quietly going stale. */
+    const retirement = Object.values(GOAL_CONFIGS).find((g) => g.builder === "income");
+    if (withdrawal > REAL_RETURN_DEFAULT) {
+      expect(
+        retirement!.tagline,
+        `drawing ${withdrawal * 100}% against a ${REAL_RETURN_DEFAULT * 100}% real return depletes the pot, so the tagline must not promise an income for life`
+      ).not.toMatch(/for life/i);
+    }
+  });
+
+  it("catches a preset that stops matching the rates", () => {
+    /* Mutation check both ways: the binding has to actually bite. */
+    expect(multiple).toBe(150);
+    expect(Math.round(150_000 * multiple)).toBe(22_500_000);
+    expect(Math.round(30_000 * multiple)).toBe(4_500_000);
+    expect(Math.round(150_000 * 300)).not.toBe(Math.round(150_000 * multiple));
   });
 });
