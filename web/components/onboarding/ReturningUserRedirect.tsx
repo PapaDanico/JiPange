@@ -2,27 +2,25 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/client";
-import { calculateFinancials } from "@/lib/budget";
-import {
-  getStoredJourneyAnswers,
-  getStoredProfile,
-  setStoredCalculations,
-  setStoredPlan,
-  setStoredProfile,
-} from "@/lib/storage";
-import type { ActionPlan, Profile } from "@/lib/types";
+import { getStoredJourneyAnswers, getStoredProfile } from "@/lib/storage";
 
 /**
  * Welcomes a returning visitor with a continue link instead of forcing a
  * redirect — the homepage stays explorable (the bottom-nav Home tab must
  * never bounce), while one tap resumes the journey.
+ *
+ * Reads the device and nothing else. It used to fall back to a Supabase
+ * session — fetching the signed-in reader's profile and plan rows and
+ * rehydrating them into local storage — which was removed in July 2026 along
+ * with the rest of the sign-in path. Nothing is lost for anybody who has used
+ * this device before, which was always the overwhelming majority: the two
+ * storage reads above were tried first and answered nearly every case.
  */
 export default function ReturningUserRedirect() {
   const [destination, setDestination] = useState<{ href: string; label: string } | null>(null);
 
   useEffect(() => {
-    async function check() {
+    function check() {
       if (getStoredProfile()) {
         setDestination({ href: "/plan", label: "Continue to my action plan" });
         return;
@@ -31,50 +29,9 @@ export default function ReturningUserRedirect() {
         setDestination({ href: "/dashboard", label: "Continue to my dashboard" });
         return;
       }
-
-      const supabase = createClient();
-      if (!supabase) return;
-
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user) return;
-
-      const [{ data: profileRow }, { data: planRow }] = await Promise.all([
-        supabase.from("profiles").select("*").eq("id", user.id).maybeSingle(),
-        supabase
-          .from("plans")
-          .select("*")
-          .eq("user_id", user.id)
-          .eq("is_active", true)
-          .order("created_at", { ascending: false })
-          .limit(1)
-          .maybeSingle(),
-      ]);
-
-      if (!profileRow) return;
-
-      const profile: Profile = {
-        fullName: profileRow.full_name ?? "",
-        age: profileRow.age ?? 0,
-        county: profileRow.county ?? "Nairobi",
-        grossMonthlySalary: Number(profileRow.gross_monthly_salary ?? 0),
-        dependants: profileRow.dependants ?? 0,
-        chamaMember: Boolean(profileRow.chama_member),
-      };
-      setStoredProfile(profile);
-      // Recompute from salary rather than trusting stale DB columns, so budgetSplit
-      // (not persisted in `plans`) is always internally consistent with net/savings.
-      setStoredCalculations(calculateFinancials(profile.grossMonthlySalary));
-
-      if (planRow?.ai_recommendations) {
-        setStoredPlan(planRow.ai_recommendations as ActionPlan);
-      }
-
-      setDestination({ href: "/plan", label: "Continue to my action plan" });
     }
 
-    void check();
+    check();
   }, []);
 
   if (!destination) return null;
