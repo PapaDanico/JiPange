@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
 import { CONTROLLER } from "../privacy-facts";
+import { TILL } from "../tiers";
 
 /**
  * The privacy notice must name who "we" is.
@@ -64,6 +65,35 @@ describe("the privacy notice identifies its data controller", () => {
     expect(CONTROLLER.registrationNumber).toMatch(/^PVT-[A-Z0-9]+$/);
     expect(shipped).toContain("CONTROLLER.registrationNumber");
     expect(shipped).toContain("CONTROLLER.businessAddress");
+  });
+
+  it("gives the payment page the same company name as the privacy notice", () => {
+    /* Found by the repetition review. The company identity is stated in three
+     * independent places — CONTROLLER here, TILL.registeredName in tiers.ts,
+     * and Mwangaza's privacy page as hand-typed prose in a different repo.
+     *
+     * These two are worth tying together because the till copy makes a
+     * SECURITY claim out of the name: "your M-PESA confirmation will read
+     * DANICO VENTURES LTD… if the name that comes back is anything else, you
+     * are not paying us." That instruction only works while the two agree. If
+     * the company is ever renamed and only one is updated, the page teaches a
+     * reader to abort a perfectly valid payment — or, worse in the other
+     * direction, to accept a name we no longer trade under.
+     *
+     * Compared case-insensitively: the till copy shouts the name because
+     * that is how M-PESA renders it, which is a presentation difference and
+     * not a disagreement about who we are. */
+    expect(
+      TILL.registeredName.toLowerCase(),
+      "the till name and the data controller are different companies"
+    ).toBe(CONTROLLER.name.toLowerCase());
+
+    /* And the shouted form in the explanation must be that same name, since it
+     * is the string a payer actually compares against their confirmation. */
+    expect(
+      TILL.explanation.toUpperCase(),
+      "the explanation quotes a confirmation name that is not the registered name"
+    ).toContain(CONTROLLER.name.toUpperCase());
   });
 
   it("does not carry the personal data that came with the certificate", () => {
