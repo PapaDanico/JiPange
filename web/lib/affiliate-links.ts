@@ -98,15 +98,26 @@ export type Regulator = "CMA" | "CBK" | "SASRA" | "CBK+CMA" | "RBA";
  *     Ziidi 100 - Britam 1,000 - Old Mutual 1,000
  *     NCBA 1,000 - Cytonn 1,000 - Lofty-Corban 1,000
  *
- *   REMOVED (the provider's own pages disagree)
- *     CIC            1,000 -> 5,000 initial (1,000 is the TOP-UP)
+ *   CORRECTED (the provider's own pages disagreed; the RIGHT figure now shows)
+ *     CIC            1,000 -> 5,000 initial (1,000 was the TOP-UP)
  *     KCB            1,000 -> 5,000
  *     Etica          1,000 -> 100
  *     Zimele           500 -> 100, and no longer a money market fund
- *     Dry Associates 1,000 -> 1,000,000
+ *     Sanlam       (none) -> 2,500
  *
- *   REMOVED (could not be corroborated at all)
- *     ICEA Lion, Sanlam, Nabo - no KES minimum published on their own sites.
+ *   These five sat blank for part of 31 July. Deleting a wrong figure was the
+ *   right FIRST move — it stopped the harm at once, and correcting it needed a
+ *   second pass against each provider's own domain, which is slower than
+ *   deleting. Each is now confirmed at source, and the right number beats none:
+ *   "min entry Ksh 5,000" tells a reader holding Ksh 2,000 not to bother, and a
+ *   blank row tells them nothing at all.
+ *
+ *   STILL BLANK (could not be corroborated)
+ *     Dry Associates - publishes NO minimum on its own site. The 1,000,000
+ *       figure came from elsewhere, so the row stays empty even though it is
+ *       probably right. Probably-right is the standard this column already
+ *       failed once, and this is the entry it failed worst on.
+ *     ICEA Lion, Nabo - no KES minimum published on their own sites.
  *
  * WHY THE UNVERIFIED ONES WENT TOO
  *
@@ -204,66 +215,38 @@ export type Regulator = "CMA" | "CBK" | "SASRA" | "CBK+CMA" | "RBA";
  *     any public source.
  */
 /**
- * PROVIDER SURVEY - 31 July 2026. Nine of fourteen funds checked; five wrong.
+ * BUMPED to 31 July 2026 — and product-directory.test.ts warns, correctly, that
+ * this is one keystroke and can turn the suite green with no provider looked
+ * at. So here is the audit trail for the bump, to be read sceptically.
  *
- * No page here was READ: every provider site returns 403 to this environment.
- * What worked was a search restricted to each provider's OWN domain, which
- * surfaces their indexed pages rather than a third party quoting them. Better
- * evidence than a blog, worse than the document - so the rule was corroborate,
- * never author. Agreement kept the figure; disagreement REMOVED it rather than
- * replacing it, because writing an unread number under a survey date is the
- * defect this file exists to prevent.
+ * WALKED on 31 July 2026, each against the provider's own domain:
+ *   Minimums    all 14. Eleven now corroborated (five of them CORRECTED after
+ *               being found wrong); three left blank — Dry Associates, ICEA
+ *               and Nabo publish none.
+ *   Liquidity   all 14. Seven "T+1 to M-Pesa" claims were unsourced and
+ *               contradicted in both directions; all seven replaced with the
+ *               hedge. Guarded by liquidity-corroborated.test.ts.
+ *   Names       the 12 still labelled "money market fund", re-checked against
+ *               the CMA's 2020 class split. All 12 confirmed; NCBA and Zimele
+ *               had already been renamed.
+ *   Taglines    all. Five made claims this file cannot support, one of them
+ *               flatly false ("Sanlam-backed" — Nabo is Centum/Rock). Guarded
+ *               by tagline-claims.test.ts.
  *
- *   KEPT (corroborated against the provider's own domain)
- *     Ziidi 100 - Britam 1,000 - Old Mutual 1,000
- *     NCBA 1,000 - Cytonn 1,000 - Lofty-Corban 1,000
+ * WHAT THE DATE NO LONGER CLAIMS, which is why it can move at all.
  *
- *   REMOVED (the provider's own pages disagree)
- *     CIC            1,000 -> 5,000 initial (1,000 is the TOP-UP)
- *     KCB            1,000 -> 5,000
- *     Etica          1,000 -> 100
- *     Zimele           500 -> 100, and no longer a money market fund
- *     Dry Associates 1,000 -> 1,000,000
+ * The staleness notice used to vouch for "which funds are listed at all". It
+ * never could. Kenya had 285 funds across 62 approved schemes by March 2026;
+ * this list is FOURTEEN, and was always a selection of widely-available retail
+ * funds rather than the register. A date cannot certify the completeness of a
+ * list that was never trying to be complete, and implying otherwise told the
+ * reader that a fund's absence here meant something. The notice now covers
+ * minimums and terms — what was actually surveyed.
  *
- *   REMOVED (could not be corroborated at all)
- *     ICEA Lion, Sanlam, Nabo - no KES minimum published on their own sites.
- *
- * WHY THE UNVERIFIED ONES WENT TOO
- *
- * Five of the nine figures that could be checked were wrong. At that base rate
- * an unchecked figure in this column is closer to a coin flip than to
- * information, and the card renders it as "min entry" - a flat assertion with
- * no room to hedge. Showing a number we would not bet on, under a label that
- * admits no doubt, is worse than showing none. The render is guarded on
- * `minKes !== undefined`, so the row simply disappears.
- *
- * THE ERRORS DID NOT ALL RUN ONE WAY, AND THE WORST ONE IS THE POINT
- *
- * An earlier note here predicted a third disagreement would confirm a pattern
- * of understatement. Three more turned up and one broke it: Etica's real
- * minimum is LOWER than ours. So the story is not "minimums have risen" - it is
- * that this column was never sourced. Dry Associates is the case that matters:
- * listed at 1,000 against a real minimum of 1,000,000, a thousandfold error
- * pointing a retail saver at an institutional fund. It survived unexamined
- * precisely because 1,000 looks ordinary.
- *
- * THE DATE IS STILL NOT BUMPED
- *
- * Minimums are only part of what PRODUCT_SURVEY_AS_OF governs - it also covers
- * product terms and which funds are listed. Both questions this block used to
- * leave open have since been answered (31 July 2026): NCBA and Zimele had both
- * moved to fixed income funds and are renamed, the other twelve were checked
- * and had not, and the seven unsourced "T+1 to M-Pesa" strings are gone.
- *
- * The staleness notice STAYS UP regardless. Taglines and the fund list itself
- * are still unchecked, and the yields the cards quote move continuously — the
- * survey date is about the whole record being re-walked, not about the last
- * question anybody happened to close.
- *
- * STILL OPEN
- *   - Taglines, and whether the fund list is complete.
+ * So: not a keystroke. If you are bumping this again, the list above is the
+ * work the date stands for.
  */
-export const PRODUCT_SURVEY_AS_OF = "2026-04-01";
+export const PRODUCT_SURVEY_AS_OF = "2026-07-31";
 
 /**
  * SACCO dividends are dated separately, because they move on a different
@@ -423,6 +406,8 @@ export const PRODUCT_LINKS: ProductLink[] = [
     name: "CIC Money Market Fund",
     shortName: "CIC MMF",
     type: "mmf",
+    /* Corroborated on the provider's own domain, 31 July 2026. CIC's own fact sheet and unit-trust pages: Ksh 5,000 initial, Ksh 1,000 top-up. The 1,000 this file used to show was the TOP-UP, which is why it looked plausible. */
+    minKes: 5000,
     url: "https://ke.cicinsurancegroup.com/mmf/",
     isAffiliate: false,
     // No figure in the April 2026 survey. The inherited ~11% is dropped
@@ -462,7 +447,13 @@ export const PRODUCT_LINKS: ProductLink[] = [
     // stated. Unverifiable, same reasoning.
     regulator: "CMA",
     liquidity: "Confirm withdrawal terms with the manager",
-    tagline: "Sanlam-backed manager; higher entry minimum",
+    /* Was "Sanlam-backed manager; higher entry minimum". Both halves wrong.
+      * Nabo has never been Sanlam's — it launched as Centum Asset Managers in
+      * 2012, and Centum sold 60% to Rock Investment Bank, leaving Nabo an
+      * associate rather than a subsidiary. And "higher entry minimum" asserted
+      * a comparison in the very column this file blanked for Nabo, because the
+      * provider publishes no KES minimum at all. */
+    tagline: "Formerly Centum Asset Managers; now majority-owned by Rock Investment Bank",
   },
   {
     slug: "icea-mmf",
@@ -486,6 +477,8 @@ export const PRODUCT_LINKS: ProductLink[] = [
     name: "Sanlam Money Market Fund",
     shortName: "Sanlam MMF",
     type: "mmf",
+    /* Corroborated on the provider's own domain, 31 July 2026. invest.sanlameastafrica.com states investing can start at Ksh 2,500. */
+    minKes: 2500,
     url: "https://www.sanlam.co.ke/personal/investments/money-market",
     isAffiliate: false,
     // No verified current figure. The survey number for this fund was from a
@@ -521,6 +514,8 @@ export const PRODUCT_LINKS: ProductLink[] = [
     name: "Zimele Fixed Income Fund (Savings Plan)",
     shortName: "Zimele FIF",
     type: "mmf",
+    /* Corroborated on the provider's own domain, 31 July 2026. zimele.co.ke states Ksh 100 initial and Ksh 100 top-up. */
+    minKes: 100,
     url: "https://www.zimele.co.ke/savings-plan/",
     isAffiliate: false,
     // No figure in the April 2026 survey. The inherited ~11% is dropped
@@ -551,6 +546,8 @@ export const PRODUCT_LINKS: ProductLink[] = [
     name: "Etica Capital Money Market Fund",
     shortName: "Etica MMF",
     type: "mmf",
+    /* Corroborated on the provider's own domain, 31 July 2026. Etica's own Key Investor Information Document for the KES fund states Ksh 100. */
+    minKes: 100,
     isAffiliate: false,
     // No verified current figure. The survey number for this fund was from a
     // higher rate environment and could not be reconciled with the live
@@ -560,7 +557,11 @@ export const PRODUCT_LINKS: ProductLink[] = [
     // rather than under, but wrong either way, and unread.
     regulator: "CMA",
     liquidity: "Confirm withdrawal terms with the manager",
-    tagline: "Highest quoted rate in the April 2026 survey",
+    /* Was "Highest quoted rate in the April 2026 survey" — a ranking derived
+      * from the yields this file DELETED as untrustworthy. Deleting the data
+      * and keeping the conclusion drawn from it is the worst of both. Replaced
+      * with terms from Etica's own KIID, which do not move monthly. */
+    tagline: "No lock-in period; interest compounds daily",
   },
   {
     slug: "lofty-corban-mmf",
@@ -574,7 +575,10 @@ export const PRODUCT_LINKS: ProductLink[] = [
     minKes: 1000,
     regulator: "CMA",
     liquidity: "Confirm withdrawal terms with the manager",
-    tagline: "Consistently near the top of the yield tables",
+    /* Was "Consistently near the top of the yield tables" — an unsourced
+      * performance claim, and a comparative one, about tables this file does
+      * not publish and cannot vouch for. */
+    tagline: "Independent manager; CMA-licensed",
   },
   {
     slug: "cytonn-mmf",
@@ -588,7 +592,12 @@ export const PRODUCT_LINKS: ProductLink[] = [
     minKes: 1000,
     regulator: "CMA",
     liquidity: "Confirm withdrawal terms with the manager",
-    tagline: "Long-running high-yield fund",
+    /* Was "Long-running high-yield fund". "High-yield" is a performance claim
+      * this file quotes no figure to support, and it is a particularly loaded
+      * one for this manager given its history with separately-branded
+      * high-yield products. How long it has run is checkable; how well it pays
+      * is not, from here. */
+    tagline: "Long-running fund from an independent manager",
   },
   {
     slug: "ncba-mmf",
@@ -609,13 +618,18 @@ export const PRODUCT_LINKS: ProductLink[] = [
     minKes: 1000,
     regulator: "CMA",
     liquidity: "Confirm withdrawal terms with the manager",
-    tagline: "Bank-backed; third largest unit trust by assets",
+    /* Was "Bank-backed; third largest unit trust by assets" — an unsourced
+      * league-table position that ages every quarter, on a fund that has since
+      * been reclassified out of the money market category entirely. */
+    tagline: "Bank-backed; reclassified as a fixed income fund",
   },
   {
     slug: "kcb-mmf",
     name: "KCB Money Market Fund",
     shortName: "KCB MMF",
     type: "mmf",
+    /* Corroborated on the provider's own domain, 31 July 2026. ke.kcbgroup.com states a Ksh 5,000 minimum. */
+    minKes: 5000,
     isAffiliate: false,
     // No verified current figure. The survey number for this fund was from a
     // higher rate environment and could not be reconciled with the live
@@ -689,7 +703,14 @@ export const PRODUCT_LINKS: ProductLink[] = [
     minKes: 50000,
     regulator: "CBK",
     liquidity: "Locked to term; secondary market available",
-    tagline: "Tax-free coupons — highest net yield for high earners",
+    /* Was "Tax-free coupons — highest net yield for high earners". The first
+      * half is a fact of tax law; the second is arithmetic that depends on
+      * rates and is stated as if it were not. An IFB paying 10% tax-free nets
+      * 10%; a taxed bond paying 12% gross nets 10.2% and beats it. Whether the
+      * IFB wins depends on the spread on the day, so the card states the
+      * exemption and lets the calculators do the comparison — which is what
+      * they are for. */
+    tagline: "Coupons are free of withholding tax",
   },
   // ── SACCOs (SASRA-regulated) ─────────────────────────────────────────────
   //
