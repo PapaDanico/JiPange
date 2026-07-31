@@ -16,6 +16,8 @@
  * evidence agreeing with the operator would be worse than no file.
  */
 
+import { LIVING_REPLACEMENT_AT_RETIREMENT } from "./retirement-kenya";
+
 export interface Evidence {
   claim: string;
   source: string;
@@ -50,7 +52,7 @@ export const REPLACEMENT_EVIDENCE: Evidence[] = [
       "Replacement of INCOME and replacement of SPENDING are different quantities, and the gap is the savings rate.",
     source: "Arithmetic, stated here because the two are routinely conflated",
     implication:
-      "A household saving 25% of income spends 75% of it. The app's 50%-of-SPENDING default is therefore about 37% of INCOME — already at the low end of Kenya's observed 40-43%, and roughly half the RBA's 75% target. The app is not being conservative here; it is being optimistic, and it should say so.",
+      "A household saving 25% of income spends 75% of it. The app's 25%-of-SPENDING default is therefore about 19% of INCOME — well under half Kenya's observed 43% and about a quarter of the RBA's 75% target. The app is not being conservative on this lever; it is taking a deliberate position against the benchmarks, and the page says so rather than presenting it as neutral.",
   },
 ];
 
@@ -101,8 +103,34 @@ export const MEDICAL_EVIDENCE: Evidence[] = [
  * app's job is to show the reader where their own assumption sits rather than
  * to pick for them.
  */
+/**
+ * The savings rate used to convert a share of SPENDING into a share of INCOME.
+ *
+ * A household saving 25% of income spends the other 75%, so a replacement rate
+ * quoted against spending is 0.75x the same rate quoted against income. This is
+ * the one number that makes the app's default comparable to the RBA's, and it
+ * is an assumption rather than an observation — stated as a constant so it can
+ * be argued with, instead of being buried inside a multiplication.
+ */
+export const ASSUMED_SAVINGS_RATE = 0.25;
+
+/** A share of spending, restated as the share of income the benchmarks use. */
+export const asShareOfIncome = (shareOfSpending: number): number =>
+  shareOfSpending * (1 - ASSUMED_SAVINGS_RATE);
+
 export const REPLACEMENT_BENCHMARKS = [
   { label: "RBA target", shareOfIncome: 0.75, note: "The regulator's stated goal for Kenya." },
   { label: "Kenya today", shareOfIncome: 0.43, note: "Observed average for middle-income earners." },
-  { label: "This app's default", shareOfIncome: 0.37, note: "50% of spending, at a 25% savings rate." },
+  {
+    /* DERIVED, not typed. This entry read 0.19 as a literal, which was correct
+     * only for as long as LIVING_REPLACEMENT_AT_RETIREMENT stayed at 25% — and
+     * that constant had already been changed twice in a day. A benchmark table
+     * that silently stops describing the app is worse than no benchmark table,
+     * because its whole purpose is to be trusted at a glance. */
+    label: "This app's default",
+    shareOfIncome: asShareOfIncome(LIVING_REPLACEMENT_AT_RETIREMENT),
+    note: `${Math.round(LIVING_REPLACEMENT_AT_RETIREMENT * 100)}% of spending, at a ${Math.round(
+      ASSUMED_SAVINGS_RATE * 100
+    )}% savings rate — set by the operator with the two figures above in view, and paired with medical pre-funded separately.`,
+  },
 ] as const;

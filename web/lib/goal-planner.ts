@@ -396,10 +396,10 @@ export const GOAL_CONFIGS: Record<GoalType, GoalConfig> = {
      * reader types is what they spend NOW, and at a 4% draw this is a ~30-year
      * drawdown rather than an income that never stops. */
     amountPresets: [
-      { label: "Ksh 30k/month lifestyle", amount: 4_500_000 },
-      { label: "Ksh 50k/month lifestyle", amount: 7_500_000 },
-      { label: "Ksh 100k/month lifestyle", amount: 15_000_000 },
-      { label: "Ksh 150k/month lifestyle", amount: 22_500_000 },
+      { label: "Ksh 30k/month lifestyle", amount: 2_250_000 },
+      { label: "Ksh 50k/month lifestyle", amount: 3_750_000 },
+      { label: "Ksh 100k/month lifestyle", amount: 7_500_000 },
+      { label: "Ksh 150k/month lifestyle", amount: 11_250_000 },
     ],
     builder: "income",
     defaultYears: 25,

@@ -82,11 +82,22 @@ describe("the two retirement tools agree", () => {
       }).capitalRequiredKes;
       const quick = plannerPot(total, LIVING_REPLACEMENT_AT_RETIREMENT, withdrawal);
       const ratio = kenya / quick;
-      /* 1.0–1.35. The floor matters as much as the ceiling: if the fuller model
+      /* 1.0–1.9. The band WIDENED when the replacement rate moved to 25%, and
+       * the reason is worth stating rather than absorbing: the lower the
+       * living replacement, the more medical dominates what is left — and the
+       * quick planner takes ONE combined figure, so it discounts medical by
+       * the same 75%. The fuller model does not, correctly, because you need
+       * the same cover the day after you retire as the day before.
+       *
+       * So the gap is not drift; it is the cost of a tool that cannot see
+       * medical separately, and it grows as the living side shrinks. The test
+       * below pins that explanation directly.
+       *
+       * The floor still matters as much as the ceiling: if the fuller model
        * ever drops BELOW the quick estimate, the tool that prices medical
-       * separately is asking for less than the one that cannot see medical at
-       * all, which would mean something has gone wrong in the stream model. */
-      if (ratio < 1.0 || ratio > 1.35) {
+       * separately is asking for less than the one that cannot, which would
+       * mean something has gone wrong in the stream model. */
+      if (ratio < 1.0 || ratio > 1.9) {
         offenders.push(
           `Ksh ${total.toLocaleString()}/mo: quick ${(quick / 1e6).toFixed(1)}m vs full ${(kenya / 1e6).toFixed(1)}m (${ratio.toFixed(2)}x)`
         );
@@ -119,6 +130,32 @@ describe("the two retirement tools agree", () => {
       kenya,
       "the quick estimate now asks for MORE than the full model — check the stream model"
     ).toBeGreaterThan(quick);
+  });
+
+  it("shows the gap is medical, by closing it when medical is discounted too", () => {
+    /* The strong form of the previous test. Rather than merely bounding the
+     * divergence, this proves what causes it: apply the SAME replacement rate
+     * to medical in the fuller model — which is what the quick planner does
+     * implicitly, having only one figure — and the two converge.
+     *
+     * If this ever stops converging, the gap has grown a second cause and the
+     * tolerance above is no longer explained by anything. */
+    const total = 150_000;
+    const medical = Math.round(total * 0.1);
+    const kenyaDiscountingMedical = planKenyanRetirement({
+      currentAge: 35,
+      retirementAge: 60,
+      /* Medical scaled by the same replacement, mimicking a tool that cannot
+       * tell living and medical apart. */
+      currentMonthlyExpenses: total - medical,
+      currentMonthlyMedical: medical * LIVING_REPLACEMENT_AT_RETIREMENT,
+    }).capitalRequiredKes;
+    const quick = plannerPot(total, LIVING_REPLACEMENT_AT_RETIREMENT, withdrawal);
+    const ratio = kenyaDiscountingMedical / quick;
+    expect(
+      ratio,
+      `discounting medical the same way should bring the models together, but they are ${ratio.toFixed(2)}x apart — the divergence has a second cause`
+    ).toBeLessThan(1.35);
   });
 
   it("catches a divergence when one is introduced", () => {

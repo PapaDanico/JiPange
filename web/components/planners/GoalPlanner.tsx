@@ -9,7 +9,12 @@ import {
   type PlanItemInput,
 } from "@/lib/goal-planner";
 import { buildGoalStrategy } from "@/lib/native-plan";
-import { LIVING_REPLACEMENT_AT_RETIREMENT } from "@/lib/retirement-kenya";
+import { LIVING_REPLACEMENT_AT_RETIREMENT, planKenyanRetirement } from "@/lib/retirement-kenya";
+import {
+  ASSUMED_SAVINGS_RATE,
+  REPLACEMENT_BENCHMARKS,
+  asShareOfIncome,
+} from "@/lib/retirement-evidence";
 import { inflationAdjust } from "@/lib/projections";
 import { getStoredCalculations, getStoredProfile, saveStoredGoal } from "@/lib/storage";
 import type { GoalStrategy } from "@/lib/types";
@@ -51,13 +56,13 @@ const RETIREMENT_INCOMES = [30_000, 50_000, 100_000, 150_000];
  *
  * KENYAN DEFAULTS
  *
- * 50% replacement. Retirement spending falls everywhere, and the Western
- * literature's 70-80% replacement rules assume a mortgage that is gone, a
- * commute that has stopped and children who have left — which understates the
- * fall for a Kenyan household that also stops funding school fees, and
- * overstates it where extended-family obligation continues. 50% is the
- * operator's judgement for this market, sits below the Western band, and is a
- * SLIDER precisely because it is a judgement.
+ * 25% replacement, imported from retirement-kenya.ts so both tools share it.
+ * The full reasoning and the benchmarks it stands against are recorded there
+ * and in retirement-evidence.ts — short version: it applies to LIVING costs
+ * only, medical is pre-funded separately through a post-retirement medical
+ * fund, and it is BELOW the RBA's 75%-of-income target and Kenya's observed
+ * 43%. That is the operator's stand, taken with the evidence in view. It is a
+ * slider because a household whose obligations do not retire needs more.
  *
  * 4% withdrawal. Held rather than lowered, now that replacement carries the
  * conservatism. Note what it makes this: a roughly 30-year DRAWDOWN, not an
@@ -76,12 +81,11 @@ const RETIREMENT_INCOMES = [30_000, 50_000, 100_000, 150_000];
  * lib/__tests__/retirement-models-agree.test.ts. */
 const REPLACEMENT_DEFAULT = LIVING_REPLACEMENT_AT_RETIREMENT;
 const WITHDRAWAL_DEFAULT = 0.04;
-/* Down to 25%, because that is a position somebody actually holds: with
- * medical pre-funded separately through a post-retirement medical fund, and
- * no commute, school fees or mortgage, a quarter of pre-retirement spending is
- * arguable. The benchmarks shown beside the control let a reader see that it
- * sits well below both the RBA's 75%-of-income target and Kenya's observed
- * 43%. Reachable, and labelled — not hidden, and not the default. */
+/* 25% is the default and the floor of the range. Everything above it exists
+ * for the reader whose costs do not fall that far — most obviously anyone
+ * still supporting family, since that obligation does not retire when they do.
+ * The benchmarks rendered beside the control show where each choice sits
+ * against the RBA's 75% and Kenya's observed 43%. */
 const REPLACEMENT_CHOICES = [0.25, 0.4, 0.5, 0.6, 0.8];
 const WITHDRAWAL_CHOICES = [0.02, 0.03, 0.04, 0.05];
 
@@ -89,6 +93,37 @@ const WITHDRAWAL_CHOICES = [0.02, 0.03, 0.04, 0.05];
 function potFor(monthlyNow: number, replacement: number, withdrawal: number): number {
   return Math.round((monthlyNow * replacement * 12) / withdrawal);
 }
+
+/**
+ * How much MORE the full model asks for than this page does — measured, not
+ * asserted.
+ *
+ * The sentence pointing readers at /tools/fire-number claimed "roughly 15%
+ * more". It was true when written and was 65% by the time anyone checked: the
+ * replacement rate moved, and a hand-typed comparison between two tools cannot
+ * survive either of them changing. So it is computed here from the model
+ * itself, at a representative household.
+ *
+ * Representative, and the choices matter: a 35-year-old retiring at 60 with a
+ * tenth of spending going on medical cover. The gap is driven almost entirely
+ * by that medical share — the model prices medical as a rising stream while
+ * everything else falls — so a household spending more on cover sees a bigger
+ * gap than this. The number is rounded to the nearest 5% because presenting it
+ * to the percentage point would imply a precision the representative inputs do
+ * not have.
+ */
+const FULLER_MODEL_UPLIFT = (() => {
+  const income = 100_000;
+  const medical = income * 0.1;
+  const full = planKenyanRetirement({
+    currentAge: 35,
+    retirementAge: 60,
+    currentMonthlyExpenses: income - medical,
+    currentMonthlyMedical: medical,
+  }).capitalRequiredKes;
+  const quick = potFor(income, REPLACEMENT_DEFAULT, WITHDRAWAL_DEFAULT);
+  return Math.round(((full / quick - 1) * 100) / 5) * 5;
+})();
 const MAX_CHILDREN = 5;
 const CHILD_TIMELINE_MAX = 18;
 
@@ -581,17 +616,28 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
                 ))}
               </div>
               <p className="mt-1 text-xs text-faint">
-                Most spending falls: no commute, no school fees, usually no mortgage. Medical
-                goes the other way — unless you pre-fund it through a{" "}
+                Most spending falls: no commute, no school fees, usually no mortgage. Our
+                default is 25%, which assumes medical is pre-funded through a{" "}
                 <strong>post-retirement medical fund</strong>, where contributions are
                 tax-deductible to Ksh 15,000 a month and withdrawals for treatment are tax-free.
-                If you do that, a lower figure here is defensible.
+                If you are NOT doing that, or you support family who will not retire when
+                you do, move this up.
               </p>
+              {/* Derived from the selected chip, not written down. This
+                * sentence used to carry a worked example built on a 50%
+                * replacement, a default that had since moved to 25% — so it
+                * quoted the reader a figure they were not on. Anything
+                * stated as a number here now comes from the same constants the
+                * arithmetic uses. */}
               <p className="mt-1 text-xs text-faint">
-                For scale: the Retirement Benefits Authority targets 75% of final{" "}
-                <em>income</em>, and Kenyan middle-income earners average about 43%. Because
-                you are entering <em>spending</em> rather than income, 50% here is roughly 37%
-                of income — already below what the regulator considers adequate.
+                For scale: the Retirement Benefits Authority targets{" "}
+                {Math.round(REPLACEMENT_BENCHMARKS[0].shareOfIncome * 100)}% of final{" "}
+                <em>income</em>, and Kenyan middle-income earners average about{" "}
+                {Math.round(REPLACEMENT_BENCHMARKS[1].shareOfIncome * 100)}%. Because you are
+                entering <em>spending</em> rather than income, the{" "}
+                {Math.round(replacement * 100)}% you have chosen is roughly{" "}
+                {Math.round(asShareOfIncome(replacement) * 100)}% of income — assuming you save
+                about {Math.round(ASSUMED_SAVINGS_RATE * 100)}% of what you earn.
               </p>
             </div>
 
@@ -627,8 +673,8 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
               <a href="/tools/fire-number" className="underline hover:text-primary">
                 retirement number tool
               </a>
-              . It asks for roughly 15% more, because it can see the medical bill
-              this page cannot.
+              . It asks for roughly {FULLER_MODEL_UPLIFT}% more, because it can see
+              the medical bill this page cannot.
             </p>
 
             <p className="mt-3 rounded-xl bg-canvas p-3 text-xs text-ink-soft">

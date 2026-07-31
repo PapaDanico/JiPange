@@ -20,6 +20,7 @@ import Link from "next/link";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
 import { MMF_AND_TBILL_LINKS } from "@/lib/affiliate-links";
+import { MEDICAL_EVIDENCE, REPLACEMENT_EVIDENCE } from "@/lib/retirement-evidence";
 import dynamic from "next/dynamic";
 
 const FirePathChart = dynamic(() => import("./FirePathChart"), { ssr: false });
@@ -224,6 +225,34 @@ export default function FireNumberCalculator() {
                   </Link>
                   . No arrangement exists between us and either of them.
                 </p>
+                {/* The sources, on the page rather than in a file nobody opens.
+                  *
+                  * lib/retirement-evidence.ts was written to settle exactly the
+                  * arguments this card makes — and was imported by nothing for
+                  * a day, referenced only from comments in two other modules.
+                  * That is the same defect as `productSurveyIsStale()`: real
+                  * work, unit-tested, wired to no reader. Research a reader
+                  * cannot see is worth what no research is worth.
+                  *
+                  * It is a <details> because it is genuinely secondary — the
+                  * numbers above are the answer — but it is on the page, so a
+                  * reader who wants to argue with the assumptions has what they
+                  * need to. It renders BOTH lists, including the entry that
+                  * says this app's own age warning was too absolute. */}
+                <details className="mt-3 text-xs">
+                  <summary className="cursor-pointer text-faint hover:text-primary">
+                    Where these assumptions come from
+                  </summary>
+                  <ul className="mt-2 space-y-2">
+                    {[...MEDICAL_EVIDENCE, ...REPLACEMENT_EVIDENCE].map((e) => (
+                      <li key={e.claim} className="rounded-lg bg-canvas p-2">
+                        <p className="font-medium text-ink-soft">{e.claim}</p>
+                        <p className="mt-1 text-faint">{e.implication}</p>
+                        <p className="mt-1 text-faint">Source: {e.source}</p>
+                      </li>
+                    ))}
+                  </ul>
+                </details>
               </div>
               <p className="mt-3 text-sm text-ink-soft">
                 Everything else you spend falls in real terms once you retire — the fees end,

@@ -37,6 +37,33 @@ describe("the snapshot is a contract we understand", () => {
     expect(RATES.schema).toBe(SUPPORTED_SCHEMA);
   });
 
+  it("keeps the sync script's idea of the schema tied to this one", () => {
+    /* scripts/sync-rates.mjs held its own literal `SUPPORTED_SCHEMA = 1`. Two
+     * copies of a cross-repo contract kept in step by memory, on the seam where
+     * drift is hardest to see — the other side of it lives in a different
+     * repository.
+     *
+     * The failure is quiet in both directions. Bump this file and forget the
+     * script, and the script refuses every new feed while the app serves a
+     * snapshot that stops moving: no error, just rates going silently stale.
+     * Bump the script and forget this file, and the script writes a snapshot
+     * the app throws on at build time, after committing it.
+     *
+     * The script now reads the number out of rates-feed.ts. This pins that. */
+    const script = readFileSync(
+      new URL("../../../scripts/sync-rates.mjs", import.meta.url),
+      "utf8"
+    );
+    expect(
+      script,
+      "the sync script has its own hardcoded schema number again"
+    ).not.toMatch(/const SUPPORTED_SCHEMA\s*=\s*\d/);
+    expect(
+      script,
+      "the sync script no longer reads the schema from rates-feed.ts"
+    ).toMatch(/SUPPORTED_SCHEMA[\s\S]{0,600}rates-feed\.ts/);
+  });
+
   it("names its publisher, so a figure on screen is traceable", () => {
     expect(RATES.publisher).toBe("Mwangaza Yield");
     expect(attribution()).toMatch(/CBK auction of .+, via Mwangaza Yield/);

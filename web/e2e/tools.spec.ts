@@ -163,6 +163,35 @@ test("fire number: prices retirement in today's money and surfaces the medical s
   await expect(visibleText(page, /after inflation and tax/i)).toBeVisible();
 });
 
+/**
+ * The sources actually reach the reader.
+ *
+ * A unit test cannot honestly assert this. The one that tried grepped the
+ * component for the identifier `MEDICAL_EVIDENCE`, which survives in a type
+ * annotation — unwiring the list from the JSX left that check passing. The
+ * only guard that cannot be fooled that way is opening the page.
+ *
+ * lib/retirement-evidence.ts exists because a load-bearing assumption should
+ * be arguable rather than merely believed, and it spent a day imported by
+ * nothing. Research a reader cannot see is worth what no research is worth.
+ */
+test("fire number: shows where the retirement assumptions come from", async ({ page }) => {
+  await page.goto("/tools/fire-number");
+  const inputs = page.getByRole("spinbutton");
+  await inputs.nth(0).fill("80000");
+  await inputs.nth(1).fill("8000");
+
+  const disclosure = page.getByText(/where these assumptions come from/i);
+  await expect(disclosure).toBeVisible();
+  await disclosure.click();
+
+  // The tax relief that makes the whole PRMF argument work, with its statute.
+  await expect(visibleText(page, /Tax Laws \(Amendment\) Act 2024/i)).toBeVisible();
+  // And the finding that cuts AGAINST this app, which is the honest half.
+  await expect(visibleText(page, /CORRECTS THIS APP/i)).toBeVisible();
+  await expect(visibleText(page, /Retirement Benefits Authority/i).first()).toBeVisible();
+});
+
 test("fire number: says plainly that a plan with no medical cover is incomplete", async ({
   page,
 }) => {
