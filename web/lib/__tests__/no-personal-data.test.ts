@@ -104,6 +104,57 @@ describe("no personal data reaches any server we control", () => {
     ).toEqual([]);
   });
 
+  it("leaves no user-facing page still describing the sign-in", () => {
+    /* The removal shipped with SEVEN passages still telling readers there was
+     * an account: the privacy notice's short version, its section 3, its cookie
+     * section, the terms' data and third-party clauses, the about page and a
+     * FAQ. Every structural test passed, because they check DATA — the tables
+     * and the processor list — and this was PROSE.
+     *
+     * That is the wrong way round for a privacy notice. Section 29 is about
+     * what the reader is told, and the reader reads the sentences. A notice
+     * that over-discloses is not harmlessly cautious either: it names a
+     * processor that receives nothing and describes collection that does not
+     * happen, which is exactly the inaccuracy the original rebuild set out to
+     * remove, pointing the other way. */
+    const pages = [
+      "app/privacy/page.tsx",
+      "app/terms/page.tsx",
+      "app/about/page.tsx",
+      "lib/faqs.ts",
+    ];
+    const offenders: string[] = [];
+    for (const rel of pages) {
+      const raw = readFileSync(`${ROOT}${rel}`, "utf8");
+      /* Comments stripped: these files explain WHY sign-in went, and that
+       * explanation must not be able to trip the check on what they say. */
+      const prose = raw
+        .replace(/\/\*[\s\S]*?\*\//g, " ")
+        .replace(/\{\/\*[\s\S]*?\*\/\}/g, " ")
+        .replace(/\/\/[^\n]*/g, " ");
+      /* Anchored to PRESENT-TENSE assertions. The first draft flagged the
+       * privacy notice's own history — "Until July 2026 there WAS an optional
+       * sign-in — an emailed link" — which is the sentence a reader who
+       * remembers the old notice needs, and which this file argued for keeping.
+       * A guard that forbids explaining a removal pushes the next person to
+       * delete the explanation instead of the feature. */
+      for (const claim of [
+        /\b(?:requires|needs)\s+an\s+email address/i,
+        /\b(?:has|have|offers?|provides?|includes?)\s+an?\s+optional sign-in/i,
+        /\bif you sign in\b/i,
+        /\b(?:uses|sends you)\s+an\s+emailed link/i,
+        /\bsign in to (?:save|sync)/i,
+      ]) {
+        const hit = prose.match(claim);
+        if (hit) offenders.push(`${rel}: "${hit[0]}"`);
+      }
+    }
+    expect(
+      offenders,
+      "these pages still describe a sign-in that no longer exists"
+    ).toEqual([]);
+  });
+
   it("keeps the privacy notice agreeing that there is nothing to disclose", () => {
     /* Both directions matter. Code without a disclosure is an undisclosed
      * processing operation; a disclosure without code names a processor that

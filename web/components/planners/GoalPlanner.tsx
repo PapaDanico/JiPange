@@ -30,8 +30,44 @@ const FEASIBILITY_BADGE: Record<
 const DEPOSIT_PERCENTAGES = [10, 15, 20, 30];
 const COVER_MONTHS = [3, 6, 9, 12];
 const RETIREMENT_INCOMES = [30_000, 50_000, 100_000, 150_000];
-/** 4% rule: pot = monthly income × 12 ÷ 0.04 */
-const POT_PER_MONTHLY_INCOME = 300;
+/**
+ * Pot = monthly income × 12 ÷ PERPETUAL_REAL_WITHDRAWAL.
+ *
+ * WAS 300 — the 4% rule. Changed to 2% real (600×) in July 2026, and the
+ * reason is not simply that 4% is American.
+ *
+ * THE PAGE PROMISES A PERPETUITY. Its tagline is "the pot that pays you a
+ * monthly income FOR LIFE". The 4% rule does not size a perpetuity: Bengen and
+ * the Trinity study measured a 30-year DEPLETION of a US 60/40 portfolio, and
+ * that literature's own failure rates climb past the 30-year horizon. For
+ * someone retiring at 55 in Kenya, "for life" can be forty years. A pot that
+ * never runs out is 1 ÷ real return, and nothing else.
+ *
+ * THE APP HAD ALREADY DECIDED WHAT KENYAN REAL RETURN IT BELIEVES.
+ * retirement-kenya.ts plans at 3% real (REAL_RETURN_DEFAULT), justified against
+ * the live Mwangaza feed and re-checked by fire-evidence.ts whenever the market
+ * moves. Using 4% here meant this app assumed 4% real in one module and 3% in
+ * another, for the same saver in the same country.
+ *
+ * WHY 2% AND NOT 3%. A perpetuity must be strictly more conservative than a
+ * finite plan, because it has to survive reinvestment risk forever rather than
+ * for thirty years. Measured on the feed at 6.41% CPI, Kenyan T-bills pay about
+ * 1.2% real and long bonds 4.2–5.6% real — but a long bond matures and must be
+ * rolled at a rate nobody knows, and Kenya issues NO inflation-linked
+ * government bond, so no instrument here guarantees a real return at all. 2%
+ * sits above the bills and below every bond: it assumes today's unusually good
+ * real yields do not last, which is the premise retirement-kenya.ts already
+ * states and the opposite of what 4% assumed.
+ *
+ * WHAT THIS DELIBERATELY DOES NOT MODEL. Spending falling in retirement is
+ * real, and it argues for a SMALLER pot — but it is a different lever, and
+ * retirement-kenya.ts already carries it as LIVING_REAL_DECLINE with a floor,
+ * alongside MEDICAL_REAL_ESCALATION pushing the other way. Folding it in here
+ * would double-count. This constant answers one question only: what multiple of
+ * income is a pot that never runs out.
+ */
+const PERPETUAL_REAL_WITHDRAWAL = 0.02;
+const POT_PER_MONTHLY_INCOME = Math.round(12 / PERPETUAL_REAL_WITHDRAWAL);
 const MAX_CHILDREN = 5;
 const CHILD_TIMELINE_MAX = 18;
 
@@ -498,8 +534,12 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
               ))}
             </div>
             <p className="text-xs text-faint">
-              Pot = income × 300 (the 4% rule — a rough guide from US market history, not a
-              guarantee).
+              Pot = income × {POT_PER_MONTHLY_INCOME}, i.e. drawing{" "}
+              {(PERPETUAL_REAL_WITHDRAWAL * 100).toFixed(0)}% a year after inflation. That is
+              deliberately more cautious than the familiar 4% rule, which measures a 30-year
+              drawdown of a US portfolio rather than an income that never stops — and Kenya
+              issues no inflation-linked bond, so no real return here is guaranteed. An
+              estimate, not a promise.
             </p>
           </div>
         )}

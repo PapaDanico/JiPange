@@ -174,7 +174,7 @@ export const FAQS: Faq[] = [
   {
     question: "Is it free, and who is paying you?",
     answer:
-      "It is free, and nobody is paying us. There are no affiliate arrangements on any product listed and no advertising or tracking scripts. Every calculator runs in your browser and sends nothing anywhere; the one exception is something you have to ask for — saving a plan across devices, which needs an email address. Even the action plan is generated on your device by a deterministic engine; nothing is sent to any AI provider. The privacy notice sets out the details. If any of that changes, it will be stated plainly rather than discovered — a tool that quietly earns from steering you is worth less than no tool at all.",
+      "It is free, and nobody is paying us. There are no affiliate arrangements on any product listed and no advertising or tracking scripts. Every calculator runs in your browser and sends nothing anywhere. There is no account and nothing to sign in to; moving a plan to another phone is an exported backup file you carry yourself. Even the action plan is generated on your device by a deterministic engine; nothing is sent to any AI provider. The privacy notice sets out the details. If any of that changes, it will be stated plainly rather than discovered — a tool that quietly earns from steering you is worth less than no tool at all.",
     topic: "About JiPange",
   },
   {

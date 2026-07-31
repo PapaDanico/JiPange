@@ -60,9 +60,9 @@ export default function TermsPage() {
             <h2 className="text-base font-semibold text-primary">5. Data and privacy</h2>
             <p className="mt-2">
               JiPange does not require registration to use any calculator, and every
-              calculator — including the action plan — computes in your browser. One optional
-              feature does send data: saving a plan across devices requires an email address.
-              You never have to use it. See our{" "}
+              calculator — including the action plan — computes in your browser. There is no
+              account and nothing to sign in to, so nothing you enter reaches us. Moving a
+              plan to another device is an exported backup file you carry yourself. See our{" "}
               <Link href="/privacy" className="underline hover:text-primary">
                 Privacy Policy
               </Link>{" "}
@@ -81,10 +81,10 @@ export default function TermsPage() {
           <section>
             <h2 className="text-base font-semibold text-primary">7. Third-party services and affiliate links</h2>
             <p className="mt-2">
-              JiPange relies on third-party providers to operate: Netlify (hosting) and
-              Supabase (sign-in and saved plans, if you choose to save one). Each processes
-              outside Kenya. Your use of features that rely on them is also subject to their own terms
-              and policies, and our{" "}
+              JiPange relies on one third-party provider to operate: Netlify, which hosts
+              the site and processes outside Kenya. Supabase previously handled sign-in and
+              saved plans; both were removed in July 2026 and it receives nothing. Your use
+              of the site is also subject to Netlify&apos;s own terms, and our{" "}
               <Link href="/privacy" className="underline hover:text-primary">
                 privacy notice
               </Link>{" "}
