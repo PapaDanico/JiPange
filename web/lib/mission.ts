@@ -157,7 +157,19 @@ export const FORBIDDEN_CLAIMS: { pattern: RegExp; because: string }[] = [
       "every figure is a dated snapshot of a published auction, refreshed daily; nothing here streams",
   },
   {
-    pattern: /\blive\s+(?:market|rates?|prices?|yields?)\b/i,
+    /* Intervening words allowed, because one word defeated the old pattern.
+     *
+     * This read `live\s+(market|rates|prices|yields)` — adjacent only. The
+     * channel description written for Pesa Smart KE says "Live, after-tax
+     * yields on Treasury Bills & Bonds", and it sailed through: "after-tax"
+     * sits between "Live" and "yields", so the guard never fired. It is the
+     * same claim the brand pack was rejected for, reworded just enough.
+     *
+     * The lookahead keeps ordinary uses of the verb out — "people who live in
+     * Kenya pay rates" — which is why the span is bounded and prepositions are
+     * excluded, rather than matching anything within N characters. */
+    pattern:
+      /\blive\b[,\s]+(?!in\b|on\b|at\b|with\b|for\b|near\b|from\b|and\b)(?:[a-z-]+[,\s]+){0,2}(?:market|rates?|prices?|yields?|curves?)\b/i,
     because: "implies a tradeable price, and this project publishes no market prices at all",
   },
   {

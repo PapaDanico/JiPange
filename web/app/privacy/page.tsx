@@ -178,6 +178,15 @@ export default function PrivacyPage() {
               are plain links carrying no identifier — no affiliate arrangement exists on any
               of them.
             </p>
+            <p className="mt-3">
+              We link to our own WhatsApp channel, Pesa Smart KE, which we run jointly with
+              Mwangaza Yield. Following it does not identify you to us: WhatsApp does not show
+              channel admins who their followers are, so we never see your number and are never
+              given a list. It is a broadcast — we post, you read — and it carries general money
+              news only, never anything worked out from the figures you enter here, because those
+              stay in your browser and never reach us. Once you open WhatsApp you are on their
+              service, under their privacy policy, not ours.
+            </p>
           </section>
 
           <section>
