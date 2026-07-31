@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { PESA_SMART_CHANNEL, PESA_SMART_NAME } from "@/lib/channel";
 import { formatKES } from "@/lib/budget";
 import { solveYearsToTarget } from "@/lib/goal-planner";
 import {
@@ -414,6 +415,31 @@ function ViralShare() {
       </div>
       <p className="mt-2 text-xs text-faint">
         The link carries nothing about you — it just opens JiPange.
+      </p>
+      {/* After the plan, never before it.
+        *
+        * mission.ts forbids asking a reader for anything before the product has
+        * given them something, and mission.test.ts enforces that against MONEY
+        * — the support link, the suggested amount, the pay-what-you-can
+        * wording. A follow prompt trips none of those patterns, which is a gap
+        * in the guard rather than permission. Asking for somebody's attention
+        * ahead of helping them is the same move at a lower price, so this sits
+        * here, beneath a finished plan, and in the footer. Nowhere else.
+        *
+        * A line of text rather than a third button: the two controls above are
+        * what this section exists for, and this must not compete with them. */}
+      <p className="mt-4 border-t border-border pt-3 text-xs text-ink-soft">
+        Want this kind of thing more often?{" "}
+        <a
+          href={PESA_SMART_CHANNEL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-medium text-primary underline"
+        >
+          Follow {PESA_SMART_NAME} on WhatsApp
+        </a>{" "}
+        — money news for Kenya from us and Mwangaza Yield. It is a broadcast, not a chat, and
+        WhatsApp does not show us who follows.
       </p>
     </section>
   );

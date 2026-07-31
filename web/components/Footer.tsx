@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PESA_SMART_CHANNEL, PESA_SMART_NAME } from "@/lib/channel";
 
 const COLUMNS: { heading: string; links: { href: string; label: string }[] }[] = [
   {
@@ -83,6 +84,18 @@ export default function Footer() {
           <Link href="/licensing" className="underline hover:text-primary">
             Licensing
           </Link>
+          {/* The quiet, permanent placement — the same standing the money ask
+            * gets, and for the same reason. A reader who wants more of us can
+            * always find it here; nobody is stopped on their way to a
+            * calculator and asked for their attention first. */}
+          <a
+            href={PESA_SMART_CHANNEL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:text-primary"
+          >
+            {PESA_SMART_NAME} on WhatsApp
+          </a>
         </div>
       </div>
     </footer>
