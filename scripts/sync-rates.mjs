@@ -28,7 +28,37 @@ import { readFileSync, writeFileSync } from "node:fs";
 
 const FEED_URL = "https://mwangazayield.org/data/rates.json";
 const SNAPSHOT = "web/lib/rates-snapshot.json";
-const SUPPORTED_SCHEMA = 1;
+/**
+ * READ from the app, not restated here.
+ *
+ * This was a second literal `1` sitting beside the app's own
+ * SUPPORTED_SCHEMA, with nothing keeping the two in step — the exact pattern
+ * this repo has been deleting all week, on the one contract where drift is
+ * least visible because the other side of it lives in another repository.
+ *
+ * The failure it sets up is quiet in both directions. Bump the app and forget
+ * the script, and the script refuses every new feed while the app serves a
+ * snapshot that stops moving: no error, just rates going silently stale. Bump
+ * the script and forget the app, and the script writes a snapshot the app
+ * throws on at build time — louder, but only after committing the file.
+ *
+ * A regex against a TypeScript source is not elegant. It is the cheapest
+ * thing that cannot disagree, and it refuses loudly if the declaration is ever
+ * reworded rather than falling back to a guess.
+ */
+const SUPPORTED_SCHEMA = (() => {
+  const src = readFileSync("web/lib/rates-feed.ts", "utf8");
+  const m = src.match(/export const SUPPORTED_SCHEMA\s*=\s*(\d+)/);
+  if (!m) {
+    console.error(
+      "refused: cannot find SUPPORTED_SCHEMA in web/lib/rates-feed.ts. If the " +
+        "declaration moved or was reworded, update this reader — do not " +
+        "reintroduce a second copy of the number."
+    );
+    process.exit(1);
+  }
+  return Number(m[1]);
+})();
 const REQUIRED_TENORS = [91, 182, 364];
 
 /** Kenyan government paper has not been outside this band in living memory. */
