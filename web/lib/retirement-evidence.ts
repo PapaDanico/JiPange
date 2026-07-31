@@ -50,7 +50,7 @@ export const REPLACEMENT_EVIDENCE: Evidence[] = [
       "Replacement of INCOME and replacement of SPENDING are different quantities, and the gap is the savings rate.",
     source: "Arithmetic, stated here because the two are routinely conflated",
     implication:
-      "A household saving 25% of income spends 75% of it. The app's 50%-of-SPENDING default is therefore about 37% of INCOME — already at the low end of Kenya's observed 40-43%, and roughly half the RBA's 75% target. The app is not being conservative here; it is being optimistic, and it should say so.",
+      "A household saving 25% of income spends 75% of it. The app's 25%-of-SPENDING default is therefore about 19% of INCOME — well under half Kenya's observed 43% and about a quarter of the RBA's 75% target. The app is not being conservative on this lever; it is taking a deliberate position against the benchmarks, and the page says so rather than presenting it as neutral.",
   },
 ];
 
@@ -104,5 +104,9 @@ export const MEDICAL_EVIDENCE: Evidence[] = [
 export const REPLACEMENT_BENCHMARKS = [
   { label: "RBA target", shareOfIncome: 0.75, note: "The regulator's stated goal for Kenya." },
   { label: "Kenya today", shareOfIncome: 0.43, note: "Observed average for middle-income earners." },
-  { label: "This app's default", shareOfIncome: 0.37, note: "50% of spending, at a 25% savings rate." },
+  {
+    label: "This app's default",
+    shareOfIncome: 0.19,
+    note: "25% of spending, at a 25% savings rate — set by the operator with the two figures above in view, and paired with medical pre-funded separately.",
+  },
 ] as const;

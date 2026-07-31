@@ -51,13 +51,13 @@ const RETIREMENT_INCOMES = [30_000, 50_000, 100_000, 150_000];
  *
  * KENYAN DEFAULTS
  *
- * 50% replacement. Retirement spending falls everywhere, and the Western
- * literature's 70-80% replacement rules assume a mortgage that is gone, a
- * commute that has stopped and children who have left — which understates the
- * fall for a Kenyan household that also stops funding school fees, and
- * overstates it where extended-family obligation continues. 50% is the
- * operator's judgement for this market, sits below the Western band, and is a
- * SLIDER precisely because it is a judgement.
+ * 25% replacement, imported from retirement-kenya.ts so both tools share it.
+ * The full reasoning and the benchmarks it stands against are recorded there
+ * and in retirement-evidence.ts — short version: it applies to LIVING costs
+ * only, medical is pre-funded separately through a post-retirement medical
+ * fund, and it is BELOW the RBA's 75%-of-income target and Kenya's observed
+ * 43%. That is the operator's stand, taken with the evidence in view. It is a
+ * slider because a household whose obligations do not retire needs more.
  *
  * 4% withdrawal. Held rather than lowered, now that replacement carries the
  * conservatism. Note what it makes this: a roughly 30-year DRAWDOWN, not an
@@ -76,12 +76,11 @@ const RETIREMENT_INCOMES = [30_000, 50_000, 100_000, 150_000];
  * lib/__tests__/retirement-models-agree.test.ts. */
 const REPLACEMENT_DEFAULT = LIVING_REPLACEMENT_AT_RETIREMENT;
 const WITHDRAWAL_DEFAULT = 0.04;
-/* Down to 25%, because that is a position somebody actually holds: with
- * medical pre-funded separately through a post-retirement medical fund, and
- * no commute, school fees or mortgage, a quarter of pre-retirement spending is
- * arguable. The benchmarks shown beside the control let a reader see that it
- * sits well below both the RBA's 75%-of-income target and Kenya's observed
- * 43%. Reachable, and labelled — not hidden, and not the default. */
+/* 25% is the default and the floor of the range. Everything above it exists
+ * for the reader whose costs do not fall that far — most obviously anyone
+ * still supporting family, since that obligation does not retire when they do.
+ * The benchmarks rendered beside the control show where each choice sits
+ * against the RBA's 75% and Kenya's observed 43%. */
 const REPLACEMENT_CHOICES = [0.25, 0.4, 0.5, 0.6, 0.8];
 const WITHDRAWAL_CHOICES = [0.02, 0.03, 0.04, 0.05];
 
@@ -581,11 +580,12 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
                 ))}
               </div>
               <p className="mt-1 text-xs text-faint">
-                Most spending falls: no commute, no school fees, usually no mortgage. Medical
-                goes the other way — unless you pre-fund it through a{" "}
+                Most spending falls: no commute, no school fees, usually no mortgage. Our
+                default is 25%, which assumes medical is pre-funded through a{" "}
                 <strong>post-retirement medical fund</strong>, where contributions are
                 tax-deductible to Ksh 15,000 a month and withdrawals for treatment are tax-free.
-                If you do that, a lower figure here is defensible.
+                If you are NOT doing that, or you support family who will not retire when
+                you do, move this up.
               </p>
               <p className="mt-1 text-xs text-faint">
                 For scale: the Retirement Benefits Authority targets 75% of final{" "}

@@ -131,9 +131,27 @@ export const REAL_RETURN_DEFAULT = 0.03;
  * nobody had noticed they were different readings, because neither wrote the
  * number down as a number.
  *
- * 50% is the operator's read for Kenya: no commute, no school fees, usually no
- * mortgage. It sits below the Western 70-80% replacement band, deliberately,
- * for a market where those three are a larger share of working-age spending.
+ * 25%, AND THAT IS A DELIBERATE STAND AGAINST THE BENCHMARKS.
+ *
+ * The regulator disagrees, and the disagreement is recorded rather than
+ * smoothed over: the RBA's recommended replacement ratio is 75% of final
+ * salary and Kenya observes about 43%, which the RBA calls an adequacy gap
+ * rather than a target. See lib/retirement-evidence.ts. This figure is below
+ * all of that, and it was set by the operator with the evidence in front of
+ * them.
+ *
+ * What makes it coherent rather than merely low is the pairing. It applies to
+ * LIVING costs only, and medical — the one retirement cost that rises — is
+ * pre-funded separately through a post-retirement medical fund, which Kenya
+ * made tax-deductible in 2024. Strip out medical, the commute, the school fees
+ * and the mortgage, and what remains of a working household's spending is
+ * genuinely a small fraction of it.
+ *
+ * The honest caveat, stated because a reader acting on this deserves it: at
+ * 25% the plan has very little margin for a household whose obligations do NOT
+ * retire — extended family, an adult child, a dependant. Those are common here
+ * and they are the reason the earlier reading was 50%. The control is a slider
+ * for exactly that reason.
  *
  * APPLIED TO LIVING ONLY. Medical is NOT reduced — you need the same cover the
  * day after you retire as the day before, and MEDICAL_REAL_ESCALATION already
@@ -143,7 +161,7 @@ export const REAL_RETURN_DEFAULT = 0.03;
  * lib/__tests__/retirement-models-agree.test.ts rather than left to be
  * discovered by a reader running both tools.
  */
-export const LIVING_REPLACEMENT_AT_RETIREMENT = 0.5;
+export const LIVING_REPLACEMENT_AT_RETIREMENT = 0.25;
 
 /**
  * How fast ordinary living costs fall in real terms once retired.

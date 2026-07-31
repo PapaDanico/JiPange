@@ -103,9 +103,9 @@ describe("the retirement pot is sized for the income it promises", () => {
 
   it("catches a preset that stops matching the rates", () => {
     /* Mutation check both ways: the binding has to actually bite. */
-    expect(multiple).toBe(150);
-    expect(Math.round(150_000 * multiple)).toBe(22_500_000);
-    expect(Math.round(30_000 * multiple)).toBe(4_500_000);
+    expect(multiple).toBe(75);
+    expect(Math.round(150_000 * multiple)).toBe(11_250_000);
+    expect(Math.round(30_000 * multiple)).toBe(2_250_000);
     expect(Math.round(150_000 * 300)).not.toBe(Math.round(150_000 * multiple));
   });
 });
