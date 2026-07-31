@@ -68,10 +68,22 @@ export type Regulator = "CMA" | "CBK" | "SASRA" | "CBK+CMA" | "RBA";
  * Worth stating because the staleness notice this drives originally warned
  * about "fund yields" and reassured the reader that "minimums are unaffected"
  * — precisely inverted. It disclaimed the one thing the page does not show and
- * vouched for the one thing this date is about. The name is kept for now; the
- * scope is written down so the next reader does not have to infer it from a
- * grep of yieldPct. */
-export const YIELDS_AS_OF = "2026-04-01";
+ * vouched for the one thing this date is about.
+ *
+ * RENAMED FROM YIELDS_AS_OF, because keeping the wrong name cost real work.
+ *
+ * The paragraph above used to end "the name is kept for now" — and then
+ * somebody reviewing the overdue notice read the identifier, believed it, and
+ * proposed replacing "the hand-surveyed fund yields" with a published range.
+ * A careful fix for a problem this file does not have: no fund here carries a
+ * yield, and that refusal is deliberate and documented at the Ziidi entry.
+ *
+ * A comment reading "the name is wrong, here is what it really means" asks
+ * every future reader to find the comment before trusting the identifier.
+ * Most will not, because a name that looks unambiguous is not a name anyone
+ * thinks to check. It now says what it governs: the survey of minimums, terms,
+ * and which providers are listed. */
+export const PRODUCT_SURVEY_AS_OF = "2026-04-01";
 
 /**
  * SACCO dividends are dated separately, because they move on a different
@@ -96,11 +108,11 @@ export const SACCO_DIVIDEND_RANGE_PCT = { low: 8, high: 15 } as const;
  * Treasury bill needs and cannot get from a yield.
  */
 export const SACCO_DEPOSIT_GUARANTEE_OPERATIONAL = false;
-export const YIELDS_MAX_AGE_DAYS = 120;
+export const PRODUCT_SURVEY_MAX_AGE_DAYS = 120;
 
-export function yieldsAreStale(now = new Date()): boolean {
-  const asOf = new Date(YIELDS_AS_OF);
-  return (now.getTime() - asOf.getTime()) / 86_400_000 > YIELDS_MAX_AGE_DAYS;
+export function productSurveyIsStale(now = new Date()): boolean {
+  const asOf = new Date(PRODUCT_SURVEY_AS_OF);
+  return (now.getTime() - asOf.getTime()) / 86_400_000 > PRODUCT_SURVEY_MAX_AGE_DAYS;
 }
 
 export interface ProductLink {

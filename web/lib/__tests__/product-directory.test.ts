@@ -3,13 +3,13 @@ import { readFileSync } from "node:fs";
 import { tbillRate } from "../rates-feed";
 import {
   PRODUCT_LINKS,
-  YIELDS_AS_OF,
-  YIELDS_MAX_AGE_DAYS,
+  PRODUCT_SURVEY_AS_OF,
+  PRODUCT_SURVEY_MAX_AGE_DAYS,
   SACCO_RATES_AS_OF,
   SACCO_RATES_SOURCE,
   SACCO_DIVIDEND_RANGE_PCT,
   SACCO_DEPOSIT_GUARANTEE_OPERATIONAL,
-  yieldsAreStale,
+  productSurveyIsStale,
 } from "../affiliate-links";
 
 /**
@@ -25,26 +25,26 @@ import {
  * codebase has spent a long time removing everywhere else.
  */
 describe("product yields are dated", () => {
-  /* This assertion used to be `yieldsAreStale() === false`, and it went red on
+  /* This assertion used to be `productSurveyIsStale() === false`, and it went red on
    * schedule — correctly, because the survey had aged out.
    *
-   * The trouble is where that leaves whoever finds it red. Re-surveying
-   * fifteen funds is real work; editing YIELDS_AS_OF to today is one
-   * keystroke and turns the suite green without a single yield having been
-   * checked. A guard whose cheapest repair is falsifying the thing it guards
+   * The trouble is where that leaves whoever finds it red. Re-checking every
+   * provider's minimum and terms is real work; editing PRODUCT_SURVEY_AS_OF to
+   * today is one keystroke and turns the suite green without a single provider
+   * having been looked at. A guard whose cheapest repair is falsifying the thing it guards
    * will eventually be repaired that way, and then it is worse than absent,
    * because the date it now carries is a lie with a test vouching for it.
    *
    * So the deadline is kept and the consequence is moved to where it belongs.
    * Being overdue is allowed; passing overdue figures off as current is not.
-   * `yieldsAreStale()` was already written for exactly this and rendered
+   * `productSurveyIsStale()` was already written for exactly this and rendered
    * nowhere — the one condition it existed to catch was live in production
    * with no reader ever told. Now the page says so, and this asserts that it
    * does. Re-surveying still clears the notice; nothing else does. */
   it("tells the reader when the survey has aged out, rather than quoting it plainly", () => {
     /* Scanned from the component body onward, not the whole file. The first
      * version of this check searched the file and passed with the notice
-     * deleted, because the import statement still named `yieldsAreStale` —
+     * deleted, because the import statement still named `productSurveyIsStale` —
      * it was asserting that the symbol had been imported, which is precisely
      * the state the old code was already in and the state that failed. */
     const file = readFileSync(
@@ -56,8 +56,8 @@ describe("product yields are dated", () => {
     expect(
       body,
       "the yields can go stale and the partners page renders no notice that says so"
-    ).toMatch(/\{\s*yieldsAreStale\(\)\s*&&/);
-    expect(body).toMatch(/YIELDS_MAX_AGE_DAYS/);
+    ).toMatch(/\{\s*productSurveyIsStale\(\)\s*&&/);
+    expect(body).toMatch(/PRODUCT_SURVEY_MAX_AGE_DAYS/);
 
     /* And it must describe what the date actually covers. The first version of
      * this notice warned about "fund yields" and reassured the reader that
@@ -76,20 +76,20 @@ describe("product yields are dated", () => {
     // Not an assertion so much as a visible countdown: if this ever prints a
     // number in the hundreds, the directory is quoting a different market.
     const overdueDays = Math.floor(
-      (Date.now() - new Date(YIELDS_AS_OF).getTime()) / 86_400_000 - YIELDS_MAX_AGE_DAYS
+      (Date.now() - new Date(PRODUCT_SURVEY_AS_OF).getTime()) / 86_400_000 - PRODUCT_SURVEY_MAX_AGE_DAYS
     );
     expect(
       overdueDays,
-      `the yield survey (${YIELDS_AS_OF}) is ${overdueDays} days past its ${YIELDS_MAX_AGE_DAYS}-day window — re-check the providers`
+      `the product survey (${PRODUCT_SURVEY_AS_OF}) is ${overdueDays} days past its ${PRODUCT_SURVEY_MAX_AGE_DAYS}-day window — re-check provider minimums and terms, not yields`
     ).toBeLessThan(365);
   });
 
-  it("goes stale after the window rather than quoting old rates forever", () => {
-    const asOf = new Date(YIELDS_AS_OF);
-    const inside = new Date(asOf.getTime() + (YIELDS_MAX_AGE_DAYS - 1) * 86_400_000);
-    const outside = new Date(asOf.getTime() + (YIELDS_MAX_AGE_DAYS + 1) * 86_400_000);
-    expect(yieldsAreStale(inside)).toBe(false);
-    expect(yieldsAreStale(outside)).toBe(true);
+  it("goes stale after the window rather than vouching for an old survey forever", () => {
+    const asOf = new Date(PRODUCT_SURVEY_AS_OF);
+    const inside = new Date(asOf.getTime() + (PRODUCT_SURVEY_MAX_AGE_DAYS - 1) * 86_400_000);
+    const outside = new Date(asOf.getTime() + (PRODUCT_SURVEY_MAX_AGE_DAYS + 1) * 86_400_000);
+    expect(productSurveyIsStale(inside)).toBe(false);
+    expect(productSurveyIsStale(outside)).toBe(true);
   });
 });
 
@@ -140,7 +140,7 @@ describe("the directory describes each product honestly", () => {
   it("quotes no yield that predates the survey the date claims", () => {
     // The stale-yield defect in its subtler form: a figure nobody re-checked
     // sitting under a date somebody refreshed. Any fund carrying a number is
-    // asserting it was observed on YIELDS_AS_OF — funds outside that survey
+    // asserting it was observed on PRODUCT_SURVEY_AS_OF — funds outside that survey
     // must carry nothing rather than an inherited figure wearing a new date.
     const quoted = PRODUCT_LINKS.filter((p) => p.type === "mmf" && p.yieldPct !== undefined);
     for (const p of quoted) {

@@ -11,9 +11,9 @@ import {
   SACCO_RATES_SOURCE,
   SACCO_DIVIDEND_RANGE_PCT,
   PENSION_LINKS,
-  YIELDS_AS_OF,
-  YIELDS_MAX_AGE_DAYS,
-  yieldsAreStale,
+  PRODUCT_SURVEY_AS_OF,
+  PRODUCT_SURVEY_MAX_AGE_DAYS,
+  productSurveyIsStale,
   type ProductLink,
   type ProductType,
 } from "@/lib/affiliate-links";
@@ -134,7 +134,7 @@ function ProductCard({ product }: { product: ProductLink }) {
           // which is what the reader needs to go and find it themselves.
           <p className="rounded-xl border border-dashed border-border px-3 py-2 text-xs text-ink-soft">
             No verified sign-up link yet — search for {product.name} or ask your
-            bank. The rate and minimum above are from the {YIELDS_AS_OF} survey.
+            bank. The rate and minimum above are from the {PRODUCT_SURVEY_AS_OF} survey.
           </p>
         ) : (
         <Link
@@ -227,18 +227,18 @@ export default function PartnersView() {
     <div className="w-full max-w-2xl">
       {/* The survey has a shelf life, and it had passed it silently.
         *
-        * `yieldsAreStale()` existed, was unit-tested, and was rendered
+        * `productSurveyIsStale()` existed, was unit-tested, and was rendered
         * nowhere — so the one thing it was written to prevent was the one
         * thing that happened. A reader saw fund yields footnoted with a
         * survey date and no indication that the date was past the point
         * where this file itself stops vouching for them. Dating a figure is
         * only half the disclosure; the other half is saying when the date
         * stopped being good enough. */}
-      {yieldsAreStale() && (
+      {productSurveyIsStale() && (
         <p className="mb-5 rounded-2xl border border-[#e0b000] bg-[#fff8e1] px-4 py-3 text-sm text-[#7a4a00]">
           ⚠ The product details below — minimum entry, terms, and which funds
-          are listed at all — were surveyed on {YIELDS_AS_OF} and have not been
-          re-checked within {YIELDS_MAX_AGE_DAYS} days. Confirm the minimum with
+          are listed at all — were surveyed on {PRODUCT_SURVEY_AS_OF} and have not been
+          re-checked within {PRODUCT_SURVEY_MAX_AGE_DAYS} days. Confirm the minimum with
           the provider before you move any money. Regulators and protections do
           not change on this clock. Fund yields are not shown here at all, by
           choice: they move weekly, and a stale one is worse than none.
