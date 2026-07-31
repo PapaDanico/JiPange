@@ -248,7 +248,19 @@ export const PRODUCT_LINKS: ProductLink[] = [
     // rather than carried: leaving it in place would silently stamp it
     // with a survey date it was never part of, which is the same defect
     // as the undated yields this file was built to fix.
-    minKes: 1000,
+    //
+    // minKes REMOVED, July 2026. This read 1000 and the card renders it as
+    // "min entry". CIC's own pages describe a minimum INITIAL investment of
+    // Ksh 5,000 with Ksh 1,000 as the top-up minimum — so 1,000 was the wrong
+    // one of the two numbers, and the error points the dangerous way: a reader
+    // with Ksh 1,000 is told they can open this fund, and cannot.
+    //
+    // Not corrected to 5,000, because I could not read CIC's page myself —
+    // every provider site returns 403 to this environment, and the figure
+    // above comes from a search index rather than the document. Writing an
+    // unread number under a survey date is the exact defect the comment above
+    // describes. Dropped rather than carried, as with the yield; the card
+    // simply shows no minimum until somebody opens the page and confirms it.
     regulator: "CMA",
     liquidity: "T+1 to M-Pesa",
     tagline: "Large, established co-operative-linked fund",

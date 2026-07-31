@@ -3,6 +3,7 @@ import Link from "next/link";
 import DataControls from "@/components/data/DataControls";
 import {
   COLLECTED_BY_HOSTING,
+  CONTROLLER,
   DEVICE_ONLY,
   DPA_RIGHTS,
   ODPC,
@@ -83,6 +84,19 @@ export default function PrivacyPage() {
             <p className="mt-2">
               It is organised by <em>where your data goes</em> rather than by legal heading,
               because that is the question you actually have.
+            </p>
+            {/* Named, because a notice that says "we" throughout and then sends
+              * you to the ODPC is asking you to complain about somebody it will
+              * not identify. s.29 makes naming the controller part of the duty,
+              * and s.26 rights are unusable without it. */}
+            <p className="mt-4 rounded-xl bg-canvas p-4">
+              <strong className="text-primary">Who &ldquo;we&rdquo; is.</strong> {CONTROLLER.name}{" "}
+              operates {CONTROLLER.operates} and is the data controller for the processing
+              described here. Reach us at{" "}
+              <a href={`mailto:${CONTROLLER.contact}`} className="underline hover:text-primary">
+                {CONTROLLER.contact}
+              </a>
+              .
             </p>
           </section>
 
