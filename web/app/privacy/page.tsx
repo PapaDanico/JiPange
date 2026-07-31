@@ -69,9 +69,10 @@ export default function PrivacyPage() {
 
         <div className="mt-4 rounded-2xl border border-[#CFE3CF] bg-[#f0f7f0] px-5 py-4 text-sm text-success-deep">
           <strong>Short version:</strong> every calculator — and the action plan — runs
-          entirely in your browser and sends nothing anywhere. One thing is different, and it
-          is optional and asked for: <strong>saving a plan across devices</strong> requires an
-          email address. You never have to do it.
+          entirely in your browser and sends nothing anywhere. There is{" "}
+          <strong>no account and nothing to sign in to</strong>, so there is nothing for us
+          to hold. To move a plan to another phone you export a backup file and import it
+          there; the file never leaves your hands.
         </div>
 
         <div className="mt-8 space-y-10 text-sm leading-relaxed text-ink-soft">
@@ -136,9 +137,12 @@ export default function PrivacyPage() {
               3. What is stored if you choose to save a plan
             </h2>
             <p className="mt-2">
-              JiPange has an optional sign-in so a plan built on your phone is there on your
-              laptop. It uses an emailed link rather than a password. If you never use it, none
-              of the following happens.
+              <strong>Nothing.</strong> Until July 2026 there was an optional sign-in — an
+              emailed link, then your name, age, county, salary and dependants held in a
+              database outside Kenya. It was removed, and the table that described it is now
+              empty rather than deleted, so a reader who remembers it is told what happened
+              instead of finding a gap. Moving a plan between devices is now an exported
+              backup file you carry yourself.
             </p>
             <Table items={ONLY_IF_YOU_SIGN_IN} />
           </section>
@@ -207,9 +211,8 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-base font-semibold text-primary">7. Cookies</h2>
             <p className="mt-2">
-              JiPange sets no advertising or analytics cookies. If you sign in, Supabase sets a
-              session cookie so you stay signed in; that is the only cookie, and it exists only
-              for signed-in users.
+              JiPange sets no cookies at all. It previously set one session cookie for
+              signed-in users; sign-in was removed in July 2026 and that cookie went with it.
             </p>
           </section>
 
