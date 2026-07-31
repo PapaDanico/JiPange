@@ -355,17 +355,43 @@ export function realReturnEvidence(): {
 /** Present value of 1 received in `years` time, at a real rate. */
 const discount = (rate: number, years: number) => 1 / Math.pow(1 + rate, years);
 
+/**
+ * NaN is not filtered by `Math.max`, and that is the trap this exists for.
+ *
+ * `Math.max(0, NaN)` returns NaN, and `x ?? default` passes NaN straight
+ * through — so every clamp and default in this module LOOKED like input
+ * validation and none of it was. A NaN monthly expense produced a NaN
+ * capitalRequiredKes sitting beside a perfectly finite PRMF contribution: one
+ * obviously broken figure and one believable one, on the same card. That is
+ * worse than failing outright, because a reader trusts the believable half.
+ *
+ * The app's own callers happen to be safe — `Number(x) || 0` collapses NaN to
+ * zero — but this module is exported for licensing, and a licensee passing a
+ * parsed form field straight through should not get arithmetic soup. Sanitise
+ * at the boundary; relying on every caller to remember is not a boundary.
+ */
+const clean = (n: number | undefined, fallback = 0): number =>
+  typeof n === "number" && Number.isFinite(n) ? n : fallback;
+
 export function planKenyanRetirement(input: RetirementInputs): KenyanRetirement {
-  const realReturn = input.realReturn ?? REAL_RETURN_DEFAULT;
-  const medEsc = input.medicalRealEscalation ?? MEDICAL_REAL_ESCALATION;
-  const decline = input.livingRealDecline ?? LIVING_REAL_DECLINE;
-  const horizonAge = input.planningHorizonAge ?? DEFAULT_PLANNING_HORIZON_AGE;
+  const realReturn = clean(input.realReturn, REAL_RETURN_DEFAULT);
+  const medEsc = clean(input.medicalRealEscalation, MEDICAL_REAL_ESCALATION);
+  const decline = clean(input.livingRealDecline, LIVING_REAL_DECLINE);
+  const horizonAge = clean(input.planningHorizonAge, DEFAULT_PLANNING_HORIZON_AGE);
 
-  const yearsToRetirement = Math.max(0, input.retirementAge - input.currentAge);
-  const yearsInRetirement = Math.max(0, horizonAge - input.retirementAge);
+  /* Hoisted rather than sanitised at each use: the first version of this fix
+   * cleaned the two ages inside `yearsToRetirement` only, and the four other
+   * places that read `input.retirementAge` / `input.currentAge` — the medical
+   * escalation loop, the cover-deadline window, and both warnings — kept the
+   * raw value. Sanitising per-use is how half a fix looks like a whole one. */
+  const retirementAge = clean(input.retirementAge);
+  const currentAge = clean(input.currentAge);
 
-  const annualLivingNow = Math.max(0, input.currentMonthlyExpenses) * 12;
-  const annualMedicalNow = Math.max(0, input.currentMonthlyMedical) * 12;
+  const yearsToRetirement = Math.max(0, retirementAge - currentAge);
+  const yearsInRetirement = Math.max(0, horizonAge - retirementAge);
+
+  const annualLivingNow = Math.max(0, clean(input.currentMonthlyExpenses)) * 12;
+  const annualMedicalNow = Math.max(0, clean(input.currentMonthlyMedical)) * 12;
 
   /* Living costs STEP DOWN at retirement, then decline further.
    *
@@ -376,7 +402,7 @@ export function planKenyanRetirement(input: RetirementInputs): KenyanRetirement 
    *
    * Still in today's money, so no inflation is applied; the replacement rate
    * is a real reduction in what the household needs, not a price effect. */
-  const replacement = input.livingReplacement ?? LIVING_REPLACEMENT_AT_RETIREMENT;
+  const replacement = clean(input.livingReplacement, LIVING_REPLACEMENT_AT_RETIREMENT);
   const livingAtRetirement = annualLivingNow * replacement;
   // Medical, by contrast, has already been climbing in real terms during the
   // working years — the member ages on the way to retirement too.
@@ -392,7 +418,7 @@ export function planKenyanRetirement(input: RetirementInputs): KenyanRetirement 
     );
     const medical = medicalAtRetirement * Math.pow(1 + medEsc, t);
     const total = living + medical;
-    const age = input.retirementAge + t;
+    const age = retirementAge + t;
     if (medicalOvertakesAge === null && medical > living) medicalOvertakesAge = age;
     years.push({
       age,
@@ -421,8 +447,8 @@ export function planKenyanRetirement(input: RetirementInputs): KenyanRetirement 
     currentTotalAnnual > 0 ? capitalRequiredKes / currentTotalAnnual : 0;
 
   // Growth of what is already saved, plus contributions, in real terms.
-  const capital = Math.max(0, input.currentCapital ?? 0);
-  const monthly = Math.max(0, input.monthlyContribution ?? 0);
+  const capital = Math.max(0, clean(input.currentCapital));
+  const monthly = Math.max(0, clean(input.monthlyContribution));
   const growth = Math.pow(1 + realReturn, yearsToRetirement);
   const annualContribution = monthly * 12;
   const contributionsFV =
@@ -441,7 +467,7 @@ export function planKenyanRetirement(input: RetirementInputs): KenyanRetirement 
         : (shortfall * realReturn) / (growth - 1) / 12;
 
   const coverDeadlineAge = PRIVATE_COVER_ENTRY_LIMIT_AGE;
-  const yearsLeftToBuyCover = Math.max(0, coverDeadlineAge - input.currentAge);
+  const yearsLeftToBuyCover = Math.max(0, coverDeadlineAge - currentAge);
 
   const warnings: string[] = [];
   if (annualMedicalNow <= 0) {
@@ -449,9 +475,9 @@ export function planKenyanRetirement(input: RetirementInputs): KenyanRetirement 
       "No medical cover budgeted. SHA is a floor, not a plan — it is built around accredited public hospitals, and a retirement plan that assumes no private cover is assuming a level of care rather than forgetting a cost."
     );
   }
-  if (input.currentAge >= coverDeadlineAge) {
+  if (currentAge >= coverDeadlineAge) {
     warnings.push(
-      `New cover at ${input.currentAge} is harder and dearer, but it exists — senior plans admit new members into the mid-seventies, and at least one has no maximum age. Price it now rather than assuming the door has shut, and ask about a post-retirement medical fund: contributions are tax-deductible to Ksh ${PRMF_MONTHLY_TAX_RELIEF_CAP.toLocaleString()} a month and withdrawals for treatment are tax-free.`
+      `New cover at ${currentAge} is harder and dearer, but it exists — senior plans admit new members into the mid-seventies, and at least one has no maximum age. Price it now rather than assuming the door has shut, and ask about a post-retirement medical fund: contributions are tax-deductible to Ksh ${PRMF_MONTHLY_TAX_RELIEF_CAP.toLocaleString()} a month and withdrawals for treatment are tax-free.`
     );
   } else if (yearsLeftToBuyCover <= 10) {
     warnings.push(
@@ -466,7 +492,7 @@ export function planKenyanRetirement(input: RetirementInputs): KenyanRetirement 
   warnings.push(
     `This plan is priced to last to age ${horizonAge} and is exhausted at that point — it is a finite stream, not a pot that lives forever. The familiar 20x and 25x rules size a perpetuity instead, which is why they give a bigger number for the same life.`
   );
-  if (input.retirementAge <= input.currentAge) {
+  if (retirementAge <= currentAge) {
     warnings.push("Retirement age is not in the future, so there is nothing left to accumulate — this prices the spending only.");
   }
 
