@@ -126,6 +126,62 @@ export type Regulator = "CMA" | "CBK" | "SASRA" | "CBK+CMA" | "RBA";
  * swapping a link I cannot fetch for another I cannot fetch is a lateral move.
  * Two clicks from anyone with an unrestricted browser would settle it.
  */
+/**
+ * PROVIDER SURVEY - 31 July 2026. Nine of fourteen funds checked; five wrong.
+ *
+ * No page here was READ: every provider site returns 403 to this environment.
+ * What worked was a search restricted to each provider's OWN domain, which
+ * surfaces their indexed pages rather than a third party quoting them. Better
+ * evidence than a blog, worse than the document - so the rule was corroborate,
+ * never author. Agreement kept the figure; disagreement REMOVED it rather than
+ * replacing it, because writing an unread number under a survey date is the
+ * defect this file exists to prevent.
+ *
+ *   KEPT (corroborated against the provider's own domain)
+ *     Ziidi 100 - Britam 1,000 - Old Mutual 1,000
+ *     NCBA 1,000 - Cytonn 1,000 - Lofty-Corban 1,000
+ *
+ *   REMOVED (the provider's own pages disagree)
+ *     CIC            1,000 -> 5,000 initial (1,000 is the TOP-UP)
+ *     KCB            1,000 -> 5,000
+ *     Etica          1,000 -> 100
+ *     Zimele           500 -> 100, and no longer a money market fund
+ *     Dry Associates 1,000 -> 1,000,000
+ *
+ *   REMOVED (could not be corroborated at all)
+ *     ICEA Lion, Sanlam, Nabo - no KES minimum published on their own sites.
+ *
+ * WHY THE UNVERIFIED ONES WENT TOO
+ *
+ * Five of the nine figures that could be checked were wrong. At that base rate
+ * an unchecked figure in this column is closer to a coin flip than to
+ * information, and the card renders it as "min entry" - a flat assertion with
+ * no room to hedge. Showing a number we would not bet on, under a label that
+ * admits no doubt, is worse than showing none. The render is guarded on
+ * `minKes !== undefined`, so the row simply disappears.
+ *
+ * THE ERRORS DID NOT ALL RUN ONE WAY, AND THE WORST ONE IS THE POINT
+ *
+ * An earlier note here predicted a third disagreement would confirm a pattern
+ * of understatement. Three more turned up and one broke it: Etica's real
+ * minimum is LOWER than ours. So the story is not "minimums have risen" - it is
+ * that this column was never sourced. Dry Associates is the case that matters:
+ * listed at 1,000 against a real minimum of 1,000,000, a thousandfold error
+ * pointing a retail saver at an institutional fund. It survived unexamined
+ * precisely because 1,000 looks ordinary.
+ *
+ * THE DATE IS STILL NOT BUMPED
+ *
+ * Minimums are only part of what PRODUCT_SURVEY_AS_OF governs - it also covers
+ * product terms and which funds are listed, and Zimele shows why that matters:
+ * it may no longer be a money market fund at all. Liquidity strings, taglines
+ * and the fund list itself remain unchecked, so the staleness notice stays up.
+ *
+ * STILL OPEN
+ *   - Is the NCBA fund now the NCBA Fixed Income Fund? Zimele made the same
+ *     move, so this looks like a market pattern rather than a typo. Needs a page.
+ *   - Every `liquidity` string in this file is unverified.
+ */
 export const PRODUCT_SURVEY_AS_OF = "2026-04-01";
 
 /**
@@ -270,7 +326,7 @@ export const PRODUCT_LINKS: ProductLink[] = [
     name: "Britam Money Market Fund",
     shortName: "Britam MMF",
     type: "mmf",
-    url: "https://www.britam.com/ke/personal/savings-investments/money-market-fund",
+    url: "https://ke.britam.com/save-and-invest/personal/invest/unit-trust-funds/money-market-fund",
     isAffiliate: false,
     // No verified current figure. The survey number for this fund was from a
     // higher rate environment and could not be reconciled with the live
@@ -285,7 +341,7 @@ export const PRODUCT_LINKS: ProductLink[] = [
     name: "CIC Money Market Fund",
     shortName: "CIC MMF",
     type: "mmf",
-    url: "https://www.cicinsurancegroup.com/personal/savings-and-investments/cic-money-market-fund",
+    url: "https://ke.cicinsurancegroup.com/mmf/",
     isAffiliate: false,
     // No figure in the April 2026 survey. The inherited ~11% is dropped
     // rather than carried: leaving it in place would silently stamp it
@@ -319,7 +375,9 @@ export const PRODUCT_LINKS: ProductLink[] = [
     // rather than carried: leaving it in place would silently stamp it
     // with a survey date it was never part of, which is the same defect
     // as the undated yields this file was built to fix.
-    minKes: 5000,
+    // minKes removed - 31 Jul 2026 survey.
+    // nabocapital.com publishes a USD minimum only; the KES figure is not
+    // stated. Unverifiable, same reasoning.
     regulator: "CMA",
     liquidity: "T+1 to M-Pesa",
     tagline: "Sanlam-backed manager; higher entry minimum",
@@ -334,7 +392,9 @@ export const PRODUCT_LINKS: ProductLink[] = [
     // No verified current figure. The survey number for this fund was from a
     // higher rate environment and could not be reconciled with the live
     // 91-day bill — see the coherence guard in the directory tests.
-    minKes: 1000,
+    // minKes removed - 31 Jul 2026 survey.
+    // No minimum published anywhere on icealion.com. Unverifiable, and the
+    // column it sits in was wrong 5 times in 9.
     regulator: "CMA",
     liquidity: "T+1 to M-Pesa",
     tagline: "Pan-Africa insurer; strong institutional credentials",
@@ -349,7 +409,8 @@ export const PRODUCT_LINKS: ProductLink[] = [
     // No verified current figure. The survey number for this fund was from a
     // higher rate environment and could not be reconciled with the live
     // 91-day bill — see the coherence guard in the directory tests.
-    minKes: 500,
+    // minKes removed - 31 Jul 2026 survey.
+    // Not found on sanlam.com. Unverifiable, same reasoning.
     regulator: "CMA",
     liquidity: "T+1 to M-Pesa",
     tagline: "USSD access makes it easy from any phone",
@@ -375,13 +436,16 @@ export const PRODUCT_LINKS: ProductLink[] = [
     name: "Zimele Money Market Fund",
     shortName: "Zimele MMF",
     type: "mmf",
-    url: "https://www.zimele.net",
+    url: "https://www.zimele.co.ke/savings-plan/",
     isAffiliate: false,
     // No figure in the April 2026 survey. The inherited ~11% is dropped
     // rather than carried: leaving it in place would silently stamp it
     // with a survey date it was never part of, which is the same defect
     // as the undated yields this file was built to fix.
-    minKes: 500,
+    // minKes removed - 31 Jul 2026 survey.
+    // zimele.co.ke gives KES 100, not 500 - and the fund has TRANSITIONED from
+    // money market to fixed income, so the name above may no longer describe
+    // it. Two unverified claims, not one.
     regulator: "CMA",
     liquidity: "T+1 to M-Pesa",
     tagline: "Low minimum entry; long-standing retail fund",
@@ -406,7 +470,9 @@ export const PRODUCT_LINKS: ProductLink[] = [
     // No verified current figure. The survey number for this fund was from a
     // higher rate environment and could not be reconciled with the live
     // 91-day bill — see the coherence guard in the directory tests.
-    minKes: 1000,
+    // minKes removed - 31 Jul 2026 survey.
+    // eticacap.com offers entry from KES 100; this read 1,000. Overstated
+    // rather than under, but wrong either way, and unread.
     regulator: "CMA",
     liquidity: "Confirm withdrawal terms with the manager",
     tagline: "Highest quoted rate in the April 2026 survey",
@@ -484,7 +550,10 @@ export const PRODUCT_LINKS: ProductLink[] = [
     // No verified current figure. The survey number for this fund was from a
     // higher rate environment and could not be reconciled with the live
     // 91-day bill — see the coherence guard in the directory tests.
-    minKes: 1000,
+    // minKes removed - 31 Jul 2026 survey.
+    // dryassociates.com gives a minimum of KES 1,000,000. This read 1,000 - a
+    // thousandfold understatement pointing a retail reader at an institutional
+    // fund.
     regulator: "CMA",
     liquidity: "Confirm withdrawal terms with the manager",
     tagline: "Independent manager with a long fixed-income record",

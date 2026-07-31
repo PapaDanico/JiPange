@@ -41,7 +41,12 @@ import snapshot from "./rates-snapshot.json";
  * confident wrong claim.
  *
  * Source: https://mwangazayield.org/data/rates.json — contract documented at
- * https://github.com/PapaDanico/Mwangaza-Yield/blob/main/docs/RATES-FEED.md
+ * https://mwangazayield.org/data/RATES-FEED.md
+ *
+ * That link used to point at the GitHub repo, from this PUBLIC file into a
+ * PRIVATE one, so every outside reader of the feed hit a 404 on the document
+ * describing it. The contract is now served beside the feed, under the same
+ * CORS headers, and is reachable by anyone who can reach the data.
  */
 
 /** The only schema this reader understands. A bump means stop, not guess. */

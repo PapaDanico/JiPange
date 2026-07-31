@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+import { readFileSync } from "node:fs";
 import {
   RATES,
   SUPPORTED_SCHEMA,
@@ -174,5 +175,18 @@ describe("freshness is surfaced, not assumed", () => {
     for (const r of TBILL_RATES) {
       expect(r.auctionDate).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     }
+  });
+
+  it("documents the feed at a URL an outside reader can actually open", () => {
+    /* This file is in a PUBLIC repository and used to link the contract as
+     * github.com/PapaDanico/Mwangaza-Yield/blob/main/docs/RATES-FEED.md — into
+     * a PRIVATE repo. Every third party the feed exists for got a 404 on the
+     * document describing it, and from inside the organisation the link looked
+     * fine. Asserted here because this repo is where the broken link lived. */
+    const src = readFileSync(new URL("../rates-feed.ts", import.meta.url).pathname, "utf8");
+    expect(src, "the contract link points into a repository outsiders cannot read").not.toMatch(
+      /github\.com\/PapaDanico\/Mwangaza-Yield/
+    );
+    expect(src).toContain("https://mwangazayield.org/data/RATES-FEED.md");
   });
 });
