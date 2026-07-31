@@ -58,6 +58,18 @@ describe("product yields are dated", () => {
       "the yields can go stale and the partners page renders no notice that says so"
     ).toMatch(/\{\s*yieldsAreStale\(\)\s*&&/);
     expect(body).toMatch(/YIELDS_MAX_AGE_DAYS/);
+
+    /* And it must describe what the date actually covers. The first version of
+     * this notice warned about "fund yields" and reassured the reader that
+     * minimums were unaffected — exactly inverted. No money market fund in this
+     * directory carries a yield at all (a considered refusal, documented at the
+     * Ziidi entry), so the notice disclaimed something the page does not show
+     * and vouched for the one thing the date is actually about. */
+    expect(
+      body,
+      'the staleness notice claims fund yields are shown, and none are'
+    ).not.toMatch(/fund yields (below|above) were surveyed/i);
+    expect(body, 'the notice does not say what the survey covers').toMatch(/minimum/i);
   });
 
   it("records how overdue the survey is, so it cannot drift indefinitely", () => {
