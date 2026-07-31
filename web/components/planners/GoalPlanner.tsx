@@ -76,7 +76,13 @@ const RETIREMENT_INCOMES = [30_000, 50_000, 100_000, 150_000];
  * lib/__tests__/retirement-models-agree.test.ts. */
 const REPLACEMENT_DEFAULT = LIVING_REPLACEMENT_AT_RETIREMENT;
 const WITHDRAWAL_DEFAULT = 0.04;
-const REPLACEMENT_CHOICES = [0.4, 0.5, 0.6, 0.8, 1];
+/* Down to 25%, because that is a position somebody actually holds: with
+ * medical pre-funded separately through a post-retirement medical fund, and
+ * no commute, school fees or mortgage, a quarter of pre-retirement spending is
+ * arguable. The benchmarks shown beside the control let a reader see that it
+ * sits well below both the RBA's 75%-of-income target and Kenya's observed
+ * 43%. Reachable, and labelled — not hidden, and not the default. */
+const REPLACEMENT_CHOICES = [0.25, 0.4, 0.5, 0.6, 0.8];
 const WITHDRAWAL_CHOICES = [0.02, 0.03, 0.04, 0.05];
 
 /** The one place the arithmetic lives. */
@@ -576,7 +582,16 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
               </div>
               <p className="mt-1 text-xs text-faint">
                 Most spending falls: no commute, no school fees, usually no mortgage. Medical
-                goes the other way. 50% is our read for Kenya — move it if yours differs.
+                goes the other way — unless you pre-fund it through a{" "}
+                <strong>post-retirement medical fund</strong>, where contributions are
+                tax-deductible to Ksh 15,000 a month and withdrawals for treatment are tax-free.
+                If you do that, a lower figure here is defensible.
+              </p>
+              <p className="mt-1 text-xs text-faint">
+                For scale: the Retirement Benefits Authority targets 75% of final{" "}
+                <em>income</em>, and Kenyan middle-income earners average about 43%. Because
+                you are entering <em>spending</em> rather than income, 50% here is roughly 37%
+                of income — already below what the regulator considers adequate.
               </p>
             </div>
 

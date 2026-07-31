@@ -170,14 +170,44 @@ export const LIVING_FLOOR_SHARE = 0.75;
 export const MEDICAL_REAL_ESCALATION = 0.03;
 
 /**
- * The age past which Kenyan private medical insurers commonly decline new
- * members, admitting only those with continuous prior cover.
+ * The age past which retiree medical cover gets materially harder and dearer
+ * to buy new — NOT the age at which it becomes impossible.
  *
- * Modelled as a warning rather than as arithmetic, because it is not a cost —
- * it is a door. Someone who plans to buy cover "when I retire at 65" may find
- * they cannot buy it at all.
+ * CORRECTED, July 2026, by research that contradicted this app. It read 65 and
+ * the header said insurers "commonly refuse NEW entrants past their
+ * mid-sixties", which is too absolute: Britam's Bima ya Mwananchi Senior
+ * admits new members to 75, Jubilee's J-Senior to 79, and Britam's Milele plan
+ * admits from 55 with NO maximum exit age. The door narrows and the price
+ * climbs; it does not shut.
+ *
+ * Kept at 65 as the point where the decision gets expensive, and kept as a
+ * WARNING rather than arithmetic, because it is still a door rather than a
+ * cost. But the wording it drives no longer tells a 68-year-old that nothing
+ * is available to them, which was false and is the kind of false that stops
+ * somebody looking.
  */
 export const PRIVATE_COVER_ENTRY_LIMIT_AGE = 65;
+
+/**
+ * The better structure for retiree medical, which this model does not itself
+ * assume — and the reason it does not.
+ *
+ * Kenya's Post-Retirement Medical Funds are RBA-regulated, contributions are
+ * tax-deductible up to Ksh 15,000 a month and withdrawals for medical costs
+ * are tax-exempt (Tax Laws (Amendment) Act 2024, in force 27 December 2024).
+ * Pre-funding medical through one is cheaper than paying for it out of a taxed
+ * drawdown, and it is the answer to the problem MEDICAL_REAL_ESCALATION
+ * describes rather than merely a way of describing it.
+ *
+ * This model still prices medical INSIDE the retirement pot, deliberately. A
+ * PRMF is a choice the household has to actually make, and modelling it as
+ * though they had would understate the pot for everyone who has not. The
+ * honest treatment is to price the unfunded case and TELL the reader the
+ * funded one exists — which the warnings now do.
+ *
+ * See lib/retirement-evidence.ts for the sources.
+ */
+export const PRMF_MONTHLY_TAX_RELIEF_CAP = 15_000;
 
 /**
  * Default PLANNING HORIZON — deliberately not life expectancy.
@@ -258,6 +288,28 @@ export interface KenyanRetirement {
   yearsLeftToBuyCover: number;
   coverDeadlineAge: number;
   warnings: string[];
+  /**
+   * The same plan, split for a household that pre-funds medical separately.
+   *
+   * Not a different calculation — `medicalCapitalKes` is already the present
+   * value of the medical stream, so this is the SAME number shown as its own
+   * target rather than buried inside the pot. What changes is what a reader
+   * can act on: a pension pot and a medical fund are bought from different
+   * products, on different tax treatment, and a single combined figure hides
+   * that the second one is cheaper to fund than the first.
+   */
+  prmf: {
+    /** What the medical fund must hold at retirement, today's shillings. */
+    targetKes: number;
+    /** What the main pot drops to once medical is funded elsewhere. */
+    livingOnlyCapitalKes: number;
+    /** Level monthly contribution reaching targetKes by retirement. */
+    monthlyContributionKes: number;
+    /** Statutory cap on tax-deductible PRMF contributions, per month. */
+    monthlyReliefCapKes: number;
+    /** Whether the contribution above fits inside that cap. */
+    withinReliefCap: boolean;
+  };
 }
 
 /**
@@ -381,11 +433,11 @@ export function planKenyanRetirement(input: RetirementInputs): KenyanRetirement 
   }
   if (input.currentAge >= coverDeadlineAge) {
     warnings.push(
-      `Most Kenyan insurers will not accept a NEW member at ${input.currentAge}. Cover is generally available past ${coverDeadlineAge} only to those who have held it continuously, so this is a plan to price now, not later.`
+      `New cover at ${input.currentAge} is harder and dearer, but it exists — senior plans admit new members into the mid-seventies, and at least one has no maximum age. Price it now rather than assuming the door has shut, and ask about a post-retirement medical fund: contributions are tax-deductible to Ksh ${PRMF_MONTHLY_TAX_RELIEF_CAP.toLocaleString()} a month and withdrawals for treatment are tax-free.`
     );
   } else if (yearsLeftToBuyCover <= 10) {
     warnings.push(
-      `About ${yearsLeftToBuyCover} years left to take out private cover. Kenyan insurers commonly decline new entrants past ${coverDeadlineAge} and admit older members only on continuous membership — the decision expires before retirement does.`
+      `About ${yearsLeftToBuyCover} years before new cover gets materially dearer. Past ${coverDeadlineAge} the choice narrows and continuous membership is priced better, so the decision is worth making early. A post-retirement medical fund is the cheaper route to the same place: contributions are tax-deductible to Ksh ${PRMF_MONTHLY_TAX_RELIEF_CAP.toLocaleString()} a month and withdrawals for treatment are tax-free.`
     );
   }
   if (medicalOvertakesAge !== null) {
@@ -399,6 +451,22 @@ export function planKenyanRetirement(input: RetirementInputs): KenyanRetirement 
   if (input.retirementAge <= input.currentAge) {
     warnings.push("Retirement age is not in the future, so there is nothing left to accumulate — this prices the spending only.");
   }
+
+  /* Level monthly contribution reaching the medical target by retirement,
+   * solved the same way the main plan solves its own: a real-return annuity.
+   *
+   * Uses realReturn rather than a fresh assumption. A medical fund and a
+   * pension fund buy the same paper, and a PRMF quietly assuming a better
+   * return than the pension beside it would be exactly the unexamined optimism
+   * this codebase keeps deleting. */
+  const prmfMonthly =
+    yearsToRetirement <= 0
+      ? medicalCapitalKes
+      : realReturn === 0
+        ? medicalCapitalKes / (yearsToRetirement * 12)
+        : (medicalCapitalKes * realReturn) /
+          (Math.pow(1 + realReturn, yearsToRetirement) - 1) /
+          12;
 
   return {
     yearsToRetirement,
@@ -422,5 +490,12 @@ export function planKenyanRetirement(input: RetirementInputs): KenyanRetirement 
     yearsLeftToBuyCover,
     coverDeadlineAge,
     warnings,
+    prmf: {
+      targetKes: medicalCapitalKes,
+      livingOnlyCapitalKes: Math.max(0, capitalRequiredKes - medicalCapitalKes),
+      monthlyContributionKes: prmfMonthly,
+      monthlyReliefCapKes: PRMF_MONTHLY_TAX_RELIEF_CAP,
+      withinReliefCap: prmfMonthly <= PRMF_MONTHLY_TAX_RELIEF_CAP,
+    },
   };
 }

@@ -150,10 +150,27 @@ describe("it says the things a plan usually hides", () => {
     expect(r.warnings.join(" ")).toMatch(/perpetuity/);
   });
 
-  it("warns that the door to private cover closes before retirement does", () => {
+  it("warns that retiree cover gets dearer, without claiming it becomes impossible", () => {
+    /* This used to require the words "decline new entrants" / "will not accept
+     * a NEW member". Research in July 2026 showed that was too absolute:
+     * Britam's Bima ya Mwananchi Senior admits new members to 75, Jubilee's
+     * J-Senior to 79, and Britam's Milele plan from 55 with no maximum exit
+     * age. The door narrows and the price climbs; it does not shut.
+     *
+     * The assertion therefore INVERTS on that point — the warning must not
+     * tell a 68-year-old that nothing is available, because that is false and
+     * it is the kind of false that stops somebody looking. What it must still
+     * do is create urgency, and now also name the cheaper route. */
     const soon = planKenyanRetirement({ ...BASE, currentAge: 58, retirementAge: 65 });
     expect(soon.yearsLeftToBuyCover).toBe(PRIVATE_COVER_ENTRY_LIMIT_AGE - 58);
-    expect(soon.warnings.join(" ")).toMatch(/decline new entrants|will not accept a NEW member/);
+    const text = soon.warnings.join(" ");
+    expect(text, "the warning no longer creates any urgency").toMatch(/dearer|narrows|early/i);
+    expect(text, "the tax-relieved pre-funding route is not mentioned").toMatch(
+      /post-retirement medical fund/i
+    );
+    expect(text, "the warning still claims cover is unobtainable").not.toMatch(
+      /will not accept a NEW member|generally available past \d+ only/i
+    );
   });
 
   it("refuses to let a plan with no medical budget look complete", () => {

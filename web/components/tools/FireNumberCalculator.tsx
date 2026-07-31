@@ -16,6 +16,7 @@ import ExportCardButton from "./ExportCardButton";
 import NumberField from "./NumberField";
 import ResetLink from "./ResetLink";
 import ProductLinks from "./ProductLinks";
+import Link from "next/link";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
 import { MMF_AND_TBILL_LINKS } from "@/lib/affiliate-links";
@@ -169,6 +170,61 @@ export default function FireNumberCalculator() {
               <p className="mt-1 text-xs text-ink-soft">
                 of the capital above exists for nothing but medical cover.
               </p>
+
+              {/* The way out, rather than only the diagnosis.
+                *
+                * This card spent its whole life telling a reader that medical
+                * was the expensive part and stopping there. Kenya built a
+                * vehicle for exactly this problem and gave it tax relief, so
+                * naming the problem without naming the answer was leaving the
+                * useful half unsaid. */}
+              <div className="mt-4 rounded-xl bg-white/70 p-4">
+                <p className="text-xs font-semibold text-primary">
+                  You can fund this part separately, and more cheaply
+                </p>
+                <p className="mt-1 text-xs text-ink-soft">
+                  A <strong>post-retirement medical fund</strong> is a
+                  RBA-registered pot for precisely this. Contributions are
+                  tax-deductible up to{" "}
+                  {formatKES(fire.prmf.monthlyReliefCapKes)} a month and
+                  withdrawals for treatment are tax-free — so the same cover
+                  costs less funded this way than paid for out of a taxed
+                  drawdown.
+                </p>
+                <dl className="mt-3 grid grid-cols-2 gap-3 text-xs">
+                  <div>
+                    <dt className="text-ink-soft">Medical fund target</dt>
+                    <dd className="text-sm font-semibold text-ink">
+                      {formatKES(fire.prmf.targetKes)}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt className="text-ink-soft">Pension pot then needed</dt>
+                    <dd className="text-sm font-semibold text-ink">
+                      {formatKES(fire.prmf.livingOnlyCapitalKes)}
+                    </dd>
+                  </div>
+                </dl>
+                <p className="mt-3 text-xs text-ink-soft">
+                  Reaching that target means about{" "}
+                  <strong>{formatKES(fire.prmf.monthlyContributionKes)}</strong> a
+                  month for {fire.yearsToRetirement} years, at the same{" "}
+                  {(fire.realReturn * 100).toFixed(1)}% real return the plan
+                  above assumes.{" "}
+                  {fire.prmf.withinReliefCap
+                    ? "That sits inside the tax-deductible cap."
+                    : `That exceeds the ${formatKES(fire.prmf.monthlyReliefCapKes)} cap, so only part of it attracts relief.`}
+                </p>
+                <p className="mt-2 text-xs text-faint">
+                  Usually a sub-fund of a scheme you already belong to. Britam&apos;s
+                  Afya Pension and CPF&apos;s scheme both run one, and CPF admits the
+                  self-employed directly —{" "}
+                  <Link href="/partners" className="underline hover:text-primary">
+                    see the directory
+                  </Link>
+                  . No arrangement exists between us and either of them.
+                </p>
+              </div>
               <p className="mt-3 text-sm text-ink-soft">
                 Everything else you spend falls in real terms once you retire — the fees end,
                 the commute goes, the house is paid for. Medical does the opposite: it rises

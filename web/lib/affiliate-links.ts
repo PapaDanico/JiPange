@@ -1,6 +1,6 @@
 import { tbillRate } from "./rates-feed";
 
-export type ProductType = "mmf" | "tbill" | "sacco" | "pension";
+export type ProductType = "mmf" | "tbill" | "sacco" | "pension" | "prmf";
 
 /**
  * Whether a quoted yield is before or after withholding tax.
@@ -793,11 +793,58 @@ export const PRODUCT_LINKS: ProductLink[] = [
     liquidity: "Preserved until retirement (tax advantages)",
     tagline: "One of Kenya's oldest independent pension administrators",
   },
+
+  /* POST-RETIREMENT MEDICAL FUNDS — added 31 July 2026.
+   *
+   * A PRMF pre-funds retiree healthcare inside the retirement-benefits system
+   * rather than paying for it out of a taxed drawdown. Contributions are
+   * tax-deductible up to Ksh 15,000 a month and withdrawals for treatment are
+   * tax-exempt, under the Tax Laws (Amendment) Act 2024 in force since
+   * 27 December 2024. That relief is the whole point: it is the one retirement
+   * product where the tax treatment does real work.
+   *
+   * ELIGIBILITY, WHICH IS NOT OBVIOUS. A PRMF is normally a sub-fund of an
+   * RBA-registered scheme, so it usually rides on a pension a member already
+   * has. CPF's is the exception worth naming for this audience: it admits the
+   * self-employed directly, which matters in a market where most people are.
+   *
+   * ONLY TWO ARE LISTED, and that is deliberate. KPPF, MURBS, KPA and the TSC
+   * scheme all run PRMFs, but they are closed to their own sectors — Kenya
+   * Power, Maseno, the ports, teachers. Listing a fund a reader cannot join is
+   * worse than listing nothing, so they are named here in the comment and not
+   * on a card.
+   *
+   * NO AFFILIATE ARRANGEMENT EXISTS, here or anywhere in this file, and
+   * isAffiliate stays false. These are providers whose own domains describe
+   * these products, not partners. */
+  {
+    slug: "britam-afya-pension",
+    name: "Britam Afya Pension",
+    shortName: "Britam Afya",
+    type: "prmf",
+    url: "https://ke.britam.com/pension/business/retirement-benefits-plans/afya-pension",
+    isAffiliate: false,
+    regulator: "RBA",
+    liquidity: "Preserved for medical costs in retirement; withdrawals for treatment are tax-exempt",
+    tagline: "Post-retirement medical savings from an established insurer",
+  },
+  {
+    slug: "cpf-prmf",
+    name: "CPF Post-Retirement Medical Scheme",
+    shortName: "CPF Medical",
+    type: "prmf",
+    url: "https://cpf.or.ke/post-retirement-medical-scheme/",
+    isAffiliate: false,
+    regulator: "RBA",
+    liquidity: "Preserved for medical costs in retirement; withdrawals for treatment are tax-exempt",
+    tagline: "Open to the self-employed, not only to employees",
+  },
 ];
 
 export const MMF_LINKS = PRODUCT_LINKS.filter((p) => p.type === "mmf");
 export const TBILL_LINKS = PRODUCT_LINKS.filter((p) => p.type === "tbill");
 export const SACCO_LINKS = PRODUCT_LINKS.filter((p) => p.type === "sacco");
+export const PRMF_LINKS = PRODUCT_LINKS.filter((p) => p.type === "prmf");
 export const PENSION_LINKS = PRODUCT_LINKS.filter((p) => p.type === "pension");
 export const MMF_AND_TBILL_LINKS = PRODUCT_LINKS.filter(
   (p) => p.type === "mmf" || p.type === "tbill"
