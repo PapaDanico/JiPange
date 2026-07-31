@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
 import { GOAL_CONFIGS } from "../goal-planner";
-import { REAL_RETURN_DEFAULT } from "../retirement-kenya";
+import { LIVING_REPLACEMENT_AT_RETIREMENT, REAL_RETURN_DEFAULT } from "../retirement-kenya";
 
 /**
  * The retirement planner's pot multiple, its presets, and its on-screen
@@ -29,14 +29,19 @@ import { REAL_RETURN_DEFAULT } from "../retirement-kenya";
 const ROOT = new URL("../../", import.meta.url).pathname;
 const planner = readFileSync(`${ROOT}components/planners/GoalPlanner.tsx`, "utf8");
 
-/** Both rates, read from the source rather than restated here. */
-const replacement = Number(planner.match(/const REPLACEMENT_DEFAULT = ([\d.]+);/)?.[1] ?? NaN);
+/* Replacement comes from the SHARED constant, which the planner imports rather
+ * than restating — that sharing is the fix for the 1.79x disagreement between
+ * the two retirement tools, so the test reads it the same way the code does. */
+const replacement = LIVING_REPLACEMENT_AT_RETIREMENT;
 const withdrawal = Number(planner.match(/const WITHDRAWAL_DEFAULT = ([\d.]+);/)?.[1] ?? NaN);
 const multiple = (replacement * 12) / withdrawal;
 
 describe("the retirement pot is sized for the income it promises", () => {
   it("declares both rates, because one alone cannot size a pot", () => {
-    expect(replacement, "REPLACEMENT_DEFAULT not found").toBeGreaterThan(0);
+    expect(planner, "the planner restates the replacement rate instead of importing it").toMatch(
+      /const REPLACEMENT_DEFAULT = LIVING_REPLACEMENT_AT_RETIREMENT;/
+    );
+    expect(replacement, "the shared replacement rate is missing").toBeGreaterThan(0);
     expect(replacement, "a replacement rate above 1 means spending MORE once retired").toBeLessThanOrEqual(1);
     expect(withdrawal, "WITHDRAWAL_DEFAULT not found").toBeGreaterThan(0);
     expect(withdrawal, "a withdrawal above 10% is not a retirement plan").toBeLessThan(0.1);

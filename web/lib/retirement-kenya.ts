@@ -59,10 +59,19 @@
  * `medicalShareOfCapital` against `medicalShareOfSpendingToday` is the
  * comparison this module exists to make.
  *
- * Note what is NOT claimed. The headline capital lands close to the old flat
- * rule — 20.7x and 19.8x against a flat 20x. This rework barely moves the
- * total. It moves what the total is FOR, and it is the composition rather than
- * the headline that decides whether a plan survives contact with a hospital.
+ * This paragraph used to say the headline barely moved — "20.7x and 19.8x
+ * against a flat 20x" — and that the rework changed only what the total was
+ * FOR. That was true until July 2026, when LIVING_REPLACEMENT_AT_RETIREMENT
+ * was added and the model stopped assuming a retiree keeps spending what they
+ * spend now. The headline now lands near 0.62x of the flat 20x rule.
+ *
+ * The composition point still stands and is still the reason this module
+ * exists: medical is a rising stream inside a falling one, and
+ * `medicalShareOfCapital` against `medicalShareOfSpendingToday` is the
+ * comparison nothing else makes. But it is no longer true that the total is
+ * unchanged, so this no longer says so. The old flat rule is shown beside the
+ * answer precisely so a reader can see the gap rather than be told there
+ * isn't one.
  *
  * There is also a deadline nothing else in this app surfaces: Kenyan insurers
  * commonly refuse NEW entrants past their mid-sixties and price on continuous
@@ -107,6 +116,34 @@ import { currentInflation, tbillRate } from "./rates-feed";
  * to be wrong in.
  */
 export const REAL_RETURN_DEFAULT = 0.03;
+
+/**
+ * How much of today's LIVING costs a household still needs the day it retires.
+ *
+ * THE SINGLE SOURCE OF TRUTH for that judgement, shared with the retirement
+ * planner (components/planners/GoalPlanner.tsx). It exists because the two
+ * tools silently disagreed by a factor of 1.79.
+ *
+ * This model had no replacement rate at all: livingAtRetirement was today's
+ * living cost UNCHANGED, declining 1%/yr afterwards to a 75% floor — so it
+ * implicitly assumed a retiree needs ~89% of their working spending across the
+ * plan. The planner assumed 50% from day one. Both were defensible readings and
+ * nobody had noticed they were different readings, because neither wrote the
+ * number down as a number.
+ *
+ * 50% is the operator's read for Kenya: no commute, no school fees, usually no
+ * mortgage. It sits below the Western 70-80% replacement band, deliberately,
+ * for a market where those three are a larger share of working-age spending.
+ *
+ * APPLIED TO LIVING ONLY. Medical is NOT reduced — you need the same cover the
+ * day after you retire as the day before, and MEDICAL_REAL_ESCALATION already
+ * has it rising from there. That asymmetry is why this model and the planner
+ * still differ slightly: the planner takes one combined figure and cannot tell
+ * the two apart. The difference is now small, stated, and asserted by
+ * lib/__tests__/retirement-models-agree.test.ts rather than left to be
+ * discovered by a reader running both tools.
+ */
+export const LIVING_REPLACEMENT_AT_RETIREMENT = 0.5;
 
 /**
  * How fast ordinary living costs fall in real terms once retired.
@@ -175,6 +212,8 @@ export interface RetirementInputs {
   realReturn?: number;
   medicalRealEscalation?: number;
   livingRealDecline?: number;
+  /** Share of today's LIVING costs still needed at retirement. Medical is not reduced. */
+  livingReplacement?: number;
 }
 
 export interface RetirementYear {
@@ -258,10 +297,17 @@ export function planKenyanRetirement(input: RetirementInputs): KenyanRetirement 
   const annualLivingNow = Math.max(0, input.currentMonthlyExpenses) * 12;
   const annualMedicalNow = Math.max(0, input.currentMonthlyMedical) * 12;
 
-  // Living costs at the moment of retiring are today's, unchanged: we are in
-  // today's money, so no inflation is applied. What changes is the SHAPE from
-  // retirement onward.
-  const livingAtRetirement = annualLivingNow;
+  /* Living costs STEP DOWN at retirement, then decline further.
+   *
+   * This used to be `annualLivingNow` unchanged — no step at all — which meant
+   * the model quietly assumed a retiree keeps spending what they spend now.
+   * That is the assumption the planner had already rejected, and the gap
+   * between the two tools was almost entirely this one line.
+   *
+   * Still in today's money, so no inflation is applied; the replacement rate
+   * is a real reduction in what the household needs, not a price effect. */
+  const replacement = input.livingReplacement ?? LIVING_REPLACEMENT_AT_RETIREMENT;
+  const livingAtRetirement = annualLivingNow * replacement;
   // Medical, by contrast, has already been climbing in real terms during the
   // working years — the member ages on the way to retirement too.
   const medicalAtRetirement = annualMedicalNow * Math.pow(1 + medEsc, yearsToRetirement);

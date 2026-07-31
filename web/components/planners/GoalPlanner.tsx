@@ -9,6 +9,7 @@ import {
   type PlanItemInput,
 } from "@/lib/goal-planner";
 import { buildGoalStrategy } from "@/lib/native-plan";
+import { LIVING_REPLACEMENT_AT_RETIREMENT } from "@/lib/retirement-kenya";
 import { inflationAdjust } from "@/lib/projections";
 import { getStoredCalculations, getStoredProfile, saveStoredGoal } from "@/lib/storage";
 import type { GoalStrategy } from "@/lib/types";
@@ -68,7 +69,12 @@ const RETIREMENT_INCOMES = [30_000, 50_000, 100_000, 150_000];
  * See retirement-kenya.ts for the fuller model, which prices living costs and
  * medical as separate streams instead of applying any multiple at all.
  */
-const REPLACEMENT_DEFAULT = 0.5;
+/* Imported, not restated. The two retirement tools disagreed by 1.79x because
+ * each held its own private view of this number — and the fuller model held
+ * its view implicitly, as the absence of a step-down, which is the hardest
+ * kind of assumption to notice. One constant now, checked by
+ * lib/__tests__/retirement-models-agree.test.ts. */
+const REPLACEMENT_DEFAULT = LIVING_REPLACEMENT_AT_RETIREMENT;
 const WITHDRAWAL_DEFAULT = 0.04;
 const REPLACEMENT_CHOICES = [0.4, 0.5, 0.6, 0.8, 1];
 const WITHDRAWAL_CHOICES = [0.02, 0.03, 0.04, 0.05];
@@ -598,6 +604,17 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
                 yields of 2–3% can support once today&apos;s unusually high rates normalise.
               </p>
             </div>
+
+            <p className="mt-3 text-xs text-faint">
+              This is the quick version: one figure in, one out. For a fuller
+              answer that prices medical cover separately — it keeps rising while
+              everything else falls — use the{" "}
+              <a href="/tools/fire-number" className="underline hover:text-primary">
+                retirement number tool
+              </a>
+              . It asks for roughly 15% more, because it can see the medical bill
+              this page cannot.
+            </p>
 
             <p className="mt-3 rounded-xl bg-canvas p-3 text-xs text-ink-soft">
               {formatKES(Number(income) || 0)}/mo now × {Math.round(replacement * 100)}% ={" "}
