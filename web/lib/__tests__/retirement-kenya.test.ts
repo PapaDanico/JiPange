@@ -165,11 +165,19 @@ describe("it says the things a plan usually hides", () => {
   it("shows the old flat rule beside its own answer rather than quietly replacing it", () => {
     const r = planKenyanRetirement(BASE);
     expect(r.flatRuleKes).toBe(128_000 * 12 * 20);
-    // Close enough that the point is the composition, not the headline —
-    // if this ever diverges wildly the copy claiming otherwise is wrong.
+    /* This used to assert the two land CLOSE (0.7-1.4x), and the module header
+     * said the rework "barely moves the total". Both stopped being true in
+     * July 2026 when LIVING_REPLACEMENT_AT_RETIREMENT was added: the flat rule
+     * has no replacement assumption at all, so it implicitly demands a retiree
+     * fund their full working spending for twenty years.
+     *
+     * The model should now land MATERIALLY BELOW it, and the bound is a floor
+     * as well as a ceiling — if it ever creeps back toward 1.0 the replacement
+     * rate has stopped being applied, which is exactly the silent failure that
+     * let the two retirement tools disagree by 1.79x in the first place. */
     const ratio = r.capitalRequiredKes / r.flatRuleKes;
-    expect(ratio).toBeGreaterThan(0.7);
-    expect(ratio).toBeLessThan(1.4);
+    expect(ratio, 'the model has drifted back toward the unadjusted flat rule').toBeLessThan(0.8);
+    expect(ratio, 'the model has fallen implausibly far below the flat rule').toBeGreaterThan(0.4);
   });
 });
 
