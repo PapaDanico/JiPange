@@ -53,6 +53,24 @@ export type Regulator = "CMA" | "CBK" | "SASRA" | "CBK+CMA" | "RBA";
  * and accuracy are different virtues; this file has now failed at each while
  * satisfying the other.
  */
+/* WHAT THIS DATE ACTUALLY GOVERNS, which its name gets wrong.
+ *
+ * Not fund yields. No money market fund in this file carries one — see the
+ * Ziidi entry below for why that is a considered refusal rather than a gap.
+ * The only yields here are the T-bill, read live from the rates feed and never
+ * stale, and three SACCO dividends, dated separately by SACCO_RATES_AS_OF
+ * because they are declared once a year at an AGM.
+ *
+ * So this dates the SURVEY: minimum entry, product terms, and which funds are
+ * listed. Those age far more slowly than a yield, which is why a 120-day
+ * window is reasonable for them and would not be for a rate.
+ *
+ * Worth stating because the staleness notice this drives originally warned
+ * about "fund yields" and reassured the reader that "minimums are unaffected"
+ * — precisely inverted. It disclaimed the one thing the page does not show and
+ * vouched for the one thing this date is about. The name is kept for now; the
+ * scope is written down so the next reader does not have to infer it from a
+ * grep of yieldPct. */
 export const YIELDS_AS_OF = "2026-04-01";
 
 /**
