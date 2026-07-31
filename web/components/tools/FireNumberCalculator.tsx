@@ -20,6 +20,7 @@ import Link from "next/link";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
 import { MMF_AND_TBILL_LINKS } from "@/lib/affiliate-links";
+import { solveBreakEven, describeHeadroom } from "@/lib/break-even";
 import { MEDICAL_EVIDENCE, REPLACEMENT_EVIDENCE } from "@/lib/retirement-evidence";
 import dynamic from "next/dynamic";
 
@@ -56,6 +57,19 @@ export default function FireNumberCalculator() {
     "jipange:tool:fire-number:monthlyMedical",
     ""
   );
+  /* Optional, and optional is the point. The tool has always stated a target
+   * and said nothing about whether the reader gets there. These two answer
+   * that — but leaving them blank must still give the full target, because
+   * "what do I need?" is a legitimate question on its own and demanding a
+   * balance before answering it would be a tollgate. */
+  const [currentCapital, setCurrentCapital] = useStickyState(
+    "jipange:tool:fire-number:currentCapital",
+    ""
+  );
+  const [monthlySaving, setMonthlySaving] = useStickyState(
+    "jipange:tool:fire-number:monthlySaving",
+    ""
+  );
 
   const fire = useMemo(() => {
     const expenses = Number(monthlyExpenses);
@@ -65,19 +79,46 @@ export default function FireNumberCalculator() {
       currentMonthlyMedical: Number(monthlyMedical) || 0,
       currentAge,
       retirementAge: Math.max(currentAge, targetAge),
+      currentCapital: Number(currentCapital) || 0,
+      monthlyContribution: Number(monthlySaving) || 0,
     });
-  }, [monthlyExpenses, monthlyMedical, currentAge, targetAge]);
+  }, [monthlyExpenses, monthlyMedical, currentAge, targetAge, currentCapital, monthlySaving]);
+
+  /* Solved only when the reader has told us enough for the answer to mean
+   * something. With neither a balance nor a monthly saving there is no plan to
+   * break even on, and showing "you need 15% real" against zero of both would
+   * be arithmetic about nobody. */
+  const breakEven = useMemo(() => {
+    if (!fire) return null;
+    const capital = Number(currentCapital) || 0;
+    const monthly = Number(monthlySaving) || 0;
+    if (capital <= 0 && monthly <= 0) return null;
+    return solveBreakEven({
+      targetKes: fire.capitalRequiredKes,
+      currentCapitalKes: capital,
+      monthlyContributionKes: monthly,
+      years: fire.yearsToRetirement,
+      assumedRealReturn: fire.realReturn,
+    });
+  }, [fire, currentCapital, monthlySaving]);
 
   const evidence = useMemo(() => realReturnEvidence(), []);
 
   const resultsRef = useScrollIntoView<HTMLDivElement>(fire !== null);
 
   const isDirty =
-    monthlyExpenses !== "" || monthlyMedical !== "" || currentAge !== 30 || targetAge !== DEFAULT_RETIREMENT_AGE;
+    monthlyExpenses !== "" ||
+    monthlyMedical !== "" ||
+    currentCapital !== "" ||
+    monthlySaving !== "" ||
+    currentAge !== 30 ||
+    targetAge !== DEFAULT_RETIREMENT_AGE;
 
   function handleReset() {
     setMonthlyExpenses("");
     setMonthlyMedical("");
+    setCurrentCapital("");
+    setMonthlySaving("");
     setCurrentAge(30);
     setTargetAge(DEFAULT_RETIREMENT_AGE);
   }
@@ -104,6 +145,22 @@ export default function FireNumberCalculator() {
         value={monthlyMedical}
         onChange={setMonthlyMedical}
         placeholder="e.g. 8000"
+      />
+
+      <NumberField
+        id="currentCapital"
+        label="What you have saved or invested so far (Ksh) — optional"
+        value={currentCapital}
+        onChange={setCurrentCapital}
+        placeholder="e.g. 500000"
+      />
+
+      <NumberField
+        id="monthlySaving"
+        label="What you put away each month (Ksh) — optional"
+        value={monthlySaving}
+        onChange={setMonthlySaving}
+        placeholder="e.g. 20000"
       />
 
       <div>
@@ -179,6 +236,60 @@ export default function FireNumberCalculator() {
                 * vehicle for exactly this problem and gave it tax relief, so
                 * naming the problem without naming the answer was leaving the
                 * useful half unsaid. */}
+              {/* WHAT HAS TO BE TRUE
+                *
+                * The target above answers "how much?". This answers "will I
+                * get there, and what am I betting on?" — the question a reader
+                * actually has, and one no amount of precision on the target
+                * addresses.
+                *
+                * Above the PRMF card deliberately: a reader whose plan needs an
+                * implausible return should meet that fact before being shown a
+                * product to buy. */}
+              {breakEven && (
+                <div className="mt-4 rounded-xl border border-accent/30 bg-accent-wash p-4">
+                  <p className="text-xs font-semibold text-accent-ink">
+                    What has to be true for this to work
+                  </p>
+                  {breakEven.unreachableByReturnsAlone ? (
+                    <p className="mt-1 text-xs text-ink-soft">
+                      No realistic investment return closes this gap — not even 15% a year
+                      above inflation, which nothing dependable pays. That is not a reason
+                      to stop: it means the lever is what you put away each month, or the
+                      date, rather than what you invest in. Raising the monthly amount
+                      above moves this straight away.
+                    </p>
+                  ) : breakEven.arrivesWithoutGrowth ? (
+                    <p className="mt-1 text-xs text-ink-soft">
+                      What you already have, plus what you keep saving, reaches this target{" "}
+                      <strong>without needing any growth at all</strong>. Anything your
+                      money earns above inflation is margin, not a requirement.
+                    </p>
+                  ) : (
+                    <>
+                      <p className="mt-1 text-xs text-ink-soft">
+                        Your money has to grow{" "}
+                        <strong>
+                          {(breakEven.requiredRealReturn! * 100).toFixed(1)}% a year faster
+                          than prices rise
+                        </strong>{" "}
+                        for you to arrive on time. This plan assumes{" "}
+                        {(breakEven.assumedRealReturn * 100).toFixed(1)}%.
+                      </p>
+                      <p className="mt-1.5 text-xs text-ink-soft">
+                        {describeHeadroom(breakEven)}
+                      </p>
+                    </>
+                  )}
+                  <p className="mt-2 text-xs text-faint">
+                    &ldquo;Faster than prices rise&rdquo; is the only kind of return that
+                    matters over decades. Earning 12% while prices rise 6% is the same as
+                    earning 6% while prices sit still — which is why the headline rate on a
+                    product tells you less than it looks like it does.
+                  </p>
+                </div>
+              )}
+
               <div className="mt-4 rounded-xl bg-white/70 p-4">
                 <p className="text-xs font-semibold text-primary">
                   You can fund this part separately, and more cheaply
