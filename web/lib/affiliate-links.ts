@@ -157,17 +157,51 @@ export type Regulator = "CMA" | "CBK" | "SASRA" | "CBK+CMA" | "RBA";
  * The names are corrected because a name is a statement; the type is left
  * because it is a behaviour.
  *
- * LIQUIDITY STRINGS
+ * LIQUIDITY STRINGS — SETTLED 31 July 2026, AND "T+1" WAS WRONG BOTH WAYS
  *
- * One checked: Ziidi's "Withdraw to M-PESA, no fee" is corroborated —
- * Safaricom's own pages describe the fund as zero-rated on both deposits and
- * withdrawals. The other thirteen are unverified, and they are claims about how
- * fast somebody can reach their own money, which is the thing a saver is most
- * likely to be relying on when it matters.
+ * Seven funds asserted "T+1 to M-Pesa". Nobody had sourced it, and checking
+ * against the providers' own domains contradicted it in BOTH directions:
+ *
+ *   Britam      brochure: funds available within 48 HOURS — slower than T+1
+ *   Old Mutual  self-service withdrawals to mobile money paid SAME DAY —
+ *               faster than T+1
+ *   KCB         "short notice (within 2 working days)" — slower
+ *   CIC         "at short notice with no penalty" — no day count at all
+ *   ICEA, Sanlam, Nabo    no Kenyan redemption timeline published
+ *
+ * Exactly the shape the minimums had: an unsourced column errs in both
+ * directions, so a wrong figure there is not conservative, it is arbitrary.
+ * And this column is worse than the minimums. A wrong minimum turns somebody
+ * away at the door, where they find out immediately; a wrong settlement time
+ * is discovered in the week they actually need the money.
+ *
+ * All seven now carry the honest hedge the other funds already used. The
+ * provider figures above are deliberately NOT written in as new values — they
+ * come from search summaries of provider pages, not from pages this
+ * environment could read, and the rule that survived the minimums survey was
+ * corroborate, never author.
+ *
+ * Ziidi keeps "Withdraw to M-PESA, no fee": corroborated against Safaricom's
+ * own pages, which describe the fund as zero-rated both ways.
+ *
+ * CLASSIFICATION — SETTLED 31 July 2026, AND NOTHING MORE HAD MOVED
+ *
+ * All twelve funds still labelled "Money Market Fund" were checked against
+ * their manager's own domain. Every one is still a money market fund, and two
+ * settle it structurally: Nabo and ICEA each run a money market fund AND a
+ * separate fixed income fund as distinct products, so the line the CMA drew in
+ * 2020 is one their own product lines already make. CIC (13-month weighted
+ * average tenure) and Dry Associates (maturities under 18 months) publish
+ * mandates that are money-market by construction.
+ *
+ * NCBA and Zimele remain the only two that moved. That is a finding, not an
+ * open question — worth stating plainly, because "checked, found nothing" is a
+ * different and more useful answer than silence.
  *
  * STILL OPEN
- *   - The CMA classification of the other twelve funds.
- *   - Thirteen unverified `liquidity` strings.
+ *   - Whether ODPC registration is required. It turns on Danico Ventures'
+ *     turnover and headcount (see privacy-facts.ts) and is not answerable from
+ *     any public source.
  */
 /**
  * PROVIDER SURVEY - 31 July 2026. Nine of fourteen funds checked; five wrong.
@@ -216,14 +250,18 @@ export type Regulator = "CMA" | "CBK" | "SASRA" | "CBK+CMA" | "RBA";
  * THE DATE IS STILL NOT BUMPED
  *
  * Minimums are only part of what PRODUCT_SURVEY_AS_OF governs - it also covers
- * product terms and which funds are listed, and Zimele shows why that matters:
- * it may no longer be a money market fund at all. Liquidity strings, taglines
- * and the fund list itself remain unchecked, so the staleness notice stays up.
+ * product terms and which funds are listed. Both questions this block used to
+ * leave open have since been answered (31 July 2026): NCBA and Zimele had both
+ * moved to fixed income funds and are renamed, the other twelve were checked
+ * and had not, and the seven unsourced "T+1 to M-Pesa" strings are gone.
+ *
+ * The staleness notice STAYS UP regardless. Taglines and the fund list itself
+ * are still unchecked, and the yields the cards quote move continuously — the
+ * survey date is about the whole record being re-walked, not about the last
+ * question anybody happened to close.
  *
  * STILL OPEN
- *   - Is the NCBA fund now the NCBA Fixed Income Fund? Zimele made the same
- *     move, so this looks like a market pattern rather than a typo. Needs a page.
- *   - Every `liquidity` string in this file is unverified.
+ *   - Taglines, and whether the fund list is complete.
  */
 export const PRODUCT_SURVEY_AS_OF = "2026-04-01";
 
@@ -285,8 +323,9 @@ export interface ProductLink {
    * An explicit fact, because the code that needed it was inferring it from
    * `/M-PESA/i.test(liquidity) && yieldPct === undefined` — which worked only
    * while exactly one fund happened to lack a yield. Every other fund's
-   * liquidity string reads "T+1 to M-Pesa", so it matched the regex too, and
-   * the real discriminator was the missing figure. The moment four more funds
+   * liquidity string then read "T+1 to M-Pesa" (those are since gone, as
+   * unsourced), so it matched the regex too, and the real discriminator was
+   * the missing figure. The moment four more funds
    * lost their yields, the wallet-native set silently grew from one to five and
    * the advice would have described ordinary funds as reachable from the M-PESA
    * app. A product fact inferred from an unrelated gap is a coincidence waiting
@@ -376,7 +415,7 @@ export const PRODUCT_LINKS: ProductLink[] = [
     // 91-day bill — see the coherence guard in the directory tests.
     minKes: 1000,
     regulator: "CMA",
-    liquidity: "T+1 to M-Pesa",
+    liquidity: "Confirm withdrawal terms with the manager",
     tagline: "Long-established fund; contribute via Paybill 500005",
   },
   {
@@ -404,7 +443,7 @@ export const PRODUCT_LINKS: ProductLink[] = [
     // describes. Dropped rather than carried, as with the yield; the card
     // simply shows no minimum until somebody opens the page and confirms it.
     regulator: "CMA",
-    liquidity: "T+1 to M-Pesa",
+    liquidity: "Confirm withdrawal terms with the manager",
     tagline: "Large, established co-operative-linked fund",
   },
   {
@@ -422,7 +461,7 @@ export const PRODUCT_LINKS: ProductLink[] = [
     // nabocapital.com publishes a USD minimum only; the KES figure is not
     // stated. Unverifiable, same reasoning.
     regulator: "CMA",
-    liquidity: "T+1 to M-Pesa",
+    liquidity: "Confirm withdrawal terms with the manager",
     tagline: "Sanlam-backed manager; higher entry minimum",
   },
   {
@@ -439,7 +478,7 @@ export const PRODUCT_LINKS: ProductLink[] = [
     // No minimum published anywhere on icealion.com. Unverifiable, and the
     // column it sits in was wrong 5 times in 9.
     regulator: "CMA",
-    liquidity: "T+1 to M-Pesa",
+    liquidity: "Confirm withdrawal terms with the manager",
     tagline: "Pan-Africa insurer; strong institutional credentials",
   },
   {
@@ -455,7 +494,7 @@ export const PRODUCT_LINKS: ProductLink[] = [
     // minKes removed - 31 Jul 2026 survey.
     // Not found on sanlam.com. Unverifiable, same reasoning.
     regulator: "CMA",
-    liquidity: "T+1 to M-Pesa",
+    liquidity: "Confirm withdrawal terms with the manager",
     tagline: "USSD access makes it easy from any phone",
   },
   {
@@ -471,7 +510,7 @@ export const PRODUCT_LINKS: ProductLink[] = [
     // as the undated yields this file was built to fix.
     minKes: 1000,
     regulator: "CMA",
-    liquidity: "T+1 to M-Pesa",
+    liquidity: "Confirm withdrawal terms with the manager",
     tagline: "Backed by one of Africa's largest insurers",
   },
   {
@@ -493,7 +532,7 @@ export const PRODUCT_LINKS: ProductLink[] = [
     // money market to fixed income, so the name above may no longer describe
     // it. Two unverified claims, not one.
     regulator: "CMA",
-    liquidity: "T+1 to M-Pesa",
+    liquidity: "Confirm withdrawal terms with the manager",
     tagline: "Low minimum entry; long-standing retail fund",
   },
   // ── Funds added from the April 2026 yield survey ────────────────────────
