@@ -31,7 +31,6 @@ const read = (p: string) => readFileSync(`${process.cwd()}/${p}`, "utf8");
 const nativePlan = read("lib/native-plan.ts");
 const actionPlanUi = read("components/onboarding/ActionPlan.tsx");
 const goalPlannerUi = read("components/planners/GoalPlanner.tsx");
-const sync = read("lib/supabase/sync.ts");
 const saveMyPlan = read("components/onboarding/SaveMyPlan.tsx");
 const page = read("app/privacy/page.tsx");
 /**
@@ -91,27 +90,28 @@ describe("the claims that were false are now checked against the code", () => {
     }
   });
 
-  it("admits the sign-in exists, because the product offers one", () => {
-    // SaveMyPlan sends a magic link. A notice claiming "no login" is false.
-    expect(saveMyPlan).toMatch(/signInWithOtp/);
-    const signIn = ONLY_IF_YOU_SIGN_IN.map((d) => `${d.what} ${d.purpose}`).join(" ").toLowerCase();
-    expect(signIn).toMatch(/email/);
-    expect(pageProse).not.toMatch(/no accounts, no registration, no login/i);
-    expect(pageProse).not.toMatch(/does not collect, store, or transmit any personal/i);
-  });
-
-  it("discloses everything the Supabase sync writes", () => {
-    // Read the actual upsert, not a memory of it.
-    const upserted = [...sync.matchAll(/^\s{4}(\w+):/gm)].map((m) => m[1]);
-    expect(upserted.length).toBeGreaterThan(3);
-    const signIn = ONLY_IF_YOU_SIGN_IN.map((d) => d.what).join(" ").toLowerCase();
-    for (const field of ["full_name", "age", "county", "gross_monthly_salary", "dependants"]) {
-      if (!upserted.includes(field)) continue;
-      const word = field.replace("full_name", "name").replace("gross_monthly_salary", "salary");
-      expect(signIn, `Supabase stores ${field} but the notice does not say so`).toMatch(
-        new RegExp(word.split("_")[0]),
-      );
-    }
+  it("offers no sign-in at all, which is what makes the notice true", () => {
+    /* This assertion is INVERTED from what it used to be. It once required the
+     * notice to ADMIT a sign-in, because SaveMyPlan sent a magic link and a
+     * notice claiming "no login" would have been false.
+     *
+     * The sign-in was removed in July 2026: the Registration Regulations 2021
+     * disapply the small-operator exemption for Third Schedule purposes, which
+     * include "provision of financial services", and the surest answer to an
+     * arguable classification is to hold no personal data at all.
+     *
+     * So the honest claim flipped, and the guard flips with it. What must not
+     * happen is the claim flipping while the code stays — which is the exact
+     * failure this whole file was written to catch, in the other direction. */
+    expect(saveMyPlan, "SaveMyPlan sends a magic link again").not.toMatch(/signInWithOtp/);
+    expect(
+      ONLY_IF_YOU_SIGN_IN,
+      "a sign-in disclosure exists again; if sign-in came back, so must the code review"
+    ).toEqual([]);
+    expect(
+      PROCESSORS.map((p) => p.name).join(" "),
+      "Supabase is a named processor again"
+    ).not.toMatch(/supabase/i);
   });
 
   it("names no analytics provider that is not installed", () => {
@@ -134,14 +134,15 @@ describe("it meets the shape section 29 asks for", () => {
   });
 
   it("names every third party that can receive data, and where it is", () => {
-    // Anthropic left this list when the plan moved on-device: a processor that
-    // processes nothing must not be named, for the same s.29 reason a missing
-    // one must be.
-    for (const name of ["Netlify", "Supabase"]) {
-      expect(PROCESSORS.map((p) => p.name)).toContain(name);
-    }
-    expect(PROCESSORS.map((p) => p.name)).not.toContain("Anthropic");
-    {
+    // Anthropic left this list when the plan moved on-device, and Supabase left
+    // it in July 2026 when the sign-in went: a processor that processes nothing
+    // must not be named, for the same s.29 reason a missing one must be.
+    expect(PROCESSORS.map((p) => p.name)).toContain("Netlify");
+    for (const gone of ["Anthropic", "Supabase"]) {
+      expect(
+        PROCESSORS.map((p) => p.name),
+        `${gone} is named as a processor but receives nothing`
+      ).not.toContain(gone);
     }
     // Cross-border transfer is a distinct duty; each must say where it sits.
     for (const p of PROCESSORS) expect(p.where).toBeTruthy();

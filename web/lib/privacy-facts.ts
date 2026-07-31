@@ -52,6 +52,22 @@ export const DEVICE_ONLY: DataItem[] = [
     destination: "Your device only, in browser localStorage",
     retention: "Until you clear it",
   },
+  /**
+   * The profile. This entry MOVED here in July 2026 rather than being written
+   * fresh — these fields used to appear under ONLY_IF_YOU_SIGN_IN, because
+   * signing in sent them to Supabase. With sign-in gone they never leave the
+   * device, but they are still collected, and a field that stops being
+   * disclosed because the section holding it was emptied is precisely the
+   * defect this file exists to prevent. privacy-truth.test.ts caught it within
+   * a minute of the sign-in disclosure being cleared.
+   */
+  {
+    what: "Your name, age, county, salary, dependants, and whether you are in a chama",
+    purpose:
+      "To tailor the plan and the numbers to you. Your name is only ever used to address you on your own screen.",
+    destination: "Your device only. There is no account and nowhere to send it.",
+    retention: "Until you clear the site's data, which you can do from this page",
+  },
 ];
 
 /** The optional AI plan. Leaves the device; carries no name. */
@@ -72,21 +88,28 @@ export const SENT_FOR_THE_AI_PLAN: DataItem[] = [
   },
 ];
 
-/** Only if you choose to save a plan across devices. */
-export const ONLY_IF_YOU_SIGN_IN: DataItem[] = [
-  {
-    what: "Your email address",
-    purpose: "To send a sign-in link and identify your saved plan. There is no password.",
-    destination: "Supabase, our authentication and database provider, which processes outside Kenya",
-    retention: "Until you ask us to delete the account",
-  },
-  {
-    what: "Your name, age, county, salary, dependants and saved plan",
-    purpose: "So a plan you built on one device is there on another",
-    destination: "Supabase, our database provider, which processes outside Kenya",
-    retention: "Until you ask us to delete it",
-  },
-];
+/**
+ * There is no longer any way to sign in, so this list is empty — deliberately
+ * kept rather than deleted, because a reader who remembers the old notice
+ * deserves to be told what happened to it. Same reasoning as
+ * SENT_FOR_THE_AI_PLAN above.
+ *
+ * It used to hold two entries: an e-mail address to Supabase for a magic link,
+ * and name, age, county, salary, dependants and the saved plan upserted to a
+ * Supabase database outside Kenya. That was the last controller-side personal
+ * data this product held.
+ *
+ * Removed in July 2026. The Data Protection (Registration of Data Controllers
+ * and Data Processors) Regulations, 2021 disapply the small-operator exemption
+ * for Third Schedule purposes, which include "provision of financial services".
+ * Whether a personal-finance tool is caught by that phrase is arguable; holding
+ * no personal data is not. The cheapest way to win an argument about which
+ * schedule you fall under is to have nothing to register in respect of.
+ *
+ * Moving a plan between devices is now an exported backup file the reader
+ * carries themselves — see lib/backup.ts and SaveMyPlan.tsx.
+ */
+export const ONLY_IF_YOU_SIGN_IN: DataItem[] = [];
 
 /** Collected by the infrastructure rather than by us, and unavoidable. */
 /**
@@ -156,15 +179,19 @@ export const DPA_RIGHTS: { right: string; whatItMeans: string }[] = [
 ];
 
 /** Every third party that can receive personal data. Named, per s.29(d)–(e). */
+/**
+ * One entry, and that is the whole point.
+ *
+ * Supabase was the second. It handled sign-in and saved plans and was removed
+ * in July 2026 along with the sign-in path itself; the dependency is gone from
+ * package.json, not merely unused. What is left is the host, which every web
+ * page on earth has and which receives an IP address because that is how HTTP
+ * works — not a recipient we chose to send anything to.
+ */
 export const PROCESSORS = [
   {
     name: "Netlify",
     role: "Hosts the site and runs the server functions",
-    where: "Outside Kenya",
-  },
-  {
-    name: "Supabase",
-    role: "Sign-in and saved plans, only if you choose to save one",
     where: "Outside Kenya",
   },
 ];
@@ -218,22 +245,54 @@ export const CONTROLLER = {
    * form put it in the wrong box would be our error, not the registry's.
    */
   /**
-   * ODPC registration may not be required at all.
+   * ODPC registration: the size exemption is NOT the whole test.
    *
-   * The Data Protection (Registration of Data Controllers and Data Processors)
-   * Regulations, 2021 exempt a controller whose annual turnover is below
-   * Ksh 5 million AND which employs fewer than ten people. Danico Ventures may
-   * well sit under both thresholds, in which case there is nothing to register
-   * and nothing to publish — which is a different answer from "not done yet".
+   * An earlier version of this note said only that the Data Protection
+   * (Registration of Data Controllers and Data Processors) Regulations, 2021
+   * exempt a controller below Ksh 5 million turnover AND under ten employees,
+   * and that Danico Ventures "may well sit under both thresholds, in which case
+   * there is nothing to register". That was incomplete in the direction that
+   * flatters us, and it is exactly the kind of incompleteness a reader takes
+   * for a clearance.
    *
-   * Left unstated either way. Claiming registration we do not hold would be a
-   * false regulatory claim; claiming exemption requires turnover and headcount
-   * figures that are not mine to assert. The threshold is recorded here so the
-   * question can be settled in a minute by somebody who knows them, rather than
-   * sitting as an open item nobody can action.
+   * There is a carve-out. The size exemption is disapplied where the controller
+   * processes personal data for any purpose in the THIRD SCHEDULE, and that
+   * schedule includes "provision of financial services" alongside gambling,
+   * health, education, telecommunications, direct marketing and others. For a
+   * purpose on that list registration is mandatory REGARDLESS of turnover and
+   * headcount, and being small stops mattering.
+   *
+   * Whether these products amount to the "provision of financial services" is a
+   * legal characterisation and is deliberately NOT decided here. There is a real
+   * argument each way: no licence is held, no money is taken in or advised on,
+   * and the tools compute arithmetic on the reader's own device — against which
+   * these are personal-finance products carrying affiliate links to fund
+   * managers, and commentary on these Regulations tends to read "financial
+   * services" broadly enough to reach fintech.
+   *
+   * WHAT IS ACTUALLY IN OUR CONTROL
+   *
+   * Registration attaches to processing personal data. The surest insulation is
+   * therefore not winning an argument about which schedule we fall in — it is
+   * having no personal data to register in respect of. That is an engineering
+   * question, and it is nearly answered already: the calculators and the journey
+   * are device-only, and the AI plan stopped leaving the device in July 2026.
+   *
+   * What remains is the optional Supabase sign-in, which stores an e-mail plus
+   * name, age, county, salary and dependants. It is gated on
+   * isSupabaseConfigured(), so on a deployment with those environment variables
+   * unset the path does not exist at all. If it IS provisioned, it is the one
+   * thing standing between this product and holding no controller-side personal
+   * data whatsoever.
+   *
+   * Still not asserted either way on the page. Claiming a registration we do not
+   * hold is a false regulatory claim; claiming the exemption now needs BOTH the
+   * turnover and headcount figures AND a view on the Third Schedule, and neither
+   * is mine to assert. What is recorded here is the COMPLETE test, so the next
+   * person to look is not reasoning from half of it.
    */
   stillToPublish: [
-    "whether ODPC registration is required (see the exemption thresholds above)",
+    "whether ODPC registration is required (size exemption AND the Third Schedule carve-out — see above)",
     "a named Data Protection Officer, if one is required",
   ],
 } as const;

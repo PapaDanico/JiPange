@@ -1,101 +1,52 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { createClient } from "@/lib/supabase/client";
-import { migrateGuestDataToSupabase } from "@/lib/supabase/sync";
+import Link from "next/link";
 
-type Status = "idle" | "sending" | "sent" | "signed-in" | "error" | "unavailable";
-
+/**
+ * Moving a plan to another device, without an account.
+ *
+ * This used to be a magic-link sign-in: an e-mail address to Supabase, and on
+ * return, name, age, county, salary and dependants upserted to a database
+ * outside Kenya. It was the last controller-side personal data this product
+ * held — the calculators and the journey are device-only, and the plan stopped
+ * leaving the device in July 2026.
+ *
+ * It was removed in July 2026 because the Data Protection (Registration of Data
+ * Controllers and Data Processors) Regulations, 2021 disapply the small-operator
+ * exemption for anything in the Third Schedule, which includes "provision of
+ * financial services". Whether a personal-finance tool is caught by that phrase
+ * is arguable; holding no personal data at all is not. The cheapest way to win
+ * an argument about which schedule you fall under is to have nothing to
+ * register in respect of.
+ *
+ * The user need was real, so it is answered rather than dropped. Export a
+ * backup file, carry it, import it — same outcome, no account, no server, and
+ * the file never leaves the reader's hands. lib/backup.ts already did all of
+ * this; it just was not offered at the moment somebody wanted their plan
+ * elsewhere.
+ *
+ * If somebody restores sign-in later: it re-arms the exposure this removed,
+ * and privacy-facts.ts has to grow back its ONLY_IF_YOU_SIGN_IN table and
+ * PROCESSORS entry on the same commit. lib/__tests__/no-personal-data.test.ts
+ * will fail until it does.
+ */
 export default function SaveMyPlan() {
-  const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<Status>("idle");
-
-  useEffect(() => {
-    // One-time mount check of environment availability and auth state — not
-    // a storage mirror (createClient()/getUser() aren't a subscribable
-    // store), and the sign-in branch below is already async, so this doesn't
-    // fit useSyncExternalStore.
-    const supabase = createClient();
-    if (!supabase) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time mount check; see comment above
-      setStatus("unavailable");
-      return;
-    }
-    supabase.auth.getUser().then(async ({ data: { user } }) => {
-      if (user) {
-        await migrateGuestDataToSupabase();
-        setStatus("signed-in");
-      }
-    });
-  }, []);
-
-  async function handleSubmit(event: React.FormEvent) {
-    event.preventDefault();
-    const supabase = createClient();
-    if (!supabase) {
-      setStatus("unavailable");
-      return;
-    }
-    setStatus("sending");
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
-      },
-    });
-    setStatus(error ? "error" : "sent");
-  }
-
-  if (status === "unavailable") {
-    return (
-      <div aria-live="polite" className="rounded-2xl bg-canvas p-5 text-center text-sm text-ink-soft">
-        Your plan is saved on this device. Account sync is coming soon.
-      </div>
-    );
-  }
-
-  if (status === "signed-in") {
-    return (
-      <div aria-live="polite" className="rounded-2xl bg-success-soft p-5 text-center text-sm text-success">
-        Your plan is saved. Come back anytime from any device.
-      </div>
-    );
-  }
-
-  if (status === "sent") {
-    return (
-      <div aria-live="polite" className="rounded-2xl bg-canvas p-5 text-center text-sm text-ink-soft">
-        Check your email for a magic link to finish saving your plan.
-      </div>
-    );
-  }
-
   return (
-    <form onSubmit={handleSubmit} className="rounded-2xl bg-white p-5 shadow-sm" aria-live="polite">
-      <p className="text-sm font-medium text-primary">Save your plan</p>
+    <div className="rounded-2xl bg-white p-5 shadow-sm">
+      <p className="text-sm font-medium text-primary">Keep your plan</p>
       <p className="mt-1 text-xs text-ink-soft">
-        Save your plan so you can access it from any device.
+        Your plan is saved on this device. There is no account and nothing to
+        sign in to — we never receive it.
       </p>
-      <div className="mt-3 flex gap-2">
-        <input
-          type="email"
-          required
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-          placeholder="you@example.com"
-          className="h-11 flex-1 rounded-full border border-border px-4 text-sm focus:border-primary focus:outline-none"
-        />
-        <button
-          type="submit"
-          disabled={status === "sending"}
-          className="h-11 rounded-full bg-primary px-4 text-sm font-medium text-white disabled:opacity-60"
-        >
-          {status === "sending" ? "Sending..." : "Save"}
-        </button>
-      </div>
-      {status === "error" && (
-        <p className="mt-2 text-xs text-danger">Something went wrong. Please try again.</p>
-      )}
-    </form>
+      <p className="mt-2 text-xs text-ink-soft">
+        Moving to a new phone? Download a backup file and import it there.
+      </p>
+      <Link
+        href="/privacy#your-data"
+        className="mt-3 inline-flex h-11 items-center justify-center rounded-full bg-primary px-5 text-sm font-medium text-white transition-colors hover:bg-primary-deep"
+      >
+        Download a backup →
+      </Link>
+    </div>
   );
 }

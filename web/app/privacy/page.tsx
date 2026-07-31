@@ -245,7 +245,11 @@ export default function PrivacyPage() {
             </p>
           </section>
 
-          <DataControls />
+          {/* Anchored because SaveMyPlan links straight here: with sign-in gone,
+              exporting a backup file IS how a plan reaches another device. */}
+          <div id="your-data" className="scroll-mt-24">
+            <DataControls />
+          </div>
 
           <section>
             <h2 className="text-base font-semibold text-primary">10. Complaints</h2>
