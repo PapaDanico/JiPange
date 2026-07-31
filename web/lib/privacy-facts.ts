@@ -169,6 +169,37 @@ export const PROCESSORS = [
   },
 ];
 
+/**
+ * Who "we" is.
+ *
+ * The notice said "we" and "us" throughout and named nobody — while directing
+ * readers to the ODPC to complain about an entity it declined to identify.
+ * Section 29 of the Data Protection Act, 2019 makes identifying the controller
+ * part of the notification duty, and it is the first thing a reader exercising
+ * a s.26 right needs: you cannot ask a pronoun for your data.
+ *
+ * WHAT IS DELIBERATELY ABSENT
+ *
+ * The registration number, the registered office and any ODPC registration
+ * status. Those are still being settled and are not invented here — a
+ * controller implying a registration it does not hold would be a worse defect
+ * than a silent one. A name and a working contact route are what s.29 turns
+ * on; the rest is good practice and can follow. No legal form is stated,
+ * because the operator supplied a name and not a form.
+ */
+export const CONTROLLER = {
+  name: "Danico Ventures",
+  operates: "JiPange and Mwangaza Yield",
+  contact: "hello@jipangefinance.org",
+  /** Recorded so the absence is a decision on the record rather than an oversight. */
+  stillToPublish: [
+    "company registration number",
+    "registered office address",
+    "ODPC registration status",
+    "a named Data Protection Officer, if one is required",
+  ],
+} as const;
+
 /** The Office of the Data Protection Commissioner — the complaint route, s.56. */
 export const ODPC = {
   name: "Office of the Data Protection Commissioner",
