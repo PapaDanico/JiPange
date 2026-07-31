@@ -64,7 +64,11 @@ describe("the WhatsApp channel is offered on the right surfaces", () => {
      * which nobody is steered into, and a place where the product has already
      * produced something. Extending this list is a decision to make
      * deliberately, not by adding a file and re-running the suite. */
-    const PERMITTED = ["Footer", "JourneyActionPlan", "app/privacy/", "ExportCardButton"];
+    /* Only surfaces that actually carry the link. "ExportCardButton" was on
+     * this list and did not link the channel — a pre-authorised surface nobody
+     * had reviewed, which is how an allow-list quietly stops being one. Add an
+     * entry when the placement is made, not in anticipation of it. */
+    const PERMITTED = ["Footer", "JourneyActionPlan", "app/privacy/"];
     for (const f of surfaces()) {
       const rel = f.replace(ROOT, "");
       expect(
