@@ -34,6 +34,20 @@ const CORROBORATED: Record<string, number> = {
   "ncba-mmf": 1000,
   "cytonn-mmf": 1000,
   "lofty-corban-mmf": 1000,
+  /* Added on the SECOND pass, later the same day. Five funds whose stored
+   * figures were found wrong were blanked first — the right immediate move,
+   * because deleting a wrong number is fast and sourcing the right one is not.
+   * Each of these was then confirmed against the provider's own domain, so the
+   * row is back with the correct value rather than left empty.
+   *
+   * CIC is the instructive one: 5,000 is the INITIAL minimum and 1,000 is the
+   * top-up. The old figure was not invented, it was the right number for the
+   * wrong question — which is how it survived so long looking reasonable. */
+  "cic-mmf": 5000,
+  "kcb-mmf": 5000,
+  "etica-mmf": 100,
+  "zimele-mmf": 100,
+  "sanlam-mmf": 2500,
 };
 
 describe("every shown minimum has been corroborated", () => {
@@ -66,11 +80,17 @@ describe("every shown minimum has been corroborated", () => {
     }
   });
 
-  it("keeps the funds found wrong showing nothing at all", () => {
-    /* Named individually because these are the ones somebody will be tempted to
-     * "restore" from memory. Dry Associates especially: 1,000 looks retail and
-     * unremarkable, which is exactly why it survived unexamined for so long. */
-    for (const slug of ["cic-mmf", "kcb-mmf", "etica-mmf", "zimele-mmf", "dry-associates-mmf"]) {
+  it("keeps the fund that could not be sourced showing nothing at all", () => {
+    /* Down to one. The other four were blanked on the first pass and restored
+     * on the second once each was confirmed at source.
+     *
+     * Dry Associates stays empty because its own site publishes no minimum at
+     * all. The 1,000,000 figure came from elsewhere and is probably right —
+     * and probably-right is precisely the standard that put 1,000 here, a
+     * thousandfold understatement pointing retail savers at an institutional
+     * fund. This is the entry that column failed worst on, so it is the last
+     * one that gets the benefit of the doubt. */
+    for (const slug of ["dry-associates-mmf"]) {
       const p = PRODUCT_LINKS.find((x) => x.slug === slug);
       if (!p) continue;
       expect(p.minKes, `${slug} was found wrong in the survey and must show no minimum`).toBeUndefined();

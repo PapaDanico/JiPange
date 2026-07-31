@@ -236,11 +236,11 @@ export default function PartnersView() {
         * stopped being good enough. */}
       {productSurveyIsStale() && (
         <p className="mb-5 rounded-2xl border border-[#e0b000] bg-[#fff8e1] px-4 py-3 text-sm text-[#7a4a00]">
-          ⚠ The product details below — minimum entry, terms, and which funds
-          are listed at all — were surveyed on {PRODUCT_SURVEY_AS_OF} and have not been
-          re-checked within {PRODUCT_SURVEY_MAX_AGE_DAYS} days. Confirm the minimum with
-          the provider before you move any money. Regulators and protections do
-          not change on this clock. Fund yields are not shown here at all, by
+          ⚠ The product details below — minimum entry and terms — were surveyed
+          on {PRODUCT_SURVEY_AS_OF} and have not been re-checked within{" "}
+          {PRODUCT_SURVEY_MAX_AGE_DAYS} days. Confirm the minimum with the
+          provider before you move any money. Regulators and protections do not
+          change on this clock. Fund yields are not shown here at all, by
           choice: they move weekly, and a stale one is worse than none.
         </p>
       )}
