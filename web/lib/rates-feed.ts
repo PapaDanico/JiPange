@@ -126,6 +126,13 @@ export interface RatesFeed {
   macro: {
     centralBankRate: MacroReading | null;
     inflation: MacroReading | null;
+    /* OPTIONAL, and optional on purpose. Mwangaza added these after schema 1
+     * shipped, so a snapshot synced before that change carries neither and the
+     * schema did not move — which is the contract working as documented. Every
+     * reader below therefore has to cope with their absence rather than assume
+     * a fresh sync. */
+    inflationCore?: MacroReading | null;
+    inflationNonCore?: MacroReading | null;
     usdKes: MacroReading | null;
   };
   /* Published by Mwangaza since the feed's first release, but missing from
@@ -223,6 +230,56 @@ export function inflationAttribution(): string {
     ? `${r.source} standing in for KNBS, which publishes the official CPI but could not be reached`
     : r.source;
   return `${via}, ${when}, via Mwangaza Yield`;
+}
+
+/**
+ * The core / non-core inflation split, or null when the snapshot predates it.
+ *
+ * WHY THIS APP IN PARTICULAR NEEDS IT
+ *
+ * Every plan here is deflated by the HEADLINE rate, and the retirement planner
+ * compounds that assumption over thirty years. The headline is a weighted
+ * average of two baskets that are not moving together: KNBS put core at 3.2%
+ * and non-core — food and energy, about a fifth of the basket — at 15.0% in
+ * July 2026.
+ *
+ * A household whose spending is mostly food and transport is therefore not
+ * experiencing the headline rate, and the real return this app shows them is
+ * overstated. Over one year that is a rounding error; over a thirty-year
+ * retirement plan it is the difference between arriving and not.
+ *
+ * NULL RATHER THAN A GUESS, AND NULL RATHER THAN HALF
+ *
+ * Returns null when either leg is missing, for the same reason Mwangaza does:
+ * "core inflation is 3.2%" without the other number beside it reads as
+ * reassurance, and it is the half a reader would most like to believe. Null is
+ * also the honest state for a snapshot synced before these fields existed —
+ * the caveat simply does not render, rather than rendering with a made-up
+ * number.
+ */
+export interface InflationBaskets {
+  headline: number;
+  core: number;
+  nonCore: number;
+  date: string;
+  source: string;
+}
+
+export function inflationBaskets(): InflationBaskets | null {
+  const headline = feed.macro.inflation;
+  const core = feed.macro.inflationCore;
+  const nonCore = feed.macro.inflationNonCore;
+  if (!headline || !core || !nonCore) return null;
+  if (![headline.value, core.value, nonCore.value].every((v) => Number.isFinite(v))) return null;
+  /* Readings from different months would make the comparison meaningless. */
+  if (core.date !== nonCore.date) return null;
+  return {
+    headline: headline.value,
+    core: core.value,
+    nonCore: nonCore.value,
+    date: core.date,
+    source: core.source,
+  };
 }
 
 /** e.g. "CBK auction of 16 Jul 2026". Always shown next to a rate. */

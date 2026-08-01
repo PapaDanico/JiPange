@@ -21,6 +21,7 @@ import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
 import { MMF_AND_TBILL_LINKS } from "@/lib/affiliate-links";
 import { solveBreakEven, describeHeadroom } from "@/lib/break-even";
+import { inflationBaskets } from "@/lib/rates-feed";
 import { MEDICAL_EVIDENCE, REPLACEMENT_EVIDENCE } from "@/lib/retirement-evidence";
 import dynamic from "next/dynamic";
 
@@ -83,6 +84,9 @@ export default function FireNumberCalculator() {
       monthlyContribution: Number(monthlySaving) || 0,
     });
   }, [monthlyExpenses, monthlyMedical, currentAge, targetAge, currentCapital, monthlySaving]);
+
+  /* Null until the snapshot carries the split — see inflationBaskets(). */
+  const baskets = useMemo(() => inflationBaskets(), []);
 
   /* Solved only when the reader has told us enough for the answer to mean
    * something. With neither a balance nor a monthly saving there is no plan to
@@ -287,6 +291,49 @@ export default function FireNumberCalculator() {
                     earning 6% while prices sit still — which is why the headline rate on a
                     product tells you less than it looks like it does.
                   </p>
+
+                  {/* WHOSE PRICES, THOUGH?
+                    *
+                    * The whole panel above rests on "prices" meaning the
+                    * headline CPI, which is a weighted average of two baskets
+                    * that are not moving together. Over one year that is a
+                    * rounding error. Over the thirty years this tool plans for,
+                    * it is the difference between arriving and not — and it
+                    * runs AGAINST the reader whose budget is mostly food and
+                    * transport, who is also the reader least able to absorb it.
+                    *
+                    * Deliberately NOT an estimate of their personal inflation:
+                    * that needs spending shares this app does not hold, and a
+                    * fabricated figure would carry false precision. It states
+                    * the two baskets and the one-for-one relationship, and lets
+                    * the reader place themselves.
+                    *
+                    * Renders only when the feed carries the split. A snapshot
+                    * synced before Mwangaza published it returns null and this
+                    * simply does not appear. */}
+                  {baskets && (
+                    <p className="mt-2 border-t border-accent/20 pt-2 text-xs text-ink-soft">
+                      That assumes your own costs rise at the{" "}
+                      {baskets.headline.toFixed(1)}% national average. They may not: food
+                      and energy rose <strong>{baskets.nonCore.toFixed(1)}%</strong> over the
+                      past year while everything else rose{" "}
+                      <strong>{baskets.core.toFixed(1)}%</strong>. Every extra percentage
+                      point your own cost of living rises takes a percentage point off your
+                      real return, one for one
+                      {!breakEven.unreachableByReturnsAlone &&
+                        breakEven.headroom !== null &&
+                        breakEven.headroom < 0 && (
+                          <>
+                            {" "}— against the{" "}
+                            {Math.abs(breakEven.headroom * 100).toFixed(1)} points of room
+                            this plan has
+                          </>
+                        )}
+                      . If food and transport take a bigger share of your budget than the
+                      average household&apos;s, plan for less margin than the figure above
+                      suggests.
+                    </p>
+                  )}
                 </div>
               )}
 
