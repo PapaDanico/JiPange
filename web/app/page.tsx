@@ -225,7 +225,7 @@ export default function Home() {
 
             {/* Left column */}
             <div>
-              <p className="mb-5 inline-block rounded-full border border-[#F0D08A] bg-[#FFF8E8] px-3 py-1.5 text-xs font-bold uppercase tracking-widest text-accent">
+              <p className="mb-5 inline-block rounded-full border border-[#F0D08A] bg-accent-soft px-3 py-1.5 text-xs font-bold uppercase tracking-widest text-accent">
                 Free · Anonymous · Built for Kenya 🇰🇪
               </p>
               <p className="mb-2 text-base italic font-medium text-muted">
@@ -250,7 +250,7 @@ export default function Home() {
               <div className="mb-6 flex flex-wrap gap-3">
                 <Link
                   href="/profile"
-                  className="inline-flex h-12 items-center justify-center rounded-full bg-accent px-6 text-base font-bold text-[#1A0D06] shadow-[0_2px_14px_rgba(232,160,32,0.30)] transition-colors hover:bg-accent-deep"
+                  className="inline-flex h-12 items-center justify-center rounded-full bg-accent px-6 text-base font-bold text-accent-contrast shadow-[0_2px_14px_rgba(232,160,32,0.30)] transition-colors hover:bg-accent-deep"
                 >
                   Start my plan — 90 seconds ›
                 </Link>
@@ -344,23 +344,23 @@ export default function Home() {
       </section>
 
       {/* ── Reality band ── */}
-      <section className="bg-[#3A2E26] py-14 sm:py-20">
+      <section className="bg-shell py-14 sm:py-20">
         <div className="mx-auto max-w-5xl px-4 sm:px-6">
           <div data-reveal className="mb-10 text-center">
-            <p className="mb-2 text-[0.6875rem] font-bold uppercase tracking-[0.16em] text-[rgba(241,236,227,0.45)]">
+            <p className="mb-2 text-[0.6875rem] font-bold uppercase tracking-[0.16em] text-canvas/45">
               The Kenya money gap — in three numbers
             </p>
-            <h2 className="text-xl font-extrabold tracking-tight text-[rgba(241,236,227,0.9)] sm:text-2xl" style={{ textWrap: "balance" } as React.CSSProperties}>
+            <h2 className="text-xl font-extrabold tracking-tight text-canvas/90 sm:text-2xl" style={{ textWrap: "balance" } as React.CSSProperties}>
               What the data actually says about how Kenyans manage money
             </h2>
           </div>
 
           <div
             data-reveal
-            className="overflow-hidden rounded-2xl border border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.08)] grid grid-cols-1 sm:grid-cols-3 gap-px"
+            className="overflow-hidden rounded-2xl border border-white/8 bg-white/8 grid grid-cols-1 sm:grid-cols-3 gap-px"
           >
             {REALITY_STATS.map((stat) => (
-              <Link key={stat.label} href={stat.href} className="group bg-[#3A2E26] p-6 sm:p-8 flex flex-col gap-1.5 hover:bg-[#4A3A2E] transition-colors">
+              <Link key={stat.label} href={stat.href} className="group bg-shell p-6 sm:p-8 flex flex-col gap-1.5 hover:bg-shell-hover transition-colors">
                 <p
                   className={`text-5xl sm:text-6xl font-black leading-none tracking-tighter ${stat.color}`}
                   style={{ fontVariantNumeric: "tabular-nums" }}
@@ -370,13 +370,13 @@ export default function Home() {
                 >
                   {stat.figure}
                 </p>
-                <p className="text-[0.9375rem] font-bold leading-snug text-[rgba(241,236,227,0.9)]">
+                <p className="text-[0.9375rem] font-bold leading-snug text-canvas/90">
                   {stat.label}
                 </p>
-                <p className="mt-1 text-[0.8125rem] leading-relaxed text-[rgba(241,236,227,0.5)]">
+                <p className="mt-1 text-[0.8125rem] leading-relaxed text-canvas/50">
                   {stat.detail}
                 </p>
-                <p className="mt-auto border-t border-[rgba(255,255,255,0.07)] pt-3 text-[0.6875rem] text-[rgba(241,236,227,0.3)]">
+                <p className="mt-auto border-t border-white/7 pt-3 text-[0.6875rem] text-canvas/30">
                   {stat.source}
                 </p>
                 <span className="text-[0.8125rem] font-semibold text-accent group-hover:opacity-80">
@@ -578,7 +578,7 @@ export default function Home() {
                 data-delay={i > 0 ? String(i) : undefined}
                 className="rounded-2xl border border-border bg-white p-7"
               >
-                <div className="mb-4 flex h-9 w-9 items-center justify-center rounded-full bg-accent text-sm font-black text-[#1A0D06]" aria-hidden="true">
+                <div className="mb-4 flex h-9 w-9 items-center justify-center rounded-full bg-accent text-sm font-black text-accent-contrast" aria-hidden="true">
                   {step.num}
                 </div>
                 <h3 className="mb-1.5 text-base font-extrabold text-primary">{step.title}</h3>
@@ -674,7 +674,10 @@ export default function Home() {
                 <Link
                   key={planner.href}
                   href={planner.href}
-                  className="inline-flex items-center gap-1.5 rounded-full border-[1.5px] border-border bg-white px-4 py-2.5 text-sm font-semibold text-ink-soft transition-colors hover:border-primary hover:text-primary"
+                  // min-h-11: measured 42px at 390px, two short of the 44 that every
+                  // header control now holds to. Padding is untouched so the
+                  // pill keeps its shape; only the floor moves.
+                  className="inline-flex min-h-11 items-center gap-1.5 rounded-full border-[1.5px] border-border bg-white px-4 py-2.5 text-sm font-semibold text-ink-soft transition-colors hover:border-primary hover:text-primary"
                 >
                   <span>{planner.emoji}</span>
                   {planner.label}
@@ -696,13 +699,13 @@ export default function Home() {
               Your honest Pesa Picture.{" "}
               <span className="text-accent">90 seconds away.</span>
             </h2>
-            <p className="mx-auto mb-8 max-w-md text-base leading-relaxed text-[rgba(241,236,227,0.7)]">
+            <p className="mx-auto mb-8 max-w-md text-base leading-relaxed text-canvas/70">
               No black box. No selling. No accounts. Just the maths, the vehicle, and the paybill to
               start. The rest is yours.
             </p>
             <Link
               href="/profile"
-              className="inline-flex h-14 items-center justify-center rounded-full bg-accent px-10 text-base font-extrabold text-[#1A0D06] shadow-[0_4px_18px_rgba(232,160,32,0.35)] transition-all hover:bg-accent-deep hover:-translate-y-0.5"
+              className="inline-flex h-14 items-center justify-center rounded-full bg-accent px-10 text-base font-extrabold text-accent-contrast shadow-[0_4px_18px_rgba(232,160,32,0.35)] transition-all hover:bg-accent-deep hover:-translate-y-0.5"
             >
               Start my plan — it&apos;s free ›
             </Link>
@@ -711,7 +714,7 @@ export default function Home() {
                 (chip) => (
                   <span
                     key={chip}
-                    className="rounded-full border border-[rgba(255,255,255,0.12)] bg-[rgba(255,255,255,0.07)] px-3 py-1.5 text-[0.8125rem] text-[rgba(241,236,227,0.55)]"
+                    className="rounded-full border border-white/12 bg-white/7 px-3 py-1.5 text-[0.8125rem] text-canvas/55"
                   >
                     {chip}
                   </span>
@@ -723,8 +726,8 @@ export default function Home() {
       </section>
 
       {/* ── Sources footnote ── */}
-      <div className="bg-primary border-t border-[rgba(255,255,255,0.1)] px-4 py-4 text-center">
-        <p className="text-[0.6875rem] text-[rgba(241,236,227,0.28)]">
+      <div className="bg-primary border-t border-white/10 px-4 py-4 text-center">
+        <p className="text-[0.6875rem] text-canvas/28">
           Sources: FinAccess Household Survey 2024 (CBK/FSD Kenya/KNBS) · RBA Pensioners Survey
           2024 · CMA Collective Investment Schemes, July 2026 · Safaricom FY2026 Annual Report ·
           Pension Policy International/KIPPRA 2024. Rates current July 2026.

@@ -48,10 +48,24 @@ export default function Footer() {
             <h2 className="text-[11px] font-semibold uppercase tracking-wide text-primary">
               {column.heading}
             </h2>
-            <ul className="mt-2 space-y-1.5">
+            {/* Measured at 390px, these links were 14px tall on a 22px pitch
+                (14 + an 8px gap). WCAG 2.5.8 asks for a 24x24 target, and the
+                spacing exception does not rescue it either: 24px circles on a
+                22px pitch overlap. Twenty-five links, on every page.
+
+                `block py-1.5` makes the whole row the target rather than the
+                glyphs — 26px tall — and the gap drops to 0.5 so the pitch lands
+                at 28px, clearing the floor while adding only ~4px per link
+                instead of the ~30 a full 44px target would cost a stacked
+                mobile footer. Height is bought from the gap, not from the
+                page. */}
+            <ul className="mt-2 space-y-0.5">
               {column.links.map((link) => (
                 <li key={link.href + link.label}>
-                  <Link href={link.href} className="hover:text-primary hover:underline">
+                  <Link
+                    href={link.href}
+                    className="block py-1.5 hover:text-primary hover:underline"
+                  >
                     {link.label}
                   </Link>
                 </li>
