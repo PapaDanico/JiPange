@@ -485,12 +485,36 @@ test("header: logo links back to home", async ({ page }) => {
 });
 
 test("header: calculators dropdown is styled active on tools pages", async ({ page }) => {
+  /* Compares the RENDERED appearance of the active trigger against an
+   * inactive one, rather than asserting a class name.
+   *
+   * This read `toHaveClass(/text-primary/)` and broke the moment the header
+   * moved from an underline to Mwangaza's filled pill — a restyle that
+   * changed nothing about whether the active state is visible. A class
+   * assertion pins the implementation and fails on refactors while still
+   * passing if someone sets that class and no visual difference results.
+   *
+   * What matters is that a reader on /tools can see which menu they are in,
+   * so that is what this measures. */
   await page.setViewportSize({ width: 1280, height: 800 });
   await page.goto("/tools");
   const header = page.locator("header");
   const calcTrigger = header.getByRole("button", { name: "Calculators", exact: true });
+  const plannersTrigger = header.getByRole("button", { name: "Planners", exact: true });
   await expect(calcTrigger).toBeVisible();
-  await expect(calcTrigger).toHaveClass(/text-primary/);
+
+  const paint = (loc: typeof calcTrigger) =>
+    loc.evaluate((el) => {
+      const s = getComputedStyle(el);
+      return `${s.backgroundColor}|${s.color}|${s.textDecorationLine}|${s.fontWeight}`;
+    });
+
+  const active = await paint(calcTrigger);
+  const inactive = await paint(plannersTrigger);
+  expect(
+    active,
+    "the active menu paints identically to an inactive one — nothing tells the reader where they are"
+  ).not.toBe(inactive);
 });
 
 test("header: calculators dropdown opens and jumps straight to a tool", async ({ page }) => {

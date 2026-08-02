@@ -55,8 +55,21 @@ export default function NavDropdown({
         aria-expanded={open}
         aria-controls={panelId}
         onClick={() => setOpen((prev) => !prev)}
-        className={`flex items-center gap-1 text-sm font-medium ${
-          active ? "text-primary underline underline-offset-4" : "text-ink-soft hover:text-primary"
+        /* Mwangaza's nav pattern: a pill, not an underline.
+         *
+         * The two products are already palette cousins — warm ground, amber
+         * accent — and read as unrelated only because their headers are built
+         * differently. An underline says "link"; the filled pill says "you are
+         * here" at a glance and is what Mwangaza uses on every page.
+         *
+         * min-h-11 is the tap target. The bare text button was 20px tall on a
+         * phone, well under the 44px floor, and sat beside a 36px pill CTA —
+         * so the least reversible control was the easiest to hit and the
+         * navigation was the hardest. */
+        className={`inline-flex min-h-11 items-center gap-1 whitespace-nowrap rounded-lg px-3 py-1.5 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
+          active
+            ? "bg-ink text-background"
+            : "text-muted hover:bg-canvas hover:text-ink"
         }`}
       >
         {label}
