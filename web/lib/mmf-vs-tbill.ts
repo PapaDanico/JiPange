@@ -72,6 +72,28 @@ export interface Comparison {
   tooCloseToCall: boolean;
 }
 
+/**
+ * The whole decision, as one pure function of the gap.
+ *
+ * It lived inline in two places — a boolean in `compareAt` and a branch in
+ * `verdictFor` — and could only be exercised through the published feed. That
+ * made it untestable in the case that matters: with the assumed spread
+ * corrected to zero the MMF *is* the 91-day bill, so every tenor the feed
+ * publishes sits inside the threshold, and replacing the rule with a literal
+ * `true` changed no observable behaviour and broke no test.
+ *
+ * A rule that cannot be shown to have two outcomes is indistinguishable from a
+ * constant. Pulling it out gives it one home and lets both sides of the
+ * boundary be asserted directly, instead of a test re-implementing it and then
+ * checking its own copy.
+ */
+export type VerdictKind = "too-close" | "mmf-ahead" | "bill-ahead";
+
+export function rankByEdge(edgePp: number): VerdictKind {
+  if (Math.abs(edgePp) < SPREAD_CONFIDENCE_PP) return "too-close";
+  return edgePp > 0 ? "mmf-ahead" : "bill-ahead";
+}
+
 export function compareAt(tenorDays: number): Comparison | null {
   const bill = tbillRate(tenorDays);
   const anchor = tbillRate(91);
@@ -99,7 +121,7 @@ export function compareAt(tenorDays: number): Comparison | null {
     edgePp,
     assumedSpreadPp: MMF_SPREAD_OVER_TBILL_PCT,
     breakEvenSpreadPp,
-    tooCloseToCall: Math.abs(edgePp) < SPREAD_CONFIDENCE_PP,
+    tooCloseToCall: rankByEdge(edgePp) === "too-close",
   };
 }
 
@@ -122,8 +144,5 @@ export function verdictFor(amountKES: number, tenorDays = 364): Verdict | null {
   if (amountKES > 0 && amountKES < c.billMinimumKES) {
     return { kind: "below-minimum", minimumKES: c.billMinimumKES };
   }
-  if (c.tooCloseToCall) return { kind: "too-close", comparison: c };
-  return c.edgePp > 0
-    ? { kind: "mmf-ahead", comparison: c }
-    : { kind: "bill-ahead", comparison: c };
+  return { kind: rankByEdge(c.edgePp), comparison: c };
 }

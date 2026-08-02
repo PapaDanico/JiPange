@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
 import {
-  KENYAN_INFLATION,
   dhowcsdLadder,
   mjengoPlan,
 } from "../market-2026";

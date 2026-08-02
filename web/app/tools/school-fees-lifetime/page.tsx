@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import ToolLayout from "@/components/tools/ToolLayout";
 import SchoolFeesLifetimeCalculator from "@/components/tools/SchoolFeesLifetimeCalculator";
 import {
-  FEE_ESCALATION_TYPICAL_RANGE,
   DEFAULT_FEE_ESCALATION,
   buildChildPlan,
   solveLevelContribution,
