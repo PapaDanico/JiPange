@@ -1,22 +1,29 @@
 import { describe, it, expect } from "vitest";
 import { tbillRate } from "../rates-feed";
-import { MMF_SPREAD_OVER_TBILL_PCT } from "../mmf-assumption";
 import {
   compareAt,
   verdictFor,
   SPREAD_CONFIDENCE_PP,
   WHT_ON_INTEREST,
+  rankByEdge,
 } from "../mmf-vs-tbill";
 
 /**
  * The comparison must never be more confident than its own assumption.
  *
  * The MMF side of this is the 91-day bill plus a spread this project assumes.
- * On today's feed the assumption is 1.00pp and the answer it produces is
- * 0.31pp — so two thirds of the way to nothing and the winner changes. A card
- * that printed a ranking anyway would be presenting an assumption as a finding,
- * which is the exact failure this codebase removed from its MMF yields once
- * already.
+ * A card that printed a ranking built mostly on that assumption would be
+ * presenting an assumption as a finding, which is the exact failure this
+ * codebase removed from its MMF yields once already.
+ *
+ * This paragraph used to say "the assumption is 1.00pp and the answer it
+ * produces is 0.31pp". Both numbers are dead. The spread was measured against
+ * 32 funds and corrected to 0.00pp, which is the whole point of
+ * mmf-assumption.ts — and the header describing the module went on quoting the
+ * value the module was changed to stop using. As of this writing the edges are
+ * 0.04, -0.04 and 0.05pp at 91, 182 and 364 days against a 0.35pp threshold,
+ * so every tenor the feed publishes is inside the noise. Figures move; the
+ * point does not, so the point is what is written here now.
  */
 describe("the comparison knows what it rests on", () => {
   it("computes a break-even spread from the bills, not from the MMF guess", () => {
@@ -108,9 +115,72 @@ describe("the comparison knows what it rests on", () => {
     expect(SPREAD_CONFIDENCE_PP).toBeGreaterThan(0);
     expect(SPREAD_CONFIDENCE_PP).toBeLessThan(2);
 
-    const c = compareAt(364)!;
-    const wide = Math.abs(c.edgePp) + SPREAD_CONFIDENCE_PP + 0.1;
-    expect(wide).toBeGreaterThan(SPREAD_CONFIDENCE_PP);
+    /* This asserted `Math.abs(edge) + THRESHOLD + 0.1 > THRESHOLD`, which is
+     * true for every real number there has ever been. The test named "names a
+     * winner once the gap is bigger than the doubt" could not fail — and its
+     * own comment says the thresholds "must actually separate, or too close is
+     * the only answer forever and this module is decoration", which is exactly
+     * the state it was incapable of detecting.
+     *
+     * It is worth detecting, because that state is the CURRENT one: with the
+     * spread corrected to zero the MMF is the 91-day bill, and all three
+     * published tenors sit inside the threshold. The card answers "too close
+     * to call" every time its yield branch is reached.
+     *
+     * That is the honest answer and not a bug — the two instruments really do
+     * pay the same. What must stay true is that the decision rule is capable
+     * of the other answers, so a real gap would still be named. Asserted on
+     * the rule itself at both sides of the boundary, rather than on whichever
+     * side today's market happens to fall. */
+    const justOver = SPREAD_CONFIDENCE_PP + 1e-6;
+    expect(rankByEdge(justOver)).toBe("mmf-ahead");
+    expect(rankByEdge(-justOver)).toBe("bill-ahead");
+    expect(rankByEdge(SPREAD_CONFIDENCE_PP - 1e-6)).toBe("too-close");
+    expect(rankByEdge(0)).toBe("too-close");
+
+    /* And it must be the rule the module actually applies, not a copy living
+     * in this file. compareAt and verdictFor both route through rankByEdge,
+     * so asserting they agree with it on every published tenor closes the
+     * loop that the old tautology left open. */
+    for (const days of [91, 182, 364] as const) {
+      const c = compareAt(days);
+      if (!c) continue;
+      const v = verdictFor(1_000_000, days)!;
+      expect(v.kind, `${days}d`).toBe(rankByEdge(c.edgePp));
+      expect(c.tooCloseToCall, `${days}d`).toBe(rankByEdge(c.edgePp) === "too-close");
+    }
+
+    /* A limit of this suite, stated rather than left to be discovered.
+     *
+     * `tooCloseToCall` is derived from rankByEdge, and every tenor the feed
+     * publishes is currently inside the threshold — so replacing that field
+     * with a literal `true` still passes here. It is not detectable from feed
+     * data alone while the market sits where it does, and inventing synthetic
+     * yields to force the other branch would be testing a fixture rather than
+     * the product.
+     *
+     * What that costs is bounded: the field is a convenience, and the verdict
+     * a reader is shown comes from rankByEdge, which IS pinned at both sides of
+     * the boundary above. If the spread ever opens, the tripwire below starts
+     * failing and this gap closes on its own. */
+  });
+
+  it("records that every published tenor is currently too close to call", () => {
+    /* A tripwire, not a requirement. The yield-ranking half of this card never
+     * fires today; what carries it is the below-minimum branch, which needs no
+     * yield estimate at all. If this starts failing the spread has opened and
+     * the copy around the card is worth re-reading. */
+    const inside = ([91, 182, 364] as const)
+      .map((d) => compareAt(d))
+      .filter((c): c is NonNullable<typeof c> => c !== null);
+    expect(inside.length).toBe(3);
+    for (const c of inside) {
+      expect(
+        c.tooCloseToCall,
+        `${c.billTenorDays}d now has a ${c.edgePp.toFixed(3)}pp edge against a ` +
+          `${SPREAD_CONFIDENCE_PP}pp threshold — the spread has opened, re-read the card copy`
+      ).toBe(true);
+    }
   });
 
   it("says nothing at all rather than guessing at a tenor the feed lacks", () => {
