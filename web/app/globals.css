@@ -254,6 +254,21 @@ body.has-fixed-bottom-bar {
     break-inside: avoid;
   }
 
+  /* A card that should not be stranded beside a dead column.
+   *
+   * print-grid-2 flows the report's cards two-up, and with an odd number the
+   * last one sits in the left column with the entire right column empty. On
+   * "My Pesa Picture" that was the Wealth at 60 card: a tall, half-width block
+   * with a full column of nothing beside it, which pushed the sheet to 1.03
+   * pages — a second sheet of paper for 34 pixels.
+   *
+   * `:last-child` cannot express this: the CTA that follows is `print:hidden`,
+   * so it is still the last child in the DOM and would take the rule. Hence an
+   * explicit class on the card that means it. */
+  .print-span-2 {
+    grid-column: 1 / -1 !important;
+  }
+
   /* Report footer: hairline rule, small muted colophon */
   body::after {
     content: "JiPange · jipangefinance.org · Free financial tools for Kenya";

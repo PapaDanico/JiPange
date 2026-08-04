@@ -81,7 +81,13 @@ export default function MoneyPicture() {
       ? financials?.savingsCapacity ?? 0
       : (split502525 ? split502525.savingsEmergency + split502525.investments : 0);
 
-  if (!profile || !financials || !retirement || !split502525) {
+  /* `retirement` is deliberately NOT in this guard.
+   *
+   * It returns null when the stored profile carries no usable age, and gating
+   * the whole page on it would blank a report whose take-home pay, budget
+   * split and savings capacity are all perfectly computable. One missing input
+   * should cost one card, not the document. */
+  if (!profile || !financials || !split502525) {
     // One-frame hydration gate (storage reads are sync) or the pre-redirect
     // beat for profileless visitors — mirror the page's card rhythm rather
     // than flashing a text string.
@@ -210,7 +216,8 @@ export default function MoneyPicture() {
 
       <MyGoals savingsCapacity={growthCapacity} />
 
-      <div className="rounded-2xl bg-white p-6 shadow-sm">
+      {retirement && (
+      <div className="print-span-2 rounded-2xl bg-white p-6 shadow-sm">
         <h2 className="text-base font-semibold text-primary">Wealth at age 60</h2>
         <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="rounded-xl bg-danger-soft p-4">
@@ -232,6 +239,7 @@ export default function MoneyPicture() {
           real purchasing power.
         </p>
       </div>
+      )}
 
       <Link
         href="/plan"

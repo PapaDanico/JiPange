@@ -147,7 +147,34 @@ export function buildRetirementComparison(params: {
   withPlanSavingsRate?: number;
   withPlanReturnRate?: number;
   inflationRate?: number;
-}): RetirementComparison {
+}): RetirementComparison | null {
+  /* An unusable age is answered with null, not with arithmetic on it.
+   *
+   * `currentAge` arrives from a stored profile, and lib/storage.ts reads that
+   * with `JSON.parse(raw) as T` — a CAST, not a validation. A profile written
+   * by an older schema, or by an onboarding run that did not finish, therefore
+   * reaches here with `age` undefined, and every figure downstream becomes NaN.
+   *
+   * That is not theoretical and it did not stay on screen. The printed "My Pesa
+   * Picture" carried it to paper:
+   *
+   *     Current trajectory   Ksh 0
+   *     With a plan          Ksh 0
+   *     Assumes a 20% savings rate at 10% annual return over NaN years.
+   *
+   * A report is the artefact a reader keeps, shows a spouse, and takes to a
+   * SACCO. Printing NaN into it is worse than printing nothing, because
+   * nothing is obviously missing and NaN looks like a computed result.
+   *
+   * `?? DEFAULT` cannot help here: `undefined ?? 60` gives 60, but
+   * `NaN ?? 60` gives NaN, and an age that is present but not a number is
+   * exactly the case a partial profile produces. The check is therefore
+   * Number.isFinite, not a nullish default — the same correction this codebase
+   * already had to make once in the FIRE calculator. */
+  if (!Number.isFinite(params.currentAge) || !Number.isFinite(params.netMonthlyIncome)) {
+    return null;
+  }
+
   const retirementAge = params.retirementAge ?? DEFAULT_RETIREMENT_AGE;
   const inflationRate = params.inflationRate ?? DEFAULT_INFLATION_RATE;
   const savingsRate =
