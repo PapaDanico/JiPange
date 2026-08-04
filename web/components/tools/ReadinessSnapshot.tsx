@@ -11,6 +11,11 @@ const STATUS_STYLES: Record<IndicatorStatus, string> = {
   good: "bg-[#DBEAFE] text-[#1E40AF]",
   building: "bg-[#FEF3C7] text-warning",
   risk: "bg-[#FEE2E2] text-danger",
+  /* Deliberately the calm neutral, not one of the four grades. This badge
+   * says what the plan asks for, not how the reader is doing, and colouring
+   * it green would put it back to congratulating people for a number the app
+   * chose on their behalf. */
+  target: "bg-canvas text-ink-soft",
   unknown: "bg-[#F3F4F6] text-[#6B7280]",
 };
 
@@ -19,6 +24,7 @@ const STATUS_ICONS: Record<IndicatorStatus, string> = {
   good: "↑",
   building: "~",
   risk: "!",
+  target: "◎",
   unknown: "–",
 };
 
