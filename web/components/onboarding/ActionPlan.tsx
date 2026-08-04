@@ -131,7 +131,9 @@ export default function ActionPlan() {
         </div>
       )}
 
-      {plan && (
+      {/* Both, or neither: the share card quotes a wealth-at-60 figure, and
+          without a usable age there is no figure to quote. */}
+      {plan && retirement && (
         <WhatsAppShare
           profile={profile}
           calculations={calculations}
