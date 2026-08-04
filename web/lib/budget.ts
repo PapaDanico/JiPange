@@ -35,9 +35,30 @@ export function calculate502525Split(netMonthly: number): FiftyTwentyFiveTwentyF
 
 export type SavingsRateBand = "green" | "amber" | "red";
 
+/* The boundaries are decided by intent, not by IEEE-754.
+ *
+ * These were bare `> 0.2` and `>= 0.1` comparisons against a value that is
+ * COMPUTED, and the computation does not land on 0.2 exactly. calculateFinancials
+ * returns `netMonthly * 0.2 / netMonthly`, which is 0.2 for a Ksh 50,000 salary
+ * and 0.20000000000000004 for Ksh 120,000 — the same 20% either way.
+ *
+ * So the band a reader saw flipped from amber to green somewhere between those
+ * two salaries, for no reason they could ever have discovered, because
+ * 0.2 > 0.2 is false and 0.20000000000000004 > 0.2 is true. Two users on the
+ * identical 20% rate were shown different colours.
+ *
+ * The existing unit test did not catch it and could not have: it passed clean
+ * literals (0.25, 0.2, 0.15, 0.05) while production passed the arithmetic. That
+ * is the whole lesson — a boundary test built from literals tests the boundary
+ * you meant, never the values the product actually produces.
+ *
+ * EPSILON is far below any meaningful difference in a savings rate (1e-9 is a
+ * ten-millionth of a percentage point) and far above double-rounding noise. */
+const BAND_EPSILON = 1e-9;
+
 export function savingsRateBand(savingsRate: number): SavingsRateBand {
-  if (savingsRate > 0.2) return "green";
-  if (savingsRate >= 0.1) return "amber";
+  if (savingsRate > 0.2 + BAND_EPSILON) return "green";
+  if (savingsRate >= 0.1 - BAND_EPSILON) return "amber";
   return "red";
 }
 
