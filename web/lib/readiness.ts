@@ -1,7 +1,14 @@
 import type { Calculations } from "./types";
+import { BUDGET_ALLOCATION, formatKES } from "./budget";
 import type { JourneyAnswers } from "./journey";
 
-export type IndicatorStatus = "strong" | "good" | "building" | "risk" | "unknown";
+/* "target" is not a grade.
+ *
+ * The other four say how the reader is DOING. A target says what the plan
+ * asks of them, which is a different kind of statement and must not be
+ * dressed as an achievement — see savingsTargetIndicator below for what went
+ * wrong when it was. */
+export type IndicatorStatus = "strong" | "good" | "building" | "risk" | "target" | "unknown";
 
 export interface ReadinessIndicator {
   key: string;
@@ -67,25 +74,55 @@ function vehicleIndicator(journey: JourneyAnswers | null): ReadinessIndicator {
   };
 }
 
-function savingsRateIndicator(calculations: Calculations | null): ReadinessIndicator {
+function savingsTargetIndicator(calculations: Calculations | null): ReadinessIndicator {
   const key = "savings";
-  const label = "Savings Rate";
+  const label = "Savings Target";
   if (!calculations) return { key, label, status: "unknown", statusLabel: "No data" };
 
-  const rate = Math.round(calculations.savingsRate * 100);
-  if (rate >= 20) return { key, label, status: "strong", statusLabel: `${rate}%` };
-  if (rate >= 10) return { key, label, status: "good", statusLabel: `${rate}%` };
-  if (rate >= 5) {
-    return {
-      key, label, status: "building", statusLabel: `${rate}%`,
-      hint: "Model your salary and target a higher slice.",
-      href: "/tools/salary",
-    };
-  }
+  /* THIS USED TO CLAIM TO MEASURE THE READER'S SAVINGS RATE. IT COULD NOT.
+   *
+   * `calculations.savingsRate` is not a measurement. calculateFinancials
+   * returns
+   *
+   *     budgetSplit.savings / netMonthly
+   *       ==  (netMonthly * BUDGET_ALLOCATION.savings) / netMonthly
+   *       ==  0.2
+   *
+   * for every reader with any income at all — the app's own recommended
+   * allocation, divided straight back out. So the old indicator computed
+   * Math.round(0.2 * 100) = 20, hit its `rate >= 20` branch, and told every
+   * single reader who had entered a salary:
+   *
+   *     "20%   ·   Strong"
+   *
+   * Its `good`, `building` and `risk` branches could not be reached by any
+   * input. A reader saving nothing was congratulated in the same words as a
+   * reader saving a third of their pay, and the app had no way to tell them
+   * apart because it never asked.
+   *
+   * That is this codebase's signature failure — an assumption presented as a
+   * finding — and it has been removed twice before: the hardcoded MMF yields,
+   * and peer dispersion shown as forecast confidence.
+   *
+   * WHAT IT SAYS NOW
+   *
+   * The one honest thing available from a salary alone: what the guideline
+   * works out to in shillings for THIS reader. That figure does vary — it is
+   * a fifth of their own take-home — and it is labelled a target rather than
+   * a status, with a neutral badge, because the app still does not know what
+   * they actually save.
+   *
+   * Measuring the real rate needs the reader to tell us what they put away.
+   * Until they are asked, saying so is the truthful answer.
+   */
+  const share = Math.round(BUDGET_ALLOCATION.savings * 100);
   return {
-    key, label, status: "risk", statusLabel: rate > 0 ? `${rate}%` : "Not set",
-    hint: "Start with your salary breakdown.",
-    href: "/tools/salary",
+    key,
+    label,
+    status: "target",
+    statusLabel: `${formatKES(calculations.budgetSplit.savings)}/mo`,
+    hint: `${share}% of your take-home — the plan, not a measure of what you save.`,
+    href: "/tools/savings-goal",
   };
 }
 
@@ -118,7 +155,7 @@ export function computeReadiness(
     indicators: [
       emergencyBufferIndicator(journey),
       vehicleIndicator(journey),
-      savingsRateIndicator(calculations),
+      savingsTargetIndicator(calculations),
       goalIndicator(journey, hasGoals),
     ],
   };
