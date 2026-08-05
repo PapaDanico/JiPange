@@ -306,7 +306,15 @@ export default function SchoolFeesLifetimeCalculator() {
           three invoices and set it to what they actually did.
         </p>
 
-        <label className="mt-4 flex cursor-pointer items-center gap-2 text-sm text-ink-soft">
+        {/* min-h-6 on the LABEL, not the checkbox.
+            *
+            * WCAG 2.5.8 measures the target, and the target here is the whole
+            * label — a 16px checkbox inside a 40px label is already compliant.
+            * This one's label wrapped to a single 20px line, so the control it
+            * exposes was 20px. Raising the checkbox instead would have made a
+            * 24px box next to 14px text, which looks wrong and fixes the
+            * smaller of the two problems. */}
+          <label className="mt-4 flex min-h-6 cursor-pointer items-center gap-2 text-sm text-ink-soft">
           <input
             type="checkbox"
             checked={frontLoaded}
@@ -316,7 +324,7 @@ export default function SchoolFeesLifetimeCalculator() {
           My school front-loads Term 1 (≈50% / 30% / 20%)
         </label>
 
-        <label className="mt-3 flex cursor-pointer items-center gap-2 text-sm text-ink-soft">
+        <label className="mt-3 flex min-h-6 cursor-pointer items-center gap-2 text-sm text-ink-soft">
           <input
             type="checkbox"
             checked={university}

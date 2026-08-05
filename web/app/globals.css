@@ -90,6 +90,21 @@ body {
   }
 }
 
+/* ── Tap targets on disclosure toggles ──
+ *
+ * WCAG 2.5.8 asks for a 24x24 CSS-pixel target. A <summary> box is exactly its
+ * text line — the shared "How this works" disclosure measured 20px on eight
+ * calculator pages, and the FAQ accordions 22px. Found by driving all 42 routes
+ * and measuring; the markup looks fine and it is perfectly clickable with a
+ * mouse, which is why it survives review.
+ *
+ * Padding rather than min-height: `min-height` on a `display: list-item`
+ * element does not carry the marker with the text, so the summary grows away
+ * from its own triangle. */
+summary {
+  padding-block: 0.25rem;
+}
+
 :where(a, button, input, select, textarea, summary):focus-visible {
   outline: 3px solid rgba(232, 168, 56, 0.55);
   outline-offset: 3px;
