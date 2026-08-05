@@ -6,6 +6,7 @@ import {
   WHT_ON_INTEREST,
 } from "../where-to-save";
 import { MMF_SPREAD_OVER_TBILL_PCT } from "../mmf-assumption";
+import { SPREAD_CONFIDENCE_PP } from "../mmf-vs-tbill";
 import { SACCO_DEPOSIT_GUARANTEE_OPERATIONAL } from "../affiliate-links";
 
 /**
@@ -119,5 +120,41 @@ describe("the MMF comparison knows when it is not a comparison", () => {
     // analysis. This test documents the live state and will fail loudly if the
     // spread is ever changed without the copy being revisited.
     expect(mmfIsIndependent()).toBe(false);
+  });
+});
+
+describe("ranking stops where the precision stops", () => {
+  /**
+   * The MMF and the 91-day bill carry an identical GROSS yield today, because
+   * the assumed spread is 0.0 — and they still land ~4bp apart on net, because
+   * an MMF quotes a nominal annual rate and a bill quotes an effective annual
+   * yield, so tax lands over different periods.
+   *
+   * Sorted naively, four basis points of methodology rendered as the money
+   * market fund beating a Treasury bill. `mmf-vs-tbill.ts` already fixed the
+   * margin below which such a gap is not a finding; a table using the same
+   * numbers must not contradict it.
+   */
+  const options = comparable();
+
+  it("marks options within the confidence margin as level", () => {
+    const best = options[0].netPct;
+    for (const o of options) {
+      expect(o.tiedWithBest).toBe(Math.abs(best - o.netPct) < SPREAD_CONFIDENCE_PP);
+    }
+  });
+
+  it("the leader is always tied with itself", () => {
+    expect(options[0].tiedWithBest).toBe(true);
+  });
+
+  it("today the MMF and the 91-day bill are level, not ranked", () => {
+    // Documents the live state. If the assumed spread is ever widened this
+    // fails, which is the moment the copy about them being level needs redoing.
+    const mmf = options.find((o) => o.key === "mmf");
+    const bill91 = options.find((o) => o.key === "tbill-91");
+    if (!mmf || !bill91) return;
+    expect(Math.abs(mmf.netPct - bill91.netPct)).toBeLessThan(SPREAD_CONFIDENCE_PP);
+    expect(mmf.tiedWithBest && bill91.tiedWithBest).toBe(true);
   });
 });

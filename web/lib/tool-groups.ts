@@ -17,6 +17,14 @@ export const CALCULATOR_GROUPS: ToolGroup[] = [
         isNew: true,
       },
       {
+        href: "/tools/where-to-save",
+        icon: "🏦",
+        title: "Where to put your savings",
+        description: "What Treasury bills and money market funds pay after withholding tax, ranked — with SACCO dividends explained separately rather than ranked beside them.",
+        insight: "A SACCO dividend is not interest and is not guaranteed. It belongs in the conversation, not in the league table.",
+        isNew: true,
+      },
+      {
         href: "/tools/savings-goal",
         icon: "🎯",
         title: "Savings Goal Calculator",

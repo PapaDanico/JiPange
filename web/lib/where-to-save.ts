@@ -40,6 +40,7 @@
 
 import { TBILL_RATES, type TBillRate } from "./rates-feed";
 import { assumedMmfYield, MMF_SPREAD_OVER_TBILL_PCT } from "./mmf-assumption";
+import { SPREAD_CONFIDENCE_PP } from "./mmf-vs-tbill";
 import {
   SACCO_DIVIDEND_RANGE_PCT,
   SACCO_RATES_AS_OF,
@@ -65,6 +66,24 @@ export interface Option {
   /** Who stands behind it. */
   backing: string;
   minimumKES: number | null;
+  /**
+   * True when this option is within the confidence margin of the best one —
+   * that is, close enough that calling it second is not a finding.
+   *
+   * Ranking is only honest down to the precision the inputs support.
+   * `mmf-vs-tbill.ts` already fixed that margin at SPREAD_CONFIDENCE_PP and
+   * calls anything inside it "too close to call"; a sorted table that silently
+   * ignores the same margin contradicts the sister module using the same
+   * numbers.
+   *
+   * It matters immediately. The MMF and the 91-day bill carry an identical
+   * gross yield today, because the assumed spread is 0.0 — and they still land
+   * 4bp apart on net, because an MMF's nominal annual rate and a bill's
+   * effective annual yield are not taxed over the same period. Four basis
+   * points of methodology showed up as the MMF beating a Treasury bill. The
+   * ranking was reporting a rounding artefact as a result.
+   */
+  tiedWithBest: boolean;
 }
 
 /**
@@ -94,6 +113,7 @@ export function comparable(): Option[] {
       lockUp: `${bill.tenorDays} days`,
       backing: "Government of Kenya",
       minimumKES: bill.minInvestmentKES ?? null,
+      tiedWithBest: false,
     });
   }
 
@@ -108,10 +128,16 @@ export function comparable(): Option[] {
       lockUp: "none — usually 1 to 3 working days to withdraw",
       backing: "the fund's holdings; CMA-regulated, not guaranteed",
       minimumKES: null,
+      tiedWithBest: false,
     });
   }
 
-  return out.sort((a, b) => b.netPct - a.netPct);
+  out.sort((a, b) => b.netPct - a.netPct);
+  const best = out[0]?.netPct;
+  return out.map((o) => ({
+    ...o,
+    tiedWithBest: best !== undefined && Math.abs(best - o.netPct) < SPREAD_CONFIDENCE_PP,
+  }));
 }
 
 export interface SideNote {
