@@ -17,6 +17,14 @@ const COLUMNS: { heading: string; links: { href: string; label: string }[] }[] =
     heading: "Calculators",
     links: [
       { href: "/tools/salary", label: "Salary & Pay Hub" },
+      /* Reachable, or it is not shipped.
+       *
+       * The same rule that put /licensing here, and the same one that had
+       * Mwangaza's rates feed live and CORS-open for months with exactly one
+       * reference to it anywhere in the codebase — an internal import. A page
+       * findable only from the tools index is findable only by someone already
+       * browsing tools, which is not the reader this one is for. */
+      { href: "/tools/where-to-save", label: "Where to save" },
       { href: "/tools/fire-number", label: "FIRE number" },
       { href: "/tools/investment-returns", label: "Investment returns" },
       { href: "/tools/loan-repayment", label: "Loan repayment" },
