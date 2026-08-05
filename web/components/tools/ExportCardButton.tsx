@@ -1,9 +1,10 @@
 "use client";
 
-import { RefObject, useState } from "react";
+import { RefObject, useEffect, useState } from "react";
 import { TOOL_META } from "@/lib/tool-meta";
 import { buildSheet, prefersLandscape, A4_PORTRAIT, A4_LANDSCAPE } from "@/lib/export-sheet";
 import ContributionNote from "./ContributionNote";
+import { canShareFile, canvasToPngFile, shareFile } from "@/lib/share-file";
 
 /**
  * Getting a result off the device — as a PDF, or as an image.
@@ -77,7 +78,7 @@ export default function ExportCardButton({
   notes?: string[];
   orientation?: "portrait" | "landscape";
 }) {
-  const [loading, setLoading] = useState<"pdf" | "image" | null>(null);
+  const [loading, setLoading] = useState<"pdf" | "image" | "share" | null>(null);
   /**
    * An export that fails must say so.
    *
@@ -92,6 +93,18 @@ export default function ExportCardButton({
      the one place money is mentioned near a tool, and it may not appear until
      something has been given — see lib/mission.ts. */
   const [delivered, setDelivered] = useState(false);
+  /* Whether this device can hand a PNG to its share sheet.
+   *
+   * Probed once on mount with a real (tiny) File rather than assumed from
+   * `navigator.share`, which exists on desktop browsers that accept text and
+   * URLs but reject files. Rendering the button on those would promise a
+   * capability that throws on press. It starts false so server-rendered HTML
+   * and the first client paint agree — no hydration mismatch, and no button
+   * that flashes in and out. */
+  const [canShare, setCanShare] = useState(false);
+  useEffect(() => {
+    setCanShare(canShareFile(new File([new Uint8Array([0])], "probe.png", { type: "image/png" })));
+  }, []);
 
   /**
    * Rasterise the result card, with the app's chrome and animations neutralised.
@@ -197,6 +210,52 @@ export default function ExportCardButton({
     return out;
   }
 
+  /**
+   * Hand the rendered card straight to the phone's share sheet.
+   *
+   * Kept separate from handleExport rather than folded in as a third `as`
+   * value: this path has an outcome the other two do not have — the reader can
+   * dismiss the sheet — and that ending must produce no error, no success note,
+   * and no download. Collapsing it into the export switch is how "cancelled"
+   * ends up rendering as "Could not build the image".
+   */
+  async function handleShare() {
+    // Same resolution the printed sheet uses, so the share sheet's caption and
+    // the document's heading cannot say different things.
+    const shareTitle = title?.trim() || titleFromFilename(filename);
+    const el = containerRef.current;
+    if (!el) return;
+    setLoading("share");
+    setError("");
+    try {
+      const src = await renderCard(el);
+      const out = frame(src);
+      if (!out) {
+        setError("Could not prepare the canvas. Try a screenshot instead.");
+        return;
+      }
+      const file = await canvasToPngFile(out, filename);
+      if (!file) {
+        setError("Could not prepare the image. Try Save image instead.");
+        return;
+      }
+      const outcome = await shareFile(file, { title: shareTitle, text: shareTitle });
+      if (outcome === "shared") setDelivered(true);
+      // `cancelled` is the reader changing their mind — say nothing.
+      if (outcome === "failed" || outcome === "unsupported") {
+        setError("Sharing did not open. Use Save image and attach it instead.");
+      }
+    } catch (err) {
+      setError(
+        err instanceof Error && err.message
+          ? `Could not build the image (${err.message}). Try a screenshot instead.`
+          : "Could not build the image. Try a screenshot instead.",
+      );
+    } finally {
+      setLoading(null);
+    }
+  }
+
   async function handleExport(as: "pdf" | "image") {
     const el = containerRef.current;
     if (!el) return;
@@ -215,7 +274,6 @@ export default function ExportCardButton({
         link.download = `${filename}.png`;
         link.href = out.toDataURL("image/png");
         link.click();
-        setDelivered(true);
         setDelivered(true);
         return;
       }
@@ -285,7 +343,6 @@ export default function ExportCardButton({
       );
       pdf.save(`${filename}.pdf`);
       setDelivered(true);
-      setDelivered(true);
     } catch (err) {
       const what = as === "pdf" ? "PDF" : "image";
       setError(
@@ -300,6 +357,58 @@ export default function ExportCardButton({
 
   return (
     <div className="space-y-2 print:hidden">
+      {/* THE SHARE BUTTON IS ABSENT, NOT DISABLED, WHERE IT CANNOT WORK
+        *
+        * Web Share with files is a phone capability; most desktop browsers
+        * either lack `navigator.share` or accept only text and a URL. A
+        * greyed-out control would still advertise a feature and invite the
+        * question "why not me"; showing nothing is the honest rendering of "not
+        * on this device", and the two existing buttons already cover it.
+        *
+        * It leads because on a phone it is the shortest route to the thing the
+        * image was made for: the alternative is Save, leave the site, open
+        * WhatsApp, and go looking through Downloads.
+        *
+        * Labelled "Share result" and not "Share to WhatsApp", in the app's own
+        * colour rather than WhatsApp green. The system sheet offers whatever
+        * the reader has installed; naming one destination claims a routing this
+        * code does not control, and WhatsApp not appearing would make the
+        * button a small lie. WhatsApp is where most of these will go — that is
+        * a reason to build the button, not to mislabel it. */}
+      {canShare && (
+        <button
+          type="button"
+          onClick={handleShare}
+          disabled={loading !== null}
+          className="mb-2 flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl bg-primary px-4 py-3 text-sm font-semibold text-white shadow-sm transition-opacity hover:opacity-90 disabled:opacity-50"
+        >
+          {loading === "share" ? (
+            "Preparing…"
+          ) : (
+            <>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <circle cx="18" cy="5" r="3" />
+                <circle cx="6" cy="12" r="3" />
+                <circle cx="18" cy="19" r="3" />
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+              </svg>
+              Share result
+            </>
+          )}
+        </button>
+      )}
       {/* Rendered only once a file has reached the reader — never before. */}
       <div className="grid grid-cols-2 gap-2">
         <button
