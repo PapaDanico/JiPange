@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generatedAt": "2026-08-05T05:56:25.330575+00:00",
+  "generatedAt": "2026-08-06T06:07:05.129221+00:00",
   "publisher": "Mwangaza Yield",
   "homepage": "https://mwangazayield.org",
   "notes": {
@@ -54,15 +54,15 @@
       "value": 8.75,
       "unit": "%",
       "date": "2026-06-09",
-      "lastChecked": "2026-08-05",
+      "lastChecked": "2026-08-06",
       "source": "CBK MPC",
       "fallback": false
     },
     "inflation": {
-      "value": 6.41,
+      "value": 6.49,
       "unit": "% y/y",
-      "date": "2026-08-03",
-      "lastChecked": "2026-08-05",
+      "date": "2026-08-05",
+      "lastChecked": "2026-08-06",
       "source": "CBK",
       "fallback": true
     },
