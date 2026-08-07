@@ -10,6 +10,7 @@ import {
 } from "@/lib/tax";
 import { formatKES } from "@/lib/budget";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
+import { positiveAmount } from "@/lib/money";
 import { dueForReview, statuteLine } from "@/lib/statutes";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import DeductionRow from "./DeductionRow";
@@ -49,15 +50,15 @@ export default function TakeHomePayCalculator() {
   );
 
   const result = useMemo(() => {
-    const value = Number(gross);
-    if (!value || value <= 0) return null;
+    const value = positiveAmount(gross);
+    if (value === null) return null;
     return calculateNetPay(value, reliefs);
   }, [gross, reliefs]);
 
   const priorYearResult = useMemo(() => {
     if (!showYearComparison) return null;
-    const value = Number(gross);
-    if (!value || value <= 0) return null;
+    const value = positiveAmount(gross);
+    if (value === null) return null;
     return calculateNetPay(value, reliefs, NSSF_PRIOR_YEAR_LIMITS);
   }, [showYearComparison, gross, reliefs]);
 

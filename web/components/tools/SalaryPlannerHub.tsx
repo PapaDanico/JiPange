@@ -1,5 +1,6 @@
 "use client";
 
+import { positiveAmount } from "@/lib/money";
 import dynamic from "next/dynamic";
 import { useMemo, useState } from "react";
 import {
@@ -57,14 +58,14 @@ export default function SalaryPlannerHub() {
   );
 
   const taxResult = useMemo(() => {
-    const g = Number(gross);
-    if (!g || g <= 0) return null;
+    const g = positiveAmount(gross);
+    if (g === null) return null;
     return calculateNetPay(g, reliefs);
   }, [gross, reliefs]);
 
   const shieldResult = useMemo(() => {
-    const g = Number(gross);
-    if (!g || g <= 0) return null;
+    const g = positiveAmount(gross);
+    if (g === null) return null;
     return taxShield({
       grossMonthly: g,
       pensionContribution: reliefs.pensionContribution,
@@ -79,8 +80,8 @@ export default function SalaryPlannerHub() {
   }, [taxResult]);
 
   const negotiateResult = useMemo(() => {
-    const net = Number(targetNet);
-    if (!net || net <= 0) return null;
+    const net = positiveAmount(targetNet);
+    if (net === null) return null;
     const requiredGross = solveGrossForTargetNet(net);
     return { requiredGross, grossWithBuffer: requiredGross + NEGOTIATION_BUFFER };
   }, [targetNet]);
