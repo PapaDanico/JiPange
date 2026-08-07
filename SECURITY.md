@@ -48,10 +48,27 @@ security issue in the sense that matters here — please report it.
 
 Stated plainly rather than left for you to discover:
 
-- **No Content-Security-Policy.** Next.js emits inline scripts and Tailwind
-  emits inline styles, so a correct policy needs nonces threaded through the
-  framework. A wrong CSP breaks the site in production only, so this is
-  deliberate work rather than a config line, and it has not been done.
+- **The Content-Security-Policy permits inline script.** `script-src` carries
+  `'unsafe-inline'`, so the policy does not stop injected script from running.
+  That is the honest limit and it is the only loose directive: everything else
+  is locked to same-origin, including `object-src 'none'`, `base-uri 'self'`,
+  `form-action 'self'` and `frame-ancestors 'self'`.
+
+  This entry previously read "No Content-Security-Policy", reasoning that Next
+  emits inline scripts, a correct policy therefore needs nonces threaded
+  through the framework, and a wrong CSP breaks production only. All three are
+  true, and they are an argument about **one directive**. Applying it to the
+  whole header meant the site also went without the directives that need no
+  nonce, break nothing, and block real attacks — a `<base>` tag injection
+  repointing every relative URL, a form rewritten to post to another origin, a
+  plugin-based payload.
+
+  The policy is verified rather than reviewed. `npm run verify:csp` starts the
+  app, proxies it behind the exact string parsed from `netlify.toml`, and fails
+  on any console violation across every route discovered from `app/`; CI runs
+  it on each pull request. A directive that would break production breaks the
+  run instead. Confirmed to detect real breakage by mutation — removing
+  `'unsafe-inline'` trips it on all 43 routes.
 - `X-XSS-Protection` was removed rather than kept. See the comment in
   `netlify.toml` — the header enables a legacy auditor no current browser
   ships, and which was itself exploitable.

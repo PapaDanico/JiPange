@@ -91,6 +91,25 @@ jobs:
     - name: E2e smoke tests
       run: cd web && npx playwright test
 
+    # The CSP is EXERCISED, not reviewed.
+    #
+    # netlify.toml's own note said a wrong policy "breaks the site in
+    # production only" — which is exactly why a header string cannot be signed
+    # off by reading it, and why this repository shipped without one. This
+    # starts the app, proxies it behind the real policy parsed from
+    # netlify.toml, and fails on any console violation across every route
+    # discovered from app/.
+    #
+    # Bounded, and deliberately without a `|| true`: a policy that breaks a
+    # page must turn the run red. Chromium is installed by the step above, so
+    # this must stay after it.
+    - name: Verify the Content-Security-Policy against every route
+      run: |
+        cd web
+        npm start &
+        for i in $(seq 1 60); do curl -sf http://localhost:3000/ >/dev/null && break; sleep 1; done
+        timeout -k 20s 420s npm run verify:csp
+
     # Upload even on success so flaky runs (fail -> pass on retry) keep
     # their traces; test-results holds the on-first-retry traces.
     - name: Upload Playwright report
