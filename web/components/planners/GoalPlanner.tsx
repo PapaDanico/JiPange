@@ -289,6 +289,12 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
   // rejected by the strategy endpoint's schema.
   const parsedSavings = Math.max(0, Number(currentSavings) || 0);
   const parsedCapacity = Math.max(0, Number(capacity) || 0);
+  /**
+   * A blank field means "not stated"; a typed or prefilled 0 means "nothing
+   * spare". Collapsing both to undefined is what graded a fully-committed
+   * reader as "unknown" — see buildGoalPlan's knownCapacity.
+   */
+  const statedCapacity = capacity.trim() === "" ? undefined : parsedCapacity;
 
   const items: PlanItemInput[] = useMemo(() => {
     if (isChildrenBuilder) {
@@ -307,9 +313,9 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
       inflates: config.inflatesWithTime,
       currentSavings: parsedSavings,
       annualReturn: annualReturn / 100,
-      monthlyCapacity: parsedCapacity > 0 ? parsedCapacity : undefined,
+      monthlyCapacity: statedCapacity,
     });
-  }, [items, config.inflatesWithTime, parsedSavings, annualReturn, parsedCapacity]);
+  }, [items, config.inflatesWithTime, parsedSavings, annualReturn, statedCapacity]);
 
   // The single-item view keeps the levers; multi-child totals don't have a
   // single meaningful lever, so they get a per-child breakdown instead.
@@ -332,7 +338,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- deliberate reset when the inputs change
     setStrategy(null);
     setGoalSaved(false);
-  }, [itemsKey, parsedSavings, parsedCapacity]);
+  }, [itemsKey, parsedSavings, statedCapacity]);
 
   function buildContext(): string | undefined {
     if (isChildrenBuilder && items.length > 0) {
@@ -915,7 +921,15 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
             </div>
           )}
 
-          {badge && multi.capacityShare !== null && (
+          {/* Gated on the VERDICT, not on the percentage.
+            *
+            * This was `badge && multi.capacityShare !== null`, which hid the
+            * whole card whenever the share was unavailable — including the
+            * "beyond current capacity" verdict for a reader whose capacity is
+            * a known zero, since a ratio to zero is not a percentage. The
+            * reader with nothing spare saw no badge at all. The share and the
+            * bar are now the optional part; the verdict always shows. */}
+          {badge && (
             <div className="rounded-2xl bg-white p-5 shadow-sm">
               <div className="flex items-center justify-between">
                 <span
@@ -924,17 +938,21 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
                   {badge.label}
                 </span>
                 <span className="text-xs text-ink-soft">
-                  {Math.round(multi.capacityShare * 100)}% of your capacity
+                  {multi.capacityShare !== null
+                    ? `${Math.round(multi.capacityShare * 100)}% of your capacity`
+                    : "you have nothing spare each month"}
                 </span>
               </div>
-              <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-canvas">
-                <div
-                  className={`h-full rounded-full ${
-                    multi.feasibility === "beyond-reach" ? "bg-danger" : "bg-success"
-                  }`}
-                  style={{ width: `${Math.min(100, multi.capacityShare * 100)}%` }}
-                />
-              </div>
+              {multi.capacityShare !== null && (
+                <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-canvas">
+                  <div
+                    className={`h-full rounded-full ${
+                      multi.feasibility === "beyond-reach" ? "bg-danger" : "bg-success"
+                    }`}
+                    style={{ width: `${Math.min(100, multi.capacityShare * 100)}%` }}
+                  />
+                </div>
+              )}
 
               {multi.feasibility === "beyond-reach" && singleItem && (
                 <div className="mt-4 space-y-3 text-sm text-ink-soft">

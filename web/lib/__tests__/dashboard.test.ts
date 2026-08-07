@@ -58,10 +58,13 @@ describe("buildCashFlow", () => {
     expect(flow.unallocated).toBe(0);
   });
 
-  /* A share of nothing is unanswerable. Returning 0 would render "0% of your
+  /* A share of nothing is unanswerable — returning 0 would render "0% of your
    * capacity" to somebody with commitments and no capacity, and Infinity/NaN
-   * would reach a percentage in the UI. */
-  it("refuses a commitment share when there is no capacity", () => {
+   * would reach a percentage in the UI. But refusing the SHARE must not mean
+   * refusing the VERDICT: the `savingsCapacity > 0 &&` gate that used to sit
+   * on overCommitted showed this reader the calm green "Unallocated Ksh 0"
+   * row. They are the most over-committed reader on the site. */
+  it("refuses the share but still calls a zero-capacity reader over-committed", () => {
     const broke: Calculations = {
       ...CALC,
       netMonthly: 0,
@@ -70,8 +73,19 @@ describe("buildCashFlow", () => {
     };
     const flow = buildCashFlow(broke, [goal({ goalType: "home", requiredMonthly: 5_000, years: 3 })])!;
     expect(flow.commitmentShare).toBeNull();
-    // With no capacity to exceed, "over-committed" is not a claim we can make.
-    expect(flow.overCommitted).toBe(false);
+    expect(flow.overCommitted).toBe(true);
+    expect(flow.shortfall).toBe(5_000);
+    expect(flow.unallocated).toBe(0);
+  });
+
+  it("does not call a zero-capacity reader with no goals over-committed", () => {
+    const broke: Calculations = {
+      ...CALC,
+      netMonthly: 0,
+      budgetSplit: { needs: 0, socialObligations: 0, wants: 0, savings: 0 },
+      savingsCapacity: 0,
+    };
+    expect(buildCashFlow(broke, [])!.overCommitted).toBe(false);
   });
 
   it("returns null rather than a zeroed page when there is no profile", () => {

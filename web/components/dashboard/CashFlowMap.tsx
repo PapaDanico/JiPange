@@ -59,13 +59,23 @@ function Waterfall({ flow }: { flow: CashFlow }) {
   return (
     <section className="rounded-2xl bg-white p-6 shadow-sm">
       <h2 className="text-base font-semibold text-primary">Net cash flow</h2>
+      {/* "Where every shilling is already spoken for" read as OBSERVED
+        * spending. It is not: livingCost is the budget model's fixed
+        * 50/15/15 of take-home pay, the one figure here that comes from no
+        * input the reader gave us — and it was the one framed most
+        * confidently. Take-home pay and the goal commitments are real. */}
       <p className="mt-1 text-sm text-ink-soft">
-        Where every shilling of take-home pay is already spoken for, each month.
+        Your take-home pay against a budget model, each month.
       </p>
 
       <div className="mt-4 divide-y divide-border">
         <Row label="Take-home pay" amount={flow.netMonthly} note="after PAYE, NSSF, SHIF and the housing levy" />
-        <Row label="Living costs" amount={flow.livingCost} note="needs, social obligations and wants" tone="out" />
+        <Row
+          label="Living costs"
+          amount={flow.livingCost}
+          note="assumed — 80% of take-home on needs, social obligations and wants, not your actual spending"
+          tone="out"
+        />
         <Row label="Savings capacity" amount={flow.savingsCapacity} note="what the budget leaves to commit" />
         <Row
           label="Committed to goals"

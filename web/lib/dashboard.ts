@@ -85,7 +85,12 @@ export function buildCashFlow(
   const livingCost = budgetSplit.needs + budgetSplit.socialObligations + budgetSplit.wants;
   const committed = totalCommitted(goals);
 
-  const overCommitted = savingsCapacity > 0 && committed > savingsCapacity;
+  // NOT gated on `savingsCapacity > 0`. That gate meant a reader with zero
+  // capacity and Ksh 5,000 of commitments — the most over-committed reader on
+  // the site — saw the calm green "Unallocated Ksh 0" row and a mild footnote.
+  // The share below is still refused at zero, because a ratio to zero is not a
+  // percentage; the verdict does not depend on being able to quote one.
+  const overCommitted = committed > savingsCapacity;
 
   return {
     netMonthly,
