@@ -1,5 +1,6 @@
 "use client";
 
+import { positiveAmount } from "@/lib/money";
 import { useMemo } from "react";
 import { checkOneThirdRule } from "@/lib/one-third-rule";
 import { formatKES } from "@/lib/budget";
@@ -26,8 +27,8 @@ export default function OneThirdRuleCalculator() {
   );
 
   const result = useMemo(() => {
-    const basic = Number(basicSalary);
-    if (!basic || basic <= 0) return null;
+    const basic = positiveAmount(basicSalary);
+    if (basic === null) return null;
 
     return checkOneThirdRule({
       basicSalary: basic,

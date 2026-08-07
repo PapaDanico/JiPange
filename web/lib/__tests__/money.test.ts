@@ -95,11 +95,17 @@ describe("positiveAmount", () => {
 /**
  * A RATCHET, NOT A CLEAN BILL OF HEALTH.
  *
- * The unsafe pattern started at 55 call sites across 24 files. The payroll
- * paths and every `Number(x) || 0` site are converted; 37 remain, each of the
- * form `Number(x)` followed by a hand-written `!x || x <= 0`. Converting those
- * changes control flow rather than an expression, so they go one at a time
- * with the calculator's own tests watching, not in a sweep.
+ * The unsafe pattern started at 55 call sites across 24 files. 20 remain.
+ *
+ * Converted so far: every `Number(x) || 0` site (a pure expression swap), the
+ * payroll paths, the single-variable `!x || x <= 0` guards, and the regular
+ * two-variable pairs of that same shape.
+ *
+ * What is left is deliberately left. Those guards carry DOMAIN constraints on
+ * top of the positivity check — `yearsValue <= 1`, `m < 2 || m > MAX_CHAMA_MEMBERS`,
+ * `result === null` — and rewriting them mechanically would either drop a real
+ * rule or bury it. They go one at a time, with the calculator's own test
+ * watching, not in a sweep.
  *
  * This test fails if that count GROWS. It does not pass because the codebase
  * is clean — it passes because the debt is not getting worse, and the number
@@ -107,7 +113,7 @@ describe("positiveAmount", () => {
  * never raise it.
  */
 describe("the unguarded-parse debt does not grow", () => {
-  const REMAINING = 37;
+  const REMAINING = 20;
 
   const walk = (dir: string): string[] =>
     readdirSync(dir).flatMap((name) => {

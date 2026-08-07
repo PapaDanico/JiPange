@@ -1,6 +1,6 @@
 "use client";
 
-import { amountOrZero } from "@/lib/money";
+import { amountOrZero, positiveAmount } from "@/lib/money";
 import { useMemo } from "react";
 import { solveMonthlyContribution } from "@/lib/savings-goal";
 import { futureValue } from "@/lib/projections";
@@ -40,9 +40,9 @@ export default function SavingsGoalCalculator() {
   );
 
   const result = useMemo(() => {
-    const targetFutureValue = Number(target);
-    const yearsValue = Number(years);
-    if (!targetFutureValue || targetFutureValue <= 0 || !yearsValue || yearsValue <= 0) return null;
+    const targetFutureValue = positiveAmount(target);
+    const yearsValue = positiveAmount(years);
+    if (targetFutureValue === null || yearsValue === null) return null;
 
     const monthly = solveMonthlyContribution({
       targetFutureValue,

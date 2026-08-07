@@ -1,5 +1,6 @@
 "use client";
 
+import { positiveAmount } from "@/lib/money";
 import { useMemo } from "react";
 import { inflateToFutureCost, inflationAdjust } from "@/lib/projections";
 import { formatKES } from "@/lib/budget";
@@ -18,9 +19,9 @@ export default function InflationRealityCalculator() {
   const [years, setYears] = useStickyState("jipange:tool:inflation-reality:years", "5");
 
   const result = useMemo(() => {
-    const salaryValue = Number(salary);
-    const yearsValue = Number(years);
-    if (!salaryValue || salaryValue <= 0 || !yearsValue || yearsValue <= 0) return null;
+    const salaryValue = positiveAmount(salary);
+    const yearsValue = positiveAmount(years);
+    if (salaryValue === null || yearsValue === null) return null;
 
     const realValue = inflationAdjust(salaryValue, yearsValue);
     const salaryNeeded = inflateToFutureCost(salaryValue, yearsValue);

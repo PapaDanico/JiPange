@@ -1,5 +1,6 @@
 "use client";
 
+import { positiveAmount } from "@/lib/money";
 import { useMemo } from "react";
 import { calculateMoneyRunwayMonths } from "@/lib/runway";
 import { formatKES } from "@/lib/budget";
@@ -42,9 +43,9 @@ export default function MoneyRunwayCalculator() {
   );
 
   const result = useMemo(() => {
-    const balance = Number(startingBalance);
-    const withdrawal = Number(monthlyWithdrawal);
-    if (!balance || balance <= 0 || !withdrawal || withdrawal <= 0) return null;
+    const balance = positiveAmount(startingBalance);
+    const withdrawal = positiveAmount(monthlyWithdrawal);
+    if (balance === null || withdrawal === null) return null;
 
     return calculateMoneyRunwayMonths({
       startingBalance: balance,

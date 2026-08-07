@@ -1,5 +1,6 @@
 "use client";
 
+import { positiveAmount } from "@/lib/money";
 import { useMemo } from "react";
 import { calculateShaHealth, type EmploymentType } from "@/lib/sha";
 import { formatKES } from "@/lib/budget";
@@ -41,8 +42,8 @@ export default function ShaHealthCalculator() {
   );
 
   const result = useMemo(() => {
-    const inc = Number(income);
-    if (!inc || inc <= 0) return null;
+    const inc = positiveAmount(income);
+    if (inc === null) return null;
     return calculateShaHealth({
       employmentType,
       grossMonthlyIncome: inc,
