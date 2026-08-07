@@ -1,0 +1,17 @@
+Copyright © 2026 JiPange. All rights reserved.
+
+THIS IS NOT AN OPEN-SOURCE LICENCE.
+
+This file exists to state the terms explicitly. Without it, a repository with
+no LICENSE is governed by copyright's default of all-rights-reserved — which
+is the intended position here, but "no file" and "deliberately closed" look
+identical to a reader, and only one of them is true.
+
+No permission is granted to use, copy, modify, merge, publish, distribute,
+sublicense, or sell this software or any derivative of it. Viewing the source,
+including through the public repository, does not grant any licence to it.
+
+Third-party dependencies remain under their own licences, which are unaffected
+by this notice and are listed in package-lock.json.
+
+For licensing enquiries, see https://jipangefinance.org/licensing
