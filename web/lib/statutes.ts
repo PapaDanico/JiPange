@@ -83,19 +83,40 @@ export const STATUTES = {
     // Finance Act 2023. lib/tax.ts records it as unchanged for 2025/26.
     effectiveFrom: "2023-07-01",
     /* A Finance Act is assented in late June and takes effect on 1 July, so
-     * these constants are re-openable every year on that date. One month of
-     * grace covers the gap between assent and the KRA publishing a revised
-     * schedule.
+     * these constants are re-openable every year on that date, plus a month of
+     * grace for the KRA to publish a revised schedule.
      *
-     * This date is in the past as it is written, and deliberately left there.
-     * The Finance Act 2026 took effect on 1 July 2026; whether it touched the
-     * bands has not been verified, because kra.go.ke is blocked by this
-     * environment's egress policy and no figure enters this repository on the
-     * strength of a guess. Choosing a later date would have made the record
-     * green by asserting a check nobody performed — the exact move the header
-     * of this file rules out. Past due is the honest state, so the calculators
-     * now say so. */
-    reviewBy: "2026-07-31",
+     * ── THE FINANCE ACT 2026 REVIEW, AND EXACTLY HOW FAR IT GOT ────────────
+     *
+     * This entry shipped past due, because the Act took effect on 1 July 2026
+     * and nobody had checked whether it moved the bands. It has now been
+     * checked, and the finding is that it did not:
+     *
+     *   - The Act was passed on 18 June 2026 and assented on 23 June 2026,
+     *     effective 1 July 2026.
+     *   - Reductions to PAYE were PROPOSED and did not survive. ICPAK, the
+     *     Kenya Bankers Association and Deloitte pushed to exempt earnings
+     *     below Ksh 30,000, and a Clause 22 amendment proposed a new 17.5%
+     *     band. Neither reached the enacted Act — the exemption was not in the
+     *     published Bill and MPs rejected the push to lower PAYE.
+     *   - Multiple independent 2026-dated sources state the five-band schedule
+     *     (10 / 25 / 30 / 32.5 / 35) and the Ksh 2,400 relief as still in
+     *     force, and attribute the top two bands to the Finance Act 2023.
+     *
+     * WHAT WAS NOT DONE, STATED PLAINLY: the Act itself was not read, and
+     * neither was any Big Four alert or the KRA's own schedule. kra.go.ke,
+     * taxsummaries.pwc.com, ey.com and every professional summary tried are
+     * blocked by this environment's egress policy. The evidence above is
+     * secondary reporting, corroborated across sources that agree, and it is
+     * weaker than the instrument.
+     *
+     * That is enough to stop asserting the bands are UNCHECKED — which is what
+     * the past-due flag was telling readers — and not enough to pretend they
+     * were read from the Act. The distinction is recorded here rather than
+     * lost, so the next reviewer knows what they are re-doing. Anyone with
+     * unblocked access should confirm against the Act or the KRA schedule and
+     * replace this note. */
+    reviewBy: "2027-07-31",
     note: "Personal relief has been Ksh 2,400/month since January 2018.",
   },
 

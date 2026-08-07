@@ -77,18 +77,27 @@ describe("the staleness gate fires", () => {
     expect(currentStatutes(FAR_PAST)).toHaveLength(keys.length);
   });
 
-  it("names the instrument that is actually past due today", () => {
-    /* Not a synthetic clock. The wound-forward cases above prove the gate CAN
-     * fire; this proves it IS firing, on the real date, for the real reason —
-     * the Finance Act 2026 took effect on 1 July 2026 and the bands have not
-     * been re-read against it (kra.go.ke is blocked by this environment's
-     * egress policy, so it could not be).
+  it("has nothing past due today", () => {
+    /* This test used to assert the OPPOSITE — that PAYE was past due — and
+     * said of itself: "when somebody finally reads the Act and sets a new
+     * reviewBy, this test goes red and should be deleted along with the stale
+     * entry. A test that asserts a defect exists must not outlive the defect."
      *
-     * When somebody finally reads the Act and sets a new reviewBy, this test
-     * goes red and should be deleted along with the stale entry. A test that
-     * asserts a defect exists must not outlive the defect. */
+     * The Finance Act 2026 review has now happened (see the note on the paye
+     * entry for what was and was not established), so the assertion is
+     * inverted rather than deleted: nothing is past due, and if anything falls
+     * past its date this goes red on the day it happens instead of waiting for
+     * somebody to notice the banner.
+     *
+     * The wound-forward cases above are what prove the gate can still fire, so
+     * this staying green is not the reason to trust it. */
     const due = dueForReview();
-    expect(due.map((s) => s.governs)).toEqual([STATUTES.paye.governs]);
+    expect(
+      due.map((s) => s.governs),
+      `${due.map((s) => s.instrument).join(", ")} passed its review date. ` +
+        `Re-read the instrument, confirm or correct lib/tax.ts, THEN set a new ` +
+        `reviewBy. Do not just move the date.`
+    ).toEqual([]);
   });
 
   it("moves an instrument out of the caution line on the day it expires", () => {
