@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { formatKES } from "@/lib/budget";
+import { remainingCapacity } from "@/lib/dashboard";
 import {
   buildMultiGoalPlan,
   type Feasibility,
@@ -16,7 +18,7 @@ import {
   asShareOfIncome,
 } from "@/lib/retirement-evidence";
 import { inflationAdjust } from "@/lib/projections";
-import { getStoredCalculations, getStoredProfile, saveStoredGoal } from "@/lib/storage";
+import { getStoredCalculations, getStoredGoals, getStoredProfile, saveStoredGoal } from "@/lib/storage";
 import type { GoalStrategy } from "@/lib/types";
 import { useCountUp } from "@/hooks/useCountUp";
 import NumberField from "@/components/tools/NumberField";
@@ -173,6 +175,8 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
   const [annualReturn, setAnnualReturn] = useState(config.defaultAnnualReturn * 100);
   const [capacity, setCapacity] = useState("");
   const [capacityFromProfile, setCapacityFromProfile] = useState(false);
+  /** Ksh/mo already committed to the reader's OTHER goals, so unavailable to this one. */
+  const [claimedByOthers, setClaimedByOthers] = useState(0);
 
   const [strategy, setStrategy] = useState<GoalStrategy | null>(null);
   const [goalSaved, setGoalSaved] = useState(false);
@@ -183,9 +187,25 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
   useEffect(() => {
     const stored = getStoredCalculations();
     if (stored && stored.savingsCapacity > 0) {
+      // NOT the full savings capacity — what is LEFT of it.
+      //
+      // This prefilled the whole capacity, and so did the other four planners,
+      // because none of them can see the others from inside. A reader could
+      // plan school fees, a home deposit, an emergency fund, retirement and
+      // business capital, be told "comfortable" five times, and be committed
+      // to three times what they have. The overshoot was only ever caught
+      // afterwards, by MyGoals on the Pesa Picture — after they had acted on
+      // five grades computed against money four other goals had claimed.
+      //
+      // This goal's OWN existing commitment is excluded, or reopening a saved
+      // goal would grade it against a capacity it is itself consuming and
+      // read as unaffordable the moment you looked at it again.
+      const goals = getStoredGoals();
+      const left = remainingCapacity(stored.savingsCapacity, goals, config.type);
       // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time prefill into hand-editable fields; see comment above
-      setCapacity(String(Math.round(stored.savingsCapacity)));
+      setCapacity(String(Math.round(left)));
       setCapacityFromProfile(true);
+      setClaimedByOthers(Math.round(stored.savingsCapacity - left));
     }
     if (config.builder === "expenses-months" && stored) {
       // Their real spending: take-home minus what they can save.
@@ -775,7 +795,18 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
           />
           {capacityFromProfile && (
             <p className="mt-1 text-xs text-faint">
-              Pre-filled from your Pesa Picture — edit if it&apos;s changed.
+              {claimedByOthers > 0 ? (
+                <>
+                  Pre-filled from your Pesa Picture, less the {formatKES(claimedByOthers)}/mo your
+                  other goals already claim — so this plan is graded against what is actually
+                  left.{" "}
+                  <Link href="/money-map" className="font-medium text-primary underline">
+                    See the whole map
+                  </Link>
+                </>
+              ) : (
+                <>Pre-filled from your Pesa Picture — edit if it&apos;s changed.</>
+              )}
             </p>
           )}
         </div>

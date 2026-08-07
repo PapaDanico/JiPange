@@ -98,6 +98,12 @@ export default function MyGoals({ savingsCapacity }: { savingsCapacity: number }
                 )}/mo savings capacity.`}
           </p>
         )}
+        <Link
+          href="/money-map"
+          className="mt-2 inline-flex min-h-11 items-center text-xs font-medium text-primary underline"
+        >
+          See the full cash flow &amp; liquidity map →
+        </Link>
       </div>
     </div>
   );
