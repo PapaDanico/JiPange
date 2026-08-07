@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { attributionFor } from "@/lib/statutes";
 
 export const metadata: Metadata = {
   title: "About JiPange",
@@ -136,8 +137,8 @@ export default function AboutPage() {
               JiPange is calibrated for Kenya&apos;s specific financial landscape:
             </p>
             <ul className="mt-3 space-y-1.5 pl-5 list-disc">
-              <li>KRA PAYE bands and personal reliefs (Finance Act 2025/26)</li>
-              <li>NSSF Act 2013 phased tiers (Year 4, 2026) and SHIF at 2.75%</li>
+              <li>KRA PAYE bands and personal reliefs — {attributionFor("paye")}</li>
+              <li>{attributionFor("nssf")}, and SHIF at 2.75%</li>
               <li>Affordable Housing Levy (1.5% matched by employer)</li>
               <li>CBK infrastructure bond yields, regulated SACCO rates, MMF benchmarks</li>
               <li>M-Pesa ecosystem costs: Fuliza daily fees, M-Shwari facilitation, Paybill charges</li>

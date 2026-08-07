@@ -241,3 +241,28 @@ export function statuteLine(): string {
     (s) => `${s.governs} — ${s.instrument}, from ${formatMonth(s.effectiveFrom)}`
   ).join(" · ");
 }
+
+/**
+ * One instrument's attribution, for a caption with room for only one.
+ *
+ * Written because two pages named "Finance Act 2025/26" as the source of the
+ * PAYE bands — the salary hub's stat card and the About page's calibration
+ * list — and both were wrong twice over. The five-band schedule dates to the
+ * Finance Act 2023, not 2025. And by August 2026 the Finance Act 2026 had been
+ * in force for a month, so a reader had no way to tell "still correct" from
+ * "never updated".
+ *
+ * The arithmetic was right throughout — see the `paye` entry above for the
+ * review establishing that the 2026 Act moved neither the bands nor the
+ * Ksh 2,400 relief. That is exactly what let the wrong label survive: nothing
+ * it produced was ever off by a shilling.
+ *
+ * Derived rather than typed, for the reason this registry exists at all. Those
+ * two strings were the third and fourth hand-written copies of a claim the
+ * records already held, and a copy gets corrected in one place and not the
+ * others.
+ */
+export function attributionFor(key: StatuteKey): string {
+  const s = STATUTES[key];
+  return `${s.instrument}, in force since ${formatMonth(s.effectiveFrom)}`;
+}

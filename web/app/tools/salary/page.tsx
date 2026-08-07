@@ -5,6 +5,7 @@ import {
   statutoryShareOfGrossPct,
   DEDUCTION_RATE_EXAMPLE_SALARY_KES,
 } from "@/lib/tool-stats";
+import { attributionFor } from "@/lib/statutes";
 
 export const metadata: Metadata = {
   title: "Salary & Pay Hub — Kenya Take-Home, Budget, Shield, Negotiate",
@@ -24,7 +25,10 @@ export default function SalaryHubPage() {
           tone: "caution",
           stat: `${statutoryShareOfGrossPct()}%`,
           label: `of a Ksh ${DEDUCTION_RATE_EXAMPLE_SALARY_KES.toLocaleString("en-KE")} gross salary goes to PAYE, NSSF, SHIF, and the Housing Levy before you see a shilling.`,
-          source: "Computed by the JiPange tax engine — Finance Act 2025/26 bands, NSSF Year 4",
+          // Named "Finance Act 2025/26", which dated the bands to the wrong
+          // Act and, by August 2026, to a superseded one. Read from the
+          // registry so it cannot drift from the constants it describes.
+          source: `Computed by the JiPange tax engine — ${attributionFor("paye")}; ${attributionFor("nssf")}`,
         },
         {
           icon: "🛡️",

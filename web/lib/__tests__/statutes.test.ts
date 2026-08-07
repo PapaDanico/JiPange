@@ -7,6 +7,7 @@ import {
   dueForReview,
   formatMonth,
   statuteLine,
+  attributionFor,
 } from "../statutes";
 import type { StatuteKey } from "../statutes";
 import {
@@ -241,5 +242,71 @@ describe("month formatting", () => {
   it("reads as a person would say it", () => {
     expect(formatMonth("2024-10-01")).toBe("October 2024");
     expect(formatMonth("2023-07-01")).toBe("July 2023");
+  });
+});
+
+/**
+ * AND NO PAGE NAMES THE ACT ITSELF, EITHER.
+ *
+ * The scan above catches prose that dates the RATES. It did not catch prose
+ * that names the INSTRUMENT, and two pages did exactly that:
+ *
+ *   app/tools/salary/page.tsx   "Finance Act 2025/26 bands, NSSF Year 4"
+ *   app/about/page.tsx          "KRA PAYE bands and personal reliefs
+ *                                (Finance Act 2025/26)"
+ *
+ * Both were wrong twice. The five-band schedule dates to the Finance Act 2023,
+ * not 2025; and by August 2026 the Finance Act 2026 had been in force for a
+ * month, so a reader could not distinguish "still correct" from "never
+ * updated". What made it survive is that the arithmetic never was wrong — the
+ * 2026 Act moved neither the bands nor the relief — so no figure was ever off
+ * by a shilling and nothing pointed at the label.
+ *
+ * A hand-typed Act name is a claim about the law with nothing connecting it to
+ * the constants it describes, which is the premise of this whole registry.
+ * attributionFor() renders it from the records instead.
+ */
+describe("no page names a Finance Act by hand", () => {
+  it("every Act attribution comes from the registry", () => {
+    const roots = ["../../components", "../../app"];
+    const walk = (dir: string): string[] =>
+      readdirSync(dir).flatMap((name) => {
+        const p = join(dir, name);
+        if (statSync(p).isDirectory()) return walk(p);
+        return /\.tsx?$/.test(name) ? [p] : [];
+      });
+    const files = roots.flatMap((r) => walk(new URL(r, import.meta.url).pathname));
+    expect(files.length, "found no files — this scan would be vacuous").toBeGreaterThan(20);
+
+    /* A YEARED Finance Act reference in rendered copy. Deliberately NOT a ban
+     * on the phrase: the relief tooltips say "raised from Ksh 25,000 by the
+     * Finance Act 2025", which is a historical fact about a specific change
+     * and stays true however the law moves. What is banned is naming an Act as
+     * the CURRENT authority for a rate — "Finance Act 2025/26 bands" — because
+     * that claim expires and nothing here would notice.
+     *
+     * Comments are stripped, or this block's own quotation of the defect would
+     * fail the guard it documents. */
+    const offenders = files.filter((f) => {
+      const src = readFileSync(f, "utf8")
+        .replace(/\/\*[\s\S]*?\*\//g, " ")
+        .replace(/^\s*\/\/.*$/gm, " ");
+      return /Finance Act\s+20\d\d\s*\/\s*\d\d/.test(src);
+    });
+
+    expect(
+      offenders.map((f) => f.replace(/.*\/(app|components)\//, "$1/")),
+      "these name a Finance Act year as the current authority for a rate. " +
+        "That claim expires silently — the arithmetic stays right while the " +
+        "label goes stale. Use attributionFor() from @/lib/statutes."
+    ).toEqual([]);
+  });
+
+  it("attributionFor names the instrument and its real start date", () => {
+    expect(attributionFor("paye")).toContain("Income Tax Act");
+    // July 2023, not 2025 — the mistake the two pages made.
+    expect(attributionFor("paye")).toContain("July 2023");
+    expect(attributionFor("paye")).not.toContain("2025");
+    expect(attributionFor("nssf")).toContain("February 2026");
   });
 });
