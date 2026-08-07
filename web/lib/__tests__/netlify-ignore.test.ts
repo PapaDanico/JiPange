@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { execFileSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
+import { readFileSync, rmSync } from 'node:fs';
 
 /**
  * The build-skip decision, tested by running the actual script.
@@ -128,6 +128,27 @@ describe('netlify build-skip decision', () => {
       prev = next;
     }
 
-    execFileSync('rm', ['-rf', dir]);
+    /* CLEANUP MUST NOT BE ABLE TO FAIL THE TEST.
+     *
+     * This was a bare `execFileSync('rm', ['-rf', dir])`, sitting inside the
+     * `it()` after every assertion had already passed. On a CI runner it threw:
+     *
+     *   rm: cannot remove '/tmp/tmp.WROQksc0NF/.git/objects': Directory not empty
+     *
+     * — `rm` racing a git process still writing into the throwaway repository
+     * this test builds. 949 of 950 tests passed, every assertion in this file
+     * passed, and the suite went red over a temp directory.
+     *
+     * A leftover directory under /tmp is not a defect; failing a build over one
+     * is. `rmSync`'s `maxRetries` exists for exactly this race, and the `catch`
+     * is the honest backstop: if the directory still cannot be removed, that is
+     * the operating system's business and not a verdict on the code under test.
+     * The tempdir is per-run, so nothing leaks between runs.
+     */
+    try {
+      rmSync(dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
+    } catch {
+      // Deliberately swallowed — see above.
+    }
   });
 });
