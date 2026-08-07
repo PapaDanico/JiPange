@@ -108,6 +108,18 @@ describe('netlify build-skip decision', () => {
         'test + library together',
         BUILD,
       ],
+      /* LICENSE and SECURITY.md, added 2026-08-07. The merge that introduced
+       * them triggered a full production deploy that could not change one byte
+       * of the published site — this script's own cost, paid on the commit
+       * that documented it. */
+      [`echo x > ${dir}/LICENSE; echo y > ${dir}/SECURITY.md`, 'licence + disclosure policy', SKIP],
+      /* Anchored at BOTH ends. Without the trailing anchor this root-level
+       * sibling is swallowed too and would silently stop deploying. The
+       * equivalent assertion in Mwangaza was first written against
+       * src/licensing/LICENSE and was VACUOUS — `^LICENSE` cannot match a path
+       * beginning `src/`, so dropping the `$` did not fail it. This is the
+       * case that actually discriminates. */
+      [`echo z > ${dir}/LICENSE-THIRD-PARTY`, 'a differently-named root licence file', BUILD],
     ];
 
     for (const [shell, msg, want] of cases) {
