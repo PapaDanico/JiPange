@@ -10,6 +10,7 @@ import {
   termlyMonthlyTarget,
 } from "@/lib/school-fees";
 import { saveStoredGoal } from "@/lib/storage";
+import { targetDateIn } from "@/lib/dashboard";
 import HowItWorks from "@/components/tools/HowItWorks";
 import Toggle from "@/components/tools/Toggle";
 
@@ -51,6 +52,7 @@ export default function TermlyFeeSmoother() {
       amountToday: parsedFees * children + (cbc ? cushionTotal : 0),
       nominalTarget: parsedFees * children + (cbc ? cushionTotal : 0),
       years: 1,
+      targetDate: targetDateIn(1),
       requiredMonthly: Math.round(monthly),
       savedAt: new Date().toISOString(),
     });

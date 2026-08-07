@@ -150,7 +150,28 @@ export interface SavedGoal {
   amountToday: number;
   /** The inflation-adjusted target actually planned against. */
   nominalTarget: number;
+  /**
+   * The horizon AS PLANNED, in years. Frozen at the moment of saving — see
+   * `targetDate`, and use `yearsRemaining()` from lib/dashboard for anything
+   * that must be true today.
+   */
   years: number;
+  /**
+   * When the money is actually needed, ISO date.
+   *
+   * `years` alone was a duration with no anchor, so it never counted down. A
+   * four-year goal saved today still read as four years away in 2030 — by then
+   * a one-year goal, belonging in bills, while the liquidity map confidently
+   * routed it to a medium-tenor bond and the goal list still said "in 4 yrs".
+   *
+   * OPTIONAL, and it stays optional. Goals saved before this field existed are
+   * already in readers' browsers and there is no server to migrate them from.
+   * Rather than a write-on-read migration — a mutation of somebody's data to
+   * fix a display bug — the date is DERIVED when absent, from `savedAt` plus
+   * `years`, by `targetDateFor()`. Same answer, nothing rewritten, and no
+   * migration path that can half-run.
+   */
+  targetDate?: string;
   requiredMonthly: number;
   savedAt: string;
 }

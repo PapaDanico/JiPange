@@ -4,6 +4,7 @@ import Link from "next/link";
 import { formatKES } from "@/lib/budget";
 import { EMPTY_GOALS, getStoredGoals, removeStoredGoal } from "@/lib/storage";
 import { useStorageValue } from "@/lib/hooks";
+import { formatRemaining, yearsRemaining } from "@/lib/dashboard";
 
 /**
  * Saved goals from the planners, shown on the Pesa Picture so the monthly
@@ -63,8 +64,10 @@ export default function MyGoals({ savingsCapacity }: { savingsCapacity: number }
                   {goal.title}
                 </span>
                 <span className="block text-xs text-ink-soft">
-                  {formatKES(goal.requiredMonthly)}/mo · {formatKES(goal.nominalTarget)} in{" "}
-                  {goal.years} {goal.years === 1 ? "yr" : "yrs"}
+                  {/* Years REMAINING, not the frozen plan — a goal saved four
+                      years ago read "in 4 yrs" forever. */}
+                  {formatKES(goal.requiredMonthly)}/mo · {formatKES(goal.nominalTarget)}{" "}
+                  {formatRemaining(yearsRemaining(goal))}
                 </span>
               </span>
             </Link>

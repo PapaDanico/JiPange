@@ -3,9 +3,13 @@ import {
   HORIZONS,
   buildAllocationMap,
   buildCashFlow,
+  formatRemaining,
   horizonFor,
   remainingCapacity,
+  targetDateFor,
+  targetDateIn,
   totalCommitted,
+  yearsRemaining,
 } from "../dashboard";
 import type { SavedGoal } from "../storage";
 import type { Calculations } from "../types";
@@ -268,5 +272,94 @@ describe("buildAllocationMap", () => {
       if (band.toYears <= HORIZONS[2].fromYears) continue; // shorter than any bond horizon
       expect(labels, `band ${band.label} is quoted by no horizon`).toContain(band.label);
     }
+  });
+});
+
+/**
+ * A HORIZON THAT DOES NOT COUNT DOWN IS A MAP OF THE PAST.
+ *
+ * `SavedGoal.years` is the horizon AS PLANNED. It was also what the liquidity
+ * map bucketed on, so a goal saved four years out stayed four years out
+ * forever: money due next spring kept being routed to a medium-tenor bond,
+ * the goal list kept reading "in 4 yrs", and nothing on either page revealed
+ * that the map had been drawn years earlier.
+ *
+ * This is the decay case, and it cannot be caught by a test that runs `today`
+ * — every assertion below pins a date, because the defect only appears with
+ * time passing.
+ */
+describe("goal horizons count down", () => {
+  const saved = (years: number, savedAt: string, targetDate?: string): SavedGoal =>
+    goal({ goalType: "home", requiredMonthly: 5_000, years, savedAt, ...(targetDate ? { targetDate } : {}) });
+
+  it("derives a target date from savedAt for goals stored before the field existed", () => {
+    // No targetDate — the shape already in readers' browsers.
+    const g = saved(4, "2026-08-07T00:00:00.000Z");
+    expect(targetDateFor(g)).toBe("2030-08-07");
+  });
+
+  it("prefers a stored target date over the derivation", () => {
+    const g = saved(4, "2026-08-07T00:00:00.000Z", "2031-01-15");
+    expect(targetDateFor(g)).toBe("2031-01-15");
+  });
+
+  /* THE DEFECT, STATED AS A TEST. Four years after saving, a four-year goal
+   * has months left — not four years. */
+  it("counts down as time passes", () => {
+    const g = saved(4, "2026-08-07T00:00:00.000Z");
+    expect(yearsRemaining(g, "2026-08-07")).toBeCloseTo(4, 1);
+    expect(yearsRemaining(g, "2028-08-07")).toBeCloseTo(2, 1);
+    expect(yearsRemaining(g, "2030-02-07")).toBeCloseTo(0.5, 1);
+    // The frozen field, for contrast — this is what the map used to read.
+    expect(g.years).toBe(4);
+  });
+
+  it("re-buckets the goal as its date approaches, which is the whole point", () => {
+    const g = saved(4, "2026-08-07T00:00:00.000Z");
+    expect(horizonFor(yearsRemaining(g, "2026-08-07")).key).toBe("medium");
+    expect(horizonFor(yearsRemaining(g, "2028-08-07")).key).toBe("short");
+    expect(horizonFor(yearsRemaining(g, "2030-02-07")).key).toBe("now");
+  });
+
+  it("moves a goal in the allocation map without rewriting stored data", () => {
+    const goals = [saved(4, "2026-08-07T00:00:00.000Z")];
+    const early = buildAllocationMap(goals, "2026-08-07");
+    const late = buildAllocationMap(goals, "2030-02-07");
+    expect(early.find((b) => b.horizon.key === "medium")!.goals).toHaveLength(1);
+    expect(late.find((b) => b.horizon.key === "now")!.goals).toHaveLength(1);
+    // Derived, not migrated: the stored object is untouched.
+    expect(goals[0].years).toBe(4);
+    expect(goals[0].targetDate).toBeUndefined();
+  });
+
+  /* An overdue goal needs its money NOW — the most liquid bucket — and must
+   * land there deliberately rather than via horizonFor's negative-junk guard. */
+  it("floors a past-due goal at zero rather than going negative", () => {
+    const g = saved(4, "2026-08-07T00:00:00.000Z");
+    expect(yearsRemaining(g, "2032-01-01")).toBe(0);
+    expect(horizonFor(yearsRemaining(g, "2032-01-01")).key).toBe("now");
+  });
+
+  it("falls back to the planned years when no date can be derived", () => {
+    const broken = goal({ goalType: "x", requiredMonthly: 1, years: 6, savedAt: "not a date" });
+    expect(targetDateFor(broken)).toBeNull();
+    expect(yearsRemaining(broken, "2026-08-07")).toBe(6);
+  });
+
+  it("targetDateIn is the inverse the planners store", () => {
+    const from = new Date("2026-08-07T00:00:00.000Z");
+    expect(targetDateIn(4, from)).toBe("2030-08-07");
+    expect(targetDateIn(1, from)).toBe("2027-08-07");
+    // Never a date in the past, whatever it is handed.
+    expect(targetDateIn(-3, from)).toBe("2026-08-07");
+    expect(targetDateIn(NaN, from)).toBe("2026-08-07");
+  });
+
+  it("phrases the countdown so it stays true as it shrinks", () => {
+    expect(formatRemaining(4)).toBe("in 4 yrs");
+    expect(formatRemaining(1)).toBe("in 1 yr");
+    expect(formatRemaining(0.5)).toBe("in 6 months");
+    expect(formatRemaining(1 / 12)).toBe("in 1 month");
+    expect(formatRemaining(0)).toBe("due now");
   });
 });

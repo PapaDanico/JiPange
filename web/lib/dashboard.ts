@@ -192,6 +192,92 @@ export const HORIZONS: readonly Horizon[] = [
   },
 ] as const;
 
+const DAYS_PER_YEAR = 365.25;
+
+/** Today as an ISO date, so callers can pin it in tests. */
+function todayIso(): string {
+  return new Date().toISOString().slice(0, 10);
+}
+
+/**
+ * When a goal's money is needed — from the stored date, or derived from
+ * `savedAt + years` for goals saved before the field existed.
+ *
+ * Derived rather than migrated. Those goals live in readers' browsers and
+ * there is no server to rewrite them from; a write-on-read migration would
+ * mutate somebody's data to fix a display bug, and is a code path that can
+ * half-run on a tab that closes. This gives the same answer, rewrites nothing,
+ * and has no half-state.
+ *
+ * Null when neither is usable, so callers fall back to the frozen `years`
+ * rather than inventing a date.
+ */
+/**
+ * The ISO date `years` from now — what a planner stores at the moment of
+ * saving, so the goal counts down instead of standing still.
+ */
+export function targetDateIn(years: number, from: Date = new Date()): string {
+  const safe = Number.isFinite(years) ? Math.max(0, years) : 0;
+  return new Date(from.getTime() + safe * DAYS_PER_YEAR * 86_400_000)
+    .toISOString()
+    .slice(0, 10);
+}
+
+export function targetDateFor(
+  goal: Pick<SavedGoal, "targetDate" | "savedAt" | "years">
+): string | null {
+  if (goal.targetDate && !Number.isNaN(Date.parse(goal.targetDate))) return goal.targetDate;
+  const saved = Date.parse(goal.savedAt);
+  if (Number.isNaN(saved) || !Number.isFinite(goal.years)) return null;
+  return new Date(saved + goal.years * DAYS_PER_YEAR * 86_400_000).toISOString().slice(0, 10);
+}
+
+/**
+ * Years from TODAY until the money is needed. Every horizon decision must use
+ * this rather than `goal.years`.
+ *
+ * `goal.years` is the horizon as planned and does not count down, so the
+ * liquidity map aged silently: a goal saved four years out stayed four years
+ * out forever. Money due next spring kept being routed to a medium-tenor bond,
+ * the goal list kept saying "in 4 yrs", and nothing on the page revealed that
+ * the map had been drawn years earlier.
+ *
+ * Never negative. A goal whose date has passed needs its money NOW — the most
+ * liquid bucket — and a negative would land there by accident rather than on
+ * purpose, via the junk guard in horizonFor.
+ */
+export function yearsRemaining(
+  goal: Pick<SavedGoal, "targetDate" | "savedAt" | "years">,
+  today: string = todayIso()
+): number {
+  const fallback = Number.isFinite(goal.years) ? Math.max(0, goal.years) : 0;
+  const target = targetDateFor(goal);
+  if (target === null) return fallback;
+  const days = (Date.parse(target) - Date.parse(today)) / 86_400_000;
+  return Number.isNaN(days) ? fallback : Math.max(0, days / DAYS_PER_YEAR);
+}
+
+/**
+ * Time LEFT, phrased so it stays true as it shrinks.
+ *
+ * "in 4 yrs" on a goal saved four years ago was the visible half of the same
+ * bug that mis-bucketed it: the stored `years` is the plan, not the countdown.
+ *
+ * Lives here, exported, because it was briefly written TWICE — once in the map
+ * and once in the Pesa Picture goal list — which is precisely how two pages
+ * come to disagree about the same date. One copy, or this comment is a lie.
+ */
+export function formatRemaining(years: number): string {
+  if (years < 1 / 12) return "due now";
+  if (years < 1) {
+    const months = Math.max(1, Math.round(years * 12));
+    return `in ${months} ${months === 1 ? "month" : "months"}`;
+  }
+  const rounded = Math.round(years * 10) / 10;
+  const shown = rounded % 1 === 0 ? rounded.toFixed(0) : rounded.toFixed(1);
+  return `in ${shown} ${rounded === 1 ? "yr" : "yrs"}`;
+}
+
 export function horizonFor(years: number): Horizon {
   // NaN and negatives are junk and fall to the nearest bucket. Infinity does
   // NOT: an infinitely distant goal is the furthest horizon, and the blanket
@@ -315,10 +401,15 @@ function benchmarkFor(horizon: Horizon): BenchmarkYield | null {
  * has no emergency money, and a map that quietly dropped the empty row would
  * be hiding the most useful thing on the page.
  */
-export function buildAllocationMap(goals: readonly SavedGoal[]): AllocationBucket[] {
+export function buildAllocationMap(
+  goals: readonly SavedGoal[],
+  today: string = todayIso()
+): AllocationBucket[] {
   const total = totalCommitted(goals);
   return HORIZONS.map((horizon) => {
-    const inBucket = goals.filter((g) => horizonFor(g.years).key === horizon.key);
+    // yearsRemaining, not g.years — see its docstring. Bucketing on the frozen
+    // planned horizon is what let this map age silently.
+    const inBucket = goals.filter((g) => horizonFor(yearsRemaining(g, today)).key === horizon.key);
     const monthly = totalCommitted(inBucket);
     return {
       horizon,

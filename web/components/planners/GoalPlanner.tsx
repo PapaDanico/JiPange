@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { formatKES } from "@/lib/budget";
-import { remainingCapacity } from "@/lib/dashboard";
+import { remainingCapacity, targetDateIn } from "@/lib/dashboard";
 import {
   buildMultiGoalPlan,
   type Feasibility,
@@ -374,6 +374,8 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
       amountToday: items.reduce((sum, i) => sum + i.todayValue, 0),
       nominalTarget,
       years: displayYears,
+      // The plan's horizon anchored to a date, so it counts down.
+      targetDate: targetDateIn(displayYears),
       requiredMonthly: multi.totalRequiredMonthly,
       savedAt: new Date().toISOString(),
     });
