@@ -5,6 +5,8 @@ import { formatKES } from "@/lib/budget";
 import {
   buildAllocationMap,
   buildCashFlow,
+  formatRemaining,
+  yearsRemaining,
   type AllocationBucket,
   type CashFlow,
 } from "@/lib/dashboard";
@@ -197,8 +199,7 @@ function Bucket({ bucket }: { bucket: AllocationBucket }) {
                 <span aria-hidden="true">{goal.emoji}</span> {goal.title}
               </Link>
               <span className="shrink-0 tabular-nums text-ink-soft">
-                {formatKES(goal.requiredMonthly)}/mo · in {goal.years}{" "}
-                {goal.years === 1 ? "yr" : "yrs"}
+                {formatKES(goal.requiredMonthly)}/mo · {formatRemaining(yearsRemaining(goal))}
               </span>
             </li>
           ))}
