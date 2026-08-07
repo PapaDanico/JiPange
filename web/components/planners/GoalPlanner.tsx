@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { formatKES } from "@/lib/budget";
+import { remainingCapacity } from "@/lib/dashboard";
 import {
   buildMultiGoalPlan,
   type Feasibility,
@@ -16,7 +18,7 @@ import {
   asShareOfIncome,
 } from "@/lib/retirement-evidence";
 import { inflationAdjust } from "@/lib/projections";
-import { getStoredCalculations, getStoredProfile, saveStoredGoal } from "@/lib/storage";
+import { getStoredCalculations, getStoredGoals, getStoredProfile, saveStoredGoal } from "@/lib/storage";
 import type { GoalStrategy } from "@/lib/types";
 import { useCountUp } from "@/hooks/useCountUp";
 import NumberField from "@/components/tools/NumberField";
@@ -173,6 +175,8 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
   const [annualReturn, setAnnualReturn] = useState(config.defaultAnnualReturn * 100);
   const [capacity, setCapacity] = useState("");
   const [capacityFromProfile, setCapacityFromProfile] = useState(false);
+  /** Ksh/mo already committed to the reader's OTHER goals, so unavailable to this one. */
+  const [claimedByOthers, setClaimedByOthers] = useState(0);
 
   const [strategy, setStrategy] = useState<GoalStrategy | null>(null);
   const [goalSaved, setGoalSaved] = useState(false);
@@ -183,9 +187,25 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
   useEffect(() => {
     const stored = getStoredCalculations();
     if (stored && stored.savingsCapacity > 0) {
+      // NOT the full savings capacity — what is LEFT of it.
+      //
+      // This prefilled the whole capacity, and so did the other four planners,
+      // because none of them can see the others from inside. A reader could
+      // plan school fees, a home deposit, an emergency fund, retirement and
+      // business capital, be told "comfortable" five times, and be committed
+      // to three times what they have. The overshoot was only ever caught
+      // afterwards, by MyGoals on the Pesa Picture — after they had acted on
+      // five grades computed against money four other goals had claimed.
+      //
+      // This goal's OWN existing commitment is excluded, or reopening a saved
+      // goal would grade it against a capacity it is itself consuming and
+      // read as unaffordable the moment you looked at it again.
+      const goals = getStoredGoals();
+      const left = remainingCapacity(stored.savingsCapacity, goals, config.type);
       // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time prefill into hand-editable fields; see comment above
-      setCapacity(String(Math.round(stored.savingsCapacity)));
+      setCapacity(String(Math.round(left)));
       setCapacityFromProfile(true);
+      setClaimedByOthers(Math.round(stored.savingsCapacity - left));
     }
     if (config.builder === "expenses-months" && stored) {
       // Their real spending: take-home minus what they can save.
@@ -269,6 +289,12 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
   // rejected by the strategy endpoint's schema.
   const parsedSavings = Math.max(0, Number(currentSavings) || 0);
   const parsedCapacity = Math.max(0, Number(capacity) || 0);
+  /**
+   * A blank field means "not stated"; a typed or prefilled 0 means "nothing
+   * spare". Collapsing both to undefined is what graded a fully-committed
+   * reader as "unknown" — see buildGoalPlan's knownCapacity.
+   */
+  const statedCapacity = capacity.trim() === "" ? undefined : parsedCapacity;
 
   const items: PlanItemInput[] = useMemo(() => {
     if (isChildrenBuilder) {
@@ -287,9 +313,9 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
       inflates: config.inflatesWithTime,
       currentSavings: parsedSavings,
       annualReturn: annualReturn / 100,
-      monthlyCapacity: parsedCapacity > 0 ? parsedCapacity : undefined,
+      monthlyCapacity: statedCapacity,
     });
-  }, [items, config.inflatesWithTime, parsedSavings, annualReturn, parsedCapacity]);
+  }, [items, config.inflatesWithTime, parsedSavings, annualReturn, statedCapacity]);
 
   // The single-item view keeps the levers; multi-child totals don't have a
   // single meaningful lever, so they get a per-child breakdown instead.
@@ -312,7 +338,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- deliberate reset when the inputs change
     setStrategy(null);
     setGoalSaved(false);
-  }, [itemsKey, parsedSavings, parsedCapacity]);
+  }, [itemsKey, parsedSavings, statedCapacity]);
 
   function buildContext(): string | undefined {
     if (isChildrenBuilder && items.length > 0) {
@@ -775,7 +801,18 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
           />
           {capacityFromProfile && (
             <p className="mt-1 text-xs text-faint">
-              Pre-filled from your Pesa Picture — edit if it&apos;s changed.
+              {claimedByOthers > 0 ? (
+                <>
+                  Pre-filled from your Pesa Picture, less the {formatKES(claimedByOthers)}/mo your
+                  other goals already claim — so this plan is graded against what is actually
+                  left.{" "}
+                  <Link href="/money-map" className="font-medium text-primary underline">
+                    See the whole map
+                  </Link>
+                </>
+              ) : (
+                <>Pre-filled from your Pesa Picture — edit if it&apos;s changed.</>
+              )}
             </p>
           )}
         </div>
@@ -884,7 +921,15 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
             </div>
           )}
 
-          {badge && multi.capacityShare !== null && (
+          {/* Gated on the VERDICT, not on the percentage.
+            *
+            * This was `badge && multi.capacityShare !== null`, which hid the
+            * whole card whenever the share was unavailable — including the
+            * "beyond current capacity" verdict for a reader whose capacity is
+            * a known zero, since a ratio to zero is not a percentage. The
+            * reader with nothing spare saw no badge at all. The share and the
+            * bar are now the optional part; the verdict always shows. */}
+          {badge && (
             <div className="rounded-2xl bg-white p-5 shadow-sm">
               <div className="flex items-center justify-between">
                 <span
@@ -893,17 +938,21 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
                   {badge.label}
                 </span>
                 <span className="text-xs text-ink-soft">
-                  {Math.round(multi.capacityShare * 100)}% of your capacity
+                  {multi.capacityShare !== null
+                    ? `${Math.round(multi.capacityShare * 100)}% of your capacity`
+                    : "you have nothing spare each month"}
                 </span>
               </div>
-              <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-canvas">
-                <div
-                  className={`h-full rounded-full ${
-                    multi.feasibility === "beyond-reach" ? "bg-danger" : "bg-success"
-                  }`}
-                  style={{ width: `${Math.min(100, multi.capacityShare * 100)}%` }}
-                />
-              </div>
+              {multi.capacityShare !== null && (
+                <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-canvas">
+                  <div
+                    className={`h-full rounded-full ${
+                      multi.feasibility === "beyond-reach" ? "bg-danger" : "bg-success"
+                    }`}
+                    style={{ width: `${Math.min(100, multi.capacityShare * 100)}%` }}
+                  />
+                </div>
+              )}
 
               {multi.feasibility === "beyond-reach" && singleItem && (
                 <div className="mt-4 space-y-3 text-sm text-ink-soft">

@@ -217,10 +217,15 @@ describe("buildGoalPlan", () => {
     expect(withSavings.requiredMonthly).toBeLessThan(without.requiredMonthly);
   });
 
-  it("ignores a zero capacity rather than dividing by it", () => {
+  /* Was "ignores a zero capacity rather than dividing by it", asserting
+   * feasibility "unknown". Half of that was right and is kept: the SHARE is
+   * still refused, because a ratio to zero is not a percentage. The verdict
+   * is not — see "a capacity of zero is a known fact" below for why treating
+   * a stated zero as a missing answer became a live defect. */
+  it("refuses the share at a zero capacity without refusing the verdict", () => {
     const plan = buildGoalPlan({ ...base, monthlyCapacity: 0 });
-    expect(plan.feasibility).toBe("unknown");
     expect(plan.capacityShare).toBeNull();
+    expect(plan.feasibility).toBe("beyond-reach");
   });
 });
 
@@ -308,5 +313,62 @@ describe("buildMultiGoalPlan", () => {
     expect(multi.totalNominalTarget).toBe(300_000);
     expect(multi.feasibility).toBe("unknown");
     expect(multi.capacityShare).toBeNull();
+  });
+});
+
+/**
+ * A KNOWN ZERO IS NOT AN UNKNOWN.
+ *
+ * `hasCapacity` was `monthlyCapacity !== undefined && > 0`, so a capacity of
+ * zero fell into the same branch as "the reader never told us" — feasibility
+ * "unknown", no verdict, no levers, no warning.
+ *
+ * That was survivable while capacity meant "the whole savings capacity", which
+ * is rarely zero. It stopped being survivable when the planners began
+ * prefilling capacity NET of other goals' claims: a fully-committed reader now
+ * lands on zero routinely, and they are exactly the reader who has to be told
+ * the goal does not fit. Absence of a grade is not neutrality.
+ */
+describe("a capacity of zero is a known fact, not a missing one", () => {
+  const target = { targetAmount: 1_000_000, years: 5, annualReturn: 0.09 };
+
+  it("grades a zero capacity as beyond reach, not unknown", () => {
+    const plan = buildGoalPlan({ ...target, monthlyCapacity: 0 });
+    expect(plan.feasibility).toBe("beyond-reach");
+  });
+
+  it("still refuses the percentage, because a ratio to zero is not one", () => {
+    const plan = buildGoalPlan({ ...target, monthlyCapacity: 0 });
+    // Infinity here renders as "Infinity% of your capacity" in the badge.
+    expect(plan.capacityShare).toBeNull();
+  });
+
+  it("keeps saying unknown when capacity really was not given", () => {
+    expect(buildGoalPlan(target).feasibility).toBe("unknown");
+    expect(buildGoalPlan({ ...target, monthlyCapacity: undefined }).feasibility).toBe("unknown");
+  });
+
+  it("does not call an already-funded goal beyond reach", () => {
+    // requiredMonthly is 0 — nothing more is needed, so zero spare is fine.
+    const funded = buildGoalPlan({ ...target, currentSavings: 5_000_000, monthlyCapacity: 0 });
+    expect(funded.requiredMonthly).toBe(0);
+    expect(funded.feasibility).toBe("comfortable");
+  });
+
+  it("applies the same rule to the multi-goal path", () => {
+    const multi = buildMultiGoalPlan([{ todayValue: 500_000, years: 4 }], {
+      inflates: false,
+      annualReturn: 0.09,
+      monthlyCapacity: 0,
+    });
+    expect(multi.feasibility).toBe("beyond-reach");
+    expect(multi.capacityShare).toBeNull();
+  });
+
+  it("leaves a normal capacity graded exactly as before", () => {
+    const plan = buildGoalPlan({ ...target, monthlyCapacity: 50_000 });
+    expect(plan.feasibility).toBe("comfortable");
+    expect(plan.capacityShare).toBeGreaterThan(0);
+    expect(plan.capacityShare).toBeLessThan(0.5);
   });
 });

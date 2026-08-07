@@ -154,9 +154,21 @@ export function buildGoalPlan(input: GoalPlanInput): GoalPlanResult {
     })
   );
 
-  const hasCapacity = monthlyCapacity !== undefined && monthlyCapacity > 0;
+  // "I have nothing spare" and "I never said" are different facts, and this
+  // collapsed them into one `undefined`. A capacity of ZERO is known — and
+  // once the planners began prefilling capacity net of other goals' claims, a
+  // fully-committed reader hit it routinely. They were graded "unknown": no
+  // verdict, no levers, no warning, for the reader who most needed to be told
+  // the goal does not fit. Absence of a grade is not neutrality; it is a worse
+  // answer than the over-generous one it replaced.
+  const knownCapacity =
+    monthlyCapacity !== undefined && Number.isFinite(monthlyCapacity) && monthlyCapacity >= 0;
+  const hasCapacity = knownCapacity && monthlyCapacity! > 0;
+  // Null rather than Infinity at a known zero: a ratio to zero is not a
+  // percentage, and it renders as "Infinity% of your capacity" in the badge.
+  // The verdict below carries the meaning instead.
   const capacityShare =
-    hasCapacity && Number.isFinite(requiredMonthly) ? requiredMonthly / monthlyCapacity : null;
+    hasCapacity && Number.isFinite(requiredMonthly) ? requiredMonthly / monthlyCapacity! : null;
 
   let yearsAtCapacity: number | null = null;
   let amountAtCapacityByTargetDate: number | null = null;
@@ -188,7 +200,11 @@ export function buildGoalPlan(input: GoalPlanInput): GoalPlanResult {
   return {
     requiredMonthly,
     feasibility:
-      requiredMonthly === 0 ? "comfortable" : gradeFeasibility(capacityShare),
+      requiredMonthly === 0
+        ? "comfortable"
+        : knownCapacity && !hasCapacity
+          ? "beyond-reach" // a known zero: nothing spare, so nothing fits
+          : gradeFeasibility(capacityShare),
     capacityShare,
     yearsAtCapacity,
     amountAtCapacityByTargetDate,
@@ -252,7 +268,12 @@ export function buildMultiGoalPlan(
   });
 
   const totalRequiredMonthly = items.reduce((sum, item) => sum + item.requiredMonthly, 0);
-  const hasCapacity = opts.monthlyCapacity !== undefined && opts.monthlyCapacity > 0;
+  // Same known-zero distinction as buildGoalPlan above.
+  const knownCapacity =
+    opts.monthlyCapacity !== undefined &&
+    Number.isFinite(opts.monthlyCapacity) &&
+    opts.monthlyCapacity >= 0;
+  const hasCapacity = knownCapacity && opts.monthlyCapacity! > 0;
   const capacityShare =
     hasCapacity && Number.isFinite(totalRequiredMonthly)
       ? totalRequiredMonthly / opts.monthlyCapacity!
@@ -261,7 +282,12 @@ export function buildMultiGoalPlan(
   return {
     items,
     totalRequiredMonthly,
-    feasibility: totalRequiredMonthly === 0 ? "comfortable" : gradeFeasibility(capacityShare),
+    feasibility:
+      totalRequiredMonthly === 0
+        ? "comfortable"
+        : knownCapacity && !hasCapacity
+          ? "beyond-reach"
+          : gradeFeasibility(capacityShare),
     capacityShare,
     maxYears: inputs.reduce((max, item) => Math.max(max, item.years), 0),
     totalNominalTarget: totalNominal,
