@@ -46,7 +46,16 @@ changed=$(git diff --name-only "$CACHED_COMMIT_REF" "$COMMIT_REF" 2>/dev/null) |
 
 [ -n "$changed" ] || build "empty diff between two different commits"
 
-relevant=$(echo "$changed" | grep -Ev '^(\.github/|README\.md$|\.gitignore$|web/README\.md$|web/DESIGN\.md$|web/e2e/|web/lib/__tests__/)') || true
+# LICENSE and SECURITY.md earn their place the same way everything else here
+# does: `next build` provably does not read them. They were added on
+# 2026-08-07 and the merge that added them triggered a full production deploy
+# that could not change one byte of the published site — the cost this script
+# exists to avoid, paid on the very commit that documented it.
+#
+# Both are anchored at BOTH ends. Without the trailing anchor a root-level
+# sibling such as LICENSE-THIRD-PARTY would be swallowed too, and a file that
+# could legitimately ship would stop deploying.
+relevant=$(echo "$changed" | grep -Ev '^(\.github/|README\.md$|LICENSE$|SECURITY\.md$|\.gitignore$|web/README\.md$|web/DESIGN\.md$|web/e2e/|web/lib/__tests__/)') || true
 
 if [ -z "$relevant" ]; then
   skip "$(echo "$changed" | wc -l | tr -d ' ') changed file(s), none of them reachable by next build"
