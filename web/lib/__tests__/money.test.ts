@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
-import { positiveAmount, round2 } from "../money";
+import { amountOrZero, positiveAmount, round2 } from "../money";
 
 /**
  * money.ts had no tests, and ten modules import round2 — including the tax
@@ -36,6 +36,27 @@ describe("round2", () => {
   it("is not exact arithmetic, and this is the boundary", () => {
     expect(Number.isFinite(round2(0.1 + 0.2))).toBe(true);
     expect(round2(0.1 + 0.2)).toBe(0.3);
+  });
+});
+
+describe("amountOrZero", () => {
+  it("defaults blanks and junk to zero, as the idiom promises", () => {
+    for (const empty of ["", " ", "abc", null, undefined, NaN, "-5", "0"]) {
+      expect(amountOrZero(empty), `${JSON.stringify(empty)}`).toBe(0);
+    }
+  });
+
+  it("takes ordinary amounts unchanged", () => {
+    expect(amountOrZero("2500")).toBe(2500);
+    expect(amountOrZero(19.99)).toBe(19.99);
+  });
+
+  /* The hole in `Number(x) || 0`: Infinity is truthy, so the fallback never
+   * fires and Infinity poisons whatever it is added to. The idiom reads as
+   * "a number, or nothing" and silently was not. */
+  it("returns zero for Infinity, where `Number(x) || 0` returns Infinity", () => {
+    expect(amountOrZero("1e400")).toBe(0);
+    expect(Number("1e400") || 0).toBe(Infinity); // the behaviour replaced
   });
 });
 
@@ -74,10 +95,11 @@ describe("positiveAmount", () => {
 /**
  * A RATCHET, NOT A CLEAN BILL OF HEALTH.
  *
- * The unsafe pattern is at 55 call sites across 24 files. Converting all of
- * them at once is a large, mostly mechanical diff over every calculator, and
- * doing it in the same change as the payroll fix would make both harder to
- * review. The money-critical paths are converted; the rest are counted.
+ * The unsafe pattern started at 55 call sites across 24 files. The payroll
+ * paths and every `Number(x) || 0` site are converted; 37 remain, each of the
+ * form `Number(x)` followed by a hand-written `!x || x <= 0`. Converting those
+ * changes control flow rather than an expression, so they go one at a time
+ * with the calculator's own tests watching, not in a sweep.
  *
  * This test fails if that count GROWS. It does not pass because the codebase
  * is clean — it passes because the debt is not getting worse, and the number
@@ -85,7 +107,7 @@ describe("positiveAmount", () => {
  * never raise it.
  */
 describe("the unguarded-parse debt does not grow", () => {
-  const REMAINING = 52;
+  const REMAINING = 37;
 
   const walk = (dir: string): string[] =>
     readdirSync(dir).flatMap((name) => {

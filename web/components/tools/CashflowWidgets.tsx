@@ -1,5 +1,6 @@
 "use client";
 
+import { amountOrZero } from "@/lib/money";
 import { useState } from "react";
 import HowItWorks from "./HowItWorks";
 import NumberField from "./NumberField";
@@ -60,9 +61,9 @@ export function KplcOptimizer() {
   const [lastCost, setLastCost] = useState("");
   const [lastUnits, setLastUnits] = useState("");
 
-  const cost = Number(lastCost) || 0;
-  const units = Number(lastUnits) || 0;
-  const monthly = Number(budget) || 0;
+  const cost = amountOrZero(lastCost);
+  const units = amountOrZero(lastUnits);
+  const monthly = amountOrZero(budget);
   const effectiveRate = cost > 0 && units > 0 ? cost / units : 0;
   const monthUnits = effectiveRate > 0 && monthly > 0 ? monthly / effectiveRate : 0;
   const band = monthUnits > 0 ? bandFor(monthUnits) : null;

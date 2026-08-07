@@ -29,3 +29,19 @@ export function positiveAmount(raw: unknown): number | null {
   if (!Number.isFinite(value) || value <= 0) return null;
   return value;
 }
+
+/**
+ * An optional amount that defaults to zero — the `Number(x) || 0` idiom, with
+ * the same hole closed.
+ *
+ * `Number("1e400") || 0` is Infinity, not 0, because Infinity is truthy. The
+ * idiom reads as "a number, or nothing", and it silently is not: a blank field
+ * gives 0 as intended while an absurd one gives Infinity, which then poisons
+ * whatever it is added to. Negatives are floored to 0 to match what the
+ * callers already assume — every use of this is an amount, not a delta.
+ */
+export function amountOrZero(raw: unknown): number {
+  const value = Number(raw);
+  if (!Number.isFinite(value) || value <= 0) return 0;
+  return value;
+}

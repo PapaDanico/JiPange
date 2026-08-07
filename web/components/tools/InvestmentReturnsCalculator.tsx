@@ -1,5 +1,6 @@
 "use client";
 
+import { amountOrZero } from "@/lib/money";
 import { useMemo } from "react";
 import { assumedMmfYieldPct } from "@/lib/mmf-assumption";
 import { futureValueWithStepUp, inflationAdjust } from "@/lib/projections";
@@ -108,8 +109,8 @@ export default function InvestmentReturnsCalculator() {
     const yearsValue = clampYears(Number(years));
     if (!yearsValue || yearsValue <= 0) return [];
     const rate = clampRate(Number(annualReturn));
-    const pv = Number(lumpSum) || 0;
-    const mo = Number(monthly) || 0;
+    const pv = amountOrZero(lumpSum);
+    const mo = amountOrZero(monthly);
     const su = stepUp / 100;
     const step = Math.max(1, Math.ceil(yearsValue / 30));
     const points: GrowthDataPoint[] = [];

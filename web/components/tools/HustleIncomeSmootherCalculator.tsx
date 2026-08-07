@@ -1,5 +1,6 @@
 "use client";
 
+import { amountOrZero } from "@/lib/money";
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { barScale, smoothIncomes } from "@/lib/hustle-smoother";
@@ -193,7 +194,7 @@ export default function HustleIncomeSmootherCalculator() {
               </p>
               <div className="mt-3 space-y-2.5">
                 {incomes.slice(0, count).map((raw, i) => {
-                  const income = Number(raw) || 0;
+                  const income = amountOrZero(raw);
                   if (income <= 0) return null;
                   const barPct = Math.round(bars!.width(income) * 100);
                   const linePct = Math.round(bars!.width(result.monthlyDraw) * 100);

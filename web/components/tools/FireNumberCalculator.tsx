@@ -1,5 +1,6 @@
 "use client";
 
+import { amountOrZero } from "@/lib/money";
 import { useMemo } from "react";
 import { FIRE_ALLOCATION } from "@/lib/market-2026";
 import {
@@ -94,8 +95,8 @@ export default function FireNumberCalculator() {
    * be arithmetic about nobody. */
   const breakEven = useMemo(() => {
     if (!fire) return null;
-    const capital = Number(currentCapital) || 0;
-    const monthly = Number(monthlySaving) || 0;
+    const capital = amountOrZero(currentCapital);
+    const monthly = amountOrZero(monthlySaving);
     if (capital <= 0 && monthly <= 0) return null;
     return solveBreakEven({
       targetKes: fire.capitalRequiredKes,

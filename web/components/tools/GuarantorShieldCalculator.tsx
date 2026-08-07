@@ -1,5 +1,6 @@
 "use client";
 
+import { amountOrZero } from "@/lib/money";
 import { SACCO_LEVERAGE_MULTIPLIER } from "@/lib/market-2026";
 import { formatKES } from "@/lib/budget";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
@@ -24,7 +25,7 @@ export default function GuarantorShieldCalculator() {
     "0"
   );
 
-  const d = Number(deposits) || 0;
+  const d = amountOrZero(deposits);
   const l = Math.max(0, Number(loans) || 0);
   const g = Math.max(0, Number(guaranteed) || 0);
   const gross = d * SACCO_LEVERAGE_MULTIPLIER;

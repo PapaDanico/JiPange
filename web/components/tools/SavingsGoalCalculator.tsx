@@ -1,5 +1,6 @@
 "use client";
 
+import { amountOrZero } from "@/lib/money";
 import { useMemo } from "react";
 import { solveMonthlyContribution } from "@/lib/savings-goal";
 import { futureValue } from "@/lib/projections";
@@ -72,7 +73,7 @@ export default function SavingsGoalCalculator() {
     const yearsValue = Number(years);
     if (!result || !targetFutureValue || yearsValue <= 0) return [];
     const rate = Math.max(0, Number(annualReturn) || 0) / 100;
-    const pv = Number(currentSavings) || 0;
+    const pv = amountOrZero(currentSavings);
     const step = Math.max(1, Math.ceil(yearsValue / 30));
     const points: GrowthDataPoint[] = [];
     for (let y = step; y <= yearsValue; y += step) {
