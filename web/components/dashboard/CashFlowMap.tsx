@@ -130,6 +130,17 @@ function formatRate(rate: number): string {
   return `${(rate * 100).toFixed(1)}%`;
 }
 
+/**
+ * A range when the horizon spans several auction bands, a point when it does
+ * not. A bucket covering three bands does not have one rate, and rendering a
+ * midpoint would claim a precision the auctions never had.
+ */
+function formatBenchmark(b: { low: number; high: number }): string {
+  return b.low === b.high
+    ? formatRate(b.low)
+    : `${(b.low * 100).toFixed(1)}\u2013${formatRate(b.high)}`;
+}
+
 function Bucket({ bucket }: { bucket: AllocationBucket }) {
   const { horizon, goals, monthly, share, benchmark } = bucket;
   const empty = goals.length === 0;
@@ -155,7 +166,7 @@ function Bucket({ bucket }: { bucket: AllocationBucket }) {
 
       {benchmark ? (
         <p className="mt-2 text-xs text-ink-soft">
-          Benchmark {formatRate(benchmark.rate)}{" "}
+          Benchmark {formatBenchmark(benchmark)}{" "}
           <span className="text-faint">
             — {benchmark.label},{" "}
             {benchmark.basis === "net" ? "net of 15% withholding tax" : "before withholding tax"}

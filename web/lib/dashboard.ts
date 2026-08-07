@@ -213,8 +213,10 @@ export function horizonFor(years: number): Horizon {
  * tell us. So we quote what is published and label it.
  */
 export interface BenchmarkYield {
-  /** Annual rate as a fraction, e.g. 0.0908. */
-  rate: number;
+  /** Annual rate as a fraction, e.g. 0.0908. Low end when a range applies. */
+  low: number;
+  /** Equals `low` when a single instrument or band covers the horizon. */
+  high: number;
   basis: "net" | "gross";
   label: string;
 }
@@ -230,11 +232,48 @@ export interface AllocationBucket {
   benchmark: BenchmarkYield | null;
 }
 
-function bandNamed(label: string): BondBand | null {
-  return RATES.bondAuctionBenchmarks?.bands.find((b) => b.label === label) ?? null;
+/**
+ * The bond bands that actually OVERLAP a horizon.
+ *
+ * The horizons here are set by what the money must be able to do — money
+ * wanted in eight months cannot be in a twelve-year bond at any yield — and
+ * the feed's auction bands are set by how CBK groups its auctions. The two
+ * were chosen independently and do not line up, which is fine until something
+ * has to pick one for the other.
+ *
+ * The first version picked by hardcoded label: "3–7y" for the 3-to-10 bucket
+ * and "12–20y" for 10-plus. Both were wrong at the edges. An eight-year goal
+ * was quoted a 3–7y rate for a bond it would not be buying, a ten-year goal
+ * was quoted a 12–20y rate for the same reason, and "7–12y" — the deepest
+ * sample in the feed at fifteen auctions — was never used at all.
+ *
+ * The horizons win, because they describe the reader's constraint rather than
+ * our data's shape. So the BANDS bend: every band overlapping the horizon is
+ * taken, and when several do, the answer is a range rather than a point. A
+ * bucket spanning three auction bands does not have one rate, and inventing a
+ * midpoint would be a precision the auctions never had.
+ *
+ * Bands the feed refuses to quote — `medianClearingRate: null`, too few
+ * auctions — drop out here rather than being interpolated from neighbours.
+ */
+function bandsOverlapping(horizon: Horizon): BondBand[] {
+  const bands = RATES.bondAuctionBenchmarks?.bands ?? [];
+  return bands.filter(
+    (b) =>
+      b.medianClearingRate !== null &&
+      b.fromYears < horizon.toYears &&
+      b.toYears > horizon.fromYears
+  );
 }
 
-function benchmarkFor(key: HorizonKey): BenchmarkYield | null {
+/** "a", "a and b", "a, b and c" — three bands joined with "and" thrice read as a stutter. */
+function joinLabels(labels: string[]): string {
+  if (labels.length <= 1) return labels[0] ?? "";
+  return `${labels.slice(0, -1).join(", ")} and ${labels[labels.length - 1]}`;
+}
+
+function benchmarkFor(horizon: Horizon): BenchmarkYield | null {
+  const key = horizon.key;
   if (key === "now") {
     // assumedMmfYield() is built from the 91-day bill's GROSS effective annual
     // yield with a zero spread (lib/mmf-assumption.ts), so it is gross too —
@@ -242,7 +281,7 @@ function benchmarkFor(key: HorizonKey): BenchmarkYield | null {
     // "net" until the unit test read the figure it was quoting.
     const rate = assumedMmfYield();
     return Number.isFinite(rate) && rate > 0
-      ? { rate, basis: "gross", label: "assumed money market yield" }
+      ? { low: rate, high: rate, basis: "gross", label: "assumed money market yield" }
       : null;
   }
   if (key === "short") {
@@ -251,18 +290,20 @@ function benchmarkFor(key: HorizonKey): BenchmarkYield | null {
     // rendered "766.5%" next to "9.1%" on the same card.
     const bill = tbillRate(364);
     return bill && Number.isFinite(bill.netEAY)
-      ? { rate: bill.netEAY / 100, basis: "net", label: "364-day Treasury bill" }
+      ? { low: bill.netEAY / 100, high: bill.netEAY / 100, basis: "net", label: "364-day Treasury bill" }
       : null;
   }
-  const band = bandNamed(key === "medium" ? "3–7y" : "12–20y");
-  // medianClearingRate is null when too few auctions fell in the band. The
-  // feed calls that a refusal, so we refuse too rather than reach for the
-  // neighbouring band and quote a term the reader is not buying.
-  if (!band || band.medianClearingRate === null) return null;
+  const bands = bandsOverlapping(horizon);
+  // Every overlapping band was refused by the feed, or there are none. We
+  // refuse too rather than reach outside the horizon for a term the reader
+  // would not be buying.
+  if (bands.length === 0) return null;
+  const medians = bands.map((b) => b.medianClearingRate! / 100);
   return {
-    rate: band.medianClearingRate / 100,
+    low: Math.min(...medians),
+    high: Math.max(...medians),
     basis: "gross",
-    label: `${band.label} bond auctions, median clearing rate`,
+    label: `${joinLabels(bands.map((b) => b.label))} bond auctions, median clearing rate`,
   };
 }
 
@@ -284,7 +325,7 @@ export function buildAllocationMap(goals: readonly SavedGoal[]): AllocationBucke
       goals: inBucket,
       monthly,
       share: total > 0 ? monthly / total : null,
-      benchmark: benchmarkFor(horizon.key),
+      benchmark: benchmarkFor(horizon),
     };
   });
 }

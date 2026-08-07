@@ -196,8 +196,9 @@ describe("buildAllocationMap", () => {
       if (b.benchmark === null) continue; // a refusal, asserted below
       expect(["net", "gross"]).toContain(b.benchmark.basis);
       expect(b.benchmark.label.length).toBeGreaterThan(0);
-      expect(b.benchmark.rate).toBeGreaterThan(0.01);
-      expect(b.benchmark.rate).toBeLessThan(0.5);
+      expect(b.benchmark.low).toBeGreaterThan(0.01);
+      expect(b.benchmark.high).toBeLessThan(0.5);
+      expect(b.benchmark.low).toBeLessThanOrEqual(b.benchmark.high);
     }
     const bills = buildAllocationMap([]).filter((b) => b.benchmark?.basis === "net");
     expect(bills.length, "no net-of-tax benchmark resolved — the feed read is broken").toBeGreaterThan(0);
@@ -208,23 +209,64 @@ describe("buildAllocationMap", () => {
    * instead of borrowing the neighbouring band, which would put a term the
    * reader is not buying behind a number they would act on. If the feed later
    * starts quoting every band this becomes vacuous — hence the guard. */
-  it("propagates the feed's refusal rather than borrowing a neighbouring band", async () => {
+  /* THE HORIZONS WIN, AND THE BANDS BEND TO THEM.
+   *
+   * The horizons describe what the money must be able to do; the feed's bands
+   * describe how CBK groups its auctions. They were chosen independently and
+   * do not line up.
+   *
+   * The first version resolved that by hardcoded label — "3–7y" for the 3-to-10
+   * bucket, "12–20y" for 10-plus — and was wrong at both edges. An eight-year
+   * goal was quoted a rate for a bond it would not be buying; a ten-year goal
+   * likewise; and "7–12y", the DEEPEST sample in the feed at fifteen auctions,
+   * was never used at all. */
+  it("uses every band that overlaps a horizon, and skips none", async () => {
     const { RATES } = await import("../rates-feed");
     const bands = RATES.bondAuctionBenchmarks?.bands ?? [];
     expect(bands.length, "no bond bands in the snapshot — this test proves nothing").toBeGreaterThan(0);
 
     const map = buildAllocationMap([]);
-    for (const key of ["medium", "long"] as const) {
-      const bucket = map.find((b) => b.horizon.key === key)!;
-      const label = key === "medium" ? "3–7y" : "12–20y";
-      const band = bands.find((x) => x.label === label);
-      expect(band, `band ${label} vanished from the feed — the mapping is stale`).toBeDefined();
-      if (band!.medianClearingRate === null) {
-        expect(bucket.benchmark).toBeNull();
-      } else {
-        expect(bucket.benchmark!.rate).toBeCloseTo(band!.medianClearingRate / 100, 10);
-        expect(bucket.benchmark!.basis).toBe("gross");
+    for (const bucket of map) {
+      const { horizon, benchmark } = bucket;
+      if (horizon.key === "now" || horizon.key === "short") continue; // bills, not bonds
+
+      const overlapping = bands.filter(
+        (b) =>
+          b.medianClearingRate !== null &&
+          b.fromYears < horizon.toYears &&
+          b.toYears > horizon.fromYears
+      );
+
+      if (overlapping.length === 0) {
+        expect(benchmark, `${horizon.key} quoted a band that does not overlap it`).toBeNull();
+        continue;
       }
+      const medians = overlapping.map((b) => b.medianClearingRate! / 100);
+      expect(benchmark!.low).toBeCloseTo(Math.min(...medians), 10);
+      expect(benchmark!.high).toBeCloseTo(Math.max(...medians), 10);
+      expect(benchmark!.basis).toBe("gross");
+      // The label names every band it drew on, so the reader can see the span.
+      for (const b of overlapping) expect(benchmark!.label).toContain(b.label);
+    }
+  });
+
+  it("no quotable band is orphaned across the bond horizons", async () => {
+    const { RATES } = await import("../rates-feed");
+    const bands = (RATES.bondAuctionBenchmarks?.bands ?? []).filter(
+      (b) => b.medianClearingRate !== null
+    );
+    expect(bands.length, "no quotable bands — vacuous").toBeGreaterThan(1);
+
+    const labels = buildAllocationMap([])
+      .filter((b) => b.horizon.key === "medium" || b.horizon.key === "long")
+      .flatMap((b) => (b.benchmark ? [b.benchmark.label] : []))
+      .join(" | ");
+
+    // "7–12y" is the one the hardcoded mapping dropped, and it carries the
+    // largest auction sample in the feed.
+    for (const band of bands) {
+      if (band.toYears <= HORIZONS[2].fromYears) continue; // shorter than any bond horizon
+      expect(labels, `band ${band.label} is quoted by no horizon`).toContain(band.label);
     }
   });
 });
