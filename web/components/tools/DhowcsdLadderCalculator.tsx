@@ -1,5 +1,6 @@
 "use client";
 
+import { amountOrZero } from "@/lib/money";
 import { useMemo } from "react";
 import {
   BANK_SAVINGS_BASELINE,
@@ -67,7 +68,7 @@ export default function DhowcsdLadderCalculator() {
     EVEN_WEIGHTS,
   );
 
-  const parsed = Number(capital) || 0;
+  const parsed = useMemo(() => amountOrZero(capital), [capital]);
   // A single bill is buyable well below the three-rung ladder minimum, and a
   // reader who has weighted everything into one tenor is entitled to see it.
   // Gating on the full ladder minimum hid a plan they could actually place.

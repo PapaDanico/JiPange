@@ -1,5 +1,6 @@
 "use client";
 
+import { amountOrZero } from "@/lib/money";
 import { useMemo } from "react";
 import {
   MAX_MONTHLY_MORTGAGE_EXEMPTION,
@@ -32,7 +33,7 @@ export default function TaxShieldCalculator() {
   const [mortgage, setMortgage] = useStickyState("jipange:tool:tax-shield:mortgage", "0");
   const [insurance, setInsurance] = useStickyState("jipange:tool:tax-shield:insurance", "0");
 
-  const parsedGross = Number(gross) || 0;
+  const parsedGross = amountOrZero(gross);
   const shield = useMemo(() => {
     if (parsedGross <= 0) return null;
     return taxShield({

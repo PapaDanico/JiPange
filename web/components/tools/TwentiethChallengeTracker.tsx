@@ -1,5 +1,6 @@
 "use client";
 
+import { amountOrZero } from "@/lib/money";
 import { useEffect, useMemo, useState } from "react";
 import {
   getMonthKey,
@@ -75,9 +76,9 @@ export default function TwentiethChallengeTracker() {
   const bestStreak = useMemo(() => calculateBestStreak(checkIns), [checkIns]);
   const saved = useMemo(() => totalSaved(checkIns), [checkIns]);
 
-  const commitmentNum = Number(savedCommitment) || 0;
+  const commitmentNum = amountOrZero(savedCommitment);
   const hasCommitment = commitmentNum > 0;
-  const draftNum = Number(draftCommitment) || 0;
+  const draftNum = amountOrZero(draftCommitment);
 
   function handleStart() {
     if (draftNum > 0) setSavedCommitment(draftCommitment);

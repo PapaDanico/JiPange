@@ -1,5 +1,6 @@
 "use client";
 
+import { PAYBILLS, paybillFor, type PaybillKey } from "@/lib/paybills";
 import { useEffect, useMemo, useState } from "react";
 import { PESA_SMART_CHANNEL, PESA_SMART_NAME } from "@/lib/channel";
 import { formatKES } from "@/lib/budget";
@@ -70,19 +71,14 @@ function MicroMilestone({ answers }: { answers: JourneyAnswers }) {
 
 // ── Module 2: the Direct Vendor Referral Blueprint ──
 
-type PaybillInfo = { provider: string; paybill: string; account: string };
 
 const BLUEPRINTS: Record<
   Vehicle["id"],
-  { title: string; steps: string[]; guideName: string; guide: string; payment: PaybillInfo }
+  { title: string; steps: string[]; guideName: string; guide: string; payment: PaybillKey }
 > = {
   sacco: {
     title: "🏛️ Action Item: Establish Your Sacco Core",
-    payment: {
-      provider: "Stima Sacco (example)",
-      paybill: "0240240",
-      account: "802 + your member no. + 00",
-    },
+    payment: "sacco",
     steps: [
       "Choose a SASRA-regulated Tier-1 Sacco (e.g., Stima, Safaricom, Police).",
       "Commit to a fixed monthly deposit (aligns with the milestone slider above).",
@@ -103,11 +99,7 @@ For guidance only — not financial advice.`,
   },
   mmf: {
     title: "📈 Action Item: Open Your Money Market Fund",
-    payment: {
-      provider: "Britam MMF (example)",
-      paybill: "500005",
-      account: "your Britam a/c (BAxxxxxx)",
-    },
+    payment: "mmf",
     steps: [
       "Pick a CMA-regulated MMF with M-Pesa deposits and T+1 withdrawals (e.g., Britam, ICEA Lion, Sanlam).",
       "Complete the app/USSD sign-up with your ID and KRA PIN — most start from about Ksh 500.",
@@ -127,11 +119,7 @@ For guidance only — not financial advice.`,
   },
   ifb: {
     title: "🏦 Action Item: Stage Your Infrastructure Bond Entry",
-    payment: {
-      provider: "CBK DhowCSD (≤ Ksh 250,000)",
-      paybill: "200222",
-      account: "shown under DhowCSD → Transactions",
-    },
+    payment: "ifb",
     steps: [
       "Register on CBK DhowCSD (app or web) with your ID and KRA PIN.",
       "Park monthly savings in an MMF until you reach the bond minimum (typically Ksh 50,000).",
@@ -151,14 +139,23 @@ For guidance only — not financial advice.`,
   },
 };
 
-/** One-tap M-Pesa transaction string, ready to paste into Lipa na M-Pesa. */
-function PaybillCopy({ payment }: { payment: PaybillInfo }) {
+/**
+ * The payment details, or the route in when they are past due.
+ *
+ * The copy button is deliberately inside the non-stale branch. A stale
+ * paybill shown with a warning beside a working copy button is not a warning
+ * — the number is still one tap from the clipboard, and the tap is the whole
+ * risk. Past its review date the number is not rendered at all.
+ */
+function PaybillCopy({ payment }: { payment: PaybillKey }) {
   const [copied, setCopied] = useState(false);
+  const details = paybillFor(payment);
 
   async function handleCopy() {
+    if (!details) return;
     try {
       await navigator.clipboard.writeText(
-        `Paybill: ${payment.paybill} | Account: ${payment.account}`
+        `Paybill: ${details.paybill} | Account: ${details.account}`
       );
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
@@ -167,12 +164,28 @@ function PaybillCopy({ payment }: { payment: PaybillInfo }) {
     }
   }
 
+  if (!details) {
+    const { provider, routeIn } = PAYBILLS[payment];
+    return (
+      <div className="mt-4 rounded-xl bg-canvas p-3">
+        <p className="text-xs text-ink-soft">
+          <span className="font-semibold text-primary">{provider}</span>
+          <br />
+          We last confirmed these payment details on{" "}
+          {PAYBILLS[payment].verifiedOn} and they are now past the date we
+          undertook to re-check them, so we are not showing the number. Get it
+          from {routeIn}.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="mt-4 flex items-center justify-between gap-3 rounded-xl bg-canvas p-3">
       <p className="text-xs text-ink-soft">
-        <span className="font-semibold text-primary">{payment.provider}</span>
+        <span className="font-semibold text-primary">{details.provider}</span>
         <br />
-        Paybill <strong>{payment.paybill}</strong> · A/c {payment.account}
+        Paybill <strong>{details.paybill}</strong> · A/c {details.account}
       </p>
       <button
         type="button"
@@ -242,8 +255,14 @@ function VendorBlueprint({ vehicleId }: { vehicleId: Vehicle["id"] }) {
         ))}
       </ul>
       <PaybillCopy payment={blueprint.payment} />
+      {/* The date was hand-typed here as "verified Jul 2026" with nothing
+          behind it — no constant, no expiry, no test. It now comes from
+          lib/paybills.ts, where a review date can actually suppress the
+          number. The instruction to confirm stays: it is the one line on this
+          card that is true regardless of how fresh our record is. */}
       <p className="mt-1.5 text-[11px] text-faint">
-        Paybills verified Jul 2026 — always confirm with the provider before sending money.
+        Payment details last confirmed {PAYBILLS[blueprint.payment].verifiedOn} — always confirm
+        with the provider before sending money.
       </p>
       <button
         type="button"

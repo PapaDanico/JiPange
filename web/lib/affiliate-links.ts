@@ -399,7 +399,15 @@ export const PRODUCT_LINKS: ProductLink[] = [
     minKes: 1000,
     regulator: "CMA",
     liquidity: "Confirm withdrawal terms with the manager",
-    tagline: "Long-established fund; contribute via Paybill 500005",
+    /* The paybill was spelled out here as well as in the action plan — two
+     * copies of an account number in different modules, with nothing keeping
+     * them equal. Correcting one would have left the other pointing at the old
+     * account, and the correction would have looked done.
+     *
+     * The number now lives only in lib/paybills.ts, which can withhold it once
+     * it is past its confirmation date. This card names the fund; the action
+     * plan handles payment. */
+    tagline: "Long-established fund; contribute by M-Pesa from the Britam app",
   },
   {
     slug: "cic-mmf",

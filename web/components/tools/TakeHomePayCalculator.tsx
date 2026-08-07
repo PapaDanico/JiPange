@@ -10,6 +10,8 @@ import {
 } from "@/lib/tax";
 import { formatKES } from "@/lib/budget";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
+import { positiveAmount } from "@/lib/money";
+import { dueForReview, statuteLine } from "@/lib/statutes";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import DeductionRow from "./DeductionRow";
 import ExportCardButton from "./ExportCardButton";
@@ -48,15 +50,15 @@ export default function TakeHomePayCalculator() {
   );
 
   const result = useMemo(() => {
-    const value = Number(gross);
-    if (!value || value <= 0) return null;
+    const value = positiveAmount(gross);
+    if (value === null) return null;
     return calculateNetPay(value, reliefs);
   }, [gross, reliefs]);
 
   const priorYearResult = useMemo(() => {
     if (!showYearComparison) return null;
-    const value = Number(gross);
-    if (!value || value <= 0) return null;
+    const value = positiveAmount(gross);
+    if (value === null) return null;
     return calculateNetPay(value, reliefs, NSSF_PRIOR_YEAR_LIMITS);
   }, [showYearComparison, gross, reliefs]);
 
@@ -350,11 +352,28 @@ export default function TakeHomePayCalculator() {
             />
           </div>
 
+          {/* The printed copy is the one that outlives the session — it ends up
+              in a file, or in front of an employer, months later with nothing
+              on it to say how old it is. It carried "rates current as of July
+              2026" as a hand-typed string, which would have gone on asserting
+              currency long after a Finance Act changed a band. It states the
+              instruments and their dates from the registry instead, and names
+              anything past its review date. */}
           <div className="hidden print:block">
             <p className="mt-4 text-xs text-ink-soft">
-              Estimate only, not a payslip or licensed financial advice — rates current as of July
-              2026. Generated at jipangefinance.org/tools/take-home-pay
+              Estimate only, not a payslip or licensed financial advice. Generated at
+              jipangefinance.org/tools/take-home-pay
             </p>
+            <p className="mt-1 text-xs text-ink-soft">Sources: {statuteLine()}.</p>
+            {dueForReview().length > 0 && (
+              <p className="mt-1 text-xs text-ink-soft">
+                Due for re-check against the current law:{" "}
+                {dueForReview()
+                  .map((s) => s.governs)
+                  .join("; ")}
+                .
+              </p>
+            )}
           </div>
 
           <div className="print:hidden">
