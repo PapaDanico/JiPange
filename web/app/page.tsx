@@ -27,6 +27,7 @@ import {
   MMF_SHARE_OF_DEPOSITS_PCT,
   BANK_SAVINGS_EARNING_BELOW_INFLATION_TRILLION,
 } from "@/lib/kenya-stats";
+import { cite } from "@/lib/sources";
 
 /* Counts and headline figures, derived rather than typed.
  *
@@ -728,9 +729,22 @@ export default function Home() {
       {/* ── Sources footnote ── */}
       <div className="bg-primary border-t border-white/10 px-4 py-4 text-center">
         <p className="text-[0.6875rem] text-canvas/28">
+          {/* Two hand-typed errors lived in this sentence.
+            *
+            * "CMA Collective Investment Schemes, July 2026" named a month in
+            * which no such report exists — the CMA reports QUARTERLY, and
+            * lib/sources.ts has recorded that since the figure was corrected.
+            * The registry had the right citation all along; this line just
+            * never read it. It does now, via cite().
+            *
+            * "Rates current July 2026" is gone rather than corrected. This
+            * page states statistics, not rates — no PAYE band or fund yield
+            * appears on it — so the sentence was claiming currency for figures
+            * that are not here, while the tables it sounded like it covered
+            * are governed by lib/statutes.ts and carry their own dates. */}
           Sources: FinAccess Household Survey 2024 (CBK/FSD Kenya/KNBS) · RBA Pensioners Survey
-          2024 · CMA Collective Investment Schemes, July 2026 · Safaricom FY2026 Annual Report ·
-          Pension Policy International/KIPPRA 2024. Rates current July 2026.
+          2024 · {cite("mmfAumBillionKsh")} · Safaricom FY2026 Annual Report · Pension Policy
+          International/KIPPRA 2024.
         </p>
       </div>
     </>

@@ -332,7 +332,11 @@ export default function SalaryPlannerHub() {
               <ExportCardButton containerRef={resultsRef} filename="take-home-pay" />
               <CalculatorDisclaimer
                 extraNotes={[
-                  "Rates effective February 2026: NSSF Year 4 (lower Ksh 9,000 / upper Ksh 108,000 at 6%), SHIF 2.75%, Housing Levy 1.5%.",
+                  // The NSSF/SHIF/AHL line that stood here restated both the
+                  // constants and an "effective February 2026" date — five
+                  // months adrift from the "July 2026" the same footer printed
+                  // one line below. Both now come from lib/statutes.ts, which
+                  // the disclaimer renders itself.
                   "Pension relief (s.15(3)) capped Ksh 30,000/month; mortgage interest relief capped Ksh 30,000/month (raised from Ksh 25,000 by Finance Act 2025); insurance relief 15% of premiums up to Ksh 5,000/month (s.31).",
                 ]}
               />
