@@ -1,6 +1,6 @@
 "use client";
 
-import { amountOrZero } from "@/lib/money";
+import { amountOrZero, positiveAmount } from "@/lib/money";
 import { useMemo } from "react";
 import { FIRE_ALLOCATION } from "@/lib/market-2026";
 import {
@@ -74,8 +74,8 @@ export default function FireNumberCalculator() {
   );
 
   const fire = useMemo(() => {
-    const expenses = Number(monthlyExpenses);
-    if (!expenses || expenses <= 0) return null;
+    const expenses = positiveAmount(monthlyExpenses);
+    if (expenses === null) return null;
     return planKenyanRetirement({
       currentMonthlyExpenses: expenses,
       currentMonthlyMedical: Number(monthlyMedical) || 0,

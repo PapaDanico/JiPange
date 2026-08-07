@@ -1,5 +1,6 @@
 "use client";
 
+import { positiveAmount } from "@/lib/money";
 import { useMemo } from "react";
 import { calculateFulizaCost } from "@/lib/fuliza";
 import { formatKES } from "@/lib/budget";
@@ -19,9 +20,9 @@ export default function FulizaCostCalculator() {
   const [days, setDays] = useStickyState("jipange:tool:fuliza-cost:days", "");
 
   const result = useMemo(() => {
-    const principal = Number(amount);
-    const daysValue = Number(days);
-    if (!principal || principal <= 0 || !daysValue || daysValue <= 0) return null;
+    const principal = positiveAmount(amount);
+    const daysValue = positiveAmount(days);
+    if (principal === null || daysValue === null) return null;
     return calculateFulizaCost(principal, daysValue);
   }, [amount, days]);
 

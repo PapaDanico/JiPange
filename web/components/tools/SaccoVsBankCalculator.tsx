@@ -1,5 +1,6 @@
 "use client";
 
+import { positiveAmount } from "@/lib/money";
 import { useMemo } from "react";
 import { compareLoanProducts, type LoanProductTier } from "@/lib/loan-comparison";
 import { MAX_TERM_MONTHS } from "@/lib/loans";
@@ -41,9 +42,9 @@ export default function SaccoVsBankCalculator() {
   );
 
   const results = useMemo(() => {
-    const principal = Number(amount);
-    const months = Number(termMonths);
-    if (!principal || principal <= 0 || !months || months <= 0) return null;
+    const principal = positiveAmount(amount);
+    const months = positiveAmount(termMonths);
+    if (principal === null || months === null) return null;
     if (months > MAX_TERM_MONTHS) return null;
     return compareLoanProducts(principal, months);
   }, [amount, termMonths]);

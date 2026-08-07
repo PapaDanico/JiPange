@@ -1,5 +1,6 @@
 "use client";
 
+import { positiveAmount } from "@/lib/money";
 import { useMemo } from "react";
 import { calculateLandPurchase, type LandType } from "@/lib/land";
 import { formatKES } from "@/lib/budget";
@@ -31,8 +32,8 @@ export default function LandPurchaseCalculator() {
   const [usesAgent, setUsesAgent] = useStickyState("jipange:tool:land:agent", "false");
 
   const result = useMemo(() => {
-    const p = Number(price);
-    if (!p || p <= 0) return null;
+    const p = positiveAmount(price);
+    if (p === null) return null;
     return calculateLandPurchase({
       plotPriceKes: p,
       landType,

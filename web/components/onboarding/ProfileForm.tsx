@@ -1,5 +1,6 @@
 "use client";
 
+import { positiveAmount } from "@/lib/money";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { KENYA_COUNTIES } from "@/lib/counties";
@@ -95,8 +96,8 @@ export default function ProfileForm() {
   }, [form.grossMonthlySalary]);
 
   const previewNet = useMemo(() => {
-    const gross = Number(debouncedSalary);
-    if (!gross || gross <= 0) return null;
+    const gross = positiveAmount(debouncedSalary);
+    if (gross === null) return null;
     return calculateNetPay(gross);
   }, [debouncedSalary]);
 

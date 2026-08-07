@@ -1,5 +1,6 @@
 "use client";
 
+import { positiveAmount } from "@/lib/money";
 import { useMemo, useRef } from "react";
 import { calculate502525Split, formatKES } from "@/lib/budget";
 import { useStickyState } from "@/lib/hooks";
@@ -25,8 +26,8 @@ export default function BudgetSplitCalculator() {
   const exportRef = useRef<HTMLDivElement>(null);
 
   const result = useMemo(() => {
-    const gross = Number(grossMonthlySalary);
-    if (!gross || gross <= 0) return null;
+    const gross = positiveAmount(grossMonthlySalary);
+    if (gross === null) return null;
 
     const { netMonthly } = calculateNetPay(gross);
     const split = calculate502525Split(netMonthly);

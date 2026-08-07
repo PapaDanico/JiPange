@@ -1,5 +1,6 @@
 "use client";
 
+import { positiveAmount } from "@/lib/money";
 import { useMemo } from "react";
 import { solveGrossForTargetNet } from "@/lib/salary-negotiation";
 import { calculateNetPay } from "@/lib/tax";
@@ -22,8 +23,8 @@ export default function SalaryNegotiationCalculator() {
   );
 
   const result = useMemo(() => {
-    const target = Number(targetNet);
-    if (!target || target <= 0) return null;
+    const target = positiveAmount(targetNet);
+    if (target === null) return null;
 
     const gross = solveGrossForTargetNet(target);
     const breakdown = calculateNetPay(gross);
