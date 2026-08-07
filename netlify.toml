@@ -38,11 +38,31 @@
   package = "@netlify/plugin-nextjs"
 
 # Headers for security and performance
+#
+# X-XSS-Protection IS DELIBERATELY ABSENT, AND ITS ABSENCE IS THE IMPROVEMENT.
+#
+# It used to be here as "1; mode=block". That header enabled a legacy browser
+# XSS auditor which no current browser ships — Chrome removed it, Edge followed,
+# and Firefox never implemented it. So on every browser a reader actually uses
+# it does precisely nothing.
+#
+# Worse than nothing, historically: the auditor worked by guessing which parts
+# of a response were reflected input and neutralising them, and that guess was
+# itself exploitable — it could be induced to suppress legitimate script or to
+# leak cross-origin information, which is why it was removed rather than fixed.
+# Sending it signals a protection that does not exist, and a security review
+# reading the header list will tick a box nothing is behind.
+#
+# The real mitigation is a Content-Security-Policy. There is not one here yet:
+# Next.js emits inline scripts and Tailwind emits inline styles, so a correct
+# policy needs nonces threaded through the framework, and a CSP that is wrong
+# breaks the site in production only. That is a deliberate piece of work rather
+# than a line in this file, and shipping a broken policy would be worse than
+# the honest gap. Removing the header that does nothing does not wait on it.
 [[headers]]
   for = "/*"
   [headers.values]
     X-Frame-Options = "SAMEORIGIN"
     X-Content-Type-Options = "nosniff"
-    X-XSS-Protection = "1; mode=block"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "geolocation=(), microphone=(), camera=()"
