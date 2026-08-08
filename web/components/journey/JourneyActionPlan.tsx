@@ -333,7 +333,26 @@ const DOMAIN_META: Record<
 const DOMAIN_ORDER: LifeCapitalDomain[] = ["Security", "Growth", "Freedom", "Legacy"];
 
 function LifeCapitalMap({ goal }: { goal: PrimaryGoal }) {
-  const active = GOAL_TO_DOMAIN[goal];
+  /* TOTAL, because the input is not actually typed at runtime.
+   *
+   * This was `GOAL_TO_DOMAIN[goal]` straight into `DOMAIN_META[active]`, and
+   * an unrecognised goal made `active` undefined, `meta` undefined, and
+   * `meta.bg` a TypeError that took the WHOLE /plan page down to the error
+   * boundary — "Something went wrong", with no route back except clearing
+   * storage.
+   *
+   * The type says that cannot happen. Storage disagrees: lib/storage.ts reads
+   * the journey with `JSON.parse(raw) as T` — a cast, not a validation — and
+   * lib/backup.ts restores ANY jipange-prefixed key from a user-supplied file.
+   * So a backup written before a goal was renamed, or one hand-edited, walks
+   * an unknown string straight into this lookup. That is the same
+   * cast-not-validation flaw the print suite already records for a profile
+   * with no age, which printed "over NaN years".
+   *
+   * Security is the fallback because it is the one domain that is right to
+   * default to: when we cannot tell what someone is saving for, buffer first.
+   * A plan that renders beats an error page. */
+  const active = GOAL_TO_DOMAIN[goal] ?? "Security";
   const meta = DOMAIN_META[active];
 
   return (

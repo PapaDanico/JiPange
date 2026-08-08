@@ -323,7 +323,14 @@ export function mapJourney(answers: JourneyAnswers): DashboardModel {
     theme: recovery ? "recovery" : "growth",
     priority1: recovery
       ? "Debt Paydown & Micro-Emergency Fund"
-      : GOAL_PRIORITY[answers.primary_goal],
+      : /* Same reason as JourneyActionPlan's domain lookup: the type says this
+           key is always present, and storage disagrees. getStoredJourneyAnswers
+           is a cast rather than a validation and backup.ts restores any
+           jipange-prefixed key from a user's file, so an unknown goal reaches
+           here and this rendered the literal text "undefined" as the reader's
+           headline priority. The cushion is the honest default when we cannot
+           tell what they are saving for. */
+        GOAL_PRIORITY[answers.primary_goal] ?? GOAL_PRIORITY.emergency_fund,
     microFundTarget,
     fulizaTax,
     inflationDrag,

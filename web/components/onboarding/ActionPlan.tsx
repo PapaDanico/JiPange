@@ -122,7 +122,7 @@ export default function ActionPlan() {
               plan comes from different numbers, so that is the door offered. */}
           <Link
             href="/profile/full"
-            className="flex h-11 w-full items-center justify-center rounded-full border border-border text-sm font-medium text-ink-soft"
+            className="flex h-11 w-full items-center justify-center rounded-full border border-border text-sm font-medium text-ink-soft print:hidden"
           >
             Update my numbers to change the plan
           </Link>

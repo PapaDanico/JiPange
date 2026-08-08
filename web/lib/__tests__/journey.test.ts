@@ -207,3 +207,51 @@ describe("microMilestoneTarget", () => {
     ).toBe(60_000);
   });
 });
+
+/**
+ * AN UNKNOWN GOAL FROM STORAGE MUST NOT TAKE THE PAGE DOWN.
+ *
+ * `JourneyAnswers.primary_goal` is typed as one of five values, and both
+ * `GOAL_PRIORITY` and `GOAL_TO_DOMAIN` index it directly on that promise.
+ * Runtime does not keep it: `getStoredJourneyAnswers` reads with
+ * `JSON.parse(raw) as T` — a cast, not a validation — and `lib/backup.ts`
+ * restores ANY jipange-prefixed key from a file the user supplies.
+ *
+ * So a backup written before a goal was renamed, or one hand-edited, walks an
+ * unknown string in. `DOMAIN_META[undefined].bg` threw a TypeError that took
+ * the whole of /plan to the error boundary — "Something went wrong" — with no
+ * route back except clearing storage. This one produced the literal text
+ * "undefined" as the reader's headline priority.
+ *
+ * Found by a print test whose vacuity guard fired: /plan rendered 137
+ * characters where 200 were required. The assertion that caught it was not
+ * looking for this at all.
+ */
+describe("a journey answer the code does not recognise", () => {
+  const answers = {
+    life_stage: "building",
+    income_zone: "mid",
+    // Not a PrimaryGoal. This exact string sat in the repo's own
+    // print-reports fixture, which is where it was found.
+    primary_goal: "grow_wealth",
+    liquidity_leak: "active_savings",
+    current_vehicle: ["mmf"],
+    timeline: "1_3_years",
+  } as unknown as JourneyAnswers;
+
+  it("still produces a plan rather than throwing", () => {
+    expect(() => mapJourney(answers)).not.toThrow();
+  });
+
+  it("falls back to the cushion instead of rendering 'undefined'", () => {
+    const plan = mapJourney(answers);
+    expect(plan.priority1).toBeTruthy();
+    expect(plan.priority1).not.toContain("undefined");
+    expect(plan.priority1).toBe("Build your emergency cushion");
+  });
+
+  it("still uses the real priority for a goal it does know", () => {
+    const known = { ...answers, primary_goal: "home_deposit" } as unknown as JourneyAnswers;
+    expect(mapJourney(known).priority1).toBe("Build your home deposit");
+  });
+});
