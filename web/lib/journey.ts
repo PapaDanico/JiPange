@@ -413,3 +413,35 @@ export function microMilestoneTarget(answers: JourneyAnswers): number {
     MILESTONE_BASE[answers.primary_goal] * MILESTONE_BRACKET_MULTIPLIER[answers.income_bracket];
   return Math.max(5_000, Math.round(raw / 5_000) * 5_000);
 }
+
+/**
+ * A blueprint's restored checklist, or a fresh one.
+ *
+ * `JSON.parse(raw) as boolean[]` is a CAST, NOT A VALIDATION, and the value it
+ * casts is not ours. lib/backup.ts restores any `jipange:` key from a file the
+ * user supplies, so `jipange:blueprint:<vehicle>` can hold anything that is
+ * valid JSON — a number, an object, a string.
+ *
+ * Measured, not assumed, before this was written:
+ *
+ *   stored     render        first click
+ *   5          fine          TypeError: prev.map is not a function
+ *   {}         fine          TypeError
+ *   "abc"      step 1 struck TypeError
+ *   [1,2,3]    fine          ok, but the ticks are wrong
+ *
+ * So the page looks correct and dies on the first checkbox — the worst shape a
+ * failure can take, because the reader has no reason to connect the crash to a
+ * restore they did days earlier. `"abc"` is worse still: `"abc"[0]` is `"a"`,
+ * truthy, so step one shows struck through as though they had completed it.
+ *
+ * Length is checked as well as type. A blueprint that gains a step would
+ * otherwise pair a 6-item list with a 5-item array and silently drop the tick
+ * off the last step, which is a wrong answer rather than a missing one.
+ */
+export function restoredSteps(stored: unknown, count: number): boolean[] {
+  if (!Array.isArray(stored)) return new Array(count).fill(false);
+  if (stored.length !== count) return new Array(count).fill(false);
+  if (!stored.every((value) => typeof value === "boolean")) return new Array(count).fill(false);
+  return stored;
+}

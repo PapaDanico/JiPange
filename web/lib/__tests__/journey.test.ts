@@ -9,6 +9,7 @@ import {
   mapJourney,
   matchVehicle,
   type JourneyAnswers,
+  restoredSteps,
 } from "../journey";
 
 const base: JourneyAnswers = {
@@ -253,5 +254,44 @@ describe("a journey answer the code does not recognise", () => {
   it("still uses the real priority for a goal it does know", () => {
     const known = { ...answers, primary_goal: "home_deposit" } as unknown as JourneyAnswers;
     expect(mapJourney(known).priority1).toBe("Build your home deposit");
+  });
+});
+
+describe("restoredSteps", () => {
+  /* The stored value comes back through `JSON.parse(raw) as boolean[]` — a
+   * CAST, not a validation — and lib/backup.ts restores any `jipange:` key
+   * from a file the user supplies. So this is untrusted input wearing a type. */
+
+  it("restores a checklist that is actually a checklist", () => {
+    expect(restoredSteps([true, false, true], 3)).toEqual([true, false, true]);
+  });
+
+  /* MEASURED before this was written: each of these renders fine and then
+   * throws `prev.map is not a function` on the first checkbox click. A page
+   * that looks correct and dies on the first interaction is the worst shape a
+   * failure can take — the reader cannot connect it to a restore they did
+   * days ago. */
+  it("refuses a well-formed value that is not an array", () => {
+    for (const bad of [5, {}, "abc", null, true]) {
+      expect(restoredSteps(bad, 3), JSON.stringify(bad)).toEqual([false, false, false]);
+    }
+  });
+
+  /* "abc"[0] is "a" — truthy — so step one would show struck through as
+   * though the reader had completed it. Wrong is worse than missing. */
+  it("refuses an array whose contents are not booleans", () => {
+    expect(restoredSteps([1, 2, 3], 3)).toEqual([false, false, false]);
+    expect(restoredSteps(["yes", "no", "yes"], 3)).toEqual([false, false, false]);
+  });
+
+  /* A blueprint that gains a step would otherwise pair a 6-item list with a
+   * 5-item array and silently drop the tick off the last one. */
+  it("refuses a checklist of the wrong length", () => {
+    expect(restoredSteps([true, true], 3)).toEqual([false, false, false]);
+    expect(restoredSteps([true, true, true, true], 3)).toEqual([false, false, false]);
+  });
+
+  it("returns a list the caller can index at every step", () => {
+    expect(restoredSteps(undefined, 4)).toHaveLength(4);
   });
 });
