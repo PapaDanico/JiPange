@@ -76,13 +76,37 @@ export default function AppHeader() {
             * The accent lands on "Pange" for the same reason Mwangaza puts it
             * on "Yield": it marks the half of the name that says what the
             * product does — kupanga, to plan. */}
+          {/* THE SHIELD IS NOT SQUARE, AND THIS DECLARED THAT IT WAS.
+            *
+            * logo-icon.webp is 973x833 — ratio 1.168. The declared dimensions
+            * said 512x512 and the classes forced `h-9 w-9`, so under the
+            * default `object-fit: fill` the mark rendered at exactly 36x36,
+            * compressed about 17% horizontally on every page of the site.
+            * `rounded-xl` then clipped the shield's own corners.
+            *
+            * Measured rather than eyeballed:
+            *
+            *   header  rendered 36x36    ratio 1.000  vs natural 1.2    WRONG
+            *   hero    rendered 224x192  ratio 1.169  vs natural 1.168  right
+            *
+            * The declared 512x512 is what kept it invisible: Next was told the
+            * source was square, so nothing downstream could notice. Meanwhile
+            * PrintLetterhead already had it right — true dimensions and
+            * `h-7 w-auto` — which made the header the single outlier.
+            *
+            * Reported as "transparent/PNG background artifacts". That is a
+            * different mechanism from the one actually at fault, but it named
+            * exactly the right element. The alpha channel is clean; worth
+            * knowing that its transparent pixels are white-matted
+            * (255,255,255,0), so the mark WOULD halo on a dark surface.
+            * Neither usage is dark today, so that is latent, not live. */}
           <Image
             src="/logo-icon.webp"
             alt=""
-            width={512}
-            height={512}
+            width={973}
+            height={833}
             sizes="36px"
-            className="h-9 w-9 rounded-xl"
+            className="h-9 w-auto"
             priority
           />
           <span className="whitespace-nowrap font-display text-base font-bold tracking-tight text-ink lg:text-lg">

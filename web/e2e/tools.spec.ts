@@ -632,3 +632,74 @@ for (const route of ERGONOMIC_ROUTES) {
     expect(report.small, `controls too small to press:\n${report.small.join("\n")}`).toEqual([]);
   });
 }
+
+/**
+ * NO IMAGE MAY RENDER AT AN ASPECT ITS SOURCE DOES NOT HAVE.
+ *
+ * The header shield was declared `width={512} height={512}` for a 973x833
+ * file and classed `h-9 w-9`, so it rendered at exactly 36x36 — compressed
+ * about 17% horizontally, on every page of the site, since the header is
+ * global. `rounded-xl` clipped its corners on top of that.
+ *
+ * Nothing could have caught it by reading the JSX: `h-9 w-9` looks deliberate,
+ * and the declared square dimensions made the source look square too. It is
+ * only visible by comparing the RENDERED box against `naturalWidth` and
+ * `naturalHeight`, which the browser knows and the source does not state.
+ *
+ * Asserted as a property across every image on the page rather than on the one
+ * that was wrong, because the next one will be a different element. Images
+ * that opt into cropping with object-fit cover/contain are exempt: distorting
+ * is the thing being banned, not framing.
+ */
+test("no image is rendered at an aspect ratio its source does not have", async ({ page }) => {
+  const routes = ["/", "/tools", "/picture", "/planners"];
+  const offenders: string[] = [];
+
+  for (const route of routes) {
+    await page.goto(route);
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(500);
+
+    const found = await page.evaluate(() =>
+      Array.from(document.querySelectorAll("img"))
+        .filter((i) => i.naturalWidth > 0 && i.naturalHeight > 0)
+        .filter((i) => {
+          const r = i.getBoundingClientRect();
+          if (r.width < 8 || r.height < 8) return false; // spacers and tracking pixels
+          const fit = getComputedStyle(i).objectFit;
+          // cover/contain crop or letterbox deliberately; neither distorts.
+          if (fit === "cover" || fit === "contain" || fit === "scale-down") return false;
+          const rendered = r.width / r.height;
+          const natural = i.naturalWidth / i.naturalHeight;
+          /* Tolerance has to absorb INTEGER ROUNDING in the served variant.
+           * Next serves the 973x833 shield as 36x30 at header size, and 36/30
+           * is 1.200 where the true source is 1.168 — a 2.4% gap produced
+           * entirely by rounding 30.8 down. A flat 2% therefore flags a
+           * correctly-rendered image, which is how a guard gets disabled
+           * rather than read. Half a pixel on each axis is the real slack. */
+          const rounding = 0.5 / i.naturalWidth + 0.5 / i.naturalHeight;
+          return Math.abs(rendered - natural) / natural > 0.02 + rounding;
+        })
+        .map((i) => {
+          const r = i.getBoundingClientRect();
+          return (
+            `${i.getAttribute("src")} rendered ${Math.round(r.width)}x${Math.round(r.height)} ` +
+            `(${(r.width / r.height).toFixed(3)}) against a source of ` +
+            `${i.naturalWidth}x${i.naturalHeight} (${(i.naturalWidth / i.naturalHeight).toFixed(3)})`
+          );
+        })
+    );
+
+    // The premise: there really are images here, or this passes vacuously.
+    const imgCount = await page.evaluate(() => document.querySelectorAll("img").length);
+    expect(imgCount, `${route} has no images — this scan proves nothing`).toBeGreaterThan(0);
+
+    offenders.push(...found.map((f) => `${route}: ${f}`));
+  }
+
+  expect(
+    offenders,
+    "these are stretched or squashed. Give the real intrinsic width/height and " +
+      "size on ONE axis (h-9 w-auto), or opt into object-fit: cover to crop instead."
+  ).toEqual([]);
+});
