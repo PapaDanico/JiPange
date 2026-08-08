@@ -1,5 +1,6 @@
 import { readAny, writeAny } from "./storage";
 import { PLANNER_NAV_ITEMS } from "./planner-nav";
+import { CALCULATOR_GROUPS } from "./tool-groups";
 
 export interface NextMove {
   label: string;
@@ -235,6 +236,34 @@ export const TOOL_META: Record<string, ToolMeta> = {
  * with several names. Derived from the nav registry instead. */
 for (const item of PLANNER_NAV_ITEMS) {
   TOOL_META[item.href] = { href: item.href, icon: item.icon, name: item.title, related: [] };
+}
+
+/* Calculators that are listed on /tools but were never hand-entered above.
+ *
+ * /tools/where-to-save was one. It shipped, it is linked from the footer and
+ * from the tools index, and it was absent from this object — so TOOL_COUNT,
+ * which app/page.tsx derives from exactly these keys, advertised "All 25
+ * calculators" while twenty-six existed.
+ *
+ * That is the same failure the comment on app/page.tsx describes ("three
+ * numbers for one fact"), returning by a route the earlier fix left open.
+ * Deriving the count from a registry only helps if joining the registry is
+ * compulsory, and it was not: a new page could ship without an entry and the
+ * shop window would quietly undercount rather than break.
+ *
+ * Backfilled from CALCULATOR_GROUPS — the list /tools already renders — rather
+ * than retyped, for the reason in the comment above: a second hand-typed name
+ * is how one product ends up with several. Existing entries are NOT
+ * overwritten, because those carry `related`, `nextMove` and `primaryFields`
+ * that the index has no idea about.
+ *
+ * tool-meta.test.ts asserts every /tools page reaches this object, so the next
+ * one to ship without an entry fails CI instead of silently miscounting. */
+for (const group of CALCULATOR_GROUPS) {
+  for (const item of group.calculators) {
+    if (TOOL_META[item.href]) continue;
+    TOOL_META[item.href] = { href: item.href, icon: item.icon, name: item.title, related: [] };
+  }
 }
 
 export const RECENT_TOOLS_KEY = "jipange_recent_tools";

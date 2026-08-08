@@ -9,6 +9,7 @@ import {
   MILESTONE_YIELD,
   mapJourney,
   microMilestoneTarget,
+  restoredSteps,
   type JourneyAnswers,
   type PrimaryGoal,
   type Vehicle,
@@ -211,12 +212,15 @@ function VendorBlueprint({ vehicleId }: { vehicleId: Vehicle["id"] }) {
     // other write to the same key).
     try {
       const stored = window.localStorage.getItem(storageKey);
+      // restoredSteps, not a bare cast. This key is restorable from a
+      // user-supplied backup file, so it can hold any valid JSON — and
+      // malformed-but-parseable is the case the try/catch cannot see.
       // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time restore into independently-edited state; see comment above
-      if (stored) setDone(JSON.parse(stored));
+      if (stored) setDone(restoredSteps(JSON.parse(stored), blueprint.steps.length));
     } catch {
-      // Corrupt state — start fresh.
+      // Not JSON at all — start fresh.
     }
-  }, [storageKey]);
+  }, [storageKey, blueprint.steps.length]);
 
   function toggle(index: number) {
     setDone((prev) => {

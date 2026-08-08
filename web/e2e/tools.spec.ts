@@ -703,3 +703,32 @@ test("no image is rendered at an aspect ratio its source does not have", async (
       "size on ONE axis (h-9 w-auto), or opt into object-fit: cover to crop instead."
   ).toEqual([]);
 });
+
+/**
+ * A reader who spots a wrong figure has somewhere to go, on every calculator —
+ * and the draft they land in carries none of their own numbers.
+ *
+ * The unit tests hold the template. This holds the wiring: that the link is
+ * actually rendered by ToolLayout rather than only importable, and that the
+ * href reaching the browser is a real mailto whose body has not picked up a
+ * figure from the page along the way.
+ */
+test("every calculator offers a way to report a wrong figure", async ({ page }) => {
+  for (const route of ["/tools/salary", "/tools/fire-number", "/tools/savings-goal"]) {
+    await page.goto(route);
+
+    const link = page.getByRole("link", { name: /tell us what it should be/i });
+    await expect(link, `${route} has no way to report an error`).toBeVisible();
+
+    const href = (await link.getAttribute("href")) ?? "";
+    expect(href.startsWith("mailto:"), `${route}: ${href}`).toBe(true);
+
+    const params = new URLSearchParams(href.slice(href.indexOf("?") + 1));
+    const body = params.get("body") ?? "";
+    expect(body, `${route} body did not decode`).toContain("What the calculator showed:");
+
+    // Nothing from the reader's fields reached the draft. Strip the route,
+    // which is the only thing in the body allowed to carry a digit.
+    expect(body.split(route).join(""), `${route} prefilled a figure`).not.toMatch(/\d/);
+  }
+});

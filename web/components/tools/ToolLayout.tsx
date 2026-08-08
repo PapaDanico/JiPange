@@ -4,6 +4,7 @@ import ToolInsights from "./ToolInsights";
 import ToolEnhancements from "./ToolEnhancements";
 import ToolLayoutCTA from "./ToolLayoutCTA";
 import GoDeeper, { type DeeperLink } from "./GoDeeper";
+import ReportError from "./ReportError";
 import JsonLd from "@/components/seo/JsonLd";
 import { breadcrumbJsonLd, softwareApplicationJsonLd } from "@/lib/structured-data";
 
@@ -68,7 +69,13 @@ export default function ToolLayout({
           column expanded to fit every tab instead of letting the strip scroll,
           giving 12px of horizontal page scroll at 360px. Applies to all tools. */}
       <div className="mt-8 grid w-full max-w-5xl gap-8 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start lg:gap-12 [&>*]:min-w-0">
-        <div className="mx-auto w-full max-w-2xl lg:mx-0 lg:max-w-none">{children}</div>
+        <div className="mx-auto w-full max-w-2xl lg:mx-0 lg:max-w-none">
+          {children}
+          {/* Under the calculator, not in the sidebar: a reader looks for this
+              at the moment they doubt a figure they have just read, and the
+              sidebar is sticky furniture they have already tuned out. */}
+          <ReportError title={title} path={path} />
+        </div>
         <aside className="mx-auto w-full max-w-2xl space-y-6 print:hidden lg:sticky lg:top-20 lg:mx-0 lg:max-w-none">
           <ToolEnhancements />
           <ToolLayoutCTA />

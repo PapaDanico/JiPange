@@ -4,8 +4,13 @@ import Link from "next/link";
  * A handoff from a JiPange calculator to the sister tool that goes deeper on
  * the same question.
  *
- * JiPange is deliberately broad: twenty-seven calculators covering the whole
- * of a Kenyan household's money. Breadth is the point, and it is also the
+ * JiPange is deliberately broad: a couple of dozen calculators covering the
+ * whole of a Kenyan household's money. (Deliberately not a NUMBER here — this
+ * comment said "twenty-seven" while TOOL_META held 25 and 26 pages existed,
+ * and it was the figure that got quoted onward. TOOL_COUNT in app/page.tsx is
+ * derived and is the one to cite.)
+ *
+ * Breadth is the point, and it is also the
  * limit — a T-bill ladder tool cannot also be a full government-bond analytics
  * suite without becoming something else. Mwangaza Yield is that suite, built on
  * the same vision, and pointing at it is more honest than quietly under-serving
