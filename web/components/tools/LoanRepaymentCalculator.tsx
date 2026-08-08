@@ -1,5 +1,6 @@
 "use client";
 
+import { positiveAmount } from "@/lib/money";
 import { useMemo } from "react";
 import { calculateLoanAmortization, MAX_TERM_MONTHS } from "@/lib/loans";
 import { formatKES } from "@/lib/budget";
@@ -56,12 +57,12 @@ export default function LoanRepaymentCalculator() {
   );
 
   const result = useMemo(() => {
-    const principalValue = Number(principal);
-    const years = Number(termYears);
+    const principalValue = positiveAmount(principal);
+    const years = positiveAmount(termYears);
     // The engine refuses a term past MAX_TERM_MONTHS, so stopping here keeps
     // the field's own error message as the explanation rather than silently
     // showing nothing.
-    if (!principalValue || principalValue <= 0 || !years || years <= 0) return null;
+    if (principalValue === null || years === null) return null;
     if (years > MAX_TERM_YEARS) return null;
 
     return calculateLoanAmortization({

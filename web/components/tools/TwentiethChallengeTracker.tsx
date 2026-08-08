@@ -1,6 +1,6 @@
 "use client";
 
-import { amountOrZero } from "@/lib/money";
+import { amountOrZero, positiveAmount } from "@/lib/money";
 import { useEffect, useMemo, useState } from "react";
 import {
   getMonthKey,
@@ -85,7 +85,10 @@ export default function TwentiethChallengeTracker() {
   }
 
   function handleCheckIn() {
-    const amount = Number(checkInAmount) || commitmentNum;
+    // The `||` fallback to the commitment is deliberate and kept; what changes
+    // is that an Infinity typed into the field no longer passes it, because
+    // positiveAmount returns null rather than a truthy Infinity.
+    const amount = positiveAmount(checkInAmount) ?? commitmentNum;
     if (!amount) return;
     const newCheckIn: CheckIn = {
       month: getMonthKey(today),

@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { formatKES } from "@/lib/budget";
 import { remainingCapacity, targetDateIn } from "@/lib/dashboard";
+import { amountOrZero, positiveAmount } from "@/lib/money";
 import {
   buildMultiGoalPlan,
   type Feasibility,
@@ -226,15 +227,17 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
   function applyEmergency(nextExpenses: string, nextMonths: number) {
     setExpenses(nextExpenses);
     setCoverMonths(nextMonths);
-    const exp = Number(nextExpenses);
-    if (exp > 0) setAmount(String(Math.round(exp * nextMonths)));
+    // `exp > 0` admitted Infinity, and Math.round(Infinity * n) is Infinity —
+    // which String()s to the literal text "Infinity" in the amount field.
+    const exp = positiveAmount(nextExpenses);
+    if (exp !== null) setAmount(String(Math.round(exp * nextMonths)));
   }
 
   function applyHome(nextPrice: string, nextPct: number) {
     setPrice(nextPrice);
     setDepositPct(nextPct);
-    const p = Number(nextPrice);
-    if (p > 0) setAmount(String(Math.round((p * nextPct) / 100)));
+    const p = positiveAmount(nextPrice);
+    if (p !== null) setAmount(String(Math.round((p * nextPct) / 100)));
   }
 
   function applyIncome(
@@ -245,8 +248,8 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
     setIncome(nextIncome);
     setReplacement(nextReplacement);
     setWithdrawal(nextWithdrawal);
-    const inc = Number(nextIncome);
-    if (inc > 0) setAmount(String(potFor(inc, nextReplacement, nextWithdrawal)));
+    const inc = positiveAmount(nextIncome);
+    if (inc !== null) setAmount(String(potFor(inc, nextReplacement, nextWithdrawal)));
   }
 
   function updateChild(index: number, patch: Partial<ChildGoal>) {
@@ -283,12 +286,16 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
     });
   }
 
-  const parsedAmount = Number(amount);
-  const parsedYears = Number(years);
+  // `?? 0` rather than a null type: every use below is a `> 0` comparison, and
+  // widening them to `number | null` would obscure the change rather than the
+  // bug. What matters is that Infinity now collapses to 0 instead of reaching
+  // buildMultiGoalPlan as a target.
+  const parsedAmount = positiveAmount(amount) ?? 0;
+  const parsedYears = positiveAmount(years) ?? 0;
   // Clamp: a pasted/typed negative would inflate the required monthly and be
   // rejected by the strategy endpoint's schema.
-  const parsedSavings = Math.max(0, Number(currentSavings) || 0);
-  const parsedCapacity = Math.max(0, Number(capacity) || 0);
+  const parsedSavings = amountOrZero(currentSavings);
+  const parsedCapacity = amountOrZero(capacity);
   /**
    * A blank field means "not stated"; a typed or prefilled 0 means "nothing
    * spare". Collapsing both to undefined is what graded a fully-committed

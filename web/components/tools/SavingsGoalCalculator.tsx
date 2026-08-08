@@ -55,9 +55,10 @@ export default function SavingsGoalCalculator() {
   }, [target, years, currentSavings, annualReturn]);
 
   const sensitivity = useMemo(() => {
-    const targetFutureValue = Number(target);
-    const yearsValue = Number(years);
-    if (!targetFutureValue || targetFutureValue <= 0 || !yearsValue || yearsValue <= 1) return null;
+    const targetFutureValue = positiveAmount(target);
+    const yearsValue = positiveAmount(years);
+    // The `> 1 year` rule is the sensitivity table's own, and is kept.
+    if (targetFutureValue === null || yearsValue === null || yearsValue <= 1) return null;
     const at = (y: number) =>
       solveMonthlyContribution({
         targetFutureValue,
@@ -69,9 +70,35 @@ export default function SavingsGoalCalculator() {
   }, [target, years, currentSavings, annualReturn]);
 
   const chartData = useMemo((): GrowthDataPoint[] => {
-    const targetFutureValue = Number(target);
-    const yearsValue = Number(years);
-    if (!result || !targetFutureValue || yearsValue <= 0) return [];
+    /* A NON-TERMINATING LOOP, HELD BACK BY SOMEBODY ELSE'S GUARD.
+     *
+     * The old guard here was `!targetFutureValue || yearsValue <= 0`, which
+     * admits Infinity — Number("1e400") is truthy and not <= 0. Had Infinity
+     * reached the loop below:
+     *
+     *   step = Math.max(1, Math.ceil(Infinity / 30))   ->  Infinity
+     *   for (let y = Infinity; y <= Infinity; y += Infinity)
+     *
+     * y never advances and the condition never goes false. Not a wrong number
+     * — a locked tab.
+     *
+     * IT COULD NOT REACH IT, AND THE REASON IS THE POINT. `!result` short-
+     * circuits first, and `result` rejects Infinity because the memo above
+     * already uses positiveAmount. So this loop was safe because of a guard in
+     * a DIFFERENT useMemo, which nothing here states and no test pinned. Move
+     * the chart above the result, drop the `!result` term while refactoring,
+     * or compute the chart independently, and the loop becomes reachable with
+     * no failing test to say so.
+     *
+     * Driven before this was written, twice, because the first version of this
+     * comment claimed the tab did hang: typing 1e400 into the field (the
+     * browser's number input rejects it outright, leaving ""), and restoring
+     * it through localStorage, which is the path a backup file takes and
+     * bypasses the input entirely. Both stayed responsive. The claim was
+     * wrong; the latent loop is real. */
+    const targetFutureValue = positiveAmount(target);
+    const yearsValue = positiveAmount(years);
+    if (!result || targetFutureValue === null || yearsValue === null) return [];
     const rate = Math.max(0, Number(annualReturn) || 0) / 100;
     const pv = amountOrZero(currentSavings);
     const step = Math.max(1, Math.ceil(yearsValue / 30));

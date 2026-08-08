@@ -55,9 +55,11 @@ export default function MoneyRunwayCalculator() {
   }, [startingBalance, monthlyWithdrawal, annualReturn]);
 
   const chartData = useMemo((): RunwayDataPoint[] => {
-    const balance = Number(startingBalance);
-    const withdrawal = Number(monthlyWithdrawal);
-    if (!balance || balance <= 0 || !withdrawal || withdrawal <= 0 || result === null) return [];
+    // `!x || x <= 0` admits Infinity: Number("1e400") is truthy and not <= 0,
+    // so it reached the chart and every point came back NaN.
+    const balance = positiveAmount(startingBalance);
+    const withdrawal = positiveAmount(monthlyWithdrawal);
+    if (balance === null || withdrawal === null || result === null) return [];
 
     const monthlyRate = Math.max(0, Number(annualReturn) || 0) / 100 / 12;
     const isInfinite = !Number.isFinite(result);
