@@ -1,11 +1,12 @@
 "use client";
 
 import { amountOrZero, positiveAmount } from "@/lib/money";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { solveMonthlyContribution } from "@/lib/savings-goal";
 import { futureValue } from "@/lib/projections";
 import { formatKES } from "@/lib/budget";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
+import { readShareParams, shareableUrl } from "@/lib/share-link";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import dynamic from "next/dynamic";
 import HowItWorks from "./HowItWorks";
@@ -27,6 +28,9 @@ const RATE_PRESETS = [
   { label: `MMF ~${assumedMmfYieldPct()}%`, value: assumedMmfYieldPct() },
 ];
 
+/** The inputs a shared link carries. Order is the order they are read back. */
+const SHARED_FIELDS = ["target", "years", "currentSavings", "annualReturn"] as const;
+
 export default function SavingsGoalCalculator() {
   const [target, setTarget] = useStickyState("jipange:tool:savings-goal:target", "");
   const [years, setYears] = useStickyState("jipange:tool:savings-goal:years", "");
@@ -38,6 +42,35 @@ export default function SavingsGoalCalculator() {
     "jipange:tool:savings-goal:annualReturn",
     "10"
   );
+
+  /* A shared link opens the SENDER's scenario, once.
+   *
+   * This has to be a one-time mount effect rather than a derived value, and
+   * lib/hooks.ts says why in as many words: useStickyState continuously
+   * mirrors storage, so seeding from it every render "would then fight the
+   * user's own edits by continuously re-reading". The recipient must be able
+   * to change a number and have it stay changed — that is the entire point of
+   * sending them the link.
+   *
+   * Writing through the setters rather than to storage directly means the
+   * seeded values persist exactly as typed ones do, so a reload keeps the
+   * scenario even after the query string is gone. */
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const shared = readShareParams(window.location.search, SHARED_FIELDS);
+    if (Object.keys(shared).length === 0) return;
+    /* No eslint-disable here, deliberately. The set-state-in-effect rule does
+     * not fire on these — they are guarded by the early return above and by
+     * each `!== undefined`, so nothing sets state unconditionally on mount. A
+     * disable comment for a rule that never fires is worse than none: it reads
+     * as an admission of a problem that is not there, and it would silence a
+     * real violation added underneath it later. */
+    if (shared.target !== undefined) setTarget(shared.target);
+    if (shared.years !== undefined) setYears(shared.years);
+    if (shared.currentSavings !== undefined) setCurrentSavings(shared.currentSavings);
+    if (shared.annualReturn !== undefined) setAnnualReturn(shared.annualReturn);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const result = useMemo(() => {
     const targetFutureValue = positiveAmount(target);
@@ -192,7 +225,12 @@ export default function SavingsGoalCalculator() {
               </div>
             )}
             <ShareResultButton
-              message={`🎯 *My Savings Goal*\n\nTarget: ${formatKES(Number(target))} in ${years} years\nMonthly savings needed: ${formatKES(result)}\n\nCalculate yours → jipangefinance.org/tools/savings-goal`}
+              message={`🎯 *My Savings Goal*\n\nTarget: ${formatKES(Number(target))} in ${years} years\nMonthly savings needed: ${formatKES(result)}\n\nOpen my numbers and change them → ${shareableUrl("/tools/savings-goal", {
+                target: Number(target),
+                years: Number(years),
+                currentSavings: Number(currentSavings),
+                annualReturn: Number(annualReturn),
+              })}`}
             />
           </div>
           <ExportCardButton containerRef={resultsRef} filename="savings-goal" />
