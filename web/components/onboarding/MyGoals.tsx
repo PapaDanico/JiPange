@@ -44,7 +44,10 @@ export default function MyGoals({ savingsCapacity }: { savingsCapacity: number }
     <div className="rounded-2xl bg-white p-6 shadow-sm">
       <div className="flex items-center justify-between">
         <h2 className="text-base font-semibold text-primary">My goals</h2>
-        <Link href="/planners" className="inline-flex min-h-11 items-center text-xs font-medium text-primary underline">
+        {/* print:hidden — the print stylesheet hides button/input/select but
+            NOT anchors, so a Link-based control reaches the paper as dead
+            text. Verified against the rendered PDF, not assumed. */}
+        <Link href="/planners" className="inline-flex min-h-11 items-center text-xs font-medium text-primary underline print:hidden">
           + Add a goal
         </Link>
       </div>
@@ -103,7 +106,7 @@ export default function MyGoals({ savingsCapacity }: { savingsCapacity: number }
         )}
         <Link
           href="/money-map"
-          className="mt-2 inline-flex min-h-11 items-center text-xs font-medium text-primary underline"
+          className="mt-2 inline-flex min-h-11 items-center text-xs font-medium text-primary underline print:hidden"
         >
           See the full cash flow &amp; liquidity map →
         </Link>

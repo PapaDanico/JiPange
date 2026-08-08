@@ -1,5 +1,6 @@
 "use client";
 
+import { amountOrZero, positiveAmount } from "@/lib/money";
 import { useMemo } from "react";
 import {
   calculateChamaInvestment,
@@ -59,20 +60,22 @@ export default function ChamaGroupCalculator() {
   );
 
   const mgr = useMemo(() => {
-    const m = Number(members);
-    const c = Number(contribution);
+    const m = positiveAmount(members);
+    const c = positiveAmount(contribution);
     // Clamp matches the slider's 0-20 range below — the slider is the only
     // way to set this value, so the two must agree.
-    const b = Math.min(20, Math.max(0, Number(bufferPercent) || 0));
-    if (!m || m < 2 || m > MAX_CHAMA_MEMBERS || !c || c <= 0) return null;
+    const b = Math.min(20, Math.max(0, amountOrZero(bufferPercent)));
+    // The member-count rule is the chama's own and is kept. `m` was already
+    // safe from Infinity via the upper bound; `c` was not.
+    if (m === null || c === null || m < 2 || m > MAX_CHAMA_MEMBERS) return null;
     return calculateMerryGoRound(m, c, b);
   }, [members, contribution, bufferPercent]);
 
   const inv = useMemo(() => {
-    const m = Number(members);
-    const c = Number(contribution);
-    const r = Math.max(0, Number(annualReturn) || 0);
-    if (!m || m < 2 || m > MAX_CHAMA_MEMBERS || !c || c <= 0) return null;
+    const m = positiveAmount(members);
+    const c = positiveAmount(contribution);
+    const r = Math.max(0, amountOrZero(annualReturn));
+    if (m === null || c === null || m < 2 || m > MAX_CHAMA_MEMBERS) return null;
     return calculateChamaInvestment(m, c, r);
   }, [members, contribution, annualReturn]);
 

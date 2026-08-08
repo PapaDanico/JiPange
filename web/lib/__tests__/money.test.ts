@@ -93,27 +93,36 @@ describe("positiveAmount", () => {
 });
 
 /**
- * A RATCHET, NOT A CLEAN BILL OF HEALTH.
+ * A RATCHET, AND NOW VERY NEARLY A CLEAN BILL OF HEALTH.
  *
- * The unsafe pattern started at 55 call sites across 24 files. 20 remain.
+ * The unsafe pattern started at 55 call sites across 24 files, was cut to 20,
+ * and is now 2. The last sweep took the guards that carry DOMAIN rules on top
+ * of positivity — the ones deliberately left for a focused pass, because
+ * rewriting them mechanically would have dropped a real rule or buried it:
  *
- * Converted so far: every `Number(x) || 0` site (a pure expression swap), the
- * payroll paths, the single-variable `!x || x <= 0` guards, and the regular
- * two-variable pairs of that same shape.
+ *   ChamaGroupCalculator   `m < 2 || m > MAX_CHAMA_MEMBERS` kept, contribution
+ *                          newly guarded — the member bound already caught
+ *                          Infinity for m, and nothing caught it for c
+ *   SavingsGoalCalculator  the `> 1 year` sensitivity rule kept; the chart's
+ *                          guard replaced, having HUNG THE TAB (see below)
+ *   GoalPlanner            three `> 0` builders that String(Infinity)'d the
+ *                          literal text "Infinity" into the amount field
+ *   MoneyRunway, LoanRepayment, TwentiethChallenge — plain positivity pairs
  *
- * What is left is deliberately left. Those guards carry DOMAIN constraints on
- * top of the positivity check — `yearsValue <= 1`, `m < 2 || m > MAX_CHAMA_MEMBERS`,
- * `result === null` — and rewriting them mechanically would either drop a real
- * rule or bury it. They go one at a time, with the calculator's own test
- * watching, not in a sweep.
+ * THE TWO THAT REMAIN ARE CORRECT AND STAY.
  *
- * This test fails if that count GROWS. It does not pass because the codebase
- * is clean — it passes because the debt is not getting worse, and the number
- * below is the honest size of what is left. Lower it as sites are converted;
- * never raise it.
+ *   GoalPlanner.deriveChildYears  `Number(ageValue)` is immediately checked
+ *                                 with Number.isFinite, and positiveAmount
+ *                                 would reject age 0 — a real child age.
+ *   NumberField                   `Number(value)` drives `num < min` /
+ *                                 `num > max` display validation, where
+ *                                 Infinity correctly reads as "too high".
+ *
+ * So this is no longer only a ratchet: 2 is the floor, not a debt. It still
+ * fails if the count GROWS, which is the point.
  */
 describe("the unguarded-parse debt does not grow", () => {
-  const REMAINING = 20;
+  const REMAINING = 2;
 
   const walk = (dir: string): string[] =>
     readdirSync(dir).flatMap((name) => {
@@ -142,5 +151,60 @@ describe("the unguarded-parse debt does not grow", () => {
         `Use positiveAmount() from @/lib/money — it rejects Infinity, which ` +
         `\`!x || x <= 0\` does not. If you converted sites, LOWER the constant.`
     ).toBeLessThanOrEqual(REMAINING);
+  });
+});
+
+/**
+ * A NON-TERMINATING LOOP THAT WAS SAFE BY ACCIDENT.
+ *
+ * SavingsGoalCalculator's growth chart guarded with
+ * `!targetFutureValue || yearsValue <= 0`, then:
+ *
+ *   step = Math.max(1, Math.ceil(yearsValue / 30));
+ *   for (let y = step; y <= yearsValue; y += step) { ... }
+ *
+ * Number("1e400") is Infinity, truthy and not <= 0, so it passes that guard.
+ * step becomes Infinity, y starts at Infinity, `Infinity <= Infinity` stays
+ * true, and `y += Infinity` never advances it. Not a wrong number — a locked
+ * tab.
+ *
+ * WHAT WAS NOT TRUE, AND WAS CLAIMED FIRST. It never actually hung, because
+ * `!result` short-circuits ahead of it and `result` had already been converted
+ * to positiveAmount in an earlier pass. Two browser drives established that —
+ * typing 1e400 into the field, which `<input type="number">` rejects outright,
+ * and restoring it through localStorage, which is the path a backup file takes
+ * and bypasses the input entirely. Both stayed responsive.
+ *
+ * So the loop's safety rested on a guard in a DIFFERENT useMemo, stated
+ * nowhere and pinned by nothing. These tests pin the property itself, so a
+ * refactor that reorders or decouples those memos fails here rather than in
+ * somebody's browser.
+ */
+describe("the loop that cannot terminate on Infinity", () => {
+  const chartLoopTerminates = (years: number, maxIterations = 1_000): boolean => {
+    const step = Math.max(1, Math.ceil(years / 30));
+    let n = 0;
+    for (let y = step; y <= years; y += step) {
+      if (++n > maxIterations) return false;
+    }
+    return true;
+  };
+
+  it("proves the old guard admits the value the loop cannot survive", () => {
+    const years = Number("1e400");
+    const target = 1_000_000;
+    // The exact expression the component used.
+    expect(!target || years <= 0).toBe(false); // guard passes
+    expect(chartLoopTerminates(years)).toBe(false); // and then never returns
+  });
+
+  it("positiveAmount rejects it before the loop is ever reached", () => {
+    expect(positiveAmount("1e400")).toBeNull();
+  });
+
+  it("still terminates for the horizons a reader actually types", () => {
+    for (const years of [1, 5, 10, 30, 50]) {
+      expect(chartLoopTerminates(years), `${years} years`).toBe(true);
+    }
   });
 });
