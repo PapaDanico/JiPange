@@ -157,6 +157,20 @@ body.has-fixed-bottom-bar {
     display: none !important;
   }
 
+  /* THE COLOPHON PRINTED THROUGH THE CONTENT, AND display:flex IS WHY.
+   *
+   * `body` is `flex flex-col` for the sticky-footer layout. A ::after on a
+   * flex container is not a block in normal flow — it is a FLEX ITEM, and it
+   * was laid out at a position the paginator then printed other content over.
+   * On a two-page report the colophon struck straight through a card.
+   *
+   * On paper there is no sticky footer to arrange: the @page margin does that
+   * work. So the body is a block again, ::after returns to normal flow, and it
+   * lands after the last content instead of on top of it. */
+  body {
+    display: block !important;
+  }
+
   /* White page, ink text, report-scale type */
   body {
     background: white !important;
@@ -232,6 +246,37 @@ body.has-fixed-bottom-bar {
   .space-y-8 > *,
   .space-y-10 > * {
     break-inside: avoid;
+  }
+
+  /* A CARD TALLER THAN THE PAGE MUST BE ALLOWED TO SPLIT.
+   *
+   * Two rules above give every card `break-inside: avoid` — `.rounded-2xl`
+   * and `.space-y-6 > *` — which is right for the compact blocks they were
+   * written for and wrong for one that cannot fit anywhere.
+   *
+   * The liquidity map is 704px tall against a 1123px page with the cash-flow
+   * card already taking ~440px. It fits nowhere, so Chrome moved it whole:
+   * page 1 kept one card and two-thirds white space, and `body::after` — a
+   * static block — stayed at its original flow position and printed THROUGH
+   * the card that had moved past it.
+   *
+   * MEASURED, after two wrong guesses. Putting break-inside on the inner <ul>
+   * changed nothing, and neither did unsetting display:flex on the wrappers;
+   * reading the computed style up the ancestor chain showed `break-inside:
+   * avoid` sitting on the <section> itself, from the two rules above. The
+   * lesson is the usual one — the cascade said which element was unbreakable,
+   * and guessing did not.
+   *
+   * The items inside stay unbreakable: a horizon split across two sheets would
+   * separate a yield from the vehicle it belongs to, which is the one break
+   * that could actually mislead. */
+  .print-flow {
+    break-inside: auto !important;
+  }
+
+  .print-flow > * > .print-keep,
+  .print-keep {
+    break-inside: avoid !important;
   }
 
   /* Scale the display figures for the page */

@@ -148,7 +148,7 @@ function Bucket({ bucket }: { bucket: AllocationBucket }) {
   const empty = goals.length === 0;
 
   return (
-    <li className={`rounded-xl p-4 ${empty ? "bg-canvas" : "bg-[#FAF7F0]"}`}>
+    <li className={`print-keep rounded-xl p-4 ${empty ? "bg-canvas" : "bg-[#FAF7F0]"}`}>
       <div className="flex items-baseline justify-between gap-3">
         <h3 className="text-sm font-semibold text-primary">{horizon.label}</h3>
         {!empty && (
@@ -254,7 +254,7 @@ export default function CashFlowMap() {
       {goals.length === 0 ? (
         <EmptyState reason="no-goals" />
       ) : (
-        <section className="rounded-2xl bg-white p-6 shadow-sm">
+        <section className="print-flow rounded-2xl bg-white p-6 shadow-sm">
           <h2 className="text-base font-semibold text-primary">Liquidity allocation</h2>
           <p className="mt-1 text-sm text-ink-soft">
             Grouped by when the money is needed, because that — not the kind of goal — decides

@@ -245,3 +245,91 @@ for (const route of ["/picture", "/plan", "/money-map"]) {
     ).toEqual([]);
   });
 }
+
+/**
+ * TWO PAGINATION DEFECTS, BOTH DIAGNOSED BY MEASUREMENT AFTER GUESSES FAILED.
+ *
+ * The /money-map PDF printed with page 1 two-thirds empty and the colophon
+ * struck THROUGH a card on page 2. Two separate causes:
+ *
+ *   1. The liquidity section computed `break-inside: avoid` — from
+ *      `.rounded-2xl` and `.space-y-6 > *`, both right for the compact cards
+ *      they were written for. At 704px against a 1123px page with the
+ *      cash-flow card already taking ~440px, it fitted nowhere, so Chrome
+ *      moved it whole.
+ *
+ *   2. `body` is `flex flex-col` for the sticky footer, which makes
+ *      `body::after` a FLEX ITEM rather than a block in normal flow. It was
+ *      laid out where the paginator then printed other content over it.
+ *
+ * Neither was found by reading the CSS. Putting break-inside on the inner
+ * <ul> changed nothing, and neither did unsetting display:flex on the page
+ * wrappers; both were reverted. Reading the COMPUTED style up the ancestor
+ * chain named the section and the body directly.
+ *
+ * These assert the computed properties, so removing either rule fails here
+ * rather than in somebody's saved PDF.
+ */
+test("print: the body is a block, so the colophon lands after the content", async ({ page }) => {
+  await inPrint(page, "/money-map");
+  const display = await page.evaluate(() => getComputedStyle(document.body).display);
+  expect(
+    display,
+    "body is a flex container in print, so body::after is a flex item and the " +
+      "colophon prints over the content instead of after it"
+  ).toBe("block");
+});
+
+test("print: a card taller than the page is allowed to split", async ({ page }) => {
+  await page.goto("/");
+  await page.evaluate(() => {
+    localStorage.setItem(
+      "jipange:calculations",
+      JSON.stringify({
+        netMonthly: 100000,
+        budgetSplit: { needs: 50000, socialObligations: 15000, wants: 15000, savings: 20000 },
+        savingsCapacity: 20000,
+        savingsRate: 0.2,
+      })
+    );
+    localStorage.setItem(
+      "jipange:goals",
+      JSON.stringify([
+        {
+          goalType: "home",
+          emoji: "🏠",
+          title: "Home deposit",
+          requiredMonthly: 6000,
+          years: 5,
+          amountToday: 1000000,
+          nominalTarget: 1300000,
+          savedAt: "2026-08-07T00:00:00.000Z",
+        },
+      ])
+    );
+  });
+  await inPrint(page, "/money-map");
+
+  const measured = await page.evaluate(() => {
+    const section = document.querySelector<HTMLElement>("section.print-flow");
+    if (!section) return null;
+    const item = section.querySelector<HTMLElement>(".print-keep");
+    return {
+      sectionBreak: getComputedStyle(section).breakInside,
+      itemBreak: item ? getComputedStyle(item).breakInside : null,
+      sectionHeight: Math.round(section.getBoundingClientRect().height),
+    };
+  });
+
+  expect(measured, "no print-flow section on /money-map").not.toBeNull();
+  // The premise: this really is a card that cannot fit beside its sibling.
+  expect(
+    measured!.sectionHeight,
+    "the section is short enough to fit anyway — this test no longer proves anything"
+  ).toBeGreaterThan(400);
+  expect(measured!.sectionBreak, "the long card still refuses to split").toBe("auto");
+  expect(
+    measured!.itemBreak,
+    "a horizon may now split across sheets, separating a yield from its vehicle"
+  ).toBe("avoid");
+});
