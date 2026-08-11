@@ -362,6 +362,30 @@ describe("statutes that step on a known date", () => {
    * regulation with no fixed cadence, so there is no step date to precede —
    * an annual re-read is the discipline instead, and demanding a February
    * deadline of them would be inventing a schedule the law does not have. */
+  /**
+   * PAYE steps too, and its step is the one that matters most.
+   *
+   * A Finance Act is assented in late June and commences on 1 JULY. The review
+   * used to sit on 31 July — the commencement plus "a month of grace for the
+   * KRA to publish a revised schedule" — which is grace pointing the wrong way.
+   * From 1 July the bands would be WRONG, not merely old, and PAYE feeds every
+   * take-home, net-salary and affordability figure the product renders.
+   *
+   * The grace was also unnecessary: the Act states its own rates on assent, so
+   * a changed band is knowable before it bites. 30 June is the last date on
+   * which acting on the flag prevents anything.
+   */
+  it("prompts a PAYE review before a Finance Act commences, never after", () => {
+    const { reviewBy } = STATUTES.paye;
+    const [, month, day] = reviewBy.split("-");
+    expect(
+      `${month}-${day}` <= "06-30",
+      `PAYE reviewBy is ${reviewBy}. A Finance Act commences 1 July, so a ` +
+        "review dated after 30 June leaves the bands wrong for as long as the " +
+        "gap lasts — and wrong bands are a false figure, not a stale one."
+    ).toBe(true);
+  });
+
   it("does not impose a step deadline on statutes that have no step", () => {
     expect(STATUTES.shif.effectiveFrom).toBe("2024-10-01");
     expect(STATUTES.housingLevy.effectiveFrom).toBe("2024-03-19");

@@ -83,8 +83,26 @@ export const STATUTES = {
     // Finance Act 2023. lib/tax.ts records it as unchanged for 2025/26.
     effectiveFrom: "2023-07-01",
     /* A Finance Act is assented in late June and takes effect on 1 July, so
-     * these constants are re-openable every year on that date, plus a month of
-     * grace for the KRA to publish a revised schedule.
+     * these constants are re-openable every year on that date.
+     *
+     * ── WHY THE REVIEW LANDS ON 30 JUNE AND NOT 31 JULY ────────────────────
+     *
+     * It used to be 31 July: the commencement date "plus a month of grace for
+     * the KRA to publish a revised schedule". That grace pointed the wrong way,
+     * for the same reason the NSSF entry's did.
+     *
+     * If a Finance Act moves the bands on 1 July, this file is WRONG from
+     * 1 July — not merely old. A stale CPI print is a true figure about an
+     * earlier month; a superseded PAYE band is a false figure about this one,
+     * and it feeds every take-home, net-salary and affordability number the
+     * product renders. Waiting until 31 July buys us a month without a flag at
+     * the cost of a month of wrong arithmetic in the reader\u2019s hands.
+     *
+     * The grace was also unnecessary. A Finance Act is ASSENTED in late June
+     * and states its own rates; we do not need the KRA\u2019s schedule to learn
+     * that bands changed, only to cross-check formatting. So 30 June raises the
+     * flag while the Act is knowable and before it bites \u2014 which is the
+     * only window in which acting on it prevents anything.
      *
      * ── THE FINANCE ACT 2026 REVIEW, AND EXACTLY HOW FAR IT GOT ────────────
      *
@@ -134,7 +152,7 @@ export const STATUTES = {
      * number — and it names the mechanism precisely enough for a reader to go
      * and check. It does not upgrade the evidence to primary, and the
      * paragraphs above stand unchanged. */
-    reviewBy: "2027-07-31",
+    reviewBy: "2027-06-30",
     note: "Personal relief has been Ksh 2,400/month since January 2018.",
   },
 
