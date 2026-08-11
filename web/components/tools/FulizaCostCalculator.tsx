@@ -101,7 +101,11 @@ export default function FulizaCostCalculator() {
               </p>
             </div>
 
-            <CalculatorDisclaimer />
+            {/* This calculator prices entirely on Safaricom's tariff, so it opts
+                into the tariff staleness gate as well as the statutory one. See
+                lib/tariffs.ts for why a stale tariff cautions rather than
+                suppresses the way a stale paybill does. */}
+            <CalculatorDisclaimer tariffs={["fuliza"]} />
 
             <ShareResultButton
               message={`📱 *True Cost of Fuliza*\n\nBorrowing ${formatKES(Number(amount))} for ${days} days costs ${formatKES(result.totalFee)} in fees.\nThat's about ${Math.round(result.annualisedApr)}% APR.\n\nCalculate yours → jipangefinance.org/tools/fuliza-cost`}
