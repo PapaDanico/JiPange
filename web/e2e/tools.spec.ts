@@ -732,3 +732,51 @@ test("every calculator offers a way to report a wrong figure", async ({ page }) 
     expect(body.split(route).join(""), `${route} prefilled a figure`).not.toMatch(/\d/);
   }
 });
+
+/**
+ * THE CALCULATOR COMES BEFORE THE COMMENTARY.
+ *
+ * Measured on /tools/salary at 390x844 before this was fixed: the two insight
+ * cards sat between the title and the tool, pushing the page's only input to
+ * y=697 — clinging to the bottom edge — and the answer to y=921, off the
+ * screen. The reader scrolled ~700px to reach the field, then scrolled again
+ * to see what they came for. Moving the cards below the calculator brought the
+ * input to y=309 and the result to y=533.
+ *
+ * Asserted as an ORDER rather than as a pixel position. A y-coordinate
+ * assertion would fail the first time somebody edits a heading, which teaches
+ * people to delete the test; the ordering is the thing that actually matters
+ * and it survives copy changes. Positions are recorded above as the evidence
+ * that produced the rule, not as the rule.
+ *
+ * Run on a tool with insights AND a tool without, so this cannot pass by
+ * accident on a page that has no cards to misplace.
+ */
+test("insight cards render below the calculator, not above it", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+
+  for (const route of ["/tools/salary", "/tools/savings-goal"]) {
+    await page.goto(route);
+
+    const input = page.locator("input[type=number]").first();
+    await expect(input, `${route} has no numeric input`).toBeVisible();
+
+    const inputBox = await input.boundingBox();
+    expect(inputBox, `${route}: could not measure the input`).not.toBeNull();
+
+    // The insight card is identified by its statutory source line, which is the
+    // one thing on it that no other block on the page carries.
+    const card = page.locator("text=/Computed by the JiPange tax engine|Income Tax Act s\\.15\\(3\\)/").first();
+    if ((await card.count()) === 0) continue;
+
+    const cardBox = await card.boundingBox();
+    if (!cardBox) continue;
+
+    expect(
+      cardBox.y,
+      `${route}: an insight card sits ABOVE the calculator's first input ` +
+        `(card at y=${Math.round(cardBox.y)}, input at y=${Math.round(inputBox!.y)}). ` +
+        `Context belongs after the reader's own figure, not before it.`
+    ).toBeGreaterThan(inputBox!.y);
+  }
+});
