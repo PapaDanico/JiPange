@@ -125,9 +125,26 @@ export const STATUTES = {
     governs: "the Tier I and Tier II pensionable earnings limits and the 6% rate",
     url: "https://www.nssf.or.ke/",
     effectiveFrom: "2026-02-01",
-    // The Act steps the upper limit annually on 1 February. Year 5 is the next
-    // change, so this is stable until then plus two months of grace.
-    reviewBy: "2027-03-31",
+    /* The Act steps the limits annually on 1 FEBRUARY, so the review must fall
+     * BEFORE that date, not after it.
+     *
+     * This previously read 2027-03-31 — "stable until then plus two months of
+     * grace". The grace was pointing the wrong way. A CPI figure that is two
+     * months old is old but still TRUE, so grace after the fact costs nothing.
+     * An NSSF limit two months past a step is FALSE: on 1 February 2027 the
+     * Year 4 ceiling of Ksh 108,000 stops being the law, and a guard that waits
+     * until 31 March lets the site quote a wrong deduction for the whole of
+     * February and March with nothing flagged.
+     *
+     * It does not stay contained either. NSSF is deducted BEFORE PAYE, so a
+     * wrong upper limit moves taxable income, moves PAYE, and moves the
+     * take-home figure every salaried reader came here for.
+     *
+     * Verified pattern, not a guess: Year 3 took effect 1 February 2025 and
+     * Year 4 on 1 February 2026, both recorded in lib/tax.ts. Year 5's figures
+     * were still unannounced as at 11 August 2026, which is exactly why the
+     * prompt has to arrive before the deadline rather than after it. */
+    reviewBy: "2027-01-31",
     note: "Upper limit Ksh 108,000, lower limit Ksh 9,000; Tier II employee maximum Ksh 5,940.",
   },
 
