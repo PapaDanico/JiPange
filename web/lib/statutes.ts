@@ -76,7 +76,7 @@ export interface Statute {
 
 export const STATUTES = {
   paye: {
-    instrument: "Income Tax Act (Cap 470), PAYE bands as amended",
+    instrument: "Income Tax Act (Cap 470), Third Schedule, as amended by the Finance Act, 2023",
     governs: "PAYE bands and the monthly personal relief",
     url: "https://www.kra.go.ke/individual/calculate-tax/calculating-tax/paye",
     // The five-band schedule (10 / 25 / 30 / 32.5 / 35) has stood since the
@@ -115,7 +115,25 @@ export const STATUTES = {
      * were read from the Act. The distinction is recorded here rather than
      * lost, so the next reviewer knows what they are re-doing. Anyone with
      * unblocked access should confirm against the Act or the KRA schedule and
-     * replace this note. */
+     * replace this note.
+     *
+     * ── 11 AUGUST 2026: THE AMENDING INSTRUMENT IS NOW NAMED ───────────────
+     *
+     * The citation used to read "PAYE bands as amended" — amended by WHAT was
+     * left for the reader to discover, which is a poor thing to ask of somebody
+     * checking whether we are telling the truth.
+     *
+     * It is the Finance Act, 2023, amending the THIRD SCHEDULE to the Income
+     * Tax Act: assented 26 June 2023, effective 1 July 2023, introducing 32.5%
+     * on 500,000–800,000 and 35% above 800,000. Corroborated across law-firm
+     * and Big Four commentary (Cliffe Dekker Hofmeyr, EY, RSM) that agrees on
+     * the instrument, the schedule amended, the assent date and the rates.
+     *
+     * THIS IS STILL NOT THE GAZETTED ACT. It is a better CLASS of secondary
+     * source — practitioners citing a section rather than blogs citing a
+     * number — and it names the mechanism precisely enough for a reader to go
+     * and check. It does not upgrade the evidence to primary, and the
+     * paragraphs above stand unchanged. */
     reviewBy: "2027-07-31",
     note: "Personal relief has been Ksh 2,400/month since January 2018.",
   },

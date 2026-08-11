@@ -367,3 +367,31 @@ describe("statutes that step on a known date", () => {
     expect(STATUTES.housingLevy.effectiveFrom).toBe("2024-03-19");
   });
 });
+
+/**
+ * A citation must name the instrument a reader would have to go and read.
+ *
+ * The PAYE attribution used to render "Income Tax Act (Cap 470), PAYE bands as
+ * amended". Amended by WHAT was left for the reader to discover — a poor thing
+ * to ask of somebody who came to check whether we are telling the truth, and
+ * the whole premise of this product is that its figures are checkable.
+ *
+ * It is the Finance Act, 2023, amending the Third Schedule: assented 26 June
+ * 2023, effective 1 July 2023, introducing the 32.5% and 35% bands. That is
+ * enough for a reader to find the primary source themselves.
+ */
+describe("attribution names a findable instrument", () => {
+  it("says which Act amended the PAYE bands, not merely that one did", () => {
+    const paye = attributionFor("paye");
+    expect(paye).toContain("Finance Act, 2023");
+    expect(
+      paye,
+      'a citation reading only "as amended" sends the reader looking for an ' +
+        "instrument we already know the name of"
+    ).not.toMatch(/bands as amended/);
+  });
+
+  it("still carries the schedule that was actually amended", () => {
+    expect(attributionFor("paye")).toContain("Third Schedule");
+  });
+});
