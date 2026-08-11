@@ -310,3 +310,112 @@ describe("no page names a Finance Act by hand", () => {
     expect(attributionFor("nssf")).toContain("February 2026");
   });
 });
+
+/**
+ * A review date must arrive BEFORE the change it exists to catch.
+ *
+ * NSSF's reviewBy read 2027-03-31 with the comment "stable until then plus two
+ * months of grace". The grace pointed the wrong way, and the two data types it
+ * conflates fail differently:
+ *
+ *   A CPI print two months old is OLD BUT TRUE. Grace after the fact is free.
+ *   An NSSF limit two months past a step is FALSE. On 1 February 2027 the Year
+ *   4 ceiling of Ksh 108,000 stops being the law, and a guard that waits until
+ *   31 March lets the site quote a wrong deduction for February and March with
+ *   nothing flagged at all.
+ *
+ * And it does not stay contained. NSSF is deducted BEFORE PAYE, so a wrong
+ * upper limit moves taxable income, moves PAYE, and moves the take-home figure
+ * that is the whole reason somebody opened the calculator.
+ *
+ * The step date is not a guess: Year 3 took effect 1 February 2025 and Year 4
+ * on 1 February 2026, both recorded in lib/tax.ts.
+ */
+describe("statutes that step on a known date", () => {
+  it("prompts a review before NSSF's annual 1 February step, never after", () => {
+    const nssf = STATUTES.nssf;
+    const [effYear] = nssf.effectiveFrom.split("-").map(Number);
+
+    // The step lands on 1 February of the year after the current phase began.
+    const nextStep = `${effYear + 1}-02-01`;
+
+    expect(
+      nssf.reviewBy < nextStep,
+      `NSSF reviewBy is ${nssf.reviewBy}, on or after the ${nextStep} step. ` +
+        `A review that fires after the limits change lets the calculator quote ` +
+        `a superseded ceiling — and NSSF sits upstream of PAYE, so the error ` +
+        `reaches take-home pay.`
+    ).toBe(true);
+  });
+
+  /* The premise, and the thing that makes the assertion above mean something:
+   * NSSF really does step on 1 February, and the codebase says so in the place
+   * the figures actually live. If effectiveFrom ever stops being a February
+   * date, the nextStep arithmetic above is describing a cadence that no longer
+   * exists and the whole check quietly becomes decoration. */
+  it("is keyed to a February step date, which is what makes that check valid", () => {
+    expect(STATUTES.nssf.effectiveFrom.slice(5, 7)).toBe("02");
+    expect(STATUTES.nssf.effectiveFrom).toBe("2026-02-01");
+  });
+
+  /* Not the same rule for everything. SHIF and the housing levy are set by
+   * regulation with no fixed cadence, so there is no step date to precede —
+   * an annual re-read is the discipline instead, and demanding a February
+   * deadline of them would be inventing a schedule the law does not have. */
+  /**
+   * PAYE steps too, and its step is the one that matters most.
+   *
+   * A Finance Act is assented in late June and commences on 1 JULY. The review
+   * used to sit on 31 July — the commencement plus "a month of grace for the
+   * KRA to publish a revised schedule" — which is grace pointing the wrong way.
+   * From 1 July the bands would be WRONG, not merely old, and PAYE feeds every
+   * take-home, net-salary and affordability figure the product renders.
+   *
+   * The grace was also unnecessary: the Act states its own rates on assent, so
+   * a changed band is knowable before it bites. 30 June is the last date on
+   * which acting on the flag prevents anything.
+   */
+  it("prompts a PAYE review before a Finance Act commences, never after", () => {
+    const { reviewBy } = STATUTES.paye;
+    const [, month, day] = reviewBy.split("-");
+    expect(
+      `${month}-${day}` <= "06-30",
+      `PAYE reviewBy is ${reviewBy}. A Finance Act commences 1 July, so a ` +
+        "review dated after 30 June leaves the bands wrong for as long as the " +
+        "gap lasts — and wrong bands are a false figure, not a stale one."
+    ).toBe(true);
+  });
+
+  it("does not impose a step deadline on statutes that have no step", () => {
+    expect(STATUTES.shif.effectiveFrom).toBe("2024-10-01");
+    expect(STATUTES.housingLevy.effectiveFrom).toBe("2024-03-19");
+  });
+});
+
+/**
+ * A citation must name the instrument a reader would have to go and read.
+ *
+ * The PAYE attribution used to render "Income Tax Act (Cap 470), PAYE bands as
+ * amended". Amended by WHAT was left for the reader to discover — a poor thing
+ * to ask of somebody who came to check whether we are telling the truth, and
+ * the whole premise of this product is that its figures are checkable.
+ *
+ * It is the Finance Act, 2023, amending the Third Schedule: assented 26 June
+ * 2023, effective 1 July 2023, introducing the 32.5% and 35% bands. That is
+ * enough for a reader to find the primary source themselves.
+ */
+describe("attribution names a findable instrument", () => {
+  it("says which Act amended the PAYE bands, not merely that one did", () => {
+    const paye = attributionFor("paye");
+    expect(paye).toContain("Finance Act, 2023");
+    expect(
+      paye,
+      'a citation reading only "as amended" sends the reader looking for an ' +
+        "instrument we already know the name of"
+    ).not.toMatch(/bands as amended/);
+  });
+
+  it("still carries the schedule that was actually amended", () => {
+    expect(attributionFor("paye")).toContain("Third Schedule");
+  });
+});

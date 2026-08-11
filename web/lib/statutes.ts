@@ -76,15 +76,33 @@ export interface Statute {
 
 export const STATUTES = {
   paye: {
-    instrument: "Income Tax Act (Cap 470), PAYE bands as amended",
+    instrument: "Income Tax Act (Cap 470), Third Schedule, as amended by the Finance Act, 2023",
     governs: "PAYE bands and the monthly personal relief",
     url: "https://www.kra.go.ke/individual/calculate-tax/calculating-tax/paye",
     // The five-band schedule (10 / 25 / 30 / 32.5 / 35) has stood since the
     // Finance Act 2023. lib/tax.ts records it as unchanged for 2025/26.
     effectiveFrom: "2023-07-01",
     /* A Finance Act is assented in late June and takes effect on 1 July, so
-     * these constants are re-openable every year on that date, plus a month of
-     * grace for the KRA to publish a revised schedule.
+     * these constants are re-openable every year on that date.
+     *
+     * ── WHY THE REVIEW LANDS ON 30 JUNE AND NOT 31 JULY ────────────────────
+     *
+     * It used to be 31 July: the commencement date "plus a month of grace for
+     * the KRA to publish a revised schedule". That grace pointed the wrong way,
+     * for the same reason the NSSF entry's did.
+     *
+     * If a Finance Act moves the bands on 1 July, this file is WRONG from
+     * 1 July — not merely old. A stale CPI print is a true figure about an
+     * earlier month; a superseded PAYE band is a false figure about this one,
+     * and it feeds every take-home, net-salary and affordability number the
+     * product renders. Waiting until 31 July buys us a month without a flag at
+     * the cost of a month of wrong arithmetic in the reader\u2019s hands.
+     *
+     * The grace was also unnecessary. A Finance Act is ASSENTED in late June
+     * and states its own rates; we do not need the KRA\u2019s schedule to learn
+     * that bands changed, only to cross-check formatting. So 30 June raises the
+     * flag while the Act is knowable and before it bites \u2014 which is the
+     * only window in which acting on it prevents anything.
      *
      * ── THE FINANCE ACT 2026 REVIEW, AND EXACTLY HOW FAR IT GOT ────────────
      *
@@ -135,8 +153,26 @@ export const STATUTES = {
      * read. KRA's schedule is the administrator's restatement of the law —
      * strong, and what payroll is actually operated against, but not the
      * instrument. The finding that the 2026 Act moved neither the bands nor
-     * the relief still rests on the reporting summarised above. */
-    reviewBy: "2027-07-31",
+     * the relief still rests on the reporting summarised above.
+     *
+     * ── 11 AUGUST 2026: THE AMENDING INSTRUMENT IS NOW NAMED ───────────────
+     *
+     * The citation used to read "PAYE bands as amended" — amended by WHAT was
+     * left for the reader to discover, which is a poor thing to ask of somebody
+     * checking whether we are telling the truth.
+     *
+     * It is the Finance Act, 2023, amending the THIRD SCHEDULE to the Income
+     * Tax Act: assented 26 June 2023, effective 1 July 2023, introducing 32.5%
+     * on 500,000–800,000 and 35% above 800,000. Corroborated across law-firm
+     * and Big Four commentary (Cliffe Dekker Hofmeyr, EY, RSM) that agrees on
+     * the instrument, the schedule amended, the assent date and the rates.
+     *
+     * THIS IS STILL NOT THE GAZETTED ACT. It is a better CLASS of secondary
+     * source — practitioners citing a section rather than blogs citing a
+     * number — and it names the mechanism precisely enough for a reader to go
+     * and check. It does not upgrade the evidence to primary, and the
+     * paragraphs above stand unchanged. */
+    reviewBy: "2027-06-30",
     note: "Personal relief has been Ksh 2,400/month since January 2018.",
   },
 
@@ -145,24 +181,36 @@ export const STATUTES = {
     governs: "the Tier I and Tier II pensionable earnings limits and the 6% rate",
     url: "https://www.nssf.or.ke/",
     effectiveFrom: "2026-02-01",
-    // The Act steps the upper limit annually on 1 February. Year 5 is the next
-    // change, so this is stable until then plus two months of grace.
-    //
-    // Re-verified August 2026. Year 4 limits (lower 9,000, upper 108,000, 6%,
-    // Tier II employee maximum 5,940, effective 1 February 2026) corroborated
-    // across multiple independent payroll and advisory publishers, along with
-    // the Year 3 comparison figures in lib/tax.ts (8,000 / 72,000).
-    //
-    // A TRAP FOR THE NEXT REVIEWER, because it nearly worked here. NSSF's
-    // general "New NSSF Member Contributions" page still presents the YEAR 1
-    // figures — lower 6,000, upper 18,000, maxima 720 and 1,440 — with no
-    // year label attached. Searching nssf.or.ke for contribution limits
-    // surfaces that page first, and it reads as authoritative because it is.
-    // It is simply answering a question about 2023. The Year 4 numbers live in
-    // a separate "Notice to Employers — Year 4 (2026)" item. If a check
-    // appears to show the encoded limits are far too high, that is the page
-    // you have found, not an error in lib/tax.ts.
-    reviewBy: "2027-03-31",
+    /* The Act steps the limits annually on 1 FEBRUARY, so the review must fall
+     * BEFORE that date, not after it.
+     *
+     * This previously read 2027-03-31 — "stable until then plus two months of
+     * grace". The grace was pointing the wrong way. A CPI figure that is two
+     * months old is old but still TRUE, so grace after the fact costs nothing.
+     * An NSSF limit two months past a step is FALSE: on 1 February 2027 the
+     * Year 4 ceiling of Ksh 108,000 stops being the law, and a guard that waits
+     * until 31 March lets the site quote a wrong deduction for the whole of
+     * February and March with nothing flagged.
+     *
+     * It does not stay contained either. NSSF is deducted BEFORE PAYE, so a
+     * wrong upper limit moves taxable income, moves PAYE, and moves the
+     * take-home figure every salaried reader came here for.
+     *
+     * Verified pattern, not a guess: Year 3 took effect 1 February 2025 and
+     * Year 4 on 1 February 2026, both recorded in lib/tax.ts. Year 5's figures
+     * were still unannounced as at 11 August 2026, which is exactly why the
+     * prompt has to arrive before the deadline rather than after it.
+     *
+     * A TRAP FOR THE NEXT REVIEWER, because it nearly worked here. NSSF's
+     * general "New NSSF Member Contributions" page still presents the YEAR 1
+     * figures — lower 6,000, upper 18,000, maxima 720 and 1,440 — with no
+     * year label attached. Searching nssf.or.ke for contribution limits
+     * surfaces that page first, and it reads as authoritative because it is.
+     * It is simply answering a question about 2023. The Year 4 numbers live in
+     * a separate "Notice to Employers — Year 4 (2026)" item. If a check
+     * appears to show the encoded limits are far too high, that is the page
+     * you have found, not an error in lib/tax.ts. */
+    reviewBy: "2027-01-31",
     note: "Upper limit Ksh 108,000, lower limit Ksh 9,000; Tier II employee maximum Ksh 5,940.",
   },
 
