@@ -103,19 +103,39 @@ export const STATUTES = {
      *     (10 / 25 / 30 / 32.5 / 35) and the Ksh 2,400 relief as still in
      *     force, and attribute the top two bands to the Finance Act 2023.
      *
-     * WHAT WAS NOT DONE, STATED PLAINLY: the Act itself was not read, and
-     * neither was any Big Four alert or the KRA's own schedule. kra.go.ke,
-     * taxsummaries.pwc.com, ey.com and every professional summary tried are
-     * blocked by this environment's egress policy. The evidence above is
-     * secondary reporting, corroborated across sources that agree, and it is
-     * weaker than the instrument.
+     * ── AUGUST 2026: KRA'S OWN SCHEDULE HAS NOW BEEN READ ─────────────────
      *
-     * That is enough to stop asserting the bands are UNCHECKED — which is what
-     * the past-due flag was telling readers — and not enough to pretend they
-     * were read from the Act. The distinction is recorded here rather than
-     * lost, so the next reviewer knows what they are re-doing. Anyone with
-     * unblocked access should confirm against the Act or the KRA schedule and
-     * replace this note. */
+     * The paragraph that stood here said kra.go.ke was "blocked by this
+     * environment's egress policy", that only secondary reporting supported
+     * the bands, and asked anyone with unblocked access to replace it. It has
+     * been replaced, and the premise it rested on was too broad.
+     *
+     * DIRECT FETCH of kra.go.ke is blocked. DOMAIN-RESTRICTED SEARCH of it is
+     * not, and was never tried. Searching the publisher returned KRA's own
+     * "Individual Income Tax Bands and Resident Personal Relief" notice and
+     * its PAYE pages, which state the schedule directly:
+     *
+     *   first 24,000/month @ 10% · next 8,333 @ 25% · next 467,667 @ 30%
+     *   · next 3,600,000 ANNUALLY @ 32.5% · above 9,600,000 annually @ 35%
+     *   · personal relief 2,400/month, 28,800/year
+     *
+     * That reconciles to the monthly thresholds encoded in lib/tax.ts exactly:
+     * 24,000 + 8,333 + 467,667 = 500,000 a month, i.e. the 6,000,000 a year
+     * where 32.5% starts; 9,600,000 a year is 800,000 a month. One caution for
+     * the next reviewer — KRA's figures are presented in a mix of monthly and
+     * annual terms, and at least one summary of that page mislabels the
+     * 467,667 monthly step as annual. Check the arithmetic closes at 500,000
+     * rather than trusting the label.
+     *
+     * All five bands and the relief are therefore confirmed against the
+     * administering authority's published schedule, not merely corroborated
+     * across secondary reporting.
+     *
+     * WHAT IS STILL NOT DONE: the Finance Act 2026's own text has not been
+     * read. KRA's schedule is the administrator's restatement of the law —
+     * strong, and what payroll is actually operated against, but not the
+     * instrument. The finding that the 2026 Act moved neither the bands nor
+     * the relief still rests on the reporting summarised above. */
     reviewBy: "2027-07-31",
     note: "Personal relief has been Ksh 2,400/month since January 2018.",
   },
@@ -127,6 +147,21 @@ export const STATUTES = {
     effectiveFrom: "2026-02-01",
     // The Act steps the upper limit annually on 1 February. Year 5 is the next
     // change, so this is stable until then plus two months of grace.
+    //
+    // Re-verified August 2026. Year 4 limits (lower 9,000, upper 108,000, 6%,
+    // Tier II employee maximum 5,940, effective 1 February 2026) corroborated
+    // across multiple independent payroll and advisory publishers, along with
+    // the Year 3 comparison figures in lib/tax.ts (8,000 / 72,000).
+    //
+    // A TRAP FOR THE NEXT REVIEWER, because it nearly worked here. NSSF's
+    // general "New NSSF Member Contributions" page still presents the YEAR 1
+    // figures — lower 6,000, upper 18,000, maxima 720 and 1,440 — with no
+    // year label attached. Searching nssf.or.ke for contribution limits
+    // surfaces that page first, and it reads as authoritative because it is.
+    // It is simply answering a question about 2023. The Year 4 numbers live in
+    // a separate "Notice to Employers — Year 4 (2026)" item. If a check
+    // appears to show the encoded limits are far too high, that is the page
+    // you have found, not an error in lib/tax.ts.
     reviewBy: "2027-03-31",
     note: "Upper limit Ksh 108,000, lower limit Ksh 9,000; Tier II employee maximum Ksh 5,940.",
   },
@@ -138,6 +173,11 @@ export const STATUTES = {
     effectiveFrom: "2024-10-01",
     // Set by regulations rather than by an annual Act, so there is no fixed
     // cadence to key on. An annual re-read is the discipline instead.
+    //
+    // Re-verified August 2026: 2.75% of gross, Ksh 300 monthly minimum, no
+    // upper cap, employee-only, still in force with the SHA transition from
+    // NHIF complete. Corroborated across independent payroll publishers;
+    // sha.go.ke itself is not directly fetchable from this environment.
     reviewBy: "2026-12-31",
   },
 
@@ -146,6 +186,11 @@ export const STATUTES = {
     governs: "the 1.5% Affordable Housing Levy",
     url: "https://www.parliament.go.ke/",
     effectiveFrom: "2024-03-19",
+    // Re-verified August 2026 against KRA's own public notice on collection of
+    // the levy, plus independent payroll publishers: 1.5% of gross monthly pay
+    // from the employee, matched by 1.5% from the employer, no upper income
+    // cap, effective 19 March 2024 and still in force. The repeal of the 15%
+    // relief also holds — personal relief is the only PAYE relief left.
     reviewBy: "2026-12-31",
     note: "No cap, and no relief — the 15% AHL relief was repealed by the Tax Laws (Amendment) Act, 2024.",
   },
