@@ -5,23 +5,34 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
-  # Manual trigger, because a pull request that misses its event was
-  # previously untestable forever.
+  # A manual way in, for when a pull_request event does not arrive.
   #
-  # PR #197 opened and no run started. Not a failure, not a skip — no run at
-  # all, and the checks list simply showed Netlify's three neutral entries.
-  # Closing and reopening it fired `reopened`, one of the default
-  # pull_request types, and still nothing started. With only push-to-main and
-  # pull_request declared here there was no third way in, so the branch could
-  # not be tested by any means the repository offered.
+  # THE ORIGINAL VERSION OF THIS COMMENT WAS WRONG AND IS CORRECTED HERE.
+  # It said a PR that missed its event was "untestable forever" and that this
+  # repository offered "no third way in". Neither is true, and the run history
+  # says so plainly. What actually happened on PR #197, in order:
   #
-  # That is worse than a red check. A red check stops a merge; an absent one
-  # looks like a PR nobody has got round to, and a reviewer scanning for red
-  # sees none. The verification had to be done locally and written into the
-  # PR body by hand, which nothing enforces and nobody can audit later.
+  #   08:50  PR opened via the GitHub API      -> no run
+  #   09:50  closed and reopened (`reopened`)  -> no run
+  #   10:47  a commit pushed (`synchronize`)   -> run started 10:56, SUCCESS
   #
-  # workflow_dispatch costs nothing when unused and makes the missed-event
-  # case recoverable in one click.
+  # So a push has always been sufficient. The branch was never untestable; I
+  # checked the API three minutes before that run appeared, read "nothing yet"
+  # as "nothing ever", and wrote the conclusion into this file. PR #198 then
+  # ran and passed the same way. Both were tested before merge, and both PR
+  # descriptions claiming otherwise are wrong.
+  #
+  # What IS observed, and remains unexplained: the `opened` and `reopened`
+  # events produced no run here, while `synchronize` and push-to-main always
+  # do. That may be about how the PR was created — the API, not the web UI —
+  # but this is a hypothesis and nothing in the run history settles it. It is
+  # recorded as an observation, not a diagnosis.
+  #
+  # workflow_dispatch is still worth its two lines: without it, forcing a run
+  # on a stalled PR means inventing a commit for no reason other than to make
+  # CI notice. It costs nothing when unused. It is a convenience, not the
+  # repair of a broken repository, and should not be cited as evidence that
+  # CI here is unreliable.
   workflow_dispatch:
 
 jobs:
