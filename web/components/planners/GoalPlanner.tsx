@@ -472,6 +472,25 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
                 <p className="mt-3 text-sm font-medium text-ink-soft">
                   What are you saving for?
                 </p>
+                {/* `grow` on THESE chips only.
+                    Stage presets are sentence-length by nature — "Senior
+                    Secondary (3 yrs, boarding)" — so at 390px not one of them
+                    shares a line and the wrap row degenerates into a vertical
+                    list with four different right edges: 191/221/207/211px.
+                    That is the same unfinished shape the hero buttons had, and
+                    the same rule applies: a control alone on its line should
+                    fill the line.
+
+                    `grow` says exactly that and nothing more. It is not a
+                    breakpoint, so it keeps holding as goal configs change the
+                    label lengths, and where two chips DO share a line they
+                    simply finish flush instead of stopping short.
+
+                    Deliberately not on chipClass itself. The other six chip
+                    rows hold "10%", "3 months", "4%" — stretching those to
+                    fill a phone row would turn a compact preset into a
+                    full-width button reading "10%". The defect is long labels
+                    in a wrap row, not chips in general. */}
                 <div className="mt-2 flex flex-wrap gap-2">
                   {config.amountPresets.map((preset) => (
                     <button
@@ -479,7 +498,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
                       type="button"
                       onClick={() => handleChildStage(index, preset)}
                       aria-pressed={child.stageLabel === preset.label}
-                      className={chipClass(child.stageLabel === preset.label)}
+                      className={`${chipClass(child.stageLabel === preset.label)} grow`}
                     >
                       {preset.label}
                     </button>

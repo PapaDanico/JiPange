@@ -37,27 +37,88 @@ const VIEWPORTS = [
   { name: "desktop", width: 1440, height: 900 },
 ];
 
+/* EVERY STATIC ROUTE, NOT A SAMPLE.
+ *
+ * This list was eight routes when the file was written, which quietly
+ * contradicted the reason for writing it: the point was that nothing stopped
+ * the ragged-stack shape appearing on any of the other thirty-odd pages, and
+ * then it only looked at eight of them. A sweep that samples is a sample, and
+ * the twenty-five tool pages it skipped are exactly where a shared layout
+ * component would go wrong at scale.
+ *
+ * Generated from `find app -name page.tsx`, minus the one dynamic segment,
+ * which is covered by a concrete goal below. Adding a page without adding it
+ * here leaves that page unswept — the cost of the explicit list is that it can
+ * drift, and the benefit is that a reviewer can see precisely what ran. */
 const ROUTES = [
   "/",
-  "/tools",
-  "/tools/salary",
-  "/tools/where-to-save",
-  "/tools/savings-goal",
-  "/planners",
-  "/picture",
+  "/about",
+  "/dashboard",
+  "/faq",
   "/glossary",
+  "/licensing",
+  "/money-map",
+  "/partners",
+  "/picture",
+  "/plan",
+  "/planners",
+  "/planners/education",
+  "/planners/hustle",
+  "/privacy",
+  "/profile",
+  "/support",
+  "/terms",
+  "/tools",
+  "/tools/20th-challenge",
+  "/tools/budget-split",
+  "/tools/chama",
+  "/tools/debt-escape",
+  "/tools/dhowcsd",
+  "/tools/fire-number",
+  "/tools/fuliza-cost",
+  "/tools/guarantor-shield",
+  "/tools/hustle-smoother",
+  "/tools/inflation-reality",
+  "/tools/investment-returns",
+  "/tools/kplc-optimizer",
+  "/tools/land-purchase",
+  "/tools/loan-repayment",
+  "/tools/money-runway",
+  "/tools/one-third-rule",
+  "/tools/payday-router",
+  "/tools/sacco-vs-bank",
+  "/tools/salary",
+  "/tools/salary-negotiation",
+  "/tools/savings-goal",
+  "/tools/school-fees-lifetime",
+  "/tools/sha-health",
+  "/tools/take-home-pay",
+  "/tools/tax-shield",
+  "/tools/where-to-save",
 ];
 
 type Findings = { overflow: number; clipped: string[]; ragged: string[] };
 
 for (const vp of VIEWPORTS) {
   test(`layout holds at ${vp.name} (${vp.width}px)`, async ({ page }) => {
+    /* Forty-four routes do not fit in the default 30s budget, and the first
+       run of the expanded list failed on the timeout rather than on anything
+       about the pages. Raised deliberately: this is a sweep, and its cost is
+       proportional to the site.
+
+       `networkidle` was most of that cost and was also the wrong signal. What
+       these checks depend on is FONT METRICS — scrollHeight is reported in
+       them, and the half-line rule below is a statement about line boxes — so
+       the wait is `load` plus document.fonts.ready. A late analytics beacon
+       keeping the network busy says nothing about whether text fits; a font
+       that has not swapped in says everything. */
+    test.setTimeout(180_000);
     await page.setViewportSize({ width: vp.width, height: vp.height });
     const problems: string[] = [];
 
     for (const route of ROUTES) {
-      await page.goto(route);
-      await page.waitForLoadState("networkidle");
+      await page.goto(route, { waitUntil: "load" });
+      await page.evaluate(() => document.fonts.ready.then(() => undefined));
 
       const found: Findings = await page.evaluate(() => {
         const res: Findings = {
