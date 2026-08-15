@@ -10,6 +10,15 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
+  /* Self-referencing canonical, resolved per route against metadataBase.
+     The tool pages accept query parameters — /tools/salary?gross=120000 is the
+     same page as /tools/salary — and without this each parameterised URL is a
+     separate document to a crawler, splitting ranking signals and risking a
+     half-filled form appearing in results instead of the clean page.
+     Verified against built HTML, not assumed: './' resolving to the site root
+     rather than the current path would point all 44 routes at the homepage,
+     which is worse than no canonical at all. */
+  alternates: { canonical: "./" },
   title: {
     default: "JiPange — Kenya's Financial Planning Copilot",
     template: "%s | JiPange",
