@@ -77,3 +77,61 @@ export async function settled(page: Page): Promise<void> {
     await page.waitForTimeout(120);
   }
 }
+
+/**
+ * Every route the sweeps walk.
+ *
+ * This list was copy-pasted in two specs before a third needed it. They were
+ * byte-identical at the time, which is the state a drifted pair starts from —
+ * and `settled` above is in this file precisely because two copies of one rule
+ * drifting is how a guard went silently blind once already.
+ *
+ * A route missing from a copy is not a test failure; it is a route nobody
+ * checks, reported as green.
+ */
+export const ROUTES = [
+  "/",
+  "/about",
+  "/dashboard",
+  "/faq",
+  "/glossary",
+  "/licensing",
+  "/money-map",
+  "/partners",
+  "/picture",
+  "/plan",
+  "/planners",
+  "/planners/education",
+  "/planners/hustle",
+  "/privacy",
+  "/profile",
+  "/support",
+  "/terms",
+  "/tools",
+  "/tools/20th-challenge",
+  "/tools/budget-split",
+  "/tools/chama",
+  "/tools/debt-escape",
+  "/tools/dhowcsd",
+  "/tools/fire-number",
+  "/tools/fuliza-cost",
+  "/tools/guarantor-shield",
+  "/tools/hustle-smoother",
+  "/tools/inflation-reality",
+  "/tools/investment-returns",
+  "/tools/kplc-optimizer",
+  "/tools/land-purchase",
+  "/tools/loan-repayment",
+  "/tools/money-runway",
+  "/tools/one-third-rule",
+  "/tools/payday-router",
+  "/tools/sacco-vs-bank",
+  "/tools/salary",
+  "/tools/salary-negotiation",
+  "/tools/savings-goal",
+  "/tools/school-fees-lifetime",
+  "/tools/sha-health",
+  "/tools/take-home-pay",
+  "/tools/tax-shield",
+  "/tools/where-to-save",
+] as const;

@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { settled } from "./helpers";
+import { ROUTES, settled } from "./helpers";
 
 /**
  * WCAG 1.4.3 CONTRAST, MEASURED ON RENDERED TEXT.
@@ -34,52 +34,6 @@ import { settled } from "./helpers";
  * they regress; this is not a complete accessibility audit and should not be
  * read as one.
  */
-const ROUTES = [
-  "/",
-  "/about",
-  "/dashboard",
-  "/faq",
-  "/glossary",
-  "/licensing",
-  "/money-map",
-  "/partners",
-  "/picture",
-  "/plan",
-  "/planners",
-  "/planners/education",
-  "/planners/hustle",
-  "/privacy",
-  "/profile",
-  "/support",
-  "/terms",
-  "/tools",
-  "/tools/20th-challenge",
-  "/tools/budget-split",
-  "/tools/chama",
-  "/tools/debt-escape",
-  "/tools/dhowcsd",
-  "/tools/fire-number",
-  "/tools/fuliza-cost",
-  "/tools/guarantor-shield",
-  "/tools/hustle-smoother",
-  "/tools/inflation-reality",
-  "/tools/investment-returns",
-  "/tools/kplc-optimizer",
-  "/tools/land-purchase",
-  "/tools/loan-repayment",
-  "/tools/money-runway",
-  "/tools/one-third-rule",
-  "/tools/payday-router",
-  "/tools/sacco-vs-bank",
-  "/tools/salary",
-  "/tools/salary-negotiation",
-  "/tools/savings-goal",
-  "/tools/school-fees-lifetime",
-  "/tools/sha-health",
-  "/tools/take-home-pay",
-  "/tools/tax-shield",
-  "/tools/where-to-save",
-];
 
 test("no text falls below its WCAG AA contrast floor", async ({ page }) => {
   test.setTimeout(180_000);

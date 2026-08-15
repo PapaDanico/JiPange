@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { settled } from "./helpers";
+import { ROUTES, settled } from "./helpers";
 
 /**
  * THE LAYOUT DEFECTS THAT NO UNIT TEST CAN SEE, ACROSS THE WHOLE SITE.
@@ -51,52 +51,6 @@ const VIEWPORTS = [
  * which is covered by a concrete goal below. Adding a page without adding it
  * here leaves that page unswept — the cost of the explicit list is that it can
  * drift, and the benefit is that a reviewer can see precisely what ran. */
-const ROUTES = [
-  "/",
-  "/about",
-  "/dashboard",
-  "/faq",
-  "/glossary",
-  "/licensing",
-  "/money-map",
-  "/partners",
-  "/picture",
-  "/plan",
-  "/planners",
-  "/planners/education",
-  "/planners/hustle",
-  "/privacy",
-  "/profile",
-  "/support",
-  "/terms",
-  "/tools",
-  "/tools/20th-challenge",
-  "/tools/budget-split",
-  "/tools/chama",
-  "/tools/debt-escape",
-  "/tools/dhowcsd",
-  "/tools/fire-number",
-  "/tools/fuliza-cost",
-  "/tools/guarantor-shield",
-  "/tools/hustle-smoother",
-  "/tools/inflation-reality",
-  "/tools/investment-returns",
-  "/tools/kplc-optimizer",
-  "/tools/land-purchase",
-  "/tools/loan-repayment",
-  "/tools/money-runway",
-  "/tools/one-third-rule",
-  "/tools/payday-router",
-  "/tools/sacco-vs-bank",
-  "/tools/salary",
-  "/tools/salary-negotiation",
-  "/tools/savings-goal",
-  "/tools/school-fees-lifetime",
-  "/tools/sha-health",
-  "/tools/take-home-pay",
-  "/tools/tax-shield",
-  "/tools/where-to-save",
-];
 
 type Findings = { overflow: number; clipped: string[]; ragged: string[] };
 
