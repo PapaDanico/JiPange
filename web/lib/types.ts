@@ -4,7 +4,13 @@ import { KENYA_COUNTIES } from "./counties";
 export const profileSchema = z.object({
   fullName: z.string().trim().min(1, "Full name is required").max(100),
   age: z.number().int().min(18, "Must be 18 or older").max(80, "Must be 80 or younger"),
-  county: z.enum([...KENYA_COUNTIES] as [string, ...string[]]),
+  // The county field is a free-text input with a datalist, not a select, so a
+  // typo is easy and reaches the schema. Zod's default enum message names all
+  // 47 counties — 508 characters rendered inline under the input. The datalist
+  // is already offering the options; the error only needs to point back at it.
+  county: z.enum([...KENYA_COUNTIES] as [string, ...string[]], {
+    message: "Choose a county from the list",
+  }),
   grossMonthlySalary: z.number().positive("Salary must be greater than zero").finite().max(10_000_000),
   dependants: z.number().int().min(0).max(20, "Must be 20 or fewer"),
   chamaMember: z.boolean(),
