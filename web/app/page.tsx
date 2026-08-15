@@ -248,16 +248,23 @@ export default function Home() {
                 {RBA_NO_PENSION_PCT}% of Kenya&apos;s workforce has no pension plan. JiPange
                 changes that — one honest calculation at a time.
               </p>
-              <div className="mb-6 flex flex-wrap gap-3">
+              {/* Stacked buttons match each other's width; side-by-side ones
+                  do not. Measured at 390px these wrapped to their own content
+                  widths — 266px above 188px — a 78px step between the two
+                  choices the page is built around, with a ragged edge down the
+                  right. A phone has one column, so a button that stops short of
+                  it reads as unfinished rather than as emphasis. Full width
+                  below sm:, intrinsic width once they sit in a row. */}
+              <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                 <Link
                   href="/profile"
-                  className="inline-flex h-12 items-center justify-center rounded-full bg-accent px-6 text-base font-bold text-accent-contrast shadow-[0_2px_14px_rgba(232,160,32,0.30)] transition-colors hover:bg-accent-deep"
+                  className="inline-flex h-12 w-full items-center justify-center rounded-full bg-accent px-6 text-base font-bold text-accent-contrast shadow-[0_2px_14px_rgba(232,160,32,0.30)] transition-colors hover:bg-accent-deep sm:w-auto"
                 >
                   Start my plan — 90 seconds ›
                 </Link>
                 <Link
                   href="/tools"
-                  className="inline-flex h-12 items-center justify-center rounded-full border-[1.5px] border-border bg-canvas px-6 text-base font-semibold text-primary transition-colors hover:border-primary hover:bg-[#E6D9CA]"
+                  className="inline-flex h-12 w-full items-center justify-center rounded-full border-[1.5px] border-border bg-canvas px-6 text-base font-semibold text-primary transition-colors hover:border-primary hover:bg-[#E6D9CA] sm:w-auto"
                 >
                   Explore calculators
                 </Link>

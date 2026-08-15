@@ -73,18 +73,21 @@ export default function DataControls() {
         file to keep or move to another device — nothing is ever uploaded.
       </p>
 
-      <div className="mt-4 flex flex-wrap gap-3">
+      {/* Three destructive-adjacent controls at 158 / 148 / 154px stacked into
+          a phone column: near-equal, which reads as a mistake rather than as a
+          choice. Equal width below sm:, intrinsic width once they share a row. */}
+      <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
         <button
           type="button"
           onClick={handleExport}
-          className="inline-flex h-11 items-center justify-center rounded-full bg-primary px-5 text-sm font-medium text-white transition-colors hover:bg-primary-deep"
+          className="inline-flex h-11 w-full items-center justify-center rounded-full bg-primary px-5 sm:w-auto text-sm font-medium text-white transition-colors hover:bg-primary-deep"
         >
           Download my data
         </button>
         <button
           type="button"
           onClick={() => fileInputRef.current?.click()}
-          className="inline-flex h-11 items-center justify-center rounded-full border border-primary px-5 text-sm font-medium text-primary transition-colors hover:bg-primary hover:text-white"
+          className="inline-flex h-11 w-full items-center justify-center rounded-full border border-primary px-5 sm:w-auto text-sm font-medium text-primary transition-colors hover:bg-primary hover:text-white"
         >
           Restore from file
         </button>
@@ -100,7 +103,7 @@ export default function DataControls() {
           type="button"
           onClick={handleClear}
           onBlur={() => setConfirmingClear(false)}
-          className={`inline-flex h-11 items-center justify-center rounded-full px-5 text-sm font-medium transition-colors ${
+          className={`inline-flex h-11 w-full items-center justify-center rounded-full px-5 sm:w-auto text-sm font-medium transition-colors ${
             confirmingClear
               ? "bg-danger text-white"
               : "border border-border text-faint hover:border-danger hover:text-danger"
