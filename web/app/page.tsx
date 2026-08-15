@@ -254,17 +254,30 @@ export default function Home() {
                   choices the page is built around, with a ragged edge down the
                   right. A phone has one column, so a button that stops short of
                   it reads as unfinished rather than as emphasis. Full width
-                  below sm:, intrinsic width once they sit in a row. */}
+                  below sm:, intrinsic width once they sit in a row.
+
+                  "Once they sit in a row" was the flaw. At lg the hero splits
+                  into two columns and the left one narrows to ~450px, while
+                  these two at their intrinsic widths need 266 + 188 + 12 =
+                  466px. They wrap — back into a stack, and back to 266px above
+                  188px, which is the exact ragged shape this comment was
+                  written to remove. It was fixed on the phone and reappeared on
+                  the desktop, one breakpoint further along.
+
+                  So full width is restored at lg. The rule is not "narrow
+                  screens get full width", it is "a button that is alone on its
+                  line gets full width", and lg is the other place that is
+                  true. */}
               <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                 <Link
                   href="/profile"
-                  className="inline-flex h-12 w-full items-center justify-center rounded-full bg-accent px-6 text-base font-bold text-accent-contrast shadow-[0_2px_14px_rgba(232,160,32,0.30)] transition-colors hover:bg-accent-deep sm:w-auto"
+                  className="inline-flex h-12 w-full items-center justify-center rounded-full bg-accent px-6 text-base font-bold text-accent-contrast shadow-[0_2px_14px_rgba(232,160,32,0.30)] transition-colors hover:bg-accent-deep sm:w-auto lg:w-full"
                 >
                   Start my plan — 90 seconds ›
                 </Link>
                 <Link
                   href="/tools"
-                  className="inline-flex h-12 w-full items-center justify-center rounded-full border-[1.5px] border-border bg-canvas px-6 text-base font-semibold text-primary transition-colors hover:border-primary hover:bg-[#E6D9CA] sm:w-auto"
+                  className="inline-flex h-12 w-full items-center justify-center rounded-full border-[1.5px] border-border bg-canvas px-6 text-base font-semibold text-primary transition-colors hover:border-primary hover:bg-[#E6D9CA] sm:w-auto lg:w-full"
                 >
                   Explore calculators
                 </Link>
