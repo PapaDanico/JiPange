@@ -172,10 +172,30 @@ for (const vp of VIEWPORTS) {
            stacked is read off the boxes, not off a breakpoint, so this keeps
            holding when copy length changes where the wrap falls. */
         for (const wrap of document.querySelectorAll("div,nav,section,form")) {
+          /* A BUTTON, NOT MERELY A LINK THAT IS TALL ENOUGH.
+             This matched every A over 32px, which counts padded text links.
+             In the sister project the identical filter failed on all 22 routes
+             at 768px against the footer's link column — "CBK on WhatsApp" /
+             "Pesa Smart KE" / "Contact us" at 149/132/110px. Ragged
+             left-aligned links are what a list of links is SUPPOSED to look
+             like; giving them a common width would be the defect.
+             This copy never tripped, but only because these footer links
+             happen to share a line at the swept widths — passing by luck, not
+             by rule. What makes the ragged shape wrong is a painted edge: a
+             chip or button draws a background or border, so a mismatch in
+             right edges reads as unfinished, while a bare text link draws no
+             edge and has nothing to align. */
           const kids = [...wrap.children].filter((c) => {
             if (c.tagName !== "A" && c.tagName !== "BUTTON") return false;
             const r = c.getBoundingClientRect();
-            return r.height >= 32 && r.width > 40 && getComputedStyle(c).display !== "none";
+            if (r.height < 32 || r.width <= 40) return false;
+            const cs = getComputedStyle(c);
+            if (cs.display === "none") return false;
+            const clear = (v: string) => /rgba\(0, 0, 0, 0\)|transparent/.test(v);
+            return (
+              (!!cs.backgroundColor && !clear(cs.backgroundColor)) ||
+              (parseFloat(cs.borderTopWidth) > 0 && !clear(cs.borderTopColor))
+            );
           });
           if (kids.length < 2) continue;
           const boxes = kids.map((k) => k.getBoundingClientRect());
