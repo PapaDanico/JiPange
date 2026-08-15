@@ -250,7 +250,12 @@ export default function SchoolFeesLifetimeCalculator() {
                   title={a.source}
                   onClick={() => updateChild(child.id, { annualFee: String(a.annualKES) })}
                   aria-pressed={child.annualFee === String(a.annualKES)}
-                  className={`inline-flex min-h-11 items-center justify-center rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
+                  /* grow: FEE_ANCHORS carry sentence-length labels — "Private
+                     day school — mid-tier" — so at 390px not one of them shares
+                     a line and the wrap row became a stack at 187/193/222px.
+                     Same rule as the education planner's stage presets: a chip
+                     alone on its line fills it. */
+                  className={`inline-flex min-h-11 grow items-center justify-center rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
                     child.annualFee === String(a.annualKES)
                       ? "border-accent bg-accent text-ink"
                       : "border-border bg-white text-ink-soft hover:bg-canvas"

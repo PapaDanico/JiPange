@@ -700,7 +700,10 @@ export default function Home() {
                   // min-h-11: measured 42px at 390px, two short of the 44 that every
                   // header control now holds to. Padding is untouched so the
                   // pill keeps its shape; only the floor moves.
-                  className="inline-flex min-h-11 items-center gap-1.5 rounded-full border-[1.5px] border-border bg-white px-4 py-2.5 text-sm font-semibold text-ink-soft transition-colors hover:border-primary hover:text-primary"
+                  // grow: at 390px these pills stop sharing lines and stack one
+                  // per row, where they came out 163/159px — a 4px mismatch on
+                  // drawn borders, which reads as a wobble rather than a list.
+                  className="inline-flex min-h-11 grow items-center gap-1.5 rounded-full border-[1.5px] border-border bg-white px-4 py-2.5 text-sm font-semibold text-ink-soft transition-colors hover:border-primary hover:text-primary"
                 >
                   <span>{planner.emoji}</span>
                   {planner.label}
