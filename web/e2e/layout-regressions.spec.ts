@@ -70,12 +70,24 @@ for (const vp of VIEWPORTS) {
            collapsed to a 1px box deliberately, so only boxes with a real
            height are interesting. A deliberate line-clamp on a description is
            fine; this catches a box whose CONTENT is taller than its frame with
-           no clamp intended, which is how text silently disappears. */
+           no clamp intended, which is how text silently disappears.
+
+           The shortfall must exceed half a line before it counts. A first run
+           flagged nine headline figures — "3.23%", "17.7M", "Ksh 6.1T" — every
+           one of them `leading-none`, where line-height equals font-size while
+           the font's own ascent plus descent does not. scrollHeight reports the
+           font's metrics, so a 48px box reports 53px of content and not one
+           pixel of ink is missing. That overshoot is always a fraction of a
+           line; losing a line of text never is. The auction banner defect in
+           the sister repo hid 132px against a 22px line and clears this bar
+           six times over. */
         for (const el of document.querySelectorAll("p,h1,h2,h3,li,td,caption,label")) {
           const e = el as HTMLElement;
           if (e.clientHeight < 8) continue;
-          if (getComputedStyle(e).webkitLineClamp !== "none") continue;
-          if (e.scrollHeight > e.clientHeight + 2) {
+          const cs = getComputedStyle(e);
+          if (cs.webkitLineClamp !== "none") continue;
+          const line = parseFloat(cs.lineHeight) || parseFloat(cs.fontSize) || 16;
+          if (e.scrollHeight - e.clientHeight > line * 0.5) {
             res.clipped.push(
               `${e.tagName.toLowerCase()} shows ${e.clientHeight}px of ${e.scrollHeight}px: "${(
                 e.textContent || ""
