@@ -49,7 +49,12 @@
   --color-border-strong: #c9bfb2;
   --color-ink: #171717;
   --color-ink-soft: #4b4238; /* default body copy */
-  --color-muted: #7a6b5e; /* secondary copy, AA on white/background */
+  /* Darkened from #7a6b5e. That value was AA on pure white, which is what
+     the old comment claimed and checked — but most secondary copy sits on
+     --color-canvas (#F1ECE3) or inside a bordered chip, not on white, and
+     there it measured 4.36:1 against a 4.5 floor. The comment was true about
+     a background the text is rarely on. Measured on canvas, not assumed. */
+  --color-muted: #6b5d50; /* secondary copy, AA on white AND on canvas */
   --color-faint: #6f6e69; /* tertiary copy / fine print */
 
   /* ── Motion ──
