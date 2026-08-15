@@ -42,3 +42,38 @@ export async function saveEmergencyGoal(page: Page) {
   await page.getByRole("button", { name: "Save this goal to my plan" }).click();
   await expect(visibleText(page, /saved — see it on your pesa picture/i)).toBeVisible();
 }
+
+/**
+ * WAIT FOR HYDRATION, NOT JUST FOR LOAD.
+ *
+ * The sweeps briefly used `load` plus document.fonts.ready, on the argument
+ * that what they measure is font metrics rather than network silence. That was
+ * right about fonts and wrong about React: `networkidle` had been incidentally
+ * waiting for hydration, and dropping it dropped the client-rendered half of
+ * every page.
+ *
+ * Measured in the sister project, whose sweep had the identical wait:
+ * /ladder/ has 272 elements at load and 864 once hydrated. Two-thirds of the
+ * page was never scanned, and the contrast guard sailed straight past the
+ * 3.77:1 button it had been written to catch — while passing clean, finding
+ * other real defects, and turning CI red, so every signal except a mutation
+ * test said it was healthy.
+ *
+ * Polling until the element count holds steady is deterministic where a fixed
+ * sleep is a guess, and costs a few hundred milliseconds rather than however
+ * long the network happens to take.
+ *
+ * This lives in helpers so both sweeps share one definition. The two repos
+ * having drifted copies of the same rule is exactly how one of them ended up
+ * silently blind.
+ */
+export async function settled(page: Page): Promise<void> {
+  await page.evaluate(() => document.fonts.ready.then(() => undefined));
+  let last = -1;
+  for (let i = 0; i < 40; i++) {
+    const n = await page.evaluate(() => document.querySelectorAll("*").length);
+    if (n === last) return;
+    last = n;
+    await page.waitForTimeout(120);
+  }
+}

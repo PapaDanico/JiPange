@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { settled } from "./helpers";
 
 /**
  * THE LAYOUT DEFECTS THAT NO UNIT TEST CAN SEE, ACROSS THE WHOLE SITE.
@@ -118,7 +119,7 @@ for (const vp of VIEWPORTS) {
 
     for (const route of ROUTES) {
       await page.goto(route, { waitUntil: "load" });
-      await page.evaluate(() => document.fonts.ready.then(() => undefined));
+      await settled(page);
 
       const found: Findings = await page.evaluate(() => {
         const res: Findings = {
@@ -172,6 +173,24 @@ for (const vp of VIEWPORTS) {
            stacked is read off the boxes, not off a breakpoint, so this keeps
            holding when copy length changes where the wrap falls. */
         for (const wrap of document.querySelectorAll("div,nav,section,form")) {
+          /* ROWS COME FROM ALL CHILDREN, NOT FROM THE PAINTED ONES.
+             Filtering first and then asking "is each item alone on its line"
+             invents stacks. In the sister project /ladder/ renders
+             [Download PDF] then [Save image + Print], which is flush — but
+             Print draws no border, so dropping it left two painted items on
+             separate rows looking like a ragged 358/180 stack.
+             Row structure is a fact about the layout and must be read from
+             every sibling; the painted test decides which mismatches are worth
+             reporting. In that order, or the check manufactures defects. */
+          const siblings = [...wrap.children].filter((c) => {
+            const r = c.getBoundingClientRect();
+            return r.height >= 8 && getComputedStyle(c).display !== "none";
+          });
+          const perRow = new Map<number, number>();
+          for (const c of siblings) {
+            const t = Math.round(c.getBoundingClientRect().top);
+            perRow.set(t, (perRow.get(t) || 0) + 1);
+          }
           /* A BUTTON, NOT MERELY A LINK THAT IS TALL ENOUGH.
              This matched every A over 32px, which counts padded text links.
              In the sister project the identical filter failed on all 22 routes
@@ -198,13 +217,18 @@ for (const vp of VIEWPORTS) {
             );
           });
           if (kids.length < 2) continue;
-          const boxes = kids.map((k) => k.getBoundingClientRect());
+          // Genuinely alone on their line, counted against every sibling.
+          const lone = kids.filter(
+            (k) => perRow.get(Math.round(k.getBoundingClientRect().top)) === 1,
+          );
+          if (lone.length < 2) continue;
+          const boxes = lone.map((k) => k.getBoundingClientRect());
           if (!boxes.every((b, i) => i === 0 || b.top >= boxes[i - 1].bottom - 2)) continue;
           const widths = boxes.map((b) => Math.round(b.width));
           const spread = Math.max(...widths) - Math.min(...widths);
           if (spread > 2) {
             res.ragged.push(
-              `${widths.join("/")}px — "${(kids[0].textContent || "").trim().slice(0, 24)}"`,
+              `${widths.join("/")}px — "${(lone[0].textContent || "").trim().slice(0, 24)}"`,
             );
           }
         }
