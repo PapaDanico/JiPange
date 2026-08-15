@@ -62,7 +62,34 @@ export default function WhereToSave() {
             : "Highest first."}
         </p>
 
-        <div className="mt-3 overflow-x-auto">
+        {/* SCROLLABLE IS NOT THE SAME AS DISCOVERABLE.
+         *
+         * Measured at 390px, the width of the phone most of these readers are
+         * on: this table is 956px of content in a 342px window. `overflow-x-auto`
+         * means it scrolls and the page itself does not, which is the correct
+         * mechanism and was already right. What was missing is any sign that
+         * there is more.
+         *
+         * Three of the five columns sit off-screen, and the two that vanish are
+         * "Locked up" and "Backed by" — the difference between a 364-day bill
+         * and a money market fund, on a page whose entire purpose is that
+         * comparison. A reader sees the after-tax rates, sees them land within
+         * a whisker of each other, and has no reason to suspect the columns
+         * that actually distinguish the options exist.
+         *
+         * The fix is the classic scroll-shadow: four background layers, two
+         * solid "covers" pinned with background-attachment:local so they travel
+         * with the content, and two gradients pinned to the container so they
+         * are revealed only when there is more in that direction. Pure CSS —
+         * no scroll listener, no JS, nothing to run on a slow device — and it
+         * disappears at sm: where the table fits.
+         *
+         * A hint that lies is worse than none, which is why this is geometry
+         * rather than a static "scroll →": it cannot claim there is more to see
+         * once you have reached the end. */}
+        <div
+          className="mt-3 overflow-x-auto [background-attachment:local,local,scroll,scroll] [background-position:left_center,right_center,left_center,right_center] [background-repeat:no-repeat] [background-size:24px_100%,24px_100%,22px_100%,22px_100%] [background-image:linear-gradient(to_right,var(--surface,#fff),transparent),linear-gradient(to_left,var(--surface,#fff),transparent),linear-gradient(to_right,rgba(0,0,0,0.16),transparent),linear-gradient(to_left,rgba(0,0,0,0.16),transparent)]"
+        >
           <table className="min-w-full whitespace-nowrap text-left text-sm">
             <thead className="text-xs text-faint">
               <tr>
