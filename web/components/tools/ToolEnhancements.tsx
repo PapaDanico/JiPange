@@ -54,7 +54,17 @@ export default function ToolEnhancements() {
               <Link
                 key={tool.href}
                 href={tool.href}
-                className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-border bg-white px-4 py-1.5 text-xs font-medium text-primary transition-colors hover:border-accent hover:text-accent"
+                /* `grow` so a row of related tools always finishes flush.
+                   These labels lead with an emoji, and emoji metrics differ
+                   between machines — the same page wrapped these onto shared
+                   lines locally and onto one line each on CI, where they came
+                   out 161/189/126px and ragged. That is not a flaky test; it
+                   means how tidy this row looks depends on which fonts the
+                   reader happens to have installed, so some readers already
+                   see the ragged version. `grow` removes the dependency: a
+                   pill alone on its line fills it, and pills that share one
+                   finish flush, whatever the labels measure. */
+                className="inline-flex min-h-11 grow items-center gap-1.5 rounded-full border border-border bg-white px-4 py-1.5 text-xs font-medium text-primary transition-colors hover:border-accent hover:text-accent"
               >
                 <span aria-hidden="true">{tool.icon}</span>
                 {tool.name}
