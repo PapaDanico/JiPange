@@ -13,7 +13,8 @@
   --color-primary-deep: #584a3e; /* hover state of primary surfaces */
   --color-accent: #e8a838;
   --color-accent-deep: #d6961f; /* hover state of accent surfaces */
-  --color-accent-ink: #946213; /* readable amber for text on soft tints */
+  --color-accent-ink: #8a5a10; /* readable amber for text on soft tints AND on canvas: #946213
+                                  cleared 4.5 on white but measured 4.44:1 on canvas */
   --color-accent-soft: #fff8ea; /* amber tint panel */
   --color-accent-wash: #fff4dc; /* lightest amber wash */
   /* Text and icons sitting ON an amber surface. The amber CTAs used a literal
@@ -31,7 +32,7 @@
   --color-shell-hover: #4a3a2e;
 
   /* ── Semantic status ── */
-  --color-success: #2d7d46;
+  --color-success: #20693a;
   --color-success-deep: #2b4a2b; /* readable green for text on soft tints */
   --color-success-soft: #e9f5ec; /* green tint panel */
   /* Darkened from #D97706/#DC2626 so text using these tokens meets the
@@ -55,7 +56,7 @@
      there it measured 4.36:1 against a 4.5 floor. The comment was true about
      a background the text is rarely on. Measured on canvas, not assumed. */
   --color-muted: #6b5d50; /* secondary copy, AA on white AND on canvas */
-  --color-faint: #6f6e69; /* tertiary copy / fine print */
+  --color-faint: #63625c; /* tertiary copy / fine print */
 
   /* ── Motion ──
      Results and panels rise in as they mount. Globally disabled for
