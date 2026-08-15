@@ -226,7 +226,7 @@ export default function Home() {
 
             {/* Left column */}
             <div>
-              <p className="mb-5 inline-block rounded-full border border-[#F0D08A] bg-accent-soft px-3 py-1.5 text-xs font-bold uppercase tracking-widest text-accent">
+              <p className="mb-5 inline-block rounded-full border border-[#F0D08A] bg-accent-soft px-3 py-1.5 text-xs font-bold uppercase tracking-widest text-accent-ink">
                 Free · Anonymous · Built for Kenya 🇰🇪
               </p>
               <p className="mb-2 text-base italic font-medium text-muted">
@@ -239,7 +239,7 @@ export default function Home() {
                 Your money is working hard.{" "}
                 <span className="block">
                   Just not{" "}
-                  <em className="not-italic text-accent">for you.</em>
+                  <em className="not-italic text-accent-ink">for you.</em>
                 </span>
               </h1>
               <p className="mb-8 max-w-prose text-base leading-relaxed text-ink-soft">
@@ -337,12 +337,12 @@ export default function Home() {
         <div className="mx-auto max-w-5xl px-4 sm:px-6">
           <div className="mb-5 flex flex-wrap items-end justify-between gap-2">
             <div>
-              <p className="text-xs font-bold uppercase tracking-widest text-accent">Start with one win</p>
+              <p className="text-xs font-bold uppercase tracking-widest text-accent-ink">Start with one win</p>
               <h2 className="mt-1 text-xl font-extrabold tracking-tight text-primary sm:text-2xl">
                 What do you want your money to do better?
               </h2>
             </div>
-            <Link href="/tools" className="inline-flex min-h-11 items-center text-sm font-semibold text-primary underline underline-offset-4 hover:text-accent">
+            <Link href="/tools" className="inline-flex min-h-11 items-center text-sm font-semibold text-primary underline underline-offset-4 hover:text-accent-ink">
               Browse every calculator →
             </Link>
           </div>
@@ -354,10 +354,10 @@ export default function Home() {
                 className="group flex min-h-36 flex-col rounded-2xl border border-border bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-accent hover:shadow-md"
               >
                 <span aria-hidden="true" className="text-2xl">{item.icon}</span>
-                <span className="mt-4 text-[0.6875rem] font-bold uppercase tracking-widest text-accent">{item.eyebrow}</span>
+                <span className="mt-4 text-[0.6875rem] font-bold uppercase tracking-widest text-accent-ink">{item.eyebrow}</span>
                 <span className="mt-1 font-bold text-primary">{item.title}</span>
                 <span className="mt-1 text-sm leading-relaxed text-muted">{item.detail}</span>
-                <span className="mt-auto pt-3 text-sm font-semibold text-primary group-hover:text-accent">Start here →</span>
+                <span className="mt-auto pt-3 text-sm font-semibold text-primary group-hover:text-accent-ink">Start here →</span>
               </Link>
             ))}
           </div>
@@ -413,7 +413,7 @@ export default function Home() {
         <summary className="cursor-pointer list-none border-b border-border px-4 py-5 marker:content-none sm:px-6">
           <span className="mx-auto flex max-w-5xl items-center justify-between gap-4">
             <span>
-              <span className="block text-xs font-bold uppercase tracking-widest text-accent">Want the evidence?</span>
+              <span className="block text-xs font-bold uppercase tracking-widest text-accent-ink">Want the evidence?</span>
               <span className="mt-1 block text-sm font-semibold text-primary sm:text-base">
                 Explore the research behind JiPange’s Kenya-first approach
               </span>
@@ -426,7 +426,7 @@ export default function Home() {
       <section className="bg-canvas py-14 sm:py-16">
         <div className="mx-auto max-w-5xl px-4 sm:px-6">
           <div data-reveal className="mb-6">
-            <p className="mb-1.5 text-xs font-bold uppercase tracking-widest text-accent">
+            <p className="mb-1.5 text-xs font-bold uppercase tracking-widest text-accent-ink">
               Research findings
             </p>
             <h2
@@ -483,7 +483,7 @@ export default function Home() {
                 style={{ textWrap: "balance" } as React.CSSProperties}
               >
                 &ldquo;Most Kenyans aren&apos;t broke —<br />
-                they&apos;re <em className="not-italic text-accent">misallocated.</em>
+                they&apos;re <em className="not-italic text-accent-ink">misallocated.</em>
                 <br />
                 The money is there. The plan is missing.&rdquo;
               </p>
@@ -576,7 +576,7 @@ export default function Home() {
       <section className="bg-canvas py-14 sm:py-16">
         <div className="mx-auto max-w-5xl px-4 sm:px-6">
           <div className="mb-8">
-            <p className="mb-1.5 text-xs font-bold uppercase tracking-widest text-accent">
+            <p className="mb-1.5 text-xs font-bold uppercase tracking-widest text-accent-ink">
               The process
             </p>
             <h2
@@ -615,7 +615,7 @@ export default function Home() {
         <div className="mx-auto max-w-5xl px-4 sm:px-6">
           <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
             <div>
-              <p className="mb-1 text-xs font-bold uppercase tracking-widest text-accent">
+              <p className="mb-1 text-xs font-bold uppercase tracking-widest text-accent-ink">
                 Self-serve calculators
               </p>
               <h2 className="text-2xl font-extrabold tracking-tight text-primary">
@@ -624,7 +624,7 @@ export default function Home() {
             </div>
             <Link
               href="/tools"
-              className="inline-flex min-h-11 items-center text-sm font-semibold text-primary underline underline-offset-4 hover:text-accent"
+              className="inline-flex min-h-11 items-center text-sm font-semibold text-primary underline underline-offset-4 hover:text-accent-ink"
             >
               All {TOOL_COUNT} calculators →
             </Link>
@@ -646,7 +646,9 @@ export default function Home() {
                   <p className="text-[0.9rem] font-bold text-primary">{tool.name}</p>
                   <p className="text-[0.8rem] text-muted">{tool.hook}</p>
                 </div>
-                <span className="ml-auto shrink-0 text-border transition-colors group-hover:text-accent">
+                {/* text-muted, not text-border. A border colour used as a glyph
+                    measured 1.12:1 — not subtle, unseeable. */}
+                <span className="ml-auto shrink-0 text-muted transition-colors group-hover:text-accent-ink">
                   ›
                 </span>
               </Link>
@@ -660,7 +662,7 @@ export default function Home() {
         <div className="mx-auto max-w-5xl px-4 sm:px-6">
           <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
             <div>
-              <p className="mb-1.5 text-xs font-bold uppercase tracking-widest text-accent">
+              <p className="mb-1.5 text-xs font-bold uppercase tracking-widest text-accent-ink">
                 Goal planners
               </p>
               <h2 className="text-2xl font-extrabold tracking-tight text-primary sm:text-3xl">
@@ -669,7 +671,7 @@ export default function Home() {
             </div>
             <Link
               href="/planners"
-              className="inline-flex min-h-11 items-center text-sm font-semibold text-primary underline underline-offset-4 hover:text-accent"
+              className="inline-flex min-h-11 items-center text-sm font-semibold text-primary underline underline-offset-4 hover:text-accent-ink"
             >
               All 6 planners →
             </Link>
@@ -718,6 +720,8 @@ export default function Home() {
               style={{ textWrap: "balance" } as React.CSSProperties}
             >
               Your honest Pesa Picture.{" "}
+              {/* accent, not accent-ink: this sits on a dark panel, where the
+                  light-background text shade drops to 1.24:1. */}
               <span className="text-accent">90 seconds away.</span>
             </h2>
             <p className="mx-auto mb-8 max-w-md text-base leading-relaxed text-canvas/70">
