@@ -68,9 +68,9 @@ for (const vp of VIEWPORTS) {
 
         /* Visibly clipped text. Skip-links and other sr-only content are
            collapsed to a 1px box deliberately, so only boxes with a real
-           height are interesting. A deliberate line-clamp on a description is
-           fine; this catches a box whose CONTENT is taller than its frame with
-           no clamp intended, which is how text silently disappears.
+           height are interesting. This catches a box whose CONTENT is taller
+           than its frame — clamped or not — which is how text silently
+           disappears.
 
            The shortfall must exceed half a line before it counts. A first run
            flagged nine headline figures — "3.23%", "17.7M", "Ksh 6.1T" — every
@@ -85,7 +85,16 @@ for (const vp of VIEWPORTS) {
           const e = el as HTMLElement;
           if (e.clientHeight < 8) continue;
           const cs = getComputedStyle(e);
-          if (cs.webkitLineClamp !== "none") continue;
+          /* Clamped elements are NOT exempt. A `continue` on
+             webkitLineClamp !== "none" was here and it reads as obviously
+             right — a deliberate clamp on a description is a decision, not a
+             bug. In the sister project, where the same check guards an auction
+             banner that hid 132px of its identifier under line-clamp:2, that
+             exemption skipped the exact defect and the guard went green with
+             the bug restored.
+             A clamp declares how much is shown. It does not declare that the
+             amount hidden is acceptable. The half-line rule below judges that
+             for clamped and unclamped text alike. */
           const line = parseFloat(cs.lineHeight) || parseFloat(cs.fontSize) || 16;
           if (e.scrollHeight - e.clientHeight > line * 0.5) {
             res.clipped.push(
