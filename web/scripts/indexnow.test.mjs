@@ -11,7 +11,16 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { main, keyFile, ROUTES, ORIGIN, HOST, PUBLIC_DIR } from './indexnow.mjs';
+import { main, keyFile, routesFromSitemap, ORIGIN, HOST, PUBLIC_DIR } from './indexnow.mjs';
+
+const SITEMAP = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>${ORIGIN}</loc></url>
+  <url><loc>${ORIGIN}/tools/dhowcsd</loc></url>
+  <url><loc>${ORIGIN}/tools/budget-split</loc></url>
+  <url><loc>${ORIGIN}/tools/dhowcsd</loc></url>
+  <url><loc>https://example.com/not-ours</loc></url>
+</urlset>`;
 
 const resp = (status, body = '') => ({
   status,
@@ -63,6 +72,7 @@ describe('what it refuses to do', () => {
   it('reports a rejected submission rather than swallowing it', async () => {
     const key = keyFile().replace(/\.txt$/, '');
     const f = fakeFetch([
+      ['sitemap.xml', resp(200, SITEMAP)],
       ['.txt', resp(200, key)],
       ['api.indexnow.org', resp(422)],
     ]);
@@ -74,6 +84,7 @@ describe('what it sends once the key verifies', () => {
   const key = keyFile().replace(/\.txt$/, '');
   const ok = () =>
     fakeFetch([
+      ['sitemap.xml', resp(200, SITEMAP)],
       ['.txt', resp(200, key)],
       ['api.indexnow.org', resp(200)],
     ]);
@@ -94,17 +105,37 @@ describe('what it sends once the key verifies', () => {
   });
 
   it('submits only our own origin, with no duplicates', async () => {
+    // The fixture sitemap deliberately repeats /tools/dhowcsd and includes an
+    // off-origin entry. IndexNow rejects a mixed-host list outright rather
+    // than ignoring the strays, so both must be handled here.
     const f = ok();
     await main(f);
     const { urlList } = JSON.parse(posted(f)[0].init.body);
-    expect(urlList.length).toBe(ROUTES.length);
     expect(urlList.every((u) => u.startsWith(ORIGIN))).toBe(true);
     expect(new Set(urlList).size).toBe(urlList.length);
+    expect(urlList).toContain(`${ORIGIN}/tools/dhowcsd`);
+    expect(urlList.some((u) => u.includes('example.com'))).toBe(false);
   });
 
-  it('never submits /404', () => {
-    // An error page is not content. The sitemap excludes it for the same
-    // reason, and a crawler told to index it will.
-    expect(ROUTES.some((r) => r.includes('404'))).toBe(false);
+  it('reads the routes from the sitemap rather than a list kept here', async () => {
+    // The first version hand-listed routes and five of eight were wrong —
+    // /tools/tbill-ladder, /tools/budget, /tools/debt, /learn and
+    // /tools/savings do not exist. That would have asked Bing to index five
+    // 404s, invisibly.
+    const f = ok();
+    const urls = await routesFromSitemap(f);
+    expect(urls).toContain(`${ORIGIN}/tools/budget-split`);
+    expect(urls.some((u) => u.endsWith('/tools/budget'))).toBe(false);
+  });
+
+  it('submits nothing when the sitemap cannot be read', async () => {
+    const key = keyFile().replace(/\.txt$/, '');
+    const f = fakeFetch([
+      ['.txt', resp(200, key)],
+      ['sitemap.xml', resp(500)],
+      ['api.indexnow.org', resp(200)],
+    ]);
+    expect(await main(f)).toBe(0);
+    expect(posted(f), 'a sitemap we cannot read is not a list to announce').toEqual([]);
   });
 });

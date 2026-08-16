@@ -48,22 +48,47 @@ export const ORIGIN = `https://${HOST}`;
 const ENDPOINT = 'https://api.indexnow.org/indexnow';
 
 /**
- * Routes worth announcing. The tools whose output moves with the synced rates,
- * plus the entry points a reader lands on.
+ * The routes to announce come from the LIVE sitemap, not a list kept here.
  *
- * `/404` is absent deliberately, for the same reason the sitemap excludes it:
- * an error page is not content and must never be submitted.
+ * The first version of this file hand-listed them, and five of the eight were
+ * wrong: `/tools/tbill-ladder/` is actually `/tools/dhowcsd/`, `/tools/budget/`
+ * is `/tools/budget-split/`, `/tools/debt/` is `/tools/debt-escape/`, and
+ * `/learn/` and `/tools/savings/` do not exist at all. Submitting those would
+ * have asked Bing to index five 404s — worse than submitting nothing, and
+ * invisible until someone checked the routes by hand.
+ *
+ * sitemap.xml is generated from the app's own route list, already excludes
+ * /404 for the reasons documented there, and is published. Reading it is one
+ * more request on a path that is already making one, and it cannot drift from
+ * the site because the site produces it.
  */
-export const ROUTES = [
-  '/',
-  '/tools/',
-  '/tools/tbill-ladder/',
-  '/tools/budget/',
-  '/tools/savings/',
-  '/tools/debt/',
-  '/learn/',
-  '/about/',
-];
+export const SITEMAP_URL = `${ORIGIN}/sitemap.xml`;
+
+/** Every <loc> in the live sitemap, or [] if it cannot be read. */
+export async function routesFromSitemap(fetchImpl = fetch) {
+  let resp;
+  try {
+    resp = await fetchImpl(SITEMAP_URL);
+  } catch (err) {
+    console.error(`[indexnow] sitemap unreachable: ${err}`);
+    return [];
+  }
+  if (resp.status !== 200) {
+    console.error(`[indexnow] ${SITEMAP_URL} answered ${resp.status}`);
+    return [];
+  }
+  const xml = await resp.text();
+  const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1].trim());
+  // Anything off our own origin is not ours to announce, and IndexNow rejects
+  // a mixed-host list outright rather than ignoring the strays.
+  const ours = locs.filter((u) => u.startsWith(ORIGIN));
+  if (ours.length !== locs.length) {
+    console.error(
+      `[indexnow] ${locs.length - ours.length} sitemap entries were off-origin and dropped`
+    );
+  }
+  return [...new Set(ours)];
+}
 
 const KEY_RE = /^[0-9a-f]{8,128}\.txt$/;
 
@@ -155,7 +180,12 @@ export async function main(fetchImpl = fetch) {
     return 1;
   }
   if (!(await keyIsLive(key, fetchImpl))) return 0;
-  return submit(key, ROUTES.map((r) => `${ORIGIN}${r}`), fetchImpl);
+  const urls = await routesFromSitemap(fetchImpl);
+  if (!urls.length) {
+    console.error('[indexnow] no routes read from the sitemap — not submitting');
+    return 0;
+  }
+  return submit(key, urls, fetchImpl);
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
