@@ -117,3 +117,20 @@ jobs:
               exit 1
             }
           done
+
+      # Tell Bing and Yandex the ladder's figures moved.
+      #
+      # No account, no OAuth, no secret: IndexNow verifies by fetching a key
+      # published at the site root, which is why that key lives in the
+      # repository at web/public/. Google withdrew its sitemap ping endpoint in
+      # June 2023 and offers no keyless equivalent, so Google discovery rests on
+      # the Sitemap: line in robots.txt, which is already there.
+      #
+      # Runs whether or not the snapshot changed, because a deploy may have
+      # shipped other content since the last run, and IndexNow is cheap. It
+      # never gates: a search engine not hearing about a refresh costs a day of
+      # crawl latency and is not a reason to fail the sync.
+      - name: Tell Bing and Yandex (IndexNow)
+        if: always()
+        working-directory: web
+        run: node scripts/indexnow.mjs || echo "indexnow failed — see output above"
