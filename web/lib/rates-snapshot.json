@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generatedAt": "2026-08-14T05:09:26.196468+00:00",
+  "generatedAt": "2026-08-17T04:18:26.864354+00:00",
   "publisher": "Mwangaza Yield",
   "homepage": "https://mwangazayield.org",
   "notes": {
@@ -54,7 +54,7 @@
       "value": 8.75,
       "unit": "%",
       "date": "2026-08-11",
-      "lastChecked": "2026-08-14",
+      "lastChecked": "2026-08-17",
       "source": "CBK",
       "fallback": false
     },
@@ -62,7 +62,7 @@
       "value": 6.49,
       "unit": "% y/y",
       "date": "2026-08-05",
-      "lastChecked": "2026-08-14",
+      "lastChecked": "2026-08-17",
       "source": "CBK",
       "fallback": true
     },
@@ -83,10 +83,10 @@
       "fallback": false
     },
     "usdKes": {
-      "value": 129.24,
+      "value": 129.23,
       "unit": "KES/USD",
-      "date": "2026-08-13",
-      "lastChecked": "2026-08-14",
+      "date": "2026-08-14",
+      "lastChecked": "2026-08-17",
       "source": "CBK indicative",
       "fallback": false
     }
