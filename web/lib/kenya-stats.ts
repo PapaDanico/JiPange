@@ -53,4 +53,17 @@ export const MMF_SHARE_OF_DEPOSITS_PCT = Math.round(mmfShareOfDepositsPct() * 10
 export const BANK_SAVINGS_EARNING_BELOW_INFLATION_TRILLION =
   Math.round((BANK_DEPOSITS_TRILLION_KSH - MMF_AUM_BILLION_KSH / 1000) * 10) / 10;
 
+// ── IMF World Economic Outlook, April 2026 ──
+/**
+ * Projections, not measurements — calendar-2026 annual figures IMF staff
+ * expect, re-checked on the WEO's April/October cadence. Use these where a
+ * page looks FORWARD (a plan, a projection, an assumption). Where a page
+ * states what Kenya's inflation or growth IS, use the KNBS/CBK outturns the
+ * rates feed carries instead; the note on each registry entry explains why
+ * the two kinds of number are not interchangeable.
+ */
+export const IMF_WEO_REAL_GDP_GROWTH_2026_PCT = figure("imfWeoRealGdpGrowth2026Pct");
+export const IMF_WEO_INFLATION_2026_PCT = figure("imfWeoInflation2026Pct");
+export const IMF_WEO_GROSS_DEBT_PCT_GDP_2026 = figure("imfWeoGrossDebtPctGdp2026");
+
 export { SOURCES };
