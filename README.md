@@ -61,6 +61,21 @@ people use to decide where to put money.
 
 Exit codes: `0` updated or already current, `1` refused.
 
+## And where the forward-looking figures come from
+
+The registry in `web/lib/sources.ts` also carries three PROJECTIONS from the
+IMF's World Economic Outlook (April 2026 edition) — Kenya's 2026 growth,
+annual-average inflation and debt-to-GDP — each with its WEO subject code, an
+`asOf` date and a `reviewBy` tied to the WEO's April/October cadence, so the
+staleness gate in `__tests__/sources.test.ts` forces a re-read after every
+edition. They are exported from `kenya-stats.ts` as `IMF_WEO_*`.
+
+They answer a different question from the measured figures, and the two are
+never interchangeable: the KNBS/CBK readings say what inflation IS, the WEO
+entries say what IMF staff EXPECT. A page that looks forward (a plan, a
+projection) may quote them; a page that states current conditions uses the
+measured outturns. The note on each registry entry says why.
+
 ## Deployment
 
 Netlify, from `main`. Configuration is in `netlify.toml`.
