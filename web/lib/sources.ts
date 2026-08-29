@@ -226,6 +226,56 @@ export const SOURCES = {
     reviewBy: "2026-12-31",
     note: "51.9% of the Ksh 851.7bn total CIS industry at the same date.",
   },
+
+  /* IMF World Economic Outlook — the forward-looking layer.
+   *
+   * Every other entry here is a measured outturn: a survey, a digest, a
+   * quarterly report. These three are PROJECTIONS from the April 2026 WEO,
+   * and they answer a different question — not "what did Kenya look like"
+   * but "what does IMF staff expect". They exist because pages that project a
+   * saver's money forward need growth, inflation and debt assumptions that
+   * are dated, attributed and re-checked on the WEO's own April/October
+   * cadence, rather than a house guess that drifts.
+   *
+   * Do NOT substitute these for the KNBS/CBK readings the rates feed carries.
+   * The feed's headline is the measured year-on-year for a single month; the
+   * 5.9% below is a calendar-2026 annual-AVERAGE projection. Different
+   * question, different number, both correct. The 2026 growth figure likewise
+   * coexists with the World Bank's 4.63% outturn estimate for 2025 — one is a
+   * measurement of last year, the other a projection of this one. */
+  imfWeoRealGdpGrowth2026Pct: {
+    value: 4.5,
+    unit: "% projected real GDP growth, calendar 2026",
+    publisher: "International Monetary Fund",
+    title: "World Economic Outlook, April 2026",
+    url: "https://data.imf.org/en/datasets/IMF.RES:WEO",
+    asOf: "2026-04-30",
+    // WEO is published in April and October; re-read after the October 2026 edition.
+    reviewBy: "2026-11-30",
+    note: "WEO subject NGDP_RPCH for Kenya; a projection, not an outturn. Down from the 4.9% estimate for 2025.",
+  },
+
+  imfWeoInflation2026Pct: {
+    value: 5.9,
+    unit: "% projected annual-average consumer price inflation, calendar 2026",
+    publisher: "International Monetary Fund",
+    title: "World Economic Outlook, April 2026",
+    url: "https://data.imf.org/en/datasets/IMF.RES:WEO",
+    asOf: "2026-04-30",
+    reviewBy: "2026-11-30",
+    note: "WEO subject PCPIPCH; annual average, NOT a point-in-time y/y like the KNBS monthly print. Up from the 4.1% estimate for 2025.",
+  },
+
+  imfWeoGrossDebtPctGdp2026: {
+    value: 71.6,
+    unit: "% of GDP, projected general government gross debt, calendar 2026",
+    publisher: "International Monetary Fund",
+    title: "World Economic Outlook, April 2026",
+    url: "https://data.imf.org/en/datasets/IMF.RES:WEO",
+    asOf: "2026-04-30",
+    reviewBy: "2026-11-30",
+    note: "WEO subject GGXWDG_NGDP. The IMF projects this rising every year to 74.2% by 2030, with the fiscal deficit near 6% of GDP throughout.",
+  },
 } as const satisfies Record<string, Figure>;
 
 export type SourceKey = keyof typeof SOURCES;
