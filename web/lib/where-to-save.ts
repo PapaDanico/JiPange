@@ -40,7 +40,7 @@
 
 import { TBILL_RATES } from "./rates-feed";
 import { assumedMmfYield, MMF_SPREAD_OVER_TBILL_PCT } from "./mmf-assumption";
-import { SPREAD_CONFIDENCE_PP } from "./mmf-vs-tbill";
+import { SPREAD_CONFIDENCE_PP, WHT_ON_INTEREST } from "./mmf-vs-tbill";
 import {
   SACCO_DIVIDEND_RANGE_PCT,
   SACCO_RATES_AS_OF,
@@ -48,7 +48,26 @@ import {
   SACCO_DEPOSIT_GUARANTEE_OPERATIONAL,
 } from "./affiliate-links";
 
-export const WHT_ON_INTEREST = 0.15;
+/**
+ * Withholding tax on interest, READ from mmf-vs-tbill.ts rather than restated.
+ *
+ * This was a second literal 0.15 beside that module's own — two copies of one
+ * statutory rate, both used to turn a gross yield into the net figure a reader
+ * decides on, in two modules that already rank the SAME instruments against
+ * each other. This file even imports SPREAD_CONFIDENCE_PP from there, so half
+ * the shared vocabulary was shared and half was copied.
+ *
+ * Had they drifted, the failure would have been quiet and specific: the
+ * "where to save" table and the MMF-versus-T-bill comparison would have put
+ * the same two products in a different order, each internally consistent. The
+ * commentary above about a 4bp methodology difference showing up as the MMF
+ * beating a Treasury bill is exactly how small a gap has to be to matter here.
+ *
+ * Re-exported so callers and tests are unchanged. Note the T-bill rows do NOT
+ * use this: their netEAY arrives from the feed already net, with its own
+ * whtRate field beside it — see rates-feed.ts.
+ */
+export { WHT_ON_INTEREST };
 
 export type Basis = "published" | "assumed";
 
