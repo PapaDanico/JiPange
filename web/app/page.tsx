@@ -755,7 +755,13 @@ export default function Home() {
 
       {/* ── Sources footnote ── */}
       <div className="bg-primary border-t border-white/10 px-4 py-4 text-center">
-        <p className="text-[0.6875rem] text-canvas/28">
+        {/* Capped, because it was not.
+          * This line had no measure at all: at 1440px it ran the full 1408px
+          * as one centred sentence of roughly 250 characters, which is about
+          * three times the width the eye can track back from. Every other
+          * block on this page is bounded; this one was missed because it sits
+          * outside the sections. */}
+        <p className="mx-auto max-w-3xl text-[0.6875rem] text-canvas/28">
           {/* Two hand-typed errors lived in this sentence.
             *
             * "CMA Collective Investment Schemes, July 2026" named a month in
