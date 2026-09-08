@@ -2,7 +2,7 @@
 
 import { positiveAmount } from "@/lib/money";
 import { useMemo } from "react";
-import { calculateFulizaCost } from "@/lib/fuliza";
+import { calculateFulizaCost, FULIZA_MAX_LIMIT } from "@/lib/fuliza";
 import { formatKES } from "@/lib/budget";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import BehavioralInsightStrip from "./BehavioralInsightStrip";
@@ -25,6 +25,22 @@ export default function FulizaCostCalculator() {
     if (principal === null || daysValue === null) return null;
     return calculateFulizaCost(principal, daysValue);
   }, [amount, days]);
+
+  /* Fuliza tops out at Ksh 70,000, and this calculator did not know it.
+   *
+   * lib/fuliza.ts exports FULIZA_MAX_LIMIT precisely because quoting a
+   * facility nobody can draw is not a quote — the loan-comparison table was
+   * offering Fuliza on a Ksh 200,000 loan, where the flat Ksh 25-a-day fee
+   * made it look CHEAPER than a SACCO. That was fixed there and never here,
+   * so this page went on answering "what does Ksh 200,000 on Fuliza cost?"
+   * with a confident figure instead of "you cannot borrow that on Fuliza".
+   *
+   * Shown ALONGSIDE the result rather than instead of it: the arithmetic for
+   * the top band is still what it would cost, and a reader who has typed a
+   * large number is better served by the ceiling plus the cost than by a
+   * blank panel. */
+  const principal = positiveAmount(amount);
+  const overLimit = principal !== null && principal > FULIZA_MAX_LIMIT;
 
   const resultsRef = useScrollIntoView<HTMLDivElement>(result !== null);
 
@@ -56,6 +72,13 @@ export default function FulizaCostCalculator() {
       {result && (
         <>
           <div ref={resultsRef} className="animate-rise space-y-4" aria-live="polite">
+            {overLimit && (
+              <p className="rounded-2xl border border-danger bg-danger-soft px-4 py-3 text-sm text-danger-deep">
+                Fuliza&rsquo;s maximum overdraft is {formatKES(FULIZA_MAX_LIMIT)}, so you cannot
+                actually draw {formatKES(Number(amount))} on it. The figures below are what the top
+                fee band would cost if you could — treat them as a comparison, not a quote.
+              </p>
+            )}
             <ResultCard
               label="Total cost of borrowing"
               value={formatKES(result.totalFee)}

@@ -115,9 +115,11 @@ describe("taxShield", () => {
     expect(shield.mortgageHeadroom).toBe(30_000);
     expect(shield.pensionTaxSavings).toBeCloseTo(20_000 * 0.3, 6);
     expect(shield.mortgageTaxSavings).toBeCloseTo(30_000 * 0.3, 6);
-    // Insurance relief capped at 5k/mo of premiums × 15%
-    expect(shield.insuranceReliefClaimable).toBeCloseTo(750, 6);
-    expect(shield.totalMonthlyRecoverable).toBeCloseTo(6_000 + 9_000 + 750, 6);
+    // 15% of the 8,000 premium — the 5,000/mo cap is on the RELIEF and does
+    // not bind until the premium reaches 33,333. This read 750 while the code
+    // capped the premium at 5,000 instead; see tax.ts.
+    expect(shield.insuranceReliefClaimable).toBeCloseTo(1_200, 6);
+    expect(shield.totalMonthlyRecoverable).toBeCloseTo(6_000 + 9_000 + 1_200, 6);
   });
 
   it("shows zero headroom for already-maximised contributors", () => {

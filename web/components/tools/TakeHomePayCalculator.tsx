@@ -347,7 +347,7 @@ export default function TakeHomePayCalculator() {
           <div className="print:hidden">
             <CalculatorDisclaimer
               extraNotes={[
-                "Pension relief — Income Tax Act s.15(3), capped at Ksh 30,000/month. Mortgage interest relief — Ksh 30,000/month cap, raised from Ksh 25,000 by the Finance Act 2025. Insurance relief — 15% of premiums up to Ksh 5,000/month, per s.31.",
+                "Pension relief — Income Tax Act s.15(3), capped at Ksh 30,000/month. Mortgage interest relief — Ksh 30,000/month cap, raised from Ksh 25,000 by the Tax Laws (Amendment) Act, 2024. Insurance relief — s.31, 15% of the premium, capped at Ksh 5,000/month of relief (Ksh 60,000 a year), which a premium of about Ksh 33,333/month reaches.",
               ]}
             />
           </div>

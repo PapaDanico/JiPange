@@ -130,7 +130,7 @@ export default function TaxShieldCalculator() {
               </li>
               <li>
                 Insurance relief claimable →{" "}
-                <strong>{formatKES(shield.insuranceReliefClaimable)}</strong> (15%, capped)
+                <strong>{formatKES(shield.insuranceReliefClaimable)}</strong> (15% of the premium, up to Ksh 5,000)
               </li>
             </ul>
             <p className="mt-2 text-xs text-faint">

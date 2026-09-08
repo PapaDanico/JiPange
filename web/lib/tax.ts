@@ -64,7 +64,10 @@ export const SHIF_MINIMUM = 300;
 export const AHL_RATE = 0.015;
 
 /**
- * Optional PAYE reliefs (Income Tax Act s.15(3) and s.31, as amended by the Finance Act 2025).
+ * Optional PAYE reliefs (Income Tax Act s.15(3) and s.31, as amended by the Tax Laws
+ * (Amendment) Act, 2024, effective 27 December 2024 — which raised the pension deduction from
+ * Ksh 20,000 to Ksh 30,000 a month and mortgage interest from Ksh 25,000 to Ksh 30,000. It was
+ * cited here and in the UI as the Finance Act 2025, which is the wrong instrument for both.
  * Pension and mortgage interest reduce taxable pay before PAYE bands apply; insurance relief
  * is a tax credit subtracted from gross PAYE alongside personal relief. These reliefs assume
  * the contribution/premium/interest is paid outside payroll (or already declared to the
@@ -72,8 +75,38 @@ export const AHL_RATE = 0.015;
  */
 export const PENSION_RELIEF_CAP_MONTHLY = 30_000;
 export const MORTGAGE_INTEREST_RELIEF_CAP_MONTHLY = 30_000;
-export const INSURANCE_RELIEF_PREMIUM_CAP_MONTHLY = 5_000;
+
+/**
+ * THE Ksh 5,000 IS A CAP ON THE RELIEF, NOT ON THE PREMIUM.
+ *
+ * Income Tax Act s.31: a resident individual is entitled to insurance relief
+ * of 15% of premiums paid, "subject to a maximum of Ksh 60,000 per annum" —
+ * Ksh 5,000 a month. The sixty thousand is the most relief anyone may RECEIVE.
+ * It takes Ksh 400,000 of annual premiums (Ksh 33,333 a month) to earn it.
+ *
+ * This was encoded the other way round, as a cap on the premium that earns
+ * relief, so the relief was computed as `min(premium, 5,000) x 15%` and could
+ * never exceed Ksh 750 a month against a statutory ceiling of Ksh 5,000. A
+ * reader paying Ksh 20,000 a month in life and health cover was shown Ksh 750
+ * of relief instead of Ksh 3,000 — their take-home understated by Ksh 2,250 a
+ * month, Ksh 27,000 a year, and the Tax Shield calculator, whose whole job is
+ * to tell somebody how much PAYE they can legally recover, understated that
+ * line by up to Ksh 4,250 a month.
+ *
+ * The arithmetic was self-consistent, which is why it survived: tax-shield.ts
+ * derived `MAX_ANNUAL_INSURANCE_RELIEF = 5,000 x 12` and got 60,000, the right
+ * number for the wrong reason, then reasoned back from it in a comment —
+ * "60k/yr cap at 15% ⇒ at most 5k/mo of premiums earn relief". Both tests
+ * asserted 750 and passed. Nothing disagreed with anything, because the same
+ * misreading was written in three places.
+ *
+ * The cap is named for what it caps now, and the relief is computed as
+ * `min(premium x 15%, cap)`, which is the statute's own order of operations.
+ */
+export const INSURANCE_RELIEF_CAP_MONTHLY = 5_000;
 export const INSURANCE_RELIEF_RATE = 0.15;
+/** The premium at which the cap binds: 5,000 / 0.15 = 33,333.33 a month. */
+export const INSURANCE_PREMIUM_FOR_MAX_RELIEF = INSURANCE_RELIEF_CAP_MONTHLY / INSURANCE_RELIEF_RATE;
 
 export interface OptionalReliefs {
   pensionContribution?: number;
@@ -201,8 +234,10 @@ export function calculateNetPay(
     MORTGAGE_INTEREST_RELIEF_CAP_MONTHLY
   );
   const insuranceRelief = round2(
-    Math.min(Math.max(0, reliefs.insurancePremium ?? 0), INSURANCE_RELIEF_PREMIUM_CAP_MONTHLY) *
-      INSURANCE_RELIEF_RATE
+    Math.min(
+      Math.max(0, reliefs.insurancePremium ?? 0) * INSURANCE_RELIEF_RATE,
+      INSURANCE_RELIEF_CAP_MONTHLY
+    )
   );
 
   const taxablePay = Math.max(

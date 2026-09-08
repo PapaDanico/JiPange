@@ -192,9 +192,9 @@ export default function SalaryPlannerHub() {
             placeholder="0"
           />
           <p className="text-xs text-ink-soft">
-            Pension and mortgage reduce taxable pay. Insurance relief is 15% of premiums up to Ksh
-            5,000/month. These are declared to your employer — the contributions themselves are not
-            deducted here.
+            Pension and mortgage reduce taxable pay. Insurance relief is 15% of your premium, up to
+            Ksh 5,000/month of relief. These are declared to your employer — the contributions
+            themselves are not deducted here.
           </p>
         </div>
       )}
@@ -338,7 +338,7 @@ export default function SalaryPlannerHub() {
                   // months adrift from the "July 2026" the same footer printed
                   // one line below. Both now come from lib/statutes.ts, which
                   // the disclaimer renders itself.
-                  "Pension relief (s.15(3)) capped Ksh 30,000/month; mortgage interest relief capped Ksh 30,000/month (raised from Ksh 25,000 by Finance Act 2025); insurance relief 15% of premiums up to Ksh 5,000/month (s.31).",
+                  "Pension relief (s.15(3)) capped Ksh 30,000/month; mortgage interest relief capped Ksh 30,000/month; both raised from Ksh 20,000 and Ksh 25,000 respectively by the Tax Laws (Amendment) Act, 2024, effective 27 December 2024. Insurance relief (s.31) is 15% of the premium, capped at Ksh 5,000/month of RELIEF — Ksh 60,000 a year — which a premium of about Ksh 33,333/month reaches.",
                 ]}
               />
             </>
