@@ -38,7 +38,7 @@
  * because no MMF rate is published on the terms the government's are.
  */
 
-import { TBILL_RATES, type TBillRate } from "./rates-feed";
+import { TBILL_RATES } from "./rates-feed";
 import { assumedMmfYield, MMF_SPREAD_OVER_TBILL_PCT } from "./mmf-assumption";
 import { SPREAD_CONFIDENCE_PP } from "./mmf-vs-tbill";
 import {

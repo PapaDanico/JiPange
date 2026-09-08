@@ -290,3 +290,23 @@ export function attribution(): string {
     : "the latest CBK auction";
   return `CBK auction of ${when}, via Mwangaza Yield`;
 }
+
+/**
+ * The tenor with the highest NET yield, derived rather than assumed.
+ *
+ * The shape of the bill curve is a market fact that changes, and this app has
+ * already been caught stating it as a constant: a ladder preset shipped the
+ * hint "the 364-day rung, which pays most" for as long as that happened to be
+ * true, and kept shipping it after Mwangaza's 30 July 2026 pricing correction
+ * dropped the one-year bill below both shorter rungs. A one-year bill is
+ * bought once; a 91-day bill is rolled four times and compounds. Nothing about
+ * "longer" implies "pays more", and on 20 Aug 2026 the best-paying rung is the
+ * 182-day one.
+ *
+ * So no copy anywhere names a best-paying tenor in prose. It asks here, and
+ * the answer moves when the snapshot does — the same argument this file makes
+ * about the rates themselves, applied to a claim ABOUT them.
+ */
+export function bestPayingTenor(): TBillRate {
+  return TBILL_RATES.reduce((best, r) => (r.netEAY > best.netEAY ? r : best));
+}

@@ -21,7 +21,7 @@ import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
 import { TBILL_LINKS, MMF_LINKS } from "@/lib/affiliate-links";
 import { verdictFor } from "@/lib/mmf-vs-tbill";
-import { attribution, daysSinceRefresh, isStale } from "@/lib/rates-feed";
+import { attribution, bestPayingTenor, daysSinceRefresh, isStale } from "@/lib/rates-feed";
 
 /**
  * DhowCSD T-Bill laddering: capital split evenly across the 91/182/364-day
@@ -42,10 +42,26 @@ import { attribution, daysSinceRefresh, isStale } from "@/lib/rates-feed";
  */
 const TENORS = [91, 182, 364] as const;
 
+/**
+ * Which rung actually pays most today, read from the feed rather than stated.
+ *
+ * The hint on the "locked away for a year" preset used to read "the 364-day
+ * rung, which pays most". That was true when it was written and false by the
+ * time a reader saw it: a one-year bill is bought once, a 91-day bill is
+ * rolled four times and compounds, and since Mwangaza's 30 July 2026 pricing
+ * correction the longest rung has not been the best-paying one. The tool was
+ * telling somebody placing real money to lock up for a year to earn less.
+ *
+ * A claim about the curve is as perishable as the curve. This one is derived,
+ * so it cannot outlive the snapshot it came from.
+ */
+const BEST_PAYING = bestPayingTenor();
+const LONGEST_IS_BEST_PAYING = BEST_PAYING.tenorDays === 364;
+
 const PRESETS: { id: string; label: string; hint: string; weights: TenorWeights }[] = [
   { id: "even", label: "Even ladder", hint: "A third in each — steady quarterly maturities", weights: { 91: 1, 182: 1, 364: 1 } },
   { id: "liquid", label: "I may need it soon", hint: "Weighted to the 91-day rung", weights: { 91: 3, 182: 1, 364: 1 } },
-  { id: "yield", label: "Locked away for a year", hint: "Weighted to the 364-day rung, which pays most", weights: { 91: 1, 182: 1, 364: 3 } },
+  { id: "yield", label: "Locked away for a year", hint: `Weighted to the 364-day rung — the longest lock${LONGEST_IS_BEST_PAYING ? ", and currently the best-paying" : `, though the ${BEST_PAYING.tenorDays}-day rung currently pays more`}`, weights: { 91: 1, 182: 1, 364: 3 } },
   { id: "single", label: "One tenor only", hint: "All of it in the 364-day bill", weights: { 91: 0, 182: 0, 364: 1 } },
 ];
 
@@ -57,7 +73,8 @@ export default function DhowcsdLadderCalculator() {
    * Equal thirds is a reasonable default and a poor answer to most real
    * questions: a deposit you might need in a hurry belongs mostly in the
    * 91-day rung, and a bonus parked for a year belongs mostly in the 364-day
-   * one, which pays the most. Forcing thirds on both was the tool deciding a
+   * one — for the certainty of the lock, which is not the same as the best
+   * yield and currently is not it. Forcing thirds on both was the tool deciding a
    * trade-off that is the reader's to make.
    *
    * Sticky, like the capital field — somebody who has told us they want a

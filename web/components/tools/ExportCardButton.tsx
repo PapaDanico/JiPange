@@ -1,6 +1,6 @@
 "use client";
 
-import { RefObject, useEffect, useState } from "react";
+import { RefObject, useState, useSyncExternalStore } from "react";
 import { TOOL_META } from "@/lib/tool-meta";
 import { buildSheet, prefersLandscape, A4_PORTRAIT, A4_LANDSCAPE } from "@/lib/export-sheet";
 import ContributionNote from "./ContributionNote";
@@ -55,6 +55,39 @@ function titleFromFilename(name: string): string {
   return words.replace(/\b[a-z]/g, (c) => c.toUpperCase());
 }
 
+/**
+ * Whether this device can hand a PNG to its share sheet.
+ *
+ * Probed with a real (tiny) File rather than assumed from `navigator.share`,
+ * which exists on desktop browsers that accept text and URLs but reject files.
+ * Rendering the button there would promise a capability that throws on press.
+ *
+ * This is an EXTERNAL, browser-only fact, so it is read through
+ * useSyncExternalStore rather than a mount effect that calls setState. The
+ * server snapshot is false, so the server render and the first client paint
+ * agree — no hydration mismatch, no button that flashes in and out, and no
+ * cascading render on mount. (eslint.config.mjs names useSyncExternalStore as
+ * the correct fix for the ~24 mount-effect state hydrations here; the other
+ * sites read localStorage and are a real migration, but this one is a static
+ * capability probe and converts cleanly.)
+ *
+ * The result is cached because getSnapshot must be referentially stable across
+ * renders — recomputing a fresh File each call would make React see a changing
+ * store and loop.
+ */
+let shareProbe: boolean | null = null;
+function probeShare(): boolean {
+  if (shareProbe === null) {
+    shareProbe = canShareFile(new File([new Uint8Array([0])], "probe.png", { type: "image/png" }));
+  }
+  return shareProbe;
+}
+/** The capability cannot change for the life of the page, so there is nothing
+ *  to subscribe to — but the store contract still wants an unsubscribe. */
+function subscribeToNothing(): () => void {
+  return () => {};
+}
+
 export default function ExportCardButton({
   containerRef,
   filename = "jipange-result",
@@ -93,18 +126,8 @@ export default function ExportCardButton({
      the one place money is mentioned near a tool, and it may not appear until
      something has been given — see lib/mission.ts. */
   const [delivered, setDelivered] = useState(false);
-  /* Whether this device can hand a PNG to its share sheet.
-   *
-   * Probed once on mount with a real (tiny) File rather than assumed from
-   * `navigator.share`, which exists on desktop browsers that accept text and
-   * URLs but reject files. Rendering the button on those would promise a
-   * capability that throws on press. It starts false so server-rendered HTML
-   * and the first client paint agree — no hydration mismatch, and no button
-   * that flashes in and out. */
-  const [canShare, setCanShare] = useState(false);
-  useEffect(() => {
-    setCanShare(canShareFile(new File([new Uint8Array([0])], "probe.png", { type: "image/png" })));
-  }, []);
+  /* See probeShare above. */
+  const canShare = useSyncExternalStore(subscribeToNothing, probeShare, () => false);
 
   /**
    * Rasterise the result card, with the app's chrome and animations neutralised.

@@ -5,7 +5,9 @@ import {
   dhowcsdLadder,
   type TenorWeights,
 } from "@/lib/market-2026";
-import { tbillRate } from "@/lib/rates-feed";
+import { bestPayingTenor, tbillRate, TBILL_RATES } from "@/lib/rates-feed";
+import { readdirSync, readFileSync } from "node:fs";
+import path from "node:path";
 
 /**
  * Tailoring the split across tenors.
@@ -61,15 +63,25 @@ describe("weights change the answer, in the right direction", () => {
     }
   });
 
-  it("records that the curve is currently inverted, rather than assuming it is not", () => {
-    // Not an assertion about which way it should point — a note that fails if
-    // the shape changes, so nobody reads the test above as a claim about the
-    // market. Rolling short currently beats locking in for the year.
+  it("records that the longest rung is not the best-paying one", () => {
+    // Not an assertion about which way the curve should point — a note that
+    // fails if the shape changes, so nobody reads the test above as a claim
+    // about the market. Rolling short currently beats locking in for the year.
+    //
+    // The condition was `y364 < y91 || y364 > y182`, and the second operator
+    // is inverted: it passes whenever the one-year bill beats the six-month
+    // one, which is the very thing this guard exists to catch. It survived
+    // only because the curve was fully inverted, so the first clause carried
+    // it; when the 20 Aug 2026 auction left a humped curve (91d below 364d
+    // below 182d) the whole assertion went red at once, having never actually
+    // tested the property it names. What it means is that 364d is not the top
+    // rung — say that directly, and it holds under any shape.
     const [y91, y182, y364] = ([91, 182, 364] as const).map((d) => tbillRate(d)!.netEAY);
     expect(
-      y364 < y91 || y364 > y182,
+      y364 < Math.max(y91, y182),
       `the tenor curve has changed shape: 91d ${y91}%, 182d ${y182}%, 364d ${y364}% — ` +
-        "re-check anything that presents a longer tenor as the better-paying rung"
+        "re-check anything that presents a longer tenor as the better-paying rung, " +
+        "starting with bestPayingTenor() in lib/rates-feed.ts and the ladder presets"
     ).toBe(true);
   });
 
@@ -140,5 +152,54 @@ describe("tailored flag", () => {
   it("is false for the default and true once the reader changes it", () => {
     expect(dhowcsdLadder(CAP, EVEN_WEIGHTS).tailored).toBe(false);
     expect(dhowcsdLadder(CAP, { 91: 3, 182: 1, 364: 1 }).tailored).toBe(true);
+  });
+});
+
+/**
+ * The curve's shape is data, and copy that states it is a claim with an expiry
+ * date.
+ *
+ * The ladder shipped the preset hint "the 364-day rung, which pays most" for
+ * weeks after that stopped being true — telling somebody about to place real
+ * money that the longest lock earned the most, while the feed in the same
+ * build said the 182-day rung paid more. The guard above should have caught it
+ * and did not, because its second comparison was inverted.
+ *
+ * So two things are pinned here: the derived answer is genuinely the maximum,
+ * and no component asserts a best-paying rung in prose instead of asking for
+ * it.
+ */
+describe("nothing hardcodes which rung pays most", () => {
+  it("bestPayingTenor() is the highest net yield in the feed, not a guess", () => {
+    const best = bestPayingTenor();
+    for (const r of TBILL_RATES) expect(best.netEAY).toBeGreaterThanOrEqual(r.netEAY);
+    expect(TBILL_RATES.some((r) => r.tenorDays === best.tenorDays)).toBe(true);
+  });
+
+  it("no component claims a tenor pays most in fixed prose", () => {
+    const dir = path.join(__dirname, "..", "..", "components");
+    const offenders: string[] = [];
+    const walk = (d: string) => {
+      for (const entry of readdirSync(d, { withFileTypes: true })) {
+        const full = path.join(d, entry.name);
+        if (entry.isDirectory()) walk(full);
+        else if (/\.tsx?$/.test(entry.name)) {
+          for (const [i, line] of readFileSync(full, "utf8").split("\n").entries()) {
+            // A string literal that names a tenor and asserts it pays most.
+            if (/\b(91|182|364)[- ]?day\b/.test(line) && /pays? (the )?most|best[- ]paying|highest[- ]paying/.test(line)) {
+              // Deriving it is the fix, so a line that calls the helper is fine.
+              if (/bestPayingTenor|BEST_PAYING|LONGEST_IS_BEST_PAYING/.test(line)) continue;
+              offenders.push(`${path.relative(dir, full)}:${i + 1}`);
+            }
+          }
+        }
+      }
+    };
+    walk(dir);
+    expect(
+      offenders,
+      `these lines state which tenor pays most instead of reading it from the feed — ` +
+        `use bestPayingTenor() in lib/rates-feed.ts: ${offenders.join(", ")}`
+    ).toEqual([]);
   });
 });
