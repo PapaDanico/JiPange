@@ -165,6 +165,55 @@ publisher vouches for; substituting our own freshness signal invents a claim
 they have not made. Being over-cautious about freshness is the safe direction.
 The fix belongs upstream.
 
+## Deploying, while CI is dead
+
+**Nothing in GitHub Actions runs.** No runner has been assigned since 20 August
+2026; every workflow fails in about three seconds before a step executes. It is
+account-level, not repository-level. Do not spend time on it from here — treat
+CI as absent and verify locally.
+
+```bash
+npm run verify        # everything the Build and Test matrix ran
+npm run verify:all    # + Playwright
+```
+
+That is the gate now. `netlify.toml` also runs typecheck and lint before the
+build, because Netlify is the only builder still executing anything.
+
+**Deployment is Netlify, from `main`, and it is the one step an agent cannot
+do.** Publishing needs a Netlify credential this environment does not have:
+
+- the Netlify MCP connection is READ-SCOPED — its `deploy-site` upload returns
+  `403 Forbidden`, with a fresh token, from any directory;
+- `npx netlify deploy --build --prod` fails with `NETLIFY_AUTH_TOKEN is not
+  set`.
+
+So a human runs it, or sets `NETLIFY_AUTH_TOKEN` in the environment first:
+
+```bash
+git pull origin main
+npx netlify deploy --build --prod
+```
+
+Never `--allow-anonymous`. It publishes to a NEW anonymous site rather than
+`jipangefinance`, which looks like success and is worse than failing.
+
+**A merge is not a deploy, and has not been since 19 August 2026.** The live
+site served commit `5d6e36e` for three weeks while `main` moved on, so
+everything merged in that window — several people's work, not one branch's —
+was invisible to readers. Deploy previews correctly cancel (they are off on
+cost), but production stopped publishing too. When that happens the answer is
+in the deploy list at `app.netlify.com/projects/jipangefinance/deploys`: red
+rows mean builds are failing and the log names the stage; no rows at all means
+builds or auto-publishing are stopped, which is a toggle.
+
+`scripts/netlify-should-build.sh` is NOT the cause — check before blaming it:
+
+```bash
+CACHED_COMMIT_REF=<last built> COMMIT_REF=<head> bash scripts/netlify-should-build.sh
+# exit 1 = it wants a build; exit 0 = it is skipping
+```
+
 ## Traps that have already cost time
 
 - **`html2canvas` throws on Tailwind v4 colours.** v4 emits `color-mix()` in
