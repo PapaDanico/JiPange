@@ -35,6 +35,27 @@ export interface LoanAmortization {
  */
 export const MAX_TERM_MONTHS = 600;
 
+/**
+ * The largest annual rate this will model, and why a limit is needed here too.
+ *
+ * MAX_TERM_MONTHS above stops an absurd TERM hanging the browser. An absurd
+ * RATE fails differently and was not guarded: the amortisation factor is
+ * (1+r)^n, and at a large enough rate that overflows to Infinity, leaving
+ * Infinity/Infinity — NaN — in the monthly payment and in every row of the
+ * schedule. A rate of 1e15 does it at a 24-month term. Nothing hangs; the
+ * calculator simply renders "Ksh NaN" everywhere at once.
+ *
+ * That is the same class of defect the term cap exists to prevent, reached
+ * through the other numeric field, and it slipped past the sweep in
+ * e2e/hostile-input.spec.ts because that sweep only ever tries ZERO.
+ *
+ * Ten thousand percent a year is far beyond any lender in this market —
+ * Kenya's harshest mobile credit annualises in the low hundreds — so past
+ * this there is no loan to model, and the same empty result is returned as
+ * for a zero principal rather than an answer made of NaN.
+ */
+export const MAX_ANNUAL_RATE = 100;
+
 /** Standard reducing-balance amortization: equal monthly payments, interest on the declining balance. */
 export function calculateLoanAmortization(params: {
   principal: number;
@@ -43,7 +64,16 @@ export function calculateLoanAmortization(params: {
 }): LoanAmortization {
   const { principal, annualRate, termMonths } = params;
 
-  if (principal <= 0 || termMonths <= 0 || termMonths > MAX_TERM_MONTHS) {
+  if (
+    !Number.isFinite(principal) ||
+    !Number.isFinite(annualRate) ||
+    !Number.isFinite(termMonths) ||
+    principal <= 0 ||
+    termMonths <= 0 ||
+    termMonths > MAX_TERM_MONTHS ||
+    annualRate < 0 ||
+    annualRate > MAX_ANNUAL_RATE
+  ) {
     return { monthlyPayment: 0, totalInterest: 0, totalPaid: 0, schedule: [] };
   }
 
