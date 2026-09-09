@@ -31,7 +31,21 @@ const config = [
    *
    * .next/** is here for the same reason rather than because it has bitten:
    * a cached or retried build can leave it in place before lint runs. */
-  { ignores: ["public/**", ".netlify/**", ".next/**"] },
+  /* Recursive globs, taken from the Netlify agent's fix on
+   * agent-linting-generated-files-4818, and a real improvement on the
+   * repo-relative patterns this first shipped with. A bare "dot-netlify slash
+   * star-star" only matches when ESLint runs from web/, and it is also invoked
+   * from the workspace root — `npm run lint --workspace web`, and `npm run
+   * verify`. Prefixing each with a recursive segment matches either way.
+   *
+   * Note for anyone editing the prose here: a literal star-star-slash cannot
+   * be written inside a block comment, because it contains the sequence that
+   * ENDS one. Spelling one out cost a green build and a confusing
+   * "SyntaxError: Unexpected token" from a config file that looked fine.
+   *
+   * node_modules is redundant — ESLint ignores it by default — and is kept
+   * because it costs nothing and states the intent. */
+  { ignores: ["**/.netlify/**", "**/.next/**", "**/node_modules/**", "public/**"] },
   {
     rules: {
       // New in eslint-plugin-react-hooks@7 (pulled in by this ESLint bump).
