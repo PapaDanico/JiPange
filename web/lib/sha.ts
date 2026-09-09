@@ -6,13 +6,25 @@
  * Rates and tariffs from SHA Act 2023 and the 2026 SHA Tariffs document.
  */
 
-import { SHIF_RATE } from "./tax";
+import { SHIF_MINIMUM, SHIF_RATE } from "./tax";
 import { round2 } from "./money";
 
 export type EmploymentType = "employed" | "self_employed" | "informal";
 
 export { SHIF_RATE };
-export const MONTHLY_FLOOR = 300;
+/**
+ * The Ksh 300 floor, READ from tax.ts rather than restated.
+ *
+ * This was a second literal 300 sitting beside tax.ts's SHIF_MINIMUM, with
+ * nothing keeping the two in step — while the RATE beside it was already
+ * imported, so half of one statutory formula was shared and half was copied.
+ * Both come from the same instrument (Social Health Insurance Act, 2024, in
+ * lib/statutes.ts), and a regulation that moves the floor would have left the
+ * payslip and the health calculator quoting different contributions for the
+ * same low income. Re-exported under this module's name so callers do not
+ * change.
+ */
+export const MONTHLY_FLOOR = SHIF_MINIMUM;
 
 export interface ShaInput {
   employmentType: EmploymentType;

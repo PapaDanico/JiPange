@@ -226,7 +226,7 @@ export default function PartnersView() {
             : PENSION_LINKS;
 
   return (
-    <div className="w-full max-w-2xl">
+    <div className="w-full max-w-5xl">
       {/* The survey has a shelf life, and it had passed it silently.
         *
         * `productSurveyIsStale()` existed, was unit-tested, and was rendered
@@ -253,7 +253,13 @@ export default function PartnersView() {
       )}
 
       {/* Filter tabs */}
-      <div className="mb-5 flex gap-2 overflow-x-auto pb-1">
+      {/* Scrolls only where it has to.
+          At 1440px the row still scrolled horizontally and clipped the last
+          tab mid-word, with no fade or arrow to say so — a filter the reader
+          cannot see and has no reason to look for. Below sm the scroll is the
+          right answer and stays; from sm up there is room to wrap, so it
+          wraps and every filter is visible at once. */}
+      <div className="mb-5 flex gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:overflow-x-visible">
         {TABS.map((tab) => (
           <button
             key={tab.id}
@@ -272,7 +278,11 @@ export default function PartnersView() {
       </div>
 
       {/* Product grid */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      {/* Three across on a wide screen. At two columns in a 672px shell the
+          cards were narrow enough that "Nabo Capital Money Market Fund" took
+          two lines and the detail rows stacked; the extra width buys back both
+          without changing the card. */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {visibleProducts.map((product) => (
           <ProductCard key={product.slug} product={product} />
         ))}

@@ -14,10 +14,20 @@ export function calculateMoneyRunwayMonths(params: {
 }): number {
   const { startingBalance, monthlyWithdrawal, annualReturnRate } = params;
 
+  /* Non-finite inputs are refused rather than propagated. A caller handing
+     this NaN gets 0 back — "no runway" — instead of a NaN that renders. */
+  if (!Number.isFinite(startingBalance) || !Number.isFinite(monthlyWithdrawal)) return 0;
   if (monthlyWithdrawal <= 0) return Infinity;
   if (startingBalance <= 0) return 0;
 
-  const monthlyRate = annualReturnRate / 12;
+  const monthlyRate = Number.isFinite(annualReturnRate) ? annualReturnRate / 12 : 0;
+
+  /* A monthly rate at or below -100% makes (1 + r) zero or negative, and
+     Math.log of that is NaN — which reached the reader as "NaN months". No
+     real return is ever that negative, so the balance is treated as earning
+     nothing and the answer becomes the plain division below: still an honest
+     runway, and never garbage. */
+  if (1 + monthlyRate <= 0) return startingBalance / monthlyWithdrawal;
 
   if (monthlyRate === 0) {
     return startingBalance / monthlyWithdrawal;

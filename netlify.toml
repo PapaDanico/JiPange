@@ -2,7 +2,26 @@
 
 [build]
   base = "web"
-  command = "npm run build"
+  # TYPECHECK AND LINT BEFORE BUILDING, because nothing else does any more.
+  #
+  # GitHub Actions stopped assigning runners to this repository on 20 August
+  # 2026 — every workflow fails in about three seconds, before a step runs — so
+  # from 29 August commits have reached `main` with no verification at all.
+  # Netlify is the only builder still executing anything, which makes this the
+  # only place a gate can actually stand.
+  #
+  # `next build` already fails on type errors, so typecheck is partly
+  # belt-and-braces; it is here anyway because it also covers files the build
+  # does not reach, and it fails in seconds rather than after a full compile.
+  # Lint is the real addition — `next build` does not run ESLint.
+  #
+  # The unit suite is deliberately NOT in this chain. It carries guards that go
+  # red on the CALENDAR — the rates-snapshot staleness alarm is red right now,
+  # because of the same outage — and gating deploys on it would stop every
+  # unrelated fix shipping while the stale figure stays on the page regardless.
+  # That is precisely the trade lib/statutes.ts talks itself out of. Run the
+  # full gate with `npm run verify` from the repository root before merging.
+  command = "npm run typecheck && npm run lint && npm run build"
   publish = ".next"
   # Exit 0 skips the build, non-zero runs it. base = "web" means this runs from
   # web/, while the diff paths it matches are repository-root relative — see the

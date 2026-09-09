@@ -279,9 +279,19 @@ describe("no page names a Finance Act by hand", () => {
     expect(files.length, "found no files — this scan would be vacuous").toBeGreaterThan(20);
 
     /* A YEARED Finance Act reference in rendered copy. Deliberately NOT a ban
-     * on the phrase: the relief tooltips say "raised from Ksh 25,000 by the
-     * Finance Act 2025", which is a historical fact about a specific change
-     * and stays true however the law moves. What is banned is naming an Act as
+     * on the phrase: a relief tooltip naming the Act that made a specific past
+     * change states a historical fact, and stays true however the law moves.
+     *
+     * The example that stood here was "raised from Ksh 25,000 by the Finance
+     * Act 2025" — and that particular claim was simply false. The mortgage
+     * interest cap went from 25,000 to 30,000 under the TAX LAWS (AMENDMENT)
+     * ACT, 2024, effective 27 December 2024, alongside the pension deduction
+     * going from 20,000 to 30,000. Both tooltips said Finance Act 2025 and
+     * both are now corrected. Worth noting what this guard could and could not
+     * do: it was built to catch an Act named as the CURRENT authority for a
+     * rate, and it did that; an Act named as the wrong author of a past change
+     * is a factual error no pattern can see, and it took reading the
+     * instrument. What is banned here remains naming an Act as
      * the CURRENT authority for a rate — "Finance Act 2025/26 bands" — because
      * that claim expires and nothing here would notice.
      *

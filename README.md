@@ -61,6 +61,32 @@ people use to decide where to put money.
 
 Exit codes: `0` updated or already current, `1` refused.
 
+## When the sync stops
+
+`npm run doctor` answers one question — *is anything still refreshing the
+rates?* — and answers it from committed files, so it works offline, on a
+laptop, and outside CI. It reports the snapshot's age against the budget the
+test suite enforces, whether readers are currently seeing the stale notice,
+which rung actually pays most, and whether the live feed has moved ahead of us.
+
+It exists because on **20 August 2026 every workflow in this repository began
+failing in about four seconds**, before a single step ran and with no runner
+assigned — the twice-daily sync and CI alike. That is an account-level Actions
+problem, not a repository one, and no change here fixes it. The consequences
+were exactly what you would expect once all three alarms turn out to live
+inside the thing that died: the snapshot froze at 19 August, four commits
+landed on `main` with no CI, and a ladder preset went on telling readers the
+364-day rung "pays most" while the feed in the same build said the 182-day rung
+paid more.
+
+The reader-facing layer held — `isStale()` put the notice up at 14 days as
+designed. It was the operational alarms that were silent, and `npm run doctor`
+is the one that now lives outside CI.
+
+If the workflow cannot run and you can reach the feed, run `npm run sync:rates`
+locally and commit what it writes. Do not hand-edit figures; if you cannot
+reach the feed, leave the snapshot alone.
+
 ## And where the forward-looking figures come from
 
 The registry in `web/lib/sources.ts` also carries three PROJECTIONS from the

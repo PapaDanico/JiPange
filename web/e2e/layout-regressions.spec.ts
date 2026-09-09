@@ -199,3 +199,54 @@ for (const vp of VIEWPORTS) {
     expect(problems, `at ${vp.width}px:\n  ${problems.join("\n  ")}`).toEqual([]);
   });
 }
+
+/**
+ * A DIRECTORY GETS DIRECTORY WIDTH, AND NO FILTER HIDES OFFSCREEN.
+ *
+ * /partners lists fifteen-plus product cards and was capped at max-w-2xl —
+ * the measure that is right for an article. At 1440px that squeezed the grid
+ * into 672px and two cramped columns, left 768px of viewport empty on either
+ * side, wrapped provider names onto two lines, and pushed the filter row into
+ * a horizontal scroll that clipped "Retiree Medical" mid-word with no fade or
+ * arrow to say it was there. A filter a reader cannot see is a filter that
+ * does not exist.
+ *
+ * /tools, the other directory on this site, has always used max-w-5xl with the
+ * intro paragraph separately capped. Neither the width nor the clipped tab is
+ * visible in the source — one is a class that looks deliberate, the other is
+ * arithmetic — so both are asserted here against the rendered box.
+ */
+test("the partners directory uses the full directory width and hides no filter", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/partners");
+  await settled(page);
+
+  const report = await page.evaluate(() => {
+    const grid = document.querySelector<HTMLElement>("[class*='grid-cols']");
+    const row = document.querySelector<HTMLElement>("button")?.parentElement ?? null;
+    const tabs = row ? [...row.querySelectorAll("button")] : [];
+    const rowBox = row?.getBoundingClientRect();
+    return {
+      gridWidth: grid ? Math.round(grid.getBoundingClientRect().width) : 0,
+      columns: grid ? getComputedStyle(grid).gridTemplateColumns.split(" ").length : 0,
+      clippedTabs: tabs
+        .filter((t) => {
+          const b = t.getBoundingClientRect();
+          return rowBox ? b.right > rowBox.right + 1 || b.left < rowBox.left - 1 : false;
+        })
+        .map((t) => (t.textContent ?? "").trim()),
+    };
+  });
+
+  expect(
+    report.gridWidth,
+    "the product grid is narrower than the /tools directory it mirrors — did max-w-2xl come back?",
+  ).toBeGreaterThan(900);
+  expect(report.columns, "a 1440px directory should show three cards across").toBe(3);
+  expect(
+    report.clippedTabs,
+    `these filters render outside their row and cannot be seen: ${report.clippedTabs.join(", ")}`,
+  ).toEqual([]);
+});

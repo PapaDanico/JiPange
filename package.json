@@ -9,7 +9,10 @@
     "start": "cd web && npm run start",
     "lint": "cd web && npm run lint",
     "test": "cd web && npm run test",
-    "sync:rates": "node scripts/sync-rates.mjs"
+    "sync:rates": "node scripts/sync-rates.mjs",
+    "doctor": "node scripts/rates-doctor.mjs",
+    "verify": "bash scripts/verify.sh",
+    "verify:all": "bash scripts/verify.sh --with-e2e"
   },
   "workspaces": [
     "web"

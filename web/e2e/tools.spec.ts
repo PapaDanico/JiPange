@@ -276,6 +276,34 @@ test("fuliza cost: shows true cost", async ({ page }) => {
   await expect(visibleText(page, "Total cost of borrowing")).toBeVisible();
 });
 
+/**
+ * A FACILITY YOU CANNOT DRAW IS NOT A QUOTE.
+ *
+ * Fuliza tops out at Ksh 70,000. lib/fuliza.ts has exported FULIZA_MAX_LIMIT
+ * for exactly that reason since the loan-comparison table was caught offering
+ * Fuliza on a Ksh 200,000 loan, where the flat Ksh 25-a-day fee made it look
+ * cheaper than a SACCO. The limit was applied there and nowhere else, so this
+ * page kept answering "what does Ksh 200,000 on Fuliza cost?" with a confident
+ * figure and no mention that the answer is "you can't".
+ *
+ * The result still renders — the top-band arithmetic is real — but the ceiling
+ * is stated with it.
+ */
+test("fuliza cost: says so when the amount is above Fuliza's ceiling", async ({ page }) => {
+  await page.goto("/tools/fuliza-cost");
+  const inputs = page.getByRole("spinbutton");
+
+  await inputs.nth(0).fill("5000");
+  await inputs.nth(1).fill("14");
+  await expect(visibleText(page, "Total cost of borrowing")).toBeVisible();
+  await expect(page.getByText(/maximum overdraft/i)).toHaveCount(0);
+
+  await inputs.nth(0).fill("200000");
+  await expect(page.getByText(/maximum overdraft is Ksh\s?70,000/i)).toBeVisible();
+  // The figures stay, so the reader still gets the comparison.
+  await expect(visibleText(page, "Total cost of borrowing")).toBeVisible();
+});
+
 // ─── KPLC Token Band Checker ───────────────────────────────────────────────
 
 /**

@@ -1,5 +1,6 @@
 import {
-  INSURANCE_RELIEF_PREMIUM_CAP_MONTHLY,
+  INSURANCE_PREMIUM_FOR_MAX_RELIEF,
+  INSURANCE_RELIEF_CAP_MONTHLY,
   INSURANCE_RELIEF_RATE,
   MORTGAGE_INTEREST_RELIEF_CAP_MONTHLY,
   PAYE_BANDS,
@@ -19,9 +20,18 @@ import {
 
 export const MAX_MONTHLY_PENSION_EXEMPTION = PENSION_RELIEF_CAP_MONTHLY;
 export const MAX_MONTHLY_MORTGAGE_EXEMPTION = MORTGAGE_INTEREST_RELIEF_CAP_MONTHLY;
-export const MAX_ANNUAL_INSURANCE_RELIEF = INSURANCE_RELIEF_PREMIUM_CAP_MONTHLY * 12;
-/** 60k/yr cap at 15% ⇒ at most 5k/mo of premiums earn relief. */
-export const MAX_MONTHLY_INSURANCE_PREMIUM_RELIEVABLE = INSURANCE_RELIEF_PREMIUM_CAP_MONTHLY;
+export const MAX_ANNUAL_INSURANCE_RELIEF = INSURANCE_RELIEF_CAP_MONTHLY * 12;
+/**
+ * The premium at which the relief cap binds — 33,333.33 a month, not 5,000.
+ *
+ * The line here used to read "60k/yr cap at 15% ⇒ at most 5k/mo of premiums
+ * earn relief", which inverts the statute: 60,000 is the most relief payable,
+ * so it takes 400,000 of annual premiums to reach it. Dividing by the rate is
+ * the step that was missing, and it cost readers up to 4,250 a month of
+ * recoverable PAYE on the one calculator built to find exactly that. See the
+ * note on INSURANCE_RELIEF_CAP_MONTHLY in tax.ts.
+ */
+export const MAX_MONTHLY_INSURANCE_PREMIUM_RELIEVABLE = INSURANCE_PREMIUM_FOR_MAX_RELIEF;
 export { INSURANCE_RELIEF_RATE };
 
 /**
@@ -75,9 +85,13 @@ export function taxShield(params: {
   );
   const pensionTaxSavings = pensionHeadroom * marginalRate;
   const mortgageTaxSavings = mortgageHeadroom * marginalRate;
-  const insuranceReliefClaimable =
-    Math.min(MAX_MONTHLY_INSURANCE_PREMIUM_RELIEVABLE, Math.max(0, params.insurancePremiumMonthly)) *
-    INSURANCE_RELIEF_RATE;
+  /* Cap the RELIEF, not the premium — the statute's own order of operations,
+     and identical to what calculateNetPay does, so the payslip and the shield
+     cannot drift on the same reader's numbers. */
+  const insuranceReliefClaimable = Math.min(
+    Math.max(0, params.insurancePremiumMonthly) * INSURANCE_RELIEF_RATE,
+    INSURANCE_RELIEF_CAP_MONTHLY
+  );
   return {
     marginalRate,
     pensionHeadroom,

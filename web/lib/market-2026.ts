@@ -135,7 +135,11 @@ export interface DhowcsdLadder {
  * Equal thirds is a reasonable default and a poor answer to most real
  * questions. Somebody holding a deposit they may need in a hurry wants the
  * 91-day rung heavy; somebody parking a bonus for a year wants the 364-day
- * rung heavy, because it pays the most. Forcing thirds on both was the tool
+ * rung heavy, for the certainty of the lock. Note that this is NOT a yield
+ * argument and must not be written as one: the curve has been inverted in
+ * effective-annual terms since 30 July 2026, so the longest rung is currently
+ * not the best-paying. Anything that needs to name the best-paying rung asks
+ * bestPayingTenor() in rates-feed.ts. Forcing thirds on both was the tool
  * deciding a trade-off that belongs to the reader.
  *
  * Weights are relative, not percentages — {91: 2, 182: 1, 364: 1} means half

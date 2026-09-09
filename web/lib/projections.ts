@@ -33,6 +33,19 @@ export function futureValue(
   annualRate: number,
   years: number
 ): number {
+  /* A projection built from a number that is not a number is not a
+     projection. Refused here rather than propagated, because this is the
+     shared compounding primitive: chama, savings-goal, school-fees,
+     goal-planner and tool-stats all route through it, so one NaN escaping
+     becomes "Ksh NaN" in five calculators at once. */
+  if (
+    !Number.isFinite(presentValue) ||
+    !Number.isFinite(monthlyContribution) ||
+    !Number.isFinite(annualRate) ||
+    !Number.isFinite(years)
+  ) {
+    return 0;
+  }
   if (years <= 0) return presentValue;
 
   const months = years * 12;
@@ -43,10 +56,34 @@ export function futureValue(
   }
 
   const growthFactor = Math.pow(1 + monthlyRate, months);
-  return (
+
+  /* THE OVERFLOW, WHICH IS NOT THEORETICAL.
+   *
+   * (1+r)^n runs to Infinity well before the inputs look absurd on screen,
+   * and the expression below then reads `0 * Infinity` for a zero present
+   * value — which is NaN, not Infinity. The chama investment projection was
+   * returning NaN for its three- and five-year figures while the one-year
+   * figure beside them looked fine, so the failure was partial and therefore
+   * easy to miss.
+   *
+   * A projection that has overflowed has no meaning to report, so this
+   * declines to answer rather than emitting a number made of Infinity — the
+   * same choice calculateLoanAmortization makes for an absurd rate, and the
+   * same one the calculators make when they render nothing rather than
+   * something wrong. */
+  if (!Number.isFinite(growthFactor)) return 0;
+
+  /* Two guards, and each independently catches the case above — verified by
+     mutation: removing either alone leaves the sweep green, removing both
+     turns it red. Kept deliberately rather than pruned to one. They fail
+     differently: this one refuses before the arithmetic, the one below
+     catches a product that overflows even when the factor did not. Neither
+     is dead code for the other's reason. */
+
+  const result =
     presentValue * growthFactor +
-    monthlyContribution * ((growthFactor - 1) / monthlyRate)
-  );
+    monthlyContribution * ((growthFactor - 1) / monthlyRate);
+  return Number.isFinite(result) ? result : 0;
 }
 
 /**

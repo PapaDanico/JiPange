@@ -153,17 +153,36 @@ describe("calculateNetPay — optional reliefs", () => {
     expect(result.mortgageRelief).toBe(30_000);
   });
 
-  it("insurance relief is 15% of premiums up to Ksh 5,000/month, applied as a tax credit", () => {
+  it("insurance relief is 15% of the premium, applied as a tax credit", () => {
     const result = calculateNetPay(50_000, { insurancePremium: 5_000 });
-    expect(result.insuranceRelief).toBe(750);
+    expect(result.insuranceRelief).toBe(750); // 5,000 x 15%, well under the cap
     expect(result.taxablePay).toBe(44_875); // unaffected — insurance relief doesn't reduce taxable pay
     expect(result.paye).toBe(5_095.85); // 5,845.85 base paye − 750 relief
     expect(result.netMonthly).toBe(39_779.15); // 39,029.15 base + 750 relief
   });
 
-  it("caps insurance relief at 15% of Ksh 5,000 even if more premium is paid", () => {
+  /* THE CAP IS ON THE RELIEF, NOT ON THE PREMIUM.
+   *
+   * These two cases used to assert 750 for both a 5,000 premium and a 20,000
+   * one, which is what the code did: it capped the PREMIUM at 5,000 and then
+   * took 15% of that, so no reader could ever be shown more than 750 of relief
+   * against a statutory ceiling of 5,000 a month.
+   *
+   * Income Tax Act s.31 caps the relief at Ksh 60,000 a year. A premium of
+   * 20,000 a month therefore earns 3,000, not 750 — and the old test agreed
+   * with the old code, which is why neither ever complained. Both now state
+   * the statute instead: 15% of the premium, and the cap only where it binds.
+   */
+  it("gives 15% of a large premium, not 15% of Ksh 5,000", () => {
     const result = calculateNetPay(50_000, { insurancePremium: 20_000 });
-    expect(result.insuranceRelief).toBe(750);
+    expect(result.insuranceRelief).toBe(3_000);
+    // and it reaches the reader as take-home, not just as a field
+    expect(result.netMonthly).toBe(42_029.15); // 39,029.15 base + 3,000 relief
+  });
+
+  it("caps the relief itself at Ksh 5,000/month, which needs Ksh 33,333 of premium", () => {
+    expect(calculateNetPay(500_000, { insurancePremium: 33_333.34 }).insuranceRelief).toBe(5_000);
+    expect(calculateNetPay(500_000, { insurancePremium: 100_000 }).insuranceRelief).toBe(5_000);
   });
 
   it("ignores negative relief inputs", () => {
