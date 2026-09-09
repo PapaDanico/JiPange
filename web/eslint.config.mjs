@@ -2,11 +2,17 @@ import nextCoreWebVitals from "eslint-config-next/core-web-vitals";
 import nextTypescript from "eslint-config-next/typescript";
 
 const config = [
+  // Generated dependency and build artifacts are not application source.
+  {
+    ignores: [
+      "**/.netlify/**",
+      "**/.next/**",
+      "**/node_modules/**",
+      "public/**",
+    ],
+  },
   ...nextCoreWebVitals,
   ...nextTypescript,
-  // Generated PWA build artifacts (service worker + Workbox runtime), never
-  // hand-written — everything else in public/ is static assets, not source.
-  { ignores: ["public/**"] },
   {
     rules: {
       // New in eslint-plugin-react-hooks@7 (pulled in by this ESLint bump).
