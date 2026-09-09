@@ -138,6 +138,33 @@ yield that moved, and the validations re-checked. If you cannot reach the feed,
 **leave the snapshot alone**; a twenty-day-old figure that says it is twenty
 days old beats a fresh-looking guess.
 
+**When HTTP to the feed is blocked, the feed is still in git.** Mwangaza
+publishes from a public repository, and `public/data/rates.json` there is the
+same file served at the URL:
+
+```bash
+git clone --depth 1 https://github.com/PapaDanico/mwangaza-yield /tmp/my
+node scripts/sync-rates.mjs --from /tmp/my/public/data/rates.json
+```
+
+`--from` is the script's own documented path, so every validation still runs —
+schema, tenors, net-below-gross-above-quote, and the one-day move bound. This
+is a git-verified route to the publisher's own bytes, which is if anything
+better provenance than an HTTP fetch. It is NOT a licence to hand-edit.
+
+**A fresh sync may not clear the staleness alarm, and that is upstream's bug.**
+Mwangaza's contract says `generatedAt` is "when the EVIDENCE was refreshed, not
+the build". As of September 2026 its `meta.json` is frozen while its scrapers
+keep running — its own `freshness.json` flags "Pipeline last ran" as stale
+against a 7-day budget while `tbills.json` and `macro.json` are current. So the
+stamp we key off has stopped moving and the evidence behind it has not.
+
+`npm run doctor` detects this divergence and names it. **Do not re-base
+`isStale()` onto `auctionDate` to get green.** `generatedAt` is the field the
+publisher vouches for; substituting our own freshness signal invents a claim
+they have not made. Being over-cautious about freshness is the safe direction.
+The fix belongs upstream.
+
 ## Traps that have already cost time
 
 - **`html2canvas` throws on Tailwind v4 colours.** v4 emits `color-mix()` in
