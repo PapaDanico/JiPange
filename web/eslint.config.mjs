@@ -4,9 +4,34 @@ import nextTypescript from "eslint-config-next/typescript";
 const config = [
   ...nextCoreWebVitals,
   ...nextTypescript,
-  // Generated PWA build artifacts (service worker + Workbox runtime), never
-  // hand-written — everything else in public/ is static assets, not source.
-  { ignores: ["public/**"] },
+  /* GENERATED OUTPUT, NEVER HAND-WRITTEN.
+   *
+   * public/** is the PWA build artifacts (service worker + Workbox runtime);
+   * everything else in public/ is static assets, not source.
+   *
+   * .netlify/** and .next/** were added after they broke a deploy, and the
+   * way they broke it is worth recording because nothing local could see it.
+   *
+   * netlify.toml runs `npm run typecheck && npm run lint` before the build, so
+   * that lint executes on the BUILD MACHINE. Netlify loads its extensions
+   * first — the `baseline` extension writes
+   * .netlify/edge-functions/baseline_ef.ts, a bundle of third-party UA-parsing
+   * code — so by the time lint runs, a 2,000-line generated file is sitting in
+   * the working directory. It uses `var` throughout, which is correct for what
+   * it is and 225 errors as far as `no-var` is concerned. The build failed at
+   * lint and never reached `next build`.
+   *
+   * It cannot reproduce locally by running the same command, because nothing
+   * here generates .netlify — it appears only inside a Netlify build. The way
+   * to check this ignore still works is to create the file and run lint:
+   *
+   *     mkdir -p .netlify/edge-functions
+   *     printf 'var a = 1;\n' > .netlify/edge-functions/baseline_ef.ts
+   *     npm run lint     # must stay clean
+   *
+   * .next/** is here for the same reason rather than because it has bitten:
+   * a cached or retried build can leave it in place before lint runs. */
+  { ignores: ["public/**", ".netlify/**", ".next/**"] },
   {
     rules: {
       // New in eslint-plugin-react-hooks@7 (pulled in by this ESLint bump).
