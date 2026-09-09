@@ -46,6 +46,7 @@ gets corrected.
 | `npm run build` | Production build |
 | `npm run sync:rates` | Refresh the snapshot from the live feed |
 | **`npm run doctor`** | **Is anything still refreshing the rates?** |
+| **`npm run verify`** | **Everything CI used to run, in one command** (`verify:all` adds e2e) |
 
 Run `npm test` and `npm run lint` before pushing; `npm run build` if you touched
 `web/app`.
@@ -69,6 +70,47 @@ with the second operator inverted, so it passed on exactly the case it existed
 to catch and only went red when the curve became humped. When you write a
 guard, write the property (`y364 < Math.max(y91, y182)`), not a case analysis
 of today's data.
+
+## Arithmetic that cannot emit garbage
+
+Every calculator is swept in `web/lib/__tests__/arithmetic-sweep.test.ts`
+against the values a number field can actually deliver. The contract is
+deliberately weak so it survives rewriting:
+
+> **A finite input may never produce a non-finite output.**
+
+It found **twelve** faults across nine modules, and every one was the same
+bug wearing a different file name: `(1 + r)^n` either overflows to Infinity,
+or — for a rate at or below −100% — raises a non-positive base to a power and
+divides by zero. What came back was Infinity in a shilling figure, or NaN, and
+both render.
+
+So the bound is declared once, in `lib/money.ts`, beside `positiveAmount()`
+and for the same stated reason — a guard living in twenty-four components is
+wrong in at least one of them:
+
+- `MAX_ANNUAL_RATE` / `MIN_ANNUAL_RATE` — 10,000% and −99%, past any
+  instrument a Kenyan reader meets
+- `isSaneRate(rate)` — bound the inputs
+- `finiteOr(value, fallback)` — bound the result too, because a *sane* rate
+  over an absurd horizon overflows just as well
+
+**When you add a calculator, add it to the sweep.** Not to the list of things
+you meant to do — the sweep is the only thing that drives these functions
+directly, and it found three faults in the first thirteen calculators and nine
+more in the rest.
+
+**NaN is never allowed. Infinity sometimes is.** Four cases legitimately
+answer Infinity — "no monthly amount reaches a target in zero years",
+"contributions never catch a target inflating away from them". Those carry an
+`infinityMeans` string saying what the sentinel means, so the allowance can be
+read and challenged rather than silently granted. An infinite *shilling* figure
+is always a fault.
+
+Note what the sweep is NOT. `e2e/hostile-input.spec.ts` zeroes one field at a
+time through the UI and found nothing — correctly, within its scope, which it
+states plainly. It only tries zero, and it goes through parsers that clamp
+first. Neither replaces the other.
 
 ## When the rates stop refreshing
 
