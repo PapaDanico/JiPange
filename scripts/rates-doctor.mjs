@@ -75,6 +75,42 @@ if (ageDays > MAX_AGE_DAYS) {
   );
 }
 
+/* THE STAMP AND THE EVIDENCE CAN DISAGREE, AND ON 9 SEP 2026 THEY DID.
+ *
+ * Mwangaza's contract says generatedAt is "when the EVIDENCE was refreshed,
+ * not the build". Its meta.json froze at 2026-08-19 while the scrapers kept
+ * running: tbills moved to the 3 September auction and macro to 7 September.
+ * Mwangaza's own freshness.json flags it — "Pipeline last ran", 19 days
+ * against a 7-day budget, stale: true.
+ *
+ * The effect here is confusing enough to be worth naming: a sync can land
+ * genuinely fresher rates and this doctor, and the reader-facing notice, will
+ * both still say "old", because both key off the stamp. That is the RIGHT
+ * behaviour — being over-cautious about freshness is the safe direction, and
+ * inventing a freshness signal the publisher does not vouch for is the thing
+ * this whole pipeline refuses to do — but somebody who has just run a
+ * successful sync deserves to be told why nothing went green.
+ */
+const newestAuction = bills
+  .map((b) => b.auctionDate)
+  .filter(Boolean)
+  .sort()
+  .at(-1);
+if (newestAuction) {
+  const stampDay = snap.generatedAt.slice(0, 10);
+  if (newestAuction > stampDay) {
+    console.log(
+      `note  the EVIDENCE is fresher than the STAMP: newest auction ${newestAuction}, ` +
+        `generatedAt ${stampDay}.\n` +
+        "      Upstream's generatedAt has stopped moving while its scrapers keep\n" +
+        "      running. The rates below are current; the age above is not. This is\n" +
+        "      an upstream bug (meta.json / the pipeline stamp), not a local one —\n" +
+        "      a fresh sync will NOT clear the staleness alarm until it is fixed.\n" +
+        "      Do not paper over it here: the publisher owns that field."
+    );
+  }
+}
+
 say(
   ageDays <= STALE_AFTER_DAYS,
   ageDays <= STALE_AFTER_DAYS

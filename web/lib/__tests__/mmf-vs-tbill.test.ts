@@ -66,14 +66,32 @@ describe("the comparison knows what it rests on", () => {
     /* Not a requirement — a tripwire. If this starts failing, the market moved
      * and the copy around this card is worth re-reading; that is the whole
      * reason the previous version of the test above was valuable, minus the
-     * part where it pretended to be a spec. */
+     * part where it pretended to be a spec.
+     *
+     * IT HAS ALREADY EARNED ITS KEEP ONCE. It asserted the MMF's edge over the
+     * 364-day bill was positive. The 3 September 2026 auction turned it
+     * NEGATIVE — the bill now pays fractionally more — and the failure sent a
+     * reader back to the module's doc comment, where two sentences had gone
+     * false without anything noticing: that the curve was inverted so "rolling
+     * 91-day paper beats locking in for a year" (the 91-day rung is now the
+     * lowest-paying of the three), and that "the current gap is 0.91pp against
+     * a 0.35pp threshold, so the card does now name a winner" (it is about a
+     * hundredth of a point, and the card refuses a verdict). Both are gone.
+     *
+     * So the tripwire is re-pointed at what actually matters for the copy:
+     * whether the card is naming a winner or refusing to. The SIGN of the edge
+     * is not the interesting fact — a hundredth of a point either way is
+     * noise, and treating it as a finding is what the threshold exists to
+     * prevent. Crossing the threshold is the interesting fact, because that is
+     * when the card changes what it says. */
     const c = compareAt(364)!;
     expect(
-      c.edgePp,
-      `the money market fund's edge over the 364-day bill is now ${c.edgePp.toFixed(2)}pp ` +
-        "— re-read the comparison copy if this has crossed zero"
-    ).toBeGreaterThan(0);
-    expect(c.billNetPct).toBeLessThan(c.mmfNetPct);
+      Math.abs(c.edgePp),
+      `the money market fund is now ${c.edgePp.toFixed(3)}pp against the 364-day bill, ` +
+        `outside the ${SPREAD_CONFIDENCE_PP}pp threshold — the card has started naming a ` +
+        "winner where it used to refuse one. Re-read the comparison copy."
+    ).toBeLessThan(SPREAD_CONFIDENCE_PP);
+    expect(c.tooCloseToCall).toBe(true);
   });
 
   it("applies the same withholding to both sides", () => {

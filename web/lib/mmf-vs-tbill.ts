@@ -17,19 +17,30 @@ import { assumedMmfYield, MMF_SPREAD_OVER_TBILL_PCT } from "./mmf-assumption";
  * by two thirds of itself and the winner changes. A confident ranking built on
  * that is a number pretending to be a fact.
  *
- * THE FIGURES ABOVE ARE NO LONGER THE MARKET, AND THE SHAPE CHANGED WITH THEM
- * ---------------------------------------------------------------------------
+ * THE FIGURES ABOVE ARE NO LONGER THE MARKET, AND THAT IS THE POINT
+ * ------------------------------------------------------------------
  * Mwangaza was pricing bills on a bank-discount basis when CBK prices them on
  * a true-discount basis, and correcting it on 30 July 2026 cut the 364-day
- * gross from 9.94% to about 9.02% while barely moving the 91-day. The bill
- * curve is now INVERTED in effective-annual terms — rolling 91-day paper beats
- * locking in for a year — so the third line above reads backwards today.
+ * gross from 9.94% to about 9.02% while barely moving the 91-day.
  *
  * The example is kept rather than restated because it is the argument for the
- * threshold, not a claim about current rates: it shows what an assumption-led
- * verdict looks like. The current gap is 0.91pp against a 0.35pp threshold, so
- * the card does now name a winner. That is the mechanism working, not a
- * different policy.
+ * THRESHOLD, not a claim about current rates: it shows what an assumption-led
+ * verdict looks like.
+ *
+ * NOTHING HERE STATES WHERE THE COMPARISON CURRENTLY LANDS, DELIBERATELY.
+ * This block used to, twice, and both sentences went false without anything
+ * failing. It said the curve was "INVERTED in effective-annual terms — rolling
+ * 91-day paper beats locking in for a year", and it said "the current gap is
+ * 0.91pp against a 0.35pp threshold, so the card does now name a winner." By
+ * the 3 September 2026 auction the 91-day rung had become the LOWEST-paying of
+ * the three, and the gap had closed to about a hundredth of a point — inside
+ * the threshold, so the card refuses a verdict. Two confident claims, both
+ * backwards, in the file whose entire subject is not overstating what we know.
+ *
+ * The tripwire in mmf-vs-tbill.test.ts is what caught it, which is the only
+ * reason to write a test that asserts today's market: not to specify it, but
+ * so prose like this cannot quietly rot. Where the comparison lands is
+ * computed below and rendered; it is not narrated here.
  *
  * So this returns the comparison AND the assumption's leverage over it, and the
  * card says plainly when the two are too close to separate on yield. When they
