@@ -1,3 +1,4 @@
+import { finiteOr, isSaneRate } from "./money";
 /**
  * The whole cost of educating one child, year by year, to the end of school.
  *
@@ -416,7 +417,13 @@ export function simulateFund(params: {
   frontLoaded?: boolean;
   leadMonths?: number;
 }): { months: FundMonth[]; minBalanceKES: number; endBalanceKES: number; feasible: boolean } {
-  const rate = (params.annualReturn ?? assumedMmfYield()) / 12;
+  /* An annual return outside the sane band compounds the running balance to
+     Infinity within a couple of years, and every month after that renders as
+     an infinite shilling figure. Treated as no return rather than refused
+     outright: the fee SCHEDULE is still meaningful and worth showing, and
+     zero growth is the conservative reading. See money.ts. */
+  const annualReturn = params.annualReturn ?? assumedMmfYield();
+  const rate = (isSaneRate(annualReturn) ? annualReturn : 0) / 12;
   const split = params.frontLoaded ? FRONT_LOADED_SPLIT : EVEN_SPLIT;
   const lead = Math.max(0, Math.round(params.leadMonths ?? DEFAULT_LEAD_MONTHS));
 
@@ -439,6 +446,7 @@ export function simulateFund(params: {
   for (let m = 0; m < horizon; m++) {
     balance += params.monthlyContribution;
     balance *= 1 + rate;
+    balance = finiteOr(balance);
     const fee = draws.get(m) ?? 0;
     balance -= fee;
     if (balance < minBalance) minBalance = balance;

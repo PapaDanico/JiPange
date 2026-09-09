@@ -1,3 +1,4 @@
+import { finiteOr, isSaneRate } from "./money";
 /**
  * Retiring in Kenya, costed the way it actually happens.
  *
@@ -353,7 +354,12 @@ export function realReturnEvidence(): {
 }
 
 /** Present value of 1 received in `years` time, at a real rate. */
-const discount = (rate: number, years: number) => 1 / Math.pow(1 + rate, years);
+/* At a real return of exactly -100% the divisor is zero and every discounted
+ * figure came back Infinity — the required capital, the medical share, the
+ * shortfall and the monthly top-up all at once. Outside the sane band there
+ * is nothing to discount; see MIN/MAX_ANNUAL_RATE in money.ts. */
+const discount = (rate: number, years: number) =>
+  isSaneRate(rate) ? finiteOr(1 / Math.pow(1 + rate, years)) : 0;
 
 /**
  * NaN is not filtered by `Math.max`, and that is the trap this exists for.
@@ -370,11 +376,16 @@ const discount = (rate: number, years: number) => 1 / Math.pow(1 + rate, years);
  * parsed form field straight through should not get arithmetic soup. Sanitise
  * at the boundary; relying on every caller to remember is not a boundary.
  */
+/** No plan models a life longer than this. */
+export const MAX_PLAN_AGE = 120;
+
 const clean = (n: number | undefined, fallback = 0): number =>
   typeof n === "number" && Number.isFinite(n) ? n : fallback;
 
 export function planKenyanRetirement(input: RetirementInputs): KenyanRetirement {
-  const realReturn = clean(input.realReturn, REAL_RETURN_DEFAULT);
+  const realReturn = isSaneRate(clean(input.realReturn, REAL_RETURN_DEFAULT))
+    ? clean(input.realReturn, REAL_RETURN_DEFAULT)
+    : REAL_RETURN_DEFAULT;
   const medEsc = clean(input.medicalRealEscalation, MEDICAL_REAL_ESCALATION);
   const decline = clean(input.livingRealDecline, LIVING_REAL_DECLINE);
   const horizonAge = clean(input.planningHorizonAge, DEFAULT_PLANNING_HORIZON_AGE);
@@ -384,8 +395,13 @@ export function planKenyanRetirement(input: RetirementInputs): KenyanRetirement 
    * places that read `input.retirementAge` / `input.currentAge` — the medical
    * escalation loop, the cover-deadline window, and both warnings — kept the
    * raw value. Sanitising per-use is how half a fix looks like a whole one. */
-  const retirementAge = clean(input.retirementAge);
-  const currentAge = clean(input.currentAge);
+  /* Ages are bounded, not merely finite. A currentAge of -1,000,000 makes
+     yearsToRetirement a million, and the medical escalation then compounds a
+     million times to Infinity — which reached every figure in the result.
+     `clean` guarantees a number; it cannot guarantee a HUMAN one. */
+  const boundedAge = (n: number) => Math.min(Math.max(0, n), MAX_PLAN_AGE);
+  const retirementAge = boundedAge(clean(input.retirementAge));
+  const currentAge = boundedAge(clean(input.currentAge));
 
   const yearsToRetirement = Math.max(0, retirementAge - currentAge);
   const yearsInRetirement = Math.max(0, horizonAge - retirementAge);

@@ -1,3 +1,5 @@
+import { finiteOr, isSaneRate } from "./money";
+
 /**
  * Kenya-calibrated wealth projection maths.
  * FV = PV × (1 + r)^n + PMT × ((1 + r)^n − 1) / r, compounded monthly.
@@ -97,6 +99,9 @@ export function futureValueWithStepUp(
   years: number,
   annualStepUpRate: number
 ): { total: number; totalContributed: number } {
+  if (!isSaneRate(annualRate) || !isSaneRate(annualStepUpRate)) {
+    return { total: 0, totalContributed: 0 };
+  }
   let total = presentValue;
   let totalContributed = presentValue;
   let monthly = firstYearMonthly;
@@ -110,7 +115,7 @@ export function futureValueWithStepUp(
     total = futureValue(total, monthly, annualRate, remainder);
     totalContributed += monthly * 12 * remainder;
   }
-  return { total, totalContributed };
+  return { total: finiteOr(total), totalContributed: finiteOr(totalContributed) };
 }
 
 /** Converts a nominal future Ksh amount to today's purchasing power. */
@@ -119,8 +124,13 @@ export function inflationAdjust(
   years: number,
   annualInflationRate: number = DEFAULT_INFLATION_RATE
 ): number {
+  /* At exactly -100% the divisor is zero and this returned Infinity in a
+     shilling figure. Outside the sane band there is no deflator to apply —
+     see MIN/MAX_ANNUAL_RATE in money.ts. */
+  if (!Number.isFinite(nominalValue) || !Number.isFinite(years)) return 0;
+  if (!isSaneRate(annualInflationRate)) return 0;
   if (years <= 0) return nominalValue;
-  return nominalValue / Math.pow(1 + annualInflationRate, years);
+  return finiteOr(nominalValue / Math.pow(1 + annualInflationRate, years));
 }
 
 /** The nominal Ksh amount, N years from now, that has the same purchasing power as `todaysValue` today. */
@@ -129,8 +139,10 @@ export function inflateToFutureCost(
   years: number,
   annualInflationRate: number = DEFAULT_INFLATION_RATE
 ): number {
+  if (!Number.isFinite(todaysValue) || !Number.isFinite(years)) return 0;
+  if (!isSaneRate(annualInflationRate)) return 0;
   if (years <= 0) return todaysValue;
-  return todaysValue * Math.pow(1 + annualInflationRate, years);
+  return finiteOr(todaysValue * Math.pow(1 + annualInflationRate, years));
 }
 
 export interface WealthProjection {

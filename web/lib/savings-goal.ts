@@ -1,3 +1,4 @@
+import { finiteOr, isSaneRate } from "./money";
 /**
  * Solves for the monthly contribution needed to reach a savings target —
  * the algebraic inverse of `futureValue` in projections.ts:
@@ -17,6 +18,11 @@ export function solveMonthlyContribution(params: {
     return targetFutureValue > presentValue ? Infinity : 0;
   }
 
+  /* Outside the sane rate band, or over a horizon that overflows the growth
+     factor, there is no contribution to solve for — see money.ts. This
+     returned NaN, which the caller renders. */
+  if (!isSaneRate(annualRate) || !Number.isFinite(months)) return 0;
+
   const monthlyRate = annualRate / 12;
 
   if (monthlyRate === 0) {
@@ -25,8 +31,9 @@ export function solveMonthlyContribution(params: {
   }
 
   const growthFactor = Math.pow(1 + monthlyRate, months);
+  if (!Number.isFinite(growthFactor)) return 0;
   const shortfall = targetFutureValue - presentValue * growthFactor;
   if (shortfall <= 0) return 0;
 
-  return shortfall / ((growthFactor - 1) / monthlyRate);
+  return finiteOr(shortfall / ((growthFactor - 1) / monthlyRate));
 }

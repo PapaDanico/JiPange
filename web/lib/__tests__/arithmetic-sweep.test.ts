@@ -12,6 +12,21 @@ import { calculateMerryGoRound, calculateChamaInvestment } from "@/lib/chama";
 import { calculateLandPurchase } from "@/lib/land";
 import { calculateDebtStack } from "@/lib/debt";
 import { dhowcsdLadder, EVEN_WEIGHTS } from "@/lib/market-2026";
+import { solveMonthlyContribution } from "@/lib/savings-goal";
+import { solveYearsToTarget, solveYearsToInflatingTarget, buildGoalPlan } from "@/lib/goal-planner";
+import { projectedCapital, solveBreakEven } from "@/lib/break-even";
+import { termlyMonthlyTarget, mmfFeeSubsidy } from "@/lib/school-fees";
+import { smoothIncomes } from "@/lib/hustle-smoother";
+import { solveGrossForTargetNet } from "@/lib/salary-negotiation";
+import { marginalPayeRate } from "@/lib/tax-shield";
+import { planKenyanRetirement } from "@/lib/retirement-kenya";
+import { simulateFund, solveLevelContribution, shareOfNetPayPct } from "@/lib/education-plan";
+import {
+  futureValue,
+  futureValueWithStepUp,
+  inflationAdjust,
+  inflateToFutureCost,
+} from "@/lib/projections";
 
 /**
  * EVERY CALCULATOR, AGAINST NUMBERS NOBODY MEANT TO TYPE — AT THE ARITHMETIC,
@@ -94,7 +109,16 @@ function badNumbers(value: unknown, path = ""): string[] {
  * baseline keeps the rest of the input alive so the arithmetic is actually
  * reached.
  */
-const CASES: { name: string; run: (v: number) => unknown }[] = [
+/**
+ * `infinityMeans` marks a case whose function uses Infinity as a documented
+ * SENTINEL rather than as a failed calculation — "you cannot get there", "it
+ * never runs out", "the target is never reached". The string records what it
+ * means, so an allowance can be read and challenged instead of just granted.
+ *
+ * NaN is never allowed anywhere, on any case. Infinity can carry a meaning;
+ * NaN cannot, and a money figure that is Infinity cannot either.
+ */
+const CASES: { name: string; run: (v: number) => unknown; infinityMeans?: string }[] = [
   { name: "calculateNetPay(gross)", run: (v) => calculateNetPay(v) },
   { name: "calculateNetPay(pension relief)", run: (v) => calculateNetPay(50_000, { pensionContribution: v }) },
   { name: "calculateNetPay(mortgage relief)", run: (v) => calculateNetPay(50_000, { mortgageInterest: v }) },
@@ -146,6 +170,59 @@ const CASES: { name: string; run: (v: number) => unknown }[] = [
   { name: "debtStack(balance)", run: (v) => calculateDebtStack([{ id: "a", name: "a", balance: v, monthlyRatePct: 3 }], 20_000) },
   { name: "debtStack(rate)", run: (v) => calculateDebtStack([{ id: "a", name: "a", balance: 100_000, monthlyRatePct: v }], 20_000) },
   { name: "debtStack(budget)", run: (v) => calculateDebtStack([{ id: "a", name: "a", balance: 100_000, monthlyRatePct: 3 }], v) },
+
+  /* ── The compounding layer, driven directly ────────────────────────────
+     futureValue is where fault 3 lived, so the primitive and its wrappers
+     are swept in their own right rather than only through one caller. */
+  { name: "futureValue(pv)", run: (v) => futureValue(v, 5_000, 0.1, 10) },
+  { name: "futureValue(pmt)", run: (v) => futureValue(0, v, 0.1, 10) },
+  { name: "futureValue(rate)", run: (v) => futureValue(100_000, 5_000, v, 10) },
+  { name: "futureValue(years)", run: (v) => futureValue(100_000, 5_000, 0.1, v) },
+  { name: "futureValueWithStepUp(rate)", run: (v) => futureValueWithStepUp(0, 5_000, v, 10, 0.05) },
+  { name: "futureValueWithStepUp(stepUp)", run: (v) => futureValueWithStepUp(0, 5_000, 0.1, 10, v) },
+  { name: "inflationAdjust(rate)", run: (v) => inflationAdjust(1_000_000, 10, v) },
+  { name: "inflateToFutureCost(rate)", run: (v) => inflateToFutureCost(1_000_000, 10, v) },
+
+  /* ── Solvers, which iterate and so can diverge as well as overflow ───── */
+  { name: "solveMonthlyContribution(target)", run: (v) => solveMonthlyContribution({ targetFutureValue: v, annualRate: 0.1, years: 10 }) },
+  { name: "solveMonthlyContribution(years)", run: (v) => solveMonthlyContribution({ targetFutureValue: 5_000_000, annualRate: 0.1, years: v }), infinityMeans: "no amount of monthly saving reaches a target in zero years" },
+  { name: "solveMonthlyContribution(rate)", run: (v) => solveMonthlyContribution({ targetFutureValue: 5_000_000, annualRate: v, years: 10 }) },
+  { name: "solveYearsToTarget(target)", run: (v) => solveYearsToTarget({ targetAmount: v, monthlyContribution: 10_000, annualRate: 0.1 }) },
+  { name: "solveYearsToTarget(rate)", run: (v) => solveYearsToTarget({ targetAmount: 5_000_000, monthlyContribution: 10_000, annualRate: v }), infinityMeans: "the target is never reached at this rate" },
+  { name: "solveYearsToInflatingTarget(today)", run: (v) => solveYearsToInflatingTarget({ todayValue: v, monthlyContribution: 10_000, annualRate: 0.1 }), infinityMeans: "contributions never catch a target inflating away from them" },
+  { name: "solveYearsToInflatingTarget(inflation)", run: (v) => solveYearsToInflatingTarget({ todayValue: 2_000_000, monthlyContribution: 10_000, annualRate: 0.1, inflationRate: v }), infinityMeans: "contributions never catch a target inflating away from them" },
+  { name: "solveGrossForTargetNet", run: (v) => solveGrossForTargetNet(v) },
+  { name: "marginalPayeRate", run: (v) => marginalPayeRate(v) },
+
+  { name: "projectedCapital(capital)", run: (v) => projectedCapital(v, 20_000, 15, 0.03) },
+  { name: "projectedCapital(realReturn)", run: (v) => projectedCapital(1_000_000, 20_000, 15, v) },
+  { name: "projectedCapital(years)", run: (v) => projectedCapital(1_000_000, 20_000, v, 0.03) },
+  { name: "solveBreakEven(target)", run: (v) => solveBreakEven({ targetKes: v, currentCapitalKes: 1_000_000, monthlyContributionKes: 20_000, years: 15 }) },
+  { name: "solveBreakEven(years)", run: (v) => solveBreakEven({ targetKes: 20_000_000, currentCapitalKes: 1_000_000, monthlyContributionKes: 20_000, years: v }) },
+
+  { name: "termlyMonthlyTarget(fees)", run: (v) => termlyMonthlyTarget(v, 2) },
+  { name: "termlyMonthlyTarget(children)", run: (v) => termlyMonthlyTarget(240_000, v) },
+  { name: "mmfFeeSubsidy(fees)", run: (v) => mmfFeeSubsidy(v, 2) },
+  { name: "mmfFeeSubsidy(rate)", run: (v) => mmfFeeSubsidy(240_000, 2, v) },
+  { name: "shareOfNetPayPct(contribution)", run: (v) => shareOfNetPayPct(v, 80_000) },
+  { name: "shareOfNetPayPct(netPay)", run: (v) => shareOfNetPayPct(20_000, v) },
+
+  { name: "smoothIncomes(income)", run: (v) => smoothIncomes([v, 50_000, 80_000], 0.8) },
+  { name: "smoothIncomes(drawFraction)", run: (v) => smoothIncomes([40_000, 50_000, 80_000], v) },
+
+  { name: "simulateFund(contribution)", run: (v) => simulateFund({ years: [{ yearsAhead: 1, feeKES: 120_000 }], monthlyContribution: v }) },
+  { name: "simulateFund(return)", run: (v) => simulateFund({ years: [{ yearsAhead: 1, feeKES: 120_000 }], monthlyContribution: 10_000, annualReturn: v }) },
+  { name: "simulateFund(fee)", run: (v) => simulateFund({ years: [{ yearsAhead: 1, feeKES: v }], monthlyContribution: 10_000 }) },
+  { name: "solveLevelContribution(fee)", run: (v) => solveLevelContribution({ years: [{ yearsAhead: 1, feeKES: v }] }) },
+
+  { name: "goalPlan(target)", run: (v) => buildGoalPlan({ targetAmount: v, years: 5, annualReturn: 0.08, currentSavings: 0 }) },
+  { name: "goalPlan(years)", run: (v) => buildGoalPlan({ targetAmount: 500_000, years: v, annualReturn: 0.08, currentSavings: 0 }), infinityMeans: "no monthly amount reaches a target in zero years" },
+  { name: "goalPlan(return)", run: (v) => buildGoalPlan({ targetAmount: 500_000, years: 5, annualReturn: v, currentSavings: 0 }) },
+  { name: "goalPlan(capacity)", run: (v) => buildGoalPlan({ targetAmount: 500_000, years: 5, annualReturn: 0.08, monthlyCapacity: v }) },
+
+  { name: "retirement(expenses)", run: (v) => planKenyanRetirement({ currentAge: 35, retirementAge: 60, currentMonthlyExpenses: v, currentMonthlyMedical: 8_000, currentCapital: 500_000, monthlyContribution: 20_000 }) },
+  { name: "retirement(realReturn)", run: (v) => planKenyanRetirement({ currentAge: 35, retirementAge: 60, currentMonthlyExpenses: 80_000, currentMonthlyMedical: 8_000, currentCapital: 500_000, monthlyContribution: 20_000, realReturn: v }) },
+  { name: "retirement(currentAge)", run: (v) => planKenyanRetirement({ currentAge: v, retirementAge: 60, currentMonthlyExpenses: 80_000, currentMonthlyMedical: 8_000, currentCapital: 500_000, monthlyContribution: 20_000 }) },
 ];
 
 /**
@@ -195,7 +272,10 @@ describe("a finite input never produces a non-finite output", () => {
         /* runway answers Infinity for "this never runs out", which is a
            meaning rather than a fault — see the block below, which pins it. */
         if (c.name.startsWith("runway") && out === Infinity) continue;
-        const bad = badNumbers(out);
+        const bad = badNumbers(out).filter((b) =>
+          /* A declared sentinel excuses Infinity on that case, never NaN. */
+          c.infinityMeans ? !b.endsWith("= Infinity") : true
+        );
         expect(
           bad.slice(0, 6),
           `${c.name} with ${String(v)} returned ${bad.slice(0, 6).join(", ")}` +

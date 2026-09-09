@@ -1,3 +1,4 @@
+import { finiteOr, isSaneRate } from "./money";
 /**
  * Not "here is your number" — "here is what has to be true for it to work".
  *
@@ -68,7 +69,13 @@ export function projectedCapital(
   years: number,
   realReturn: number
 ): number {
+  /* Same bound as every other projection here — see money.ts. An absurd
+     horizon overflows the growth factor even at a sane rate, so the result
+     is checked as well as the inputs. */
+  if (!Number.isFinite(currentCapital) || !Number.isFinite(monthlyContribution)) return 0;
+  if (!Number.isFinite(years) || !isSaneRate(realReturn)) return 0;
   const growth = Math.pow(1 + realReturn, years);
+  if (!Number.isFinite(growth)) return 0;
   const annual = monthlyContribution * 12;
   /* At exactly zero the annuity formula divides by zero. The limit is simply
    * the undiscounted sum of contributions, which is what a reader would work
@@ -76,7 +83,7 @@ export function projectedCapital(
    * would quietly shift the answer. */
   const contributionsFV =
     realReturn === 0 ? annual * years : (annual * (growth - 1)) / realReturn;
-  return currentCapital * growth + contributionsFV;
+  return finiteOr(currentCapital * growth + contributionsFV);
 }
 
 /**
