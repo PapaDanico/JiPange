@@ -1,5 +1,6 @@
 import Link from "next/link";
 import PrintLetterhead from "./PrintLetterhead";
+import ExportableSection from "./ExportableSection";
 import ToolInsights from "./ToolInsights";
 import ToolEnhancements from "./ToolEnhancements";
 import ToolLayoutCTA from "./ToolLayoutCTA";
@@ -22,6 +23,7 @@ export default function ToolLayout({
   path,
   insights,
   deeper,
+  exportAs,
   children,
 }: {
   title: string;
@@ -33,6 +35,17 @@ export default function ToolLayout({
   insights?: [Insight, Insight];
   /** Optional handoff to the sister tool that goes deeper on this question. */
   deeper?: DeeperLink;
+  /**
+   * Filename slug for a page-level export, for tools whose widget has no
+   * export of its own.
+   *
+   * Most calculators render ExportCardButton themselves, next to the results
+   * node they want captured — that is the better placement and stays where it
+   * is. This is for the handful whose body is a shared widget that never grew
+   * one, and which until now offered `window.print()` instead: a button that
+   * does nothing on iOS home-screen apps and in several Android WebViews.
+   */
+  exportAs?: string;
   children: React.ReactNode;
 }) {
   return (
@@ -65,7 +78,13 @@ export default function ToolLayout({
           giving 12px of horizontal page scroll at 360px. Applies to all tools. */}
       <div className="mt-8 grid w-full max-w-5xl gap-8 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start lg:gap-12 [&>*]:min-w-0">
         <div className="mx-auto w-full max-w-2xl lg:mx-0 lg:max-w-none">
-          {children}
+          {exportAs ? (
+            <ExportableSection filename={exportAs} title={title}>
+              {children}
+            </ExportableSection>
+          ) : (
+            children
+          )}
           {/* BELOW the calculator, not above it. Measured on /tools/salary at
               390x844, which is the phone most of these readers are on: the two
               insight cards pushed the page's only input to y=697 — clinging to

@@ -12,6 +12,7 @@ export default function PaydayRouterPage() {
   return (
     <ToolLayout
       path="/tools/payday-router"
+      exportAs="payday-router"
       title="📱 The M-Pesa Payday Safety Router"
       description="Your salary minus rent and bills, routed safely — know your weekly limit before M-Pesa spends it for you."
       insights={[

@@ -74,18 +74,21 @@ export default function ToolEnhancements() {
         </div>
       )}
 
+      {/* Share only. The "Print / Save as PDF" link that sat beside it called
+          window.print(), which is absent on iOS when the app runs from the
+          home screen and dropped silently by several Android WebViews — so in
+          the sidebar of all 26 calculators it was a link that did nothing for
+          most readers. Every tool page now carries an ExportCardButton beside
+          its own results, which is both a working download and a better place
+          for it than sticky sidebar furniture. Printing from the browser's own
+          menu still produces the letterheaded report; that path was never the
+          broken one. */}
       <div className="flex items-center gap-4">
         <button
           onClick={handleShare}
           className="inline-flex min-h-11 items-center gap-1.5 py-1 text-xs font-medium text-muted underline underline-offset-2 hover:text-primary"
         >
           {copied ? "Link copied!" : "Share this calculator"}
-        </button>
-        <button
-          onClick={() => window.print()}
-          className="inline-flex min-h-11 items-center gap-1.5 py-1 text-xs font-medium text-muted underline underline-offset-2 hover:text-primary"
-        >
-          Print / Save as PDF
         </button>
       </div>
     </div>

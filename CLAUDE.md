@@ -119,9 +119,10 @@ it works offline and outside CI.
 
 **A four-second workflow failure is not a bad rate.** On 20 August 2026 every
 workflow in this repository — the twice-daily sync *and* CI — began failing in
-about four seconds, before a single step ran and with no runner assigned. That
-is an account-level Actions problem (spending limit, billing, or availability);
-nothing in this repository can fix it, and re-running it will not help. The
+about four seconds, before a single step ran and with no runner assigned. The
+cause is now known and is **billing on the GitHub account** — confirmed by the
+account owner on 11 September 2026, so it is no longer worth diagnosing.
+Nothing in this repository can fix it, and re-running it will not help. The
 symptoms downstream were: the snapshot froze at 19 August, four commits landed
 on `main` with no CI at all, and the false ladder copy above shipped unnoticed.
 
@@ -165,12 +166,52 @@ publisher vouches for; substituting our own freshness signal invents a claim
 they have not made. Being over-cautious about freshness is the safe direction.
 The fix belongs upstream.
 
+**And "upstream" is probably the same billing problem, one account over.**
+Found on 11 September 2026 while looking into something else: mwangazayield.org
+is a Vercel project in the **DN Consultancy** team, and that whole Vercel team
+is blocked — the project reports `live: false` and its latest deployment
+`readyState: "BLOCKED"`. So the publisher's scrapers keep committing fresh
+evidence to its git repository (which is why `--from` above finds auctions to
+3 September) while its SITE cannot rebuild. A frozen `meta.json` stamp served
+beside current committed data is exactly what a blocked deploy looks like from
+outside, and it fits better than a pipeline-stamp bug in their code.
+
+Two consequences worth knowing before spending time here:
+
+- Clearing the Vercel block on that account is likely to un-freeze
+  `generatedAt` and with it this repository's staleness alarm. That is the
+  fix, and it is not in this repository.
+- It does NOT change the rule above. Until the publisher's stamp moves, we
+  keep keying off `generatedAt` and keep showing readers the stale notice.
+
+The 403 from `https://mwangazayield.org/data/rates.json` inside an agent
+session is a *separate* thing and is still the egress policy, not the origin:
+the failure is `CONNECT tunnel failed, response 403` from the proxy, which
+never reaches Vercel. The git route stays the way in.
+
 ## Deploying, while CI is dead
 
-**Nothing in GitHub Actions runs.** No runner has been assigned since 20 August
-2026; every workflow fails in about three seconds before a step executes. It is
-account-level, not repository-level. Do not spend time on it from here — treat
-CI as absent and verify locally.
+**Nothing in GitHub Actions runs, because of account billing.** No runner has
+been assigned since 20 August 2026; every workflow fails in about three seconds
+before a step executes. The account owner confirmed the cause on 11 September
+2026: it is a **payment/billing problem on the GitHub account**, not a
+repository or workflow fault, and it is being left as it is for now. So do not
+debug it, do not rewrite a workflow to work around it, and do not re-run a
+failed job — treat CI as absent and verify locally.
+
+How to recognise it rather than re-deriving it, because the checks DO still get
+created and reported and so look like real failures. On PR #217 all three
+checks went red on push; the job API said why:
+
+```
+created_at 09:50:57  completed_at 09:50:59   # two seconds
+runner_id 0   runner_name ""                 # no runner was ever assigned
+```
+
+Log download returns **HTTP 404** for every such job — there are no steps to
+have produced one. Same signature on every recent run of `Build and Test` on
+`main`, so the base branch is red identically. A red check with `runner_id: 0`
+and a 404 log is this, not your diff.
 
 ```bash
 npm run verify        # everything the Build and Test matrix ran
@@ -197,6 +238,39 @@ npx netlify deploy --build --prod
 
 Never `--allow-anonymous`. It publishes to a NEW anonymous site rather than
 `jipangefinance`, which looks like success and is worse than failing.
+
+**There is a second, blocked Vercel project claiming the production domain.**
+Discovered 11 September 2026, unresolved, and the reason nobody should
+"tidy up" the Vercel side without checking first:
+
+- Vercel project `ji-pange-finance` (team **DN Consultancy**) is linked to
+  this repository and has **`jipangefinance.org` and `www.jipangefinance.org`
+  configured on it**, alongside the Netlify site this file documents.
+- That Vercel team is blocked for payment, so every push posts a red
+  `Vercel — Account is blocked.` commit status on the pull request. It is
+  noise, not a build failure, and no change here can clear it.
+- **`web/vercel.json` already does everything config can do** — `67f0a10`
+  set `git.deploymentEnabled: false` there (the project's root directory is
+  `web`, so that is the right path) to stop a second builder spending the
+  credit pool Netlify previews were switched off to protect. Do not add
+  another one, and do not assume the red status means it is not working: the
+  account block is reported by Vercel's GitHub integration before any
+  project-level setting is consulted. Reversing that decision is deleting
+  the file.
+- The apex currently resolves to `98.84.224.111` / `18.208.88.157`, which are
+  plain EC2 addresses in us-east-1 — **neither** Vercel's apex
+  (`76.76.21.21`) nor Netlify's (`75.2.60.5`). So which provider actually
+  serves readers is NOT established, and an agent session cannot check it:
+  HTTPS to the domain is egress-blocked.
+
+**Therefore: do not disconnect, delete or pause that Vercel project until
+somebody has confirmed from outside this environment what answers
+jipangefinance.org.** Removing a domain claim from whichever provider is
+really serving traffic takes the live site down, which is worse than a red
+status on a pull request. Resolve the DNS question first, then remove the
+integration in the Vercel dashboard (Project → Settings → Git → Disconnect,
+or uninstall the Vercel GitHub App for this repository); the Vercel MCP tools
+available here cannot unlink a project, so this is a human step either way.
 
 **A merge is not a deploy, and has not been since 19 August 2026.** The live
 site served commit `5d6e36e` for three weeks while `main` moved on, so

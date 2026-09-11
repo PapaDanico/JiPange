@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { execFileSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import {
   assumedMmfYield,
   assumedMmfYieldPct,
@@ -39,7 +39,14 @@ describe('the MMF figure the pages show is the one the tools use', () => {
   })
     .split('\n')
     .filter(Boolean)
-    .filter((f) => !f.includes('__tests__') && !f.endsWith('lib/mmf-assumption.ts'));
+    .filter((f) => !f.includes('__tests__') && !f.endsWith('lib/mmf-assumption.ts'))
+    /* git ls-files reads the INDEX, so a file deleted on disk but not yet
+       staged is still listed and the read below dies with ENOENT — a real
+       deletion reported as an MMF-drift failure, naming a file the author has
+       just removed. Hit while deleting components/PrintButton.tsx. Existence
+       is checked rather than the list trusted; a file that is gone cannot
+       advertise a stale rate. */
+    .filter((f) => existsSync(`${ROOT}${f}`));
 
   it('scans a real file list', () => {
     expect(files.length).toBeGreaterThan(30);

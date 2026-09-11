@@ -2,7 +2,13 @@
 
 import { RefObject, useState, useSyncExternalStore } from "react";
 import { TOOL_META } from "@/lib/tool-meta";
-import { buildSheet, prefersLandscape, A4_PORTRAIT, A4_LANDSCAPE } from "@/lib/export-sheet";
+import {
+  buildSheet,
+  prefersLandscape,
+  awaitFonts,
+  A4_PORTRAIT,
+  A4_LANDSCAPE,
+} from "@/lib/export-sheet";
 import ContributionNote from "./ContributionNote";
 import { canShareFile, canvasToPngFile, shareFile } from "@/lib/share-file";
 
@@ -177,6 +183,10 @@ export default function ExportCardButton({
       // oklab space, and html2canvas 1.4.1 throws "unsupported color function
       // oklab" on it — which read to the user as the button doing nothing.
       const { default: html2canvas } = await import("html2canvas-pro");
+      // Webfonts before pixels — see awaitFonts. A capture taken while the
+      // fallback stack is still in place is metrically not the card the
+      // reader is looking at.
+      await awaitFonts();
       // Explicit height, with a little slack: left to measure itself,
       // html2canvas comes a few pixels short and slices the last line.
       const bounds = el.getBoundingClientRect();
@@ -339,6 +349,9 @@ export default function ExportCardButton({
       let shot: HTMLCanvasElement;
       try {
         const { default: html2canvas } = await import("html2canvas-pro");
+        // See awaitFonts. The sheet furniture is typeset in the brand fonts
+        // too, so this path needs the same wait as the card capture.
+        await awaitFonts();
         shot = await html2canvas(node, {
           scale: 2,
           useCORS: true,

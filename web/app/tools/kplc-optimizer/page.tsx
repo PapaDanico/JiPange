@@ -12,6 +12,7 @@ export default function KplcOptimizerPage() {
   return (
     <ToolLayout
       path="/tools/kplc-optimizer"
+      exportAs="kplc-token-band"
       title="⚡ KPLC Token Band Checker"
       description="Your real cost per unit, from your own receipt — and which band your month actually lands in."
       insights={[

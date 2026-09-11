@@ -330,3 +330,35 @@ export function prefersLandscape(body: HTMLElement): boolean {
     (t) => t.querySelectorAll("tbody tr").length > 6
   );
 }
+
+/**
+ * Wait for webfonts before rasterising, with a bound.
+ *
+ * The exports are captured from the live DOM, and the capture measures
+ * whatever is laid out at that instant. Figtree and Source Serif 4 are
+ * webfonts: on a cold load — a reader who opens a tool, types, and hits
+ * Export before the font files land — the card is still laid out in the
+ * fallback stack, and the file they keep is metrically different from the
+ * page they were looking at. On a narrow card that is a wrapped headline or
+ * a figure pushed onto a second line.
+ *
+ * `document.fonts.ready` settles once the document's font loads have
+ * finished, which is the signal wanted here. It is awaited with a timeout
+ * rather than bare, for the case the promise never settles (a font request
+ * hanging on a bad connection, a browser that resolves it late): a slightly
+ * mis-metricked export is a cosmetic fault, an Export button that never
+ * returns is a broken one, and the second is worse. The timeout is not an
+ * error path — capture proceeds either way.
+ */
+export const FONT_READY_TIMEOUT_MS = 2000;
+
+export async function awaitFonts(timeoutMs: number = FONT_READY_TIMEOUT_MS): Promise<void> {
+  if (typeof document === "undefined" || !document.fonts) return;
+  if (document.fonts.status === "loaded") return;
+  await Promise.race([
+    document.fonts.ready.then(() => undefined),
+    new Promise<void>((resolve) => {
+      setTimeout(resolve, timeoutMs);
+    }),
+  ]);
+}

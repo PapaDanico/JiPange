@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import PlanView from "@/components/onboarding/PlanView";
-import PrintButton from "@/components/PrintButton";
+import ExportableSection from "@/components/tools/ExportableSection";
 import PrintLetterhead from "@/components/tools/PrintLetterhead";
 
 export const metadata: Metadata = {
@@ -22,11 +22,12 @@ export default function PlanPage() {
           </p>
         </div>
       </div>
-      <div className="mt-6 w-full flex justify-center">
-        <PlanView />
-      </div>
-      <div className="mt-8 w-full max-w-2xl print:hidden">
-        <PrintButton label="Print / Save my plan as PDF" />
+      <div className="mt-6 w-full max-w-2xl">
+        <ExportableSection filename="my-action-plan" title="My Action Plan">
+          <div className="flex w-full justify-center">
+            <PlanView />
+          </div>
+        </ExportableSection>
       </div>
       <div className="mt-8 w-full max-w-2xl rounded-2xl border-2 border-accent bg-accent-soft p-6 text-center print:hidden">
         <p className="text-sm font-medium text-primary">Have a specific goal in mind?</p>
