@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import PictureView from "@/components/onboarding/PictureView";
-import PrintButton from "@/components/PrintButton";
+import ExportableSection from "@/components/tools/ExportableSection";
 import PrintLetterhead from "@/components/tools/PrintLetterhead";
 
 export const metadata: Metadata = {
@@ -21,11 +21,12 @@ export default function PicturePage() {
           </p>
         </div>
       </div>
-      <div className="mt-6 flex w-full justify-center">
-        <PictureView />
-      </div>
-      <div className="mt-8 w-full max-w-2xl">
-        <PrintButton label="Print / Save my Pesa Picture as PDF" />
+      <div className="mt-6 w-full max-w-2xl">
+        <ExportableSection filename="my-pesa-picture" title="My Pesa Picture">
+          <div className="flex w-full justify-center">
+            <PictureView />
+          </div>
+        </ExportableSection>
       </div>
     </div>
   );

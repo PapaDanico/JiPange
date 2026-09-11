@@ -12,6 +12,7 @@ export default function WhereToSavePage() {
   return (
     <ToolLayout
       path="/tools/where-to-save"
+      exportAs="where-to-save"
       title="Where to put your savings"
       description="What each option pays after tax, with the things that can be compared compared — and the one that cannot kept separate."
       insights={[

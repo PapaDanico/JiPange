@@ -119,9 +119,10 @@ it works offline and outside CI.
 
 **A four-second workflow failure is not a bad rate.** On 20 August 2026 every
 workflow in this repository — the twice-daily sync *and* CI — began failing in
-about four seconds, before a single step ran and with no runner assigned. That
-is an account-level Actions problem (spending limit, billing, or availability);
-nothing in this repository can fix it, and re-running it will not help. The
+about four seconds, before a single step ran and with no runner assigned. The
+cause is now known and is **billing on the GitHub account** — confirmed by the
+account owner on 11 September 2026, so it is no longer worth diagnosing.
+Nothing in this repository can fix it, and re-running it will not help. The
 symptoms downstream were: the snapshot froze at 19 August, four commits landed
 on `main` with no CI at all, and the false ladder copy above shipped unnoticed.
 
@@ -167,10 +168,27 @@ The fix belongs upstream.
 
 ## Deploying, while CI is dead
 
-**Nothing in GitHub Actions runs.** No runner has been assigned since 20 August
-2026; every workflow fails in about three seconds before a step executes. It is
-account-level, not repository-level. Do not spend time on it from here — treat
-CI as absent and verify locally.
+**Nothing in GitHub Actions runs, because of account billing.** No runner has
+been assigned since 20 August 2026; every workflow fails in about three seconds
+before a step executes. The account owner confirmed the cause on 11 September
+2026: it is a **payment/billing problem on the GitHub account**, not a
+repository or workflow fault, and it is being left as it is for now. So do not
+debug it, do not rewrite a workflow to work around it, and do not re-run a
+failed job — treat CI as absent and verify locally.
+
+How to recognise it rather than re-deriving it, because the checks DO still get
+created and reported and so look like real failures. On PR #217 all three
+checks went red on push; the job API said why:
+
+```
+created_at 09:50:57  completed_at 09:50:59   # two seconds
+runner_id 0   runner_name ""                 # no runner was ever assigned
+```
+
+Log download returns **HTTP 404** for every such job — there are no steps to
+have produced one. Same signature on every recent run of `Build and Test` on
+`main`, so the base branch is red identically. A red check with `runner_id: 0`
+and a 404 log is this, not your diff.
 
 ```bash
 npm run verify        # everything the Build and Test matrix ran
