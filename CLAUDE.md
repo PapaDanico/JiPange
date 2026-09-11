@@ -352,6 +352,17 @@ CACHED_COMMIT_REF=<last built> COMMIT_REF=<head> bash scripts/netlify-should-bui
 - **Never `window.print()`.** Absent on iOS home-screen apps and dropped by
   several Android WebViews — silently. Both export paths build the file in the
   page and download it.
+- **An outside brief's figures are not evidence, however confident.** A
+  "Research & Data Update" circulated on 11 September 2026 was checked line by
+  line against `lib/`: its four P0 items were already shipped, and six of its
+  own figures failed arithmetic. It claimed NSSF was UNCHANGED at Ksh 100,000
+  (it rises 1,680) by applying the Year 4 ceiling to the Year 3 column, and put
+  the rise for "Ksh 108,000+" at 1,680 when at the ceiling it is 2,160. Both
+  now go red in `lib/__tests__/tax.test.ts`. Its PAYE example printed a correct
+  figure under a formula that does not produce it — omitting that the 25% band
+  is only Ksh 8,333 wide — so a reader checking our maths against it concludes
+  the calculator is broken. Treat such a document as a prompt to go and read
+  the statute, never as the source itself.
 - **`scripts/netlify-should-build.sh` has inverted exit polarity** — `0` skips
   the build, non-zero builds it. Every uncertain case builds.
 - **Deploy previews and branch deploys are off** deliberately, on cost. The
