@@ -249,6 +249,14 @@ Discovered 11 September 2026, unresolved, and the reason nobody should
 - That Vercel team is blocked for payment, so every push posts a red
   `Vercel — Account is blocked.` commit status on the pull request. It is
   noise, not a build failure, and no change here can clear it.
+- **`web/vercel.json` already does everything config can do** — `67f0a10`
+  set `git.deploymentEnabled: false` there (the project's root directory is
+  `web`, so that is the right path) to stop a second builder spending the
+  credit pool Netlify previews were switched off to protect. Do not add
+  another one, and do not assume the red status means it is not working: the
+  account block is reported by Vercel's GitHub integration before any
+  project-level setting is consulted. Reversing that decision is deleting
+  the file.
 - The apex currently resolves to `98.84.224.111` / `18.208.88.157`, which are
   plain EC2 addresses in us-east-1 — **neither** Vercel's apex
   (`76.76.21.21`) nor Netlify's (`75.2.60.5`). So which provider actually
