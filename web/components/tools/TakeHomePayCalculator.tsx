@@ -382,14 +382,14 @@ export default function TakeHomePayCalculator() {
             />
           </div>
 
-          <button
-            type="button"
-            onClick={() => window.print()}
-            className="h-11 w-full rounded-full border border-border text-sm font-medium text-ink-soft print:hidden"
-          >
-            Print / Save as PDF
-          </button>
         </div>
+        {/* No window.print() button here. It is absent on iOS when the app
+            runs from the home screen and dropped silently by several Android
+            WebViews, so on the devices most readers use it was a button that
+            did nothing. ExportCardButton below builds the file in the page
+            and downloads it, which works everywhere — and it was already
+            sitting directly underneath, so this removes a broken duplicate
+            rather than an export route. */}
         <ExportCardButton containerRef={resultsRef} filename="take-home-pay" />
         </>
       )}
