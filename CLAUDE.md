@@ -166,28 +166,41 @@ publisher vouches for; substituting our own freshness signal invents a claim
 they have not made. Being over-cautious about freshness is the safe direction.
 The fix belongs upstream.
 
-**And "upstream" is probably the same billing problem, one account over.**
-Found on 11 September 2026 while looking into something else: mwangazayield.org
-is a Vercel project in the **DN Consultancy** team, and that whole Vercel team
-is blocked — the project reports `live: false` and its latest deployment
-`readyState: "BLOCKED"`. So the publisher's scrapers keep committing fresh
-evidence to its git repository (which is why `--from` above finds auctions to
-3 September) while its SITE cannot rebuild. A frozen `meta.json` stamp served
-beside current committed data is exactly what a blocked deploy looks like from
-outside, and it fits better than a pipeline-stamp bug in their code.
+**It is not Mwangaza's SITE that is stuck — it is Mwangaza's SCRAPERS.**
+Checked properly on 11 September 2026, after a first pass got this wrong (see
+below). mwangazayield.org is a **Netlify** project (`mwangazayield`,
+`16fef5cc-…`) and it is publishing perfectly well: production deploy
+`6aa3d22e`, commit `d93ce8d`, published 10:05 that morning, `state: ready`,
+`error_message: null`.
 
-Two consequences worth knowing before spending time here:
+So the frozen stamp is not a deploy failure. The cause is named in that
+deploy's own commit message, from the publisher's side:
 
-- Clearing the Vercel block on that account is likely to un-freeze
-  `generatedAt` and with it this repository's staleness alarm. That is the
-  fix, and it is not in this repository.
-- It does NOT change the rule above. Until the publisher's stamp moves, we
-  keep keying off `generatedAt` and keep showing readers the stale notice.
+> every scraper host is egress-blocked from a session, so it cannot be
+> cleared from here, and meta.json must not be stamped by hand to silence it
+
+plus, in the same message, *"Actions has been dead since 15 August"* on that
+repository too. Their pipeline cannot run, exactly as ours cannot; the
+auction data that `--from` finds has been landing through commits rather than
+through the scrapers. Same shape of problem as this repository's, one repo
+over, and the same answer: it is fixed upstream, at their Actions, not here.
+
+**A first pass got this wrong, and the way it went wrong is the lesson.**
+There IS a blocked Vercel project named `mwangaza-yield` in the DN Consultancy
+team, `live: false`, latest deployment `readyState: BLOCKED`. From that alone
+it looked like a tidy explanation of the frozen stamp, and it was written up as
+one — a plausible cause assembled from one side of the evidence, which is the
+precise failure mode the top of this file exists to forbid. The Vercel project
+is a disused duplicate. Checking which platform actually serves the domain
+took one read and would have prevented the claim.
+
+It changes nothing about the rule above. Until the publisher's stamp moves, we
+keep keying off `generatedAt` and keep showing readers the stale notice.
 
 The 403 from `https://mwangazayield.org/data/rates.json` inside an agent
 session is a *separate* thing and is still the egress policy, not the origin:
 the failure is `CONNECT tunnel failed, response 403` from the proxy, which
-never reaches Vercel. The git route stays the way in.
+never reaches the site at all. The git route stays the way in.
 
 ## Deploying, while CI is dead
 
@@ -221,15 +234,9 @@ npm run verify:all    # + Playwright
 That is the gate now. `netlify.toml` also runs typecheck and lint before the
 build, because Netlify is the only builder still executing anything.
 
-**Deployment is Netlify, from `main`, and it is the one step an agent cannot
-do.** Publishing needs a Netlify credential this environment does not have:
-
-- the Netlify MCP connection is READ-SCOPED — its `deploy-site` upload returns
-  `403 Forbidden`, with a fresh token, from any directory;
-- `npx netlify deploy --build --prod` fails with `NETLIFY_AUTH_TOKEN is not
-  set`.
-
-So a human runs it, or sets `NETLIFY_AUTH_TOKEN` in the environment first:
+**Deployment is Netlify, from `main`.** `npx netlify deploy --build --prod`
+still fails in this environment with `NETLIFY_AUTH_TOKEN is not set`, so a
+human runs it or sets the token first:
 
 ```bash
 git pull origin main
@@ -238,6 +245,37 @@ npx netlify deploy --build --prod
 
 Never `--allow-anonymous`. It publishes to a NEW anonymous site rather than
 `jipangefinance`, which looks like success and is worse than failing.
+
+The Netlify MCP `deploy-site` no longer 403s as this file used to say: it now
+returns an `npx @netlify/mcp --site-id … --proxy-path …` command that carries
+its own credential, which means **an agent can reach production without a
+token being set anywhere.** Hence the next rule.
+
+**VERIFY THE SITE ID RESOLVES TO THE NAME YOU EXPECT, EVERY TIME, BEFORE
+DEPLOYING.** This nearly went very wrong on 11 September 2026. A session
+carried `16fef5cc-ad37-420d-b8c4-d7a75b171556` in its context, believing it to
+be `jipangefinance`; it had come from an unrelated session's notes. One read
+settled it:
+
+```
+16fef5cc-ad37-420d-b8c4-d7a75b171556  →  mwangazayield      NOT this project
+5eb93405-e05b-42af-8054-97fd53e5ea77  →  jipangefinance     this project
+```
+
+Deploying to the first would have published this repository's build over
+**mwangazayield.org** — the rates publisher this app depends on, another
+person's live site, and the feed the numbers here come from. Two site IDs, one
+character of visual similarity between them, and no error anywhere in the
+chain: a deploy to the wrong site succeeds.
+
+So it is one call, and it is not optional:
+
+```
+get-project on the siteId  →  read `name`  →  proceed only if it matches
+```
+
+A site ID from a previous session, another repository's notes, or anywhere but
+a lookup you just performed is not evidence.
 
 **There is a second, blocked Vercel project claiming the production domain.**
 Discovered 11 September 2026, unresolved, and the reason nobody should
@@ -272,8 +310,25 @@ integration in the Vercel dashboard (Project → Settings → Git → Disconnect
 or uninstall the Vercel GitHub App for this repository); the Vercel MCP tools
 available here cannot unlink a project, so this is a human step either way.
 
-**A merge is not a deploy, and has not been since 19 August 2026.** The live
-site served commit `5d6e36e` for three weeks while `main` moved on, so
+**Production auto-publishing is WORKING again, as of 11 September 2026.**
+This section said for three weeks that a merge was not a deploy, and that is
+no longer true — worth checking before anyone hand-deploys on the strength of
+it. PR #217 merged at 10:20 and Netlify published it by itself:
+
+```
+deploy 6aa3d5db   commit 39301cf   branch main   context production
+state ready       published_at 10:22:10          error_message null
+manual_deploy false                deploy_time 117s
+secret scan 395 files, 0 matches
+lighthouse 91 / 97 / 100 / 96 / 100
+```
+
+So the ordinary path is: merge, wait ~2 minutes, confirm. Confirm rather than
+assume — read `currentDeploy` on the project and check `commit_ref` is the
+commit you merged, because this has silently stopped once already.
+
+**What it looked like when it was broken**, for the next time it stops: the
+live site served commit `5d6e36e` for three weeks while `main` moved on, so
 everything merged in that window — several people's work, not one branch's —
 was invisible to readers. Deploy previews correctly cancel (they are off on
 cost), but production stopped publishing too. When that happens the answer is
