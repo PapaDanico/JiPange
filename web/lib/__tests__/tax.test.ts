@@ -205,4 +205,41 @@ describe("calculateNetPay — year-over-year NSSF comparison", () => {
     // PAYE saving offset, so take-home pay is lower under the current-year rates.
     expect(currentYear.netMonthly).toBeLessThan(priorYear.netMonthly);
   });
+
+  /* AT AND ABOVE THE NEW CEILING THE STEP IS 2,160 — NOT 1,680.
+   *
+   * The case above is the one below the Year 4 ceiling, where the step happens
+   * to be 1,680. That number then gets quoted as though it were the answer for
+   * everybody, which it is not: once gross reaches Ksh 108,000 BOTH years are
+   * capped, and the gap becomes the full distance between the two ceilings.
+   *
+   *     Year 3   480 + 6% x (72,000 - 8,000)   = 4,320
+   *     Year 4   540 + 6% x (108,000 - 9,000)  = 6,480   step 2,160
+   *
+   * A research brief circulated on 11 September 2026 stated the increase for
+   * "employees earning KES 108,000+" as 1,680 — the figure for a Ksh 100,000
+   * earner — and separately claimed the deduction was UNCHANGED at Ksh 100,000
+   * by applying the new 108,000 ceiling to the old year. Both are wrong, and
+   * both are the kind of wrong that arrives as a correction to this file.
+   *
+   * Hence this test: the step is pinned at the ceiling and above it, and pinned
+   * as a PLATEAU, because that is the property the mistake violates. A capped
+   * deduction cannot keep growing with salary, so the same 2,160 must hold at
+   * 150,000 and at 500,000. */
+  it("at and above the Year 4 ceiling the NSSF step is 2,160 and stops growing", () => {
+    for (const gross of [108_000, 150_000, 500_000]) {
+      const priorYear = calculateNSSF(gross, NSSF_PRIOR_YEAR_LIMITS);
+      const currentYear = calculateNSSF(gross);
+
+      expect(priorYear.total).toBe(4_320);
+      expect(currentYear.total).toBe(6_480);
+      expect(currentYear.total - priorYear.total).toBe(2_160);
+    }
+
+    // And BELOW the ceiling it is genuinely smaller, which is what makes the
+    // single-number claim wrong rather than merely imprecise.
+    const at100k = calculateNSSF(100_000).total - calculateNSSF(100_000, NSSF_PRIOR_YEAR_LIMITS).total;
+    expect(at100k).toBe(1_680);
+    expect(at100k).toBeLessThan(2_160);
+  });
 });
