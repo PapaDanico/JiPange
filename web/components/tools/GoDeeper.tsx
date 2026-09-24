@@ -34,7 +34,7 @@ export interface DeeperLink {
 export default function GoDeeper({ deeper }: { deeper: DeeperLink }) {
   return (
     <div className="w-full rounded-2xl border border-primary/15 bg-primary/[0.04] p-6 print:hidden">
-      <p className="text-xs font-semibold uppercase tracking-wider text-primary/70">
+      <p className="text-xs font-semibold uppercase tracking-wider text-muted">
         Going deeper
       </p>
       <p className="mt-2 text-sm font-medium text-primary">{deeper.question}</p>

@@ -368,7 +368,7 @@ export default function Home() {
       <section className="bg-shell py-14 sm:py-16">
         <div className="mx-auto max-w-5xl px-4 sm:px-6">
           <div data-reveal className="mb-10 text-center">
-            <p className="mb-2 text-[0.6875rem] font-bold uppercase tracking-[0.16em] text-canvas/45">
+            <p className="mb-2 text-[0.6875rem] font-bold uppercase tracking-[0.16em] text-canvas/60">
               The Kenya money gap — in three numbers
             </p>
             <h2 className="text-xl font-extrabold tracking-tight text-canvas/90 sm:text-2xl" style={{ textWrap: "balance" } as React.CSSProperties}>
@@ -394,10 +394,10 @@ export default function Home() {
                 <p className="text-[0.9375rem] font-bold leading-snug text-canvas/90">
                   {stat.label}
                 </p>
-                <p className="mt-1 text-[0.8125rem] leading-relaxed text-canvas/50">
+                <p className="mt-1 text-[0.8125rem] leading-relaxed text-canvas/60">
                   {stat.detail}
                 </p>
-                <p className="mt-auto border-t border-white/7 pt-3 text-[0.6875rem] text-canvas/30">
+                <p className="mt-auto border-t border-white/7 pt-3 text-[0.6875rem] text-canvas/60">
                   {stat.source}
                 </p>
                 <span className="text-[0.8125rem] font-semibold text-accent group-hover:opacity-80">
@@ -727,7 +727,7 @@ export default function Home() {
                   light-background text shade drops to 1.24:1. */}
               <span className="text-accent">90 seconds away.</span>
             </h2>
-            <p className="mx-auto mb-8 max-w-md text-base leading-relaxed text-canvas/70">
+            <p className="mx-auto mb-8 max-w-md text-base leading-relaxed text-canvas/90">
               No black box. No selling. No accounts. Just the maths, the vehicle, and the paybill to
               start. The rest is yours.
             </p>
@@ -742,7 +742,7 @@ export default function Home() {
                 (chip) => (
                   <span
                     key={chip}
-                    className="rounded-full border border-white/12 bg-white/7 px-3 py-1.5 text-[0.8125rem] text-canvas/55"
+                    className="rounded-full border border-white/12 bg-white/7 px-3 py-1.5 text-[0.8125rem] text-canvas"
                   >
                     {chip}
                   </span>
@@ -761,7 +761,7 @@ export default function Home() {
           * three times the width the eye can track back from. Every other
           * block on this page is bounded; this one was missed because it sits
           * outside the sections. */}
-        <p className="mx-auto max-w-3xl text-[0.6875rem] text-canvas/28">
+        <p className="mx-auto max-w-3xl text-[0.6875rem] text-canvas/90">
           {/* Two hand-typed errors lived in this sentence.
             *
             * "CMA Collective Investment Schemes, July 2026" named a month in

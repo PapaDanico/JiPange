@@ -78,11 +78,11 @@ export default function FireNumberCalculator() {
     if (expenses === null) return null;
     return planKenyanRetirement({
       currentMonthlyExpenses: expenses,
-      currentMonthlyMedical: Number(monthlyMedical) || 0,
+      currentMonthlyMedical: amountOrZero(monthlyMedical),
       currentAge,
       retirementAge: Math.max(currentAge, targetAge),
-      currentCapital: Number(currentCapital) || 0,
-      monthlyContribution: Number(monthlySaving) || 0,
+      currentCapital: amountOrZero(currentCapital),
+      monthlyContribution: amountOrZero(monthlySaving),
     });
   }, [monthlyExpenses, monthlyMedical, currentAge, targetAge, currentCapital, monthlySaving]);
 
@@ -488,8 +488,8 @@ export default function FireNumberCalculator() {
           </div>
 
           <FirePathChart
-            monthlyExpenses={Number(monthlyExpenses)}
-            monthlyMedical={Number(monthlyMedical) || 0}
+            monthlyExpenses={amountOrZero(monthlyExpenses)}
+            monthlyMedical={amountOrZero(monthlyMedical)}
             currentAge={currentAge}
             targetAge={Math.max(currentAge, targetAge)}
           />

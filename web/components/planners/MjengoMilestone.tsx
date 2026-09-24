@@ -89,8 +89,8 @@ export default function MjengoMilestone() {
           min={0}
           value={contribution}
           onChange={(event) => setContribution(event.target.value)}
-          placeholder="Monthly contribution, e.g. 30000"
-          className="h-12 w-full rounded-lg border border-border bg-white px-4 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+          placeholder="e.g. 30000"
+          className="h-12 w-full rounded-lg border border-border bg-white pl-4 pr-20 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
         />
         <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-sm text-ink-soft">
           Ksh/mo

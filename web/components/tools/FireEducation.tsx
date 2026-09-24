@@ -62,7 +62,9 @@ export default function FireEducation() {
         </h3>
         <p className="mt-2 text-sm leading-relaxed text-ink-soft">{premise.summary}</p>
 
-        <div className="mt-4 overflow-x-auto">
+        {/* Focusable so a keyboard user can scroll it: at 375px the table is wider
+            than its box (axe: scrollable-region-focusable). */}
+        <div className="mt-4 overflow-x-auto" tabIndex={0} role="region" aria-label="Net real yields table, scrolls sideways">
           <table className="w-full min-w-[22rem] text-left text-sm">
             <caption className="sr-only">
               Net real yields on Kenyan government paper, against the {pct(REAL_RETURN_DEFAULT)}{" "}

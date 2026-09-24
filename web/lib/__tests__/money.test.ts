@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
-import { amountOrZero, positiveAmount, round2 } from "../money";
+import { amountOrZero, MAX_AMOUNT, positiveAmount, round2 } from "../money";
 
 /**
  * money.ts had no tests, and ten modules import round2 — including the tax
@@ -89,6 +89,28 @@ describe("positiveAmount", () => {
   it("accepts a very large but finite salary", () => {
     // The point is to block the impossible, not to editorialise about wealth.
     expect(positiveAmount("999999999")).toBe(999999999);
+  });
+
+  /* FINITE WAS NOT ENOUGH. "1e308" is finite, so the isFinite guard admitted
+   * it, and one multiplication later eight pages rendered NaN or Infinity%. */
+  it("rejects a finite amount past the ceiling, which isFinite let through", () => {
+    expect(Number.isFinite(Number("1e308"))).toBe(true);
+    expect(positiveAmount("1e308")).toBeNull();
+    expect(positiveAmount(MAX_AMOUNT + 1)).toBeNull();
+    expect(amountOrZero("1e308")).toBe(0);
+    expect(amountOrZero(Number.MAX_VALUE)).toBe(0);
+  });
+
+  it("accepts right up to the ceiling", () => {
+    expect(positiveAmount(MAX_AMOUNT)).toBe(MAX_AMOUNT);
+    expect(amountOrZero(MAX_AMOUNT)).toBe(MAX_AMOUNT);
+  });
+
+  /* The ceiling is only safe because arithmetic-sweep.test.ts proves every
+   * engine finite up to MAX_SAFE_INTEGER. Raising it past that admits values
+   * nothing has proven — write the property, not today's number. */
+  it("never admits anything the arithmetic sweep has not proven finite", () => {
+    expect(MAX_AMOUNT).toBeLessThanOrEqual(Number.MAX_SAFE_INTEGER);
   });
 });
 

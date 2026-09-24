@@ -808,3 +808,78 @@ test("insight cards render below the calculator, not above it", async ({ page })
     ).toBeGreaterThan(inputBox!.y);
   }
 });
+
+// ─── Controls that lied about their own state ─────────────────────────────
+
+/* The shared Toggle's knob had no `left`, so as an absolute child of a
+ * <button> it sat where the button centres content: OFF rendered with the
+ * knob at the right edge — the ON position — and ON pushed it 18px outside
+ * the track. A switch that looks on when it is off answers the wrong question
+ * on every page that uses one. */
+test("toggle: the knob is left when off, right when on, and inside the track", async ({ page }) => {
+  await page.goto("/tools/sha-health");
+  const toggle = page.getByRole("switch").first();
+  await toggle.scrollIntoViewIfNeeded();
+  const geometry = () =>
+    toggle.evaluate((el) => {
+      const t = el.getBoundingClientRect();
+      const k = el.querySelector("span")!.getBoundingClientRect();
+      return { trackL: t.left, trackR: t.right, knobL: k.left, knobR: k.right, mid: t.left + t.width / 2 };
+    });
+
+  await expect(toggle).toHaveAttribute("aria-checked", "false");
+  const off = await geometry();
+  expect(off.knobR, "OFF knob should sit in the left half").toBeLessThanOrEqual(off.mid + 1);
+  expect(off.knobL).toBeGreaterThanOrEqual(off.trackL);
+
+  await toggle.click();
+  await expect(toggle).toHaveAttribute("aria-checked", "true");
+  await expect.poll(async () => (await geometry()).knobL).toBeGreaterThanOrEqual(off.mid - 1);
+  const on = await geometry();
+  expect(on.knobR, "ON knob overflowed its track").toBeLessThanOrEqual(on.trackR + 0.5);
+});
+
+/* Finite is not the same as sane: `1e308` passes Number.isFinite, is typeable
+ * into any number field, and used to print "Infinity%" or "NaN×" on eight
+ * pages. The parsers now cap amounts at MAX_AMOUNT (lib/money.ts). */
+for (const path of ["/tools/fuliza-cost", "/tools/sha-health", "/tools/fire-number", "/tools/debt-escape"]) {
+  test(`${path}: a typed 1e308 never renders NaN or Infinity`, async ({ page }) => {
+    // networkidle, not load: a fill that lands before hydration is reset by
+    // React to "", nothing computes, and the negative assertion below passes
+    // on an empty page. That is exactly how this test first passed against
+    // the unfixed build on two of these four pages.
+    await page.goto(path, { waitUntil: "networkidle" });
+    const fields = page.getByRole("spinbutton");
+    const n = await fields.count();
+    expect(n, "no number fields — this test would be vacuous").toBeGreaterThan(0);
+    for (let i = 0; i < n; i++) {
+      if (!(await fields.nth(i).isVisible())) continue;
+      await fields.nth(i).fill("1e308");
+      await expect(fields.nth(i)).toHaveValue("1e308");
+    }
+    await page.waitForTimeout(300);
+    // No \b anchors: toContainText reads textContent, which runs adjacent
+    // elements together ("of principal" + "Infinity%" → "principalInfinity%"),
+    // so a word boundary hides the very case this test exists for. Both are
+    // case-sensitive and appear in no English word this site uses.
+    await expect(page.locator("main")).not.toContainText(/NaN|Infinity/);
+  });
+}
+
+/* The two hand-rolled planner inputs overlaid a unit suffix with no right
+ * padding, so the placeholder and typed digits ran underneath "Ksh/yr". */
+test("planner inputs leave room for their unit suffix, and are labelled", async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.goto("/planners/education");
+  const fees = page.getByLabel("School fees (per child)");
+  await expect(fees).toBeVisible();
+  const pad = await fees.evaluate((el) => parseFloat(getComputedStyle(el).paddingRight));
+  expect(pad).toBeGreaterThanOrEqual(64);
+});
+
+/* /profile had no <h1> at all — the wizard's per-step heading is an <h2> — so
+ * a screen reader arriving on the page had nothing to say where it was. */
+test("the money check page has exactly one top-level heading", async ({ page }) => {
+  await page.goto("/profile");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
+});
