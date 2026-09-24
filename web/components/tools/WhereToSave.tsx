@@ -88,6 +88,9 @@ export default function WhereToSave() {
          * rather than a static "scroll →": it cannot claim there is more to see
          * once you have reached the end. */}
         <div
+          tabIndex={0}
+          role="region"
+          aria-label="Where to save comparison table, scrolls sideways"
           className="mt-3 overflow-x-auto [background-attachment:local,local,scroll,scroll] [background-position:left_center,right_center,left_center,right_center] [background-repeat:no-repeat] [background-size:24px_100%,24px_100%,22px_100%,22px_100%] [background-image:linear-gradient(to_right,var(--surface,#fff),transparent),linear-gradient(to_left,var(--surface,#fff),transparent),linear-gradient(to_right,rgba(0,0,0,0.16),transparent),linear-gradient(to_left,rgba(0,0,0,0.16),transparent)]"
         >
           <table className="min-w-full whitespace-nowrap text-left text-sm">
