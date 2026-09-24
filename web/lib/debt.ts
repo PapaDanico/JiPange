@@ -1,4 +1,5 @@
 import { assumedMmfYield } from "./mmf-assumption";
+import { finiteOr } from "./money";
 
 /**
  * Multi-loan debt escape planner using the avalanche method (highest effective
@@ -197,4 +198,29 @@ export function calculateDebtStack(
     debtFreeLabel,
     timeline,
   };
+}
+
+/**
+ * The largest monthly rate the debt tools will model. 100% a month is already
+ * about 409,500% a year, past the harshest mobile credit by orders of
+ * magnitude; compounding anything larger twelve times overflows to Infinity,
+ * which is what typing "1e308" into the rate field used to print beside
+ * "effective APR".
+ */
+export const MAX_MONTHLY_RATE_PCT = 100;
+
+/**
+ * A typed monthly rate (in percent), or null when it is not one a lender could
+ * charge. Blank reads as 0% — the calculator has always counted a loan with a
+ * balance and no rate as interest-free rather than dropping it from the plan.
+ */
+export function monthlyRateOrNull(raw: unknown): number | null {
+  const rate = Number(raw);
+  if (!Number.isFinite(rate) || rate < 0 || rate > MAX_MONTHLY_RATE_PCT) return null;
+  return rate;
+}
+
+/** A monthly rate compounded to its effective annual rate, in percent. */
+export function effectiveAprPct(monthlyRatePct: number): number {
+  return finiteOr((Math.pow(1 + monthlyRatePct / 100, 12) - 1) * 100);
 }

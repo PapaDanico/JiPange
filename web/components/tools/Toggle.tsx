@@ -23,9 +23,13 @@ export default function Toggle({
         checked ? trackOn : "bg-[#D4CEC5]"
       }`}
     >
+      {/* left-0 is load-bearing. Without it an absolute child of a <button>
+          sits where the button centres its content, so the OFF knob rendered
+          at the right edge — reading as ON — and the ON knob overflowed the
+          track by 18px. 2px inset each side: 0.5 (2px) off, 22px on. */}
       <span
-        className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${
-          checked ? "translate-x-5" : "translate-x-0.5"
+        className={`absolute left-0 top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${
+          checked ? "translate-x-[22px]" : "translate-x-0.5"
         }`}
       />
     </button>

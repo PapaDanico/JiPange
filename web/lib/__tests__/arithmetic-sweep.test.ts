@@ -10,7 +10,7 @@ import { checkOneThirdRule } from "@/lib/one-third-rule";
 import { calculateShaHealth } from "@/lib/sha";
 import { calculateMerryGoRound, calculateChamaInvestment } from "@/lib/chama";
 import { calculateLandPurchase } from "@/lib/land";
-import { calculateDebtStack } from "@/lib/debt";
+import { calculateDebtStack, effectiveAprPct, monthlyRateOrNull } from "@/lib/debt";
 import { dhowcsdLadder, EVEN_WEIGHTS } from "@/lib/market-2026";
 import { solveMonthlyContribution } from "@/lib/savings-goal";
 import { solveYearsToTarget, solveYearsToInflatingTarget, buildGoalPlan } from "@/lib/goal-planner";
@@ -170,6 +170,10 @@ const CASES: { name: string; run: (v: number) => unknown; infinityMeans?: string
   { name: "debtStack(balance)", run: (v) => calculateDebtStack([{ id: "a", name: "a", balance: v, monthlyRatePct: 3 }], 20_000) },
   { name: "debtStack(rate)", run: (v) => calculateDebtStack([{ id: "a", name: "a", balance: 100_000, monthlyRatePct: v }], 20_000) },
   { name: "debtStack(budget)", run: (v) => calculateDebtStack([{ id: "a", name: "a", balance: 100_000, monthlyRatePct: 3 }], v) },
+  /* The debt page's "≈ N% effective APR" line, which a typed 1e308 once
+     turned into "Infinity%". Driven raw and through the page's own parser. */
+  { name: "effectiveAprPct", run: (v) => effectiveAprPct(v) },
+  { name: "effectiveAprPct(parsed)", run: (v) => effectiveAprPct(monthlyRateOrNull(v) ?? 0) },
 
   /* ── The compounding layer, driven directly ────────────────────────────
      futureValue is where fault 3 lived, so the primitive and its wrappers

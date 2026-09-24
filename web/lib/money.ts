@@ -26,9 +26,31 @@ export function round2(value: number): number {
  */
 export function positiveAmount(raw: unknown): number | null {
   const value = Number(raw);
-  if (!Number.isFinite(value) || value <= 0) return null;
+  if (!Number.isFinite(value) || value <= 0 || value > MAX_AMOUNT) return null;
   return value;
 }
+
+/**
+ * The largest amount any calculator will accept: a quadrillion shillings.
+ *
+ * WHY FINITE WAS NOT ENOUGH
+ *
+ * `Number.isFinite` closed `1e400`, which parses to Infinity. It left `1e308`
+ * open: finite, typeable into any number field in eleven keystrokes, and one
+ * multiplication from Infinity. Driving every calculator in a browser with it
+ * (September 2026) put "NaN× your current annual spending" on the FIRE page,
+ * "Infinity%" on Fuliza, SHA, DhowCSD and school fees, and NaN into the
+ * take-home pay chart's SVG path — eight pages, all through the two parsers
+ * in this file.
+ *
+ * THE NUMBER. lib/__tests__/arithmetic-sweep.test.ts proves every engine
+ * stays finite up to `Number.MAX_SAFE_INTEGER` (about 9 x 10^15). The parser
+ * must not admit anything that sweep has not proven, so the ceiling sits
+ * below it, at a round figure that no household, chama or SACCO sum comes
+ * within many orders of magnitude of. Above it there is nothing to model, so
+ * the field is treated as not-an-amount — the same answer as a blank one.
+ */
+export const MAX_AMOUNT = 1e15;
 
 /**
  * An optional amount that defaults to zero — the `Number(x) || 0` idiom, with
@@ -42,7 +64,7 @@ export function positiveAmount(raw: unknown): number | null {
  */
 export function amountOrZero(raw: unknown): number {
   const value = Number(raw);
-  if (!Number.isFinite(value) || value <= 0) return 0;
+  if (!Number.isFinite(value) || value <= 0 || value > MAX_AMOUNT) return 0;
   return value;
 }
 

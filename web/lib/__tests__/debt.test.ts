@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { calculateDebtStack } from "../debt";
+import { calculateDebtStack, effectiveAprPct, MAX_MONTHLY_RATE_PCT, monthlyRateOrNull } from "../debt";
 
 describe("calculateDebtStack", () => {
   it("returns null when no valid loans", () => {
@@ -72,5 +72,30 @@ describe("calculateDebtStack", () => {
     const kcb = result!.loans.find((l) => l.id === "b")!;
     // Tala (rank 1, highest rate) should be cleared before or same time as KCB.
     expect(tala.clearedAtMonth).toBeLessThanOrEqual(kcb.clearedAtMonth);
+  });
+});
+
+describe("the typed monthly rate", () => {
+  it("compounds a monthly rate to its effective annual rate", () => {
+    expect(effectiveAprPct(0)).toBe(0);
+    expect(effectiveAprPct(1)).toBeCloseTo(12.6825, 3);
+    expect(effectiveAprPct(100)).toBe(409_500);
+  });
+
+  it("keeps a blank rate as 0%, so the loan stays in the plan", () => {
+    expect(monthlyRateOrNull("")).toBe(0);
+    expect(monthlyRateOrNull("13")).toBe(13);
+  });
+
+  /* "1e308" is finite; before this bound it reached Math.pow and the page
+   * printed "Infinity% effective APR". */
+  it("refuses a rate no lender could charge, and anything that is not a rate", () => {
+    for (const bad of ["1e308", "-1", "abc", String(MAX_MONTHLY_RATE_PCT + 0.01)]) {
+      expect(monthlyRateOrNull(bad), bad).toBeNull();
+    }
+  });
+
+  it("never answers a non-finite APR for any rate it admits", () => {
+    expect(Number.isFinite(effectiveAprPct(MAX_MONTHLY_RATE_PCT))).toBe(true);
   });
 });

@@ -16,6 +16,7 @@ import {
 } from "@/lib/education-plan";
 import { assumedMmfYield } from "@/lib/mmf-assumption";
 import { formatKES } from "@/lib/budget";
+import { amountOrZero, positiveAmount } from "@/lib/money";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import ExportCardButton from "./ExportCardButton";
@@ -106,14 +107,14 @@ export default function SchoolFeesLifetimeCalculator() {
 
   const result = useMemo(() => {
     const inputs: ChildInput[] = children
-      .filter((c) => Number(c.annualFee) > 0)
+      .filter((c) => positiveAmount(c.annualFee) !== null)
       .map((c) => ({
         name: c.name,
         gradeValue: c.gradeValue,
-        annualFeeTodayKES: Number(c.annualFee),
+        annualFeeTodayKES: amountOrZero(c.annualFee),
         escalation: Math.max(0, Number(escalationPct) || 0) / 100,
         universityYears: university ? 4 : 0,
-        universityAnnualTodayKES: university ? Number(uniFee) || 0 : 0,
+        universityAnnualTodayKES: university ? amountOrZero(uniFee) : 0,
       }));
 
     if (inputs.length === 0) return null;
@@ -133,7 +134,7 @@ export default function SchoolFeesLifetimeCalculator() {
 
     const common = {
       years: schedule,
-      openingBalanceKES: Math.max(0, Number(alreadySaved) || 0),
+      openingBalanceKES: amountOrZero(alreadySaved),
       annualReturn: returnRate,
       frontLoaded,
       leadMonths: DEFAULT_LEAD_MONTHS,
@@ -145,7 +146,7 @@ export default function SchoolFeesLifetimeCalculator() {
       household,
       monthly,
       interest: interestContributionKES(common),
-      sharePct: shareOfNetPayPct(monthly, Number(netPay) || 0),
+      sharePct: shareOfNetPayPct(monthly, amountOrZero(netPay)),
       naiveTotal: household.children.reduce((s, c) => s + c.totalIfFeesNeverRoseKES, 0),
     };
   }, [

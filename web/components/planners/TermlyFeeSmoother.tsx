@@ -70,8 +70,10 @@ export default function TermlyFeeSmoother() {
           Three lumpy termly bills become one flat monthly amount that earns while it waits.
         </p>
 
-        <div className="mt-4 flex items-center justify-between">
-          <p className="text-sm font-medium text-ink-soft">School fees (per child)</p>
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
+          <label htmlFor="smoother-fees" className="text-sm font-medium text-ink-soft">
+            School fees (per child)
+          </label>
           <div className="flex gap-1" role="group" aria-label="Fee period">
             {([["Per year", false], ["Per term", true]] as const).map(([label, value]) => (
               <button
@@ -79,7 +81,7 @@ export default function TermlyFeeSmoother() {
                 type="button"
                 onClick={() => { setPerTerm(value); handleInputsChanged(); }}
                 aria-pressed={perTerm === value}
-                className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
+                className={`inline-flex min-h-10 items-center whitespace-nowrap rounded-full border px-3 text-xs font-medium transition-colors ${
                   perTerm === value
                     ? "border-primary bg-primary text-white"
                     : "border-border bg-white text-ink-soft hover:bg-canvas"
@@ -122,8 +124,8 @@ export default function TermlyFeeSmoother() {
               setAnnualFees(event.target.value);
               handleInputsChanged();
             }}
-            placeholder="Custom amount, e.g. 150000"
-            className="h-12 w-full rounded-lg border border-border bg-white px-4 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+            placeholder="Custom, e.g. 150000"
+            className="h-12 w-full rounded-lg border border-border bg-white pl-4 pr-20 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
           />
           <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-sm text-ink-soft">
             {perTerm ? "Ksh/term" : "Ksh/yr"}

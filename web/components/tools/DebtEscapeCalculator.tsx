@@ -2,8 +2,9 @@
 
 import { useCallback, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
-import { calculateDebtStack, PRESET_LENDERS } from "@/lib/debt";
+import { calculateDebtStack, effectiveAprPct, monthlyRateOrNull, PRESET_LENDERS } from "@/lib/debt";
 import { formatKES } from "@/lib/budget";
+import { amountOrZero, positiveAmount } from "@/lib/money";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import BehavioralInsightStrip from "./BehavioralInsightStrip";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
@@ -37,18 +38,18 @@ export default function DebtEscapeCalculator() {
   const loanInputs = useMemo(
     () =>
       loans
-        .filter((l) => Number(l.balance) > 0 && Number(l.rate) >= 0)
+        .filter((l) => positiveAmount(l.balance) !== null && monthlyRateOrNull(l.rate) !== null)
         .map((l) => ({
           id: l.id,
           name: l.name || l.id,
-          balance: Number(l.balance),
-          monthlyRatePct: Number(l.rate),
+          balance: amountOrZero(l.balance),
+          monthlyRatePct: monthlyRateOrNull(l.rate) ?? 0,
         })),
     [loans]
   );
 
   const result = useMemo(
-    () => calculateDebtStack(loanInputs, Number(budget)),
+    () => calculateDebtStack(loanInputs, amountOrZero(budget)),
     [loanInputs, budget]
   );
 
@@ -57,8 +58,8 @@ export default function DebtEscapeCalculator() {
     [loanInputs]
   );
 
-  const hasInput = budget !== "" && Number(budget) > 0 && loanInputs.length > 0;
-  const tooLow = hasInput && Number(budget) <= interestThreshold;
+  const hasInput = positiveAmount(budget) !== null && loanInputs.length > 0;
+  const tooLow = hasInput && amountOrZero(budget) <= interestThreshold;
   const horizonExceeded = hasInput && !tooLow && result === null;
 
   const resultsRef = useScrollIntoView<HTMLDivElement>(result !== null);
@@ -170,9 +171,9 @@ export default function DebtEscapeCalculator() {
                 min={0.1}
               />
             </div>
-            {loan.rate && Number(loan.rate) > 0 && (
+            {(monthlyRateOrNull(loan.rate) ?? 0) > 0 && (
               <p className="text-[11px] text-faint">
-                ≈ {Math.round((Math.pow(1 + Number(loan.rate) / 100, 12) - 1) * 100)}% effective APR — verify the current rate in
+                ≈ {Math.round(effectiveAprPct(monthlyRateOrNull(loan.rate) ?? 0)).toLocaleString("en-KE")}% effective APR — verify the current rate in
                 your lender&apos;s app.
               </p>
             )}
@@ -223,7 +224,7 @@ export default function DebtEscapeCalculator() {
           <ResultCard
             label="Debt-free by"
             value={result.debtFreeLabel}
-            sublabel={`${result.monthsToDebtFree} months from now, paying ${formatKES(Number(budget))}/month in total.`}
+            sublabel={`${result.monthsToDebtFree} months from now, paying ${formatKES(amountOrZero(budget))}/month in total.`}
             tone="success"
           />
 
@@ -302,12 +303,12 @@ export default function DebtEscapeCalculator() {
 
           {result.mmfValue12m > 0 && (
             <BehavioralInsightStrip
-              insight={`Once debt-free, redirect ${formatKES(Number(budget))}/month into a Money Market Fund. At 11.8% p.a., that grows to ${formatKES(result.mmfValue12m)} in 12 months — the same money that was disappearing in interest fees.`}
+              insight={`Once debt-free, redirect ${formatKES(amountOrZero(budget))}/month into a Money Market Fund. At 11.8% p.a., that grows to ${formatKES(result.mmfValue12m)} in 12 months — the same money that was disappearing in interest fees.`}
             />
           )}
 
           <ShareResultButton
-            message={`💸 *My Debt Escape Plan*\n\nTotal debt: ${formatKES(result.totalBalance)}\nMonthly payment: ${formatKES(Number(budget))}\nDebt-free: ${result.debtFreeLabel} (${result.monthsToDebtFree} months)\nTotal interest: ${formatKES(result.totalInterestPaid)}\n\nPlan yours → jipangefinance.org/tools/debt-escape`}
+            message={`💸 *My Debt Escape Plan*\n\nTotal debt: ${formatKES(result.totalBalance)}\nMonthly payment: ${formatKES(amountOrZero(budget))}\nDebt-free: ${result.debtFreeLabel} (${result.monthsToDebtFree} months)\nTotal interest: ${formatKES(result.totalInterestPaid)}\n\nPlan yours → jipangefinance.org/tools/debt-escape`}
           />
 
           <CalculatorDisclaimer
