@@ -5,6 +5,8 @@ import { useMemo } from "react";
 import { calculateLoanAmortization, MAX_TERM_MONTHS } from "@/lib/loans";
 import { formatKES } from "@/lib/budget";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
+import { CBK_AVG_LENDING_RATE_PCT } from "@/lib/kenya-stats";
+import { SACCO_EXAMPLE_ANNUAL_RATE_PCT } from "@/lib/tool-stats";
 import NumberField from "./NumberField";
 import ResetLink from "./ResetLink";
 import QuickFillChips from "./QuickFillChips";
@@ -25,10 +27,17 @@ const PRINCIPAL_CHIPS = [
   { label: "1M", value: "1000000" },
 ];
 
+/* The SACCO and bank chips are read from the same place as the insight cards
+ * under this calculator. They used to say 13% and 18% while the card said a
+ * SACCO charges 12% (loan-comparison.ts's 1% a month) — one page, two SACCO
+ * rates. The bank chip is now CBK's measured average lending rate rather than
+ * an unsourced 18%; a personal loan can price above it, and the field is
+ * there for the rate on the reader's own offer. */
+const SACCO_RATE = String(SACCO_EXAMPLE_ANNUAL_RATE_PCT);
 const RATE_CHIPS = [
   { label: "8% HELB", value: "8" },
-  { label: "13% SACCO", value: "13" },
-  { label: "18% bank", value: "18" },
+  { label: `${SACCO_RATE}% SACCO`, value: SACCO_RATE },
+  { label: `${CBK_AVG_LENDING_RATE_PCT}% bank avg`, value: String(CBK_AVG_LENDING_RATE_PCT) },
 ];
 
 /* Fifty years, from the engine's own ceiling on schedule length. Derived
@@ -49,7 +58,7 @@ export default function LoanRepaymentCalculator() {
   );
   const [annualRate, setAnnualRate] = useStickyState(
     "jipange:tool:loan-repayment:annualRate",
-    "13"
+    SACCO_RATE
   );
   const [termYears, setTermYears] = useStickyState(
     "jipange:tool:loan-repayment:termYears",
@@ -74,11 +83,11 @@ export default function LoanRepaymentCalculator() {
 
   const resultsRef = useScrollIntoView<HTMLDivElement>(result !== null);
 
-  const isDirty = principal !== "" || annualRate !== "13" || termYears !== "";
+  const isDirty = principal !== "" || annualRate !== SACCO_RATE || termYears !== "";
 
   function handleReset() {
     setPrincipal("");
-    setAnnualRate("13");
+    setAnnualRate(SACCO_RATE);
     setTermYears("");
   }
 

@@ -227,6 +227,161 @@ export const SOURCES = {
     note: "51.9% of the Ksh 851.7bn total CIS industry at the same date.",
   },
 
+  /* CBK Bank Supervision Annual Report 2025 — the year to 31 December 2025.
+   *
+   * Read from the PDF itself (178 pages, created 21 September 2026), not from
+   * press coverage of it. Two things that coverage got wrong, and one the
+   * report gets wrong about itself, are why every entry below names a table:
+   *
+   *   - The press quoted Ksh 6.385tn as "deposits". That is Table 2's TOTAL
+   *     deposits. CUSTOMER deposits — the measure bankDepositsTrillionKsh
+   *     above uses — are Ksh 6.12tn (Table 17). Same report, different line.
+   *   - §3.13 says gross NPLs fell "1.1 percent"; its own Table 20 has
+   *     697,294 → 696,931, a 0.05% fall. Table 20 then prints "9.2" for net
+   *     asset growth that is 10.3% everywhere else. Where prose and table
+   *     disagree, the table is taken and the prose is not repeated.
+   *
+   * The report is annual and lands around September, so each entry is due
+   * for review once the 2026 edition should be out. */
+  cbkMortgageAvgRatePct: {
+    value: 13.5,
+    unit: "% average interest rate on residential mortgages, 2025 (range 7.5–19.6%)",
+    publisher: "Central Bank of Kenya",
+    title: "Bank Supervision Annual Report 2025 — Residential Mortgage Survey (§2.10.1)",
+    url: "https://www.centralbank.go.ke/reports/bank-supervision-and-banking-sector-reports/",
+    asOf: "2025-12-31",
+    reviewBy: "2027-10-31",
+    note: "Down from 15.2% in 2024. Average loan Ksh 10.0M over 11.5 years; 16.3% of mortgage value non-performing.",
+  },
+  cbkMortgageAvgTermYears: {
+    value: 11.5,
+    unit: "years, average mortgage maturity, 2025 (minimum 5.7, maximum 18)",
+    publisher: "Central Bank of Kenya",
+    title: "Bank Supervision Annual Report 2025 — Residential Mortgage Survey (§2.10.1)",
+    url: "https://www.centralbank.go.ke/reports/bank-supervision-and-banking-sector-reports/",
+    asOf: "2025-12-31",
+    reviewBy: "2027-10-31",
+  },
+  cbkAvgLendingRatePct: {
+    value: 14.82,
+    unit: "% commercial banks' average lending rate, December 2025",
+    publisher: "Central Bank of Kenya",
+    title: "Bank Supervision Annual Report 2025 — Interest Rates (§3.7)",
+    url: "https://www.centralbank.go.ke/reports/bank-supervision-and-banking-sector-reports/",
+    asOf: "2025-12-31",
+    reviewBy: "2027-10-31",
+    note: "Down from 16.89% in December 2024. An average across all borrowers, corporate included — an unsecured personal loan usually prices above it.",
+  },
+  cbkAvgDepositRatePct: {
+    value: 7.13,
+    unit: "% commercial banks' average deposit rate, December 2025, before withholding tax",
+    publisher: "Central Bank of Kenya",
+    title: "Bank Supervision Annual Report 2025 — Interest Rates (§3.7)",
+    url: "https://www.centralbank.go.ke/reports/bank-supervision-and-banking-sector-reports/",
+    asOf: "2025-12-31",
+    reviewBy: "2027-10-31",
+    note: "Down from 10.45% in December 2024. The spread over lending rates widened to 7.08% from 5.77%.",
+  },
+  cbkCustomerDepositsMillionKsh: {
+    value: 6_119_188,
+    unit: "Ksh million of customer deposits at commercial banks, December 2025",
+    publisher: "Central Bank of Kenya",
+    title: "Bank Supervision Annual Report 2025 — Appendix IX, Protected Deposits",
+    url: "https://www.centralbank.go.ke/reports/bank-supervision-and-banking-sector-reports/",
+    asOf: "2025-12-31",
+    reviewBy: "2027-10-31",
+    note: "Same total as Table 17's customer deposits. Not Table 2's 6,384,556 total deposits.",
+  },
+  cbkInsuredDepositsMillionKsh: {
+    value: 1_195_423,
+    unit: "Ksh million of those deposits covered by deposit insurance, December 2025",
+    publisher: "Central Bank of Kenya",
+    title: "Bank Supervision Annual Report 2025 — Appendix IX, Protected Deposits",
+    url: "https://www.centralbank.go.ke/reports/bank-supervision-and-banking-sector-reports/",
+    asOf: "2025-12-31",
+    reviewBy: "2027-10-31",
+    note: "Commercial banks only. The report does not state the per-depositor cover limit, so nothing here does either.",
+  },
+  cbkHouseholdGrossLoansMillionKsh: {
+    value: 1_176_958.3,
+    unit: "Ksh million lent by banks to the Personal and Household sector, December 2025",
+    publisher: "Central Bank of Kenya",
+    title: "Bank Supervision Annual Report 2025 — Table 18, Sectoral Distribution of Loans",
+    url: "https://www.centralbank.go.ke/reports/bank-supervision-and-banking-sector-reports/",
+    asOf: "2025-12-31",
+    reviewBy: "2027-10-31",
+    note: "27.1% of all bank lending, across 94.2% of all loan accounts (14,849,679 of 15,759,108).",
+  },
+  cbkHouseholdNplMillionKsh: {
+    value: 114_045.7,
+    unit: "Ksh million of that household lending non-performing, December 2025",
+    publisher: "Central Bank of Kenya",
+    title: "Bank Supervision Annual Report 2025 — Table 18, Sectoral Distribution of Loans",
+    url: "https://www.centralbank.go.ke/reports/bank-supervision-and-banking-sector-reports/",
+    asOf: "2025-12-31",
+    reviewBy: "2027-10-31",
+  },
+  cbkSectorNplRatioPct: {
+    value: 16.0,
+    unit: "% of all bank loans non-performing (gross), December 2025",
+    publisher: "Central Bank of Kenya",
+    title: "Bank Supervision Annual Report 2025 — Table 20, Asset Quality",
+    url: "https://www.centralbank.go.ke/reports/bank-supervision-and-banking-sector-reports/",
+    asOf: "2025-12-31",
+    reviewBy: "2027-10-31",
+    note: "Ksh 696,931M of Ksh 4,347,164M. Down from 17.1% in December 2024.",
+  },
+  cbkDigitalCreditBillionKsh: {
+    value: 110.1,
+    unit: "Ksh billion outstanding with licensed digital credit providers, December 2025",
+    publisher: "Central Bank of Kenya",
+    title: "Bank Supervision Annual Report 2025 — Digital Credit Providers (§3.24)",
+    url: "https://www.centralbank.go.ke/reports/bank-supervision-and-banking-sector-reports/",
+    asOf: "2025-12-31",
+    reviewBy: "2027-10-31",
+    note: "Up 99.6% from Ksh 55.2bn in December 2024, while licensed lenders grew from 85 to 195.",
+  },
+  cbkDigitalCreditPriorBillionKsh: {
+    value: 55.2,
+    unit: "Ksh billion outstanding with licensed digital credit providers, December 2024",
+    publisher: "Central Bank of Kenya",
+    title: "Bank Supervision Annual Report 2025 — Digital Credit Providers (§3.24)",
+    url: "https://www.centralbank.go.ke/reports/bank-supervision-and-banking-sector-reports/",
+    asOf: "2024-12-31",
+    reviewBy: "2027-10-31",
+  },
+
+  cbkDigitalCreditLoansMillions: {
+    value: 6.74,
+    unit: "million loans outstanding with licensed digital credit providers, December 2025",
+    publisher: "Central Bank of Kenya",
+    title: "Bank Supervision Annual Report 2025 — Digital Credit Providers (§3.24, Chart 16)",
+    url: "https://www.centralbank.go.ke/reports/bank-supervision-and-banking-sector-reports/",
+    asOf: "2025-12-31",
+    reviewBy: "2027-10-31",
+    note: "Up 71% from 3.9 million. Chart 16 gives the average loan as Ksh 16,341; 110.1bn / 6.74M reproduces it to within rounding.",
+  },
+  cbkDigitalLendersLicensed: {
+    value: 195,
+    unit: "digital credit providers licensed by CBK, December 2025",
+    publisher: "Central Bank of Kenya",
+    title: "Bank Supervision Annual Report 2025 — Structure of the Banking Sector (§1.1)",
+    url: "https://www.centralbank.go.ke/reports/bank-supervision-and-banking-sector-reports/",
+    asOf: "2025-12-31",
+    reviewBy: "2027-10-31",
+    note: "85 a year earlier (§3.24).",
+  },
+  cbkMobileMoneySubscriptionsMillions: {
+    value: 51.4,
+    unit: "million mobile money subscriptions, December 2025",
+    publisher: "Central Bank of Kenya",
+    title: "Bank Supervision Annual Report 2025 — Table 8, Mobile Transaction Data",
+    url: "https://www.centralbank.go.ke/reports/bank-supervision-and-banking-sector-reports/",
+    asOf: "2025-12-31",
+    reviewBy: "2027-10-31",
+    note: "Up from 42.3 million. CBK compiles Table 8 from Communications Authority sector statistics; subscriptions, not people.",
+  },
+
   /* IMF World Economic Outlook — the forward-looking layer.
    *
    * Every other entry here is a measured outturn: a survey, a digest, a
@@ -319,4 +474,34 @@ export function fulizaPerUserKsh(): number {
 export function mmfShareOfDepositsPct(): number {
   const mmfTrillions = figure("mmfAumBillionKsh") / 1000;
   return (mmfTrillions / figure("bankDepositsTrillionKsh")) * 100;
+}
+
+/* ── Derived from the CBK Bank Supervision Annual Report 2025 ──────────────
+ * Each of these is a division of two figures the report prints, so neither
+ * half can be corrected without the result following it. */
+
+/** Share of commercial-bank customer deposits, by value, that deposit insurance covers. */
+export function cbkInsuredShareOfDepositsPct(): number {
+  return (figure("cbkInsuredDepositsMillionKsh") / figure("cbkCustomerDepositsMillionKsh")) * 100;
+}
+
+/**
+ * Non-performing share of lending to Personal and Household borrowers.
+ *
+ * The report states the sector-wide ratio (16.0%) but not this one; Table 18
+ * gives both halves. It is the fact the coverage missed: the households that
+ * hold 94% of loan accounts repay better than the sector as a whole.
+ */
+export function cbkHouseholdNplRatioPct(): number {
+  return (figure("cbkHouseholdNplMillionKsh") / figure("cbkHouseholdGrossLoansMillionKsh")) * 100;
+}
+
+/** Growth in digital-credit-provider lending over 2025, in percent. */
+export function cbkDigitalCreditGrowthPct(): number {
+  return (figure("cbkDigitalCreditBillionKsh") / figure("cbkDigitalCreditPriorBillionKsh") - 1) * 100;
+}
+
+/** Average outstanding digital loan, Ksh — the book divided by the loan count. */
+export function cbkAvgDigitalLoanKsh(): number {
+  return (figure("cbkDigitalCreditBillionKsh") * 1e9) / (figure("cbkDigitalCreditLoansMillions") * 1e6);
 }

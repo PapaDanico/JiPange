@@ -12,6 +12,7 @@ import {
 } from "@/lib/market-2026";
 import { getStoredCalculations } from "@/lib/storage";
 import { useStorageValue } from "@/lib/hooks";
+import { CBK_BSAR_2025_CITE, CBK_MORTGAGE_AVG_RATE_PCT } from "@/lib/kenya-stats";
 
 /** Assumptions for the safeguard estimate — visible in the UI copy. */
 const SACCO_LOAN_RATE = 0.12;
@@ -19,8 +20,14 @@ const SACCO_LOAN_TERM_MONTHS = 48;
 
 /**
  * The "Plot & Mjengo" path: build a deposit vault in a Tier-1 Sacco, then
- * strike with the 3× development-loan multiplier — instead of a ~14.5%
- * commercial mortgage.
+ * strike with the 3× development-loan multiplier — instead of a commercial
+ * mortgage at the average rate CBK's mortgage survey reports.
+ *
+ * That rate is read from the registry, not typed. The heading used to say
+ * "skip the 14.5% mortgage": a figure with no source anywhere in the
+ * repository, a point ABOVE CBK's 13.5% average for 2025 — and so overstating
+ * the cost of the very option this card argues against. An error that flatters
+ * the pitch is the kind to be most suspicious of (see sources.ts).
  */
 export default function MjengoMilestone() {
   const [propertyValue, setPropertyValue] = useState(3_000_000);
@@ -50,11 +57,15 @@ export default function MjengoMilestone() {
   return (
     <section aria-label="Plot and Mjengo milestones" className="rounded-2xl bg-white p-6 shadow-sm">
       <h2 className="text-base font-semibold text-primary">
-        The Plot &amp; Mjengo path — skip the 14.5% mortgage
+        The Plot &amp; Mjengo path — skip the {CBK_MORTGAGE_AVG_RATE_PCT}% mortgage
       </h2>
       <p className="mt-1 text-xs text-ink-soft">
         Build the deposit vault, then let the Sacco&apos;s {SACCO_LEVERAGE_MULTIPLIER}× multiplier
         fund the build.
+      </p>
+      <p className="mt-1 text-[11px] text-faint">
+        {CBK_MORTGAGE_AVG_RATE_PCT}% is the average Kenyan mortgage rate for 2025 —{" "}
+        {CBK_BSAR_2025_CITE}, Residential Mortgage Survey.
       </p>
 
       <div className="mt-4">

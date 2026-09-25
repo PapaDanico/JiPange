@@ -1,6 +1,12 @@
 import type { Metadata } from "next";
 import ToolLayout from "@/components/tools/ToolLayout";
 import WhereToSave from "@/components/tools/WhereToSave";
+import {
+  CBK_AVG_DEPOSIT_RATE_NET_PCT,
+  CBK_AVG_DEPOSIT_RATE_PCT,
+  CBK_BSAR_2025_CITE,
+  CBK_INSURED_SHARE_OF_DEPOSITS_PCT,
+} from "@/lib/kenya-stats";
 
 export const metadata: Metadata = {
   title: "Where to Save: T-Bills vs Money Market vs SACCO",
@@ -17,18 +23,22 @@ export default function WhereToSavePage() {
       description="What each option pays after tax, with the things that can be compared compared — and the one that cannot kept separate."
       insights={[
         {
-          icon: "📊",
-          tone: "hopeful",
-          stat: "15%",
-          label: "withholding tax comes off every interest option here, so the headline rate is never what you keep",
-        },
-        {
           icon: "⚠️",
           tone: "caution",
           stat: "Not insured",
-          label:
-            "the SACCO Deposit Guarantee Fund is not yet operational, so SACCO money has no statutory protection behind it",
-          source: "Sacco Societies Act; Amendment Bill 2025 pending",
+          label: `the SACCO Deposit Guarantee Fund is not yet operational, so SACCO money has no statutory protection behind it. Bank deposit insurance is live but capped: it covered ${CBK_INSURED_SHARE_OF_DEPOSITS_PCT}% of bank deposits by value in December 2025.`,
+          source: `Sacco Societies Act; Amendment Bill 2025 pending · ${CBK_BSAR_2025_CITE}, Appendix IX`,
+        },
+        /* The bank account is the option most readers already hold, and the
+         * one missing from the ranking. CBK's average deposit rate is a
+         * December 2025 figure, so it sits here as dated context rather than
+         * as a row beside live rates it would be compared against unfairly. */
+        {
+          icon: "🏦",
+          tone: "caution",
+          stat: `${CBK_AVG_DEPOSIT_RATE_NET_PCT}%`,
+          label: `is what the average Kenyan bank deposit paid after withholding tax in December 2025 (${CBK_AVG_DEPOSIT_RATE_PCT}% before it). Set it against the after-tax rates above.`,
+          source: `${CBK_BSAR_2025_CITE}, §3.7`,
         },
       ]}
       /* THE QUESTION THIS PAGE DELIBERATELY DOES NOT SETTLE.
