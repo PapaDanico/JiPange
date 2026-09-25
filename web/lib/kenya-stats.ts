@@ -31,6 +31,9 @@ import { WHT_ON_INTEREST } from "./mmf-vs-tbill";
 
 // ── FinAccess Household Survey 2024 (CBK / KNBS / FSD Kenya) ──
 export const FINACCESS_FORMAL_INCLUSION_PCT = figure("finaccessFormalInclusionPct");
+/** Gap in formal access between men and women, 2024 and 2021 (§2.5). */
+export const FINACCESS_GENDER_GAP_PTS = figure("finaccessGenderGapFormalPts");
+export const FINACCESS_GENDER_GAP_PRIOR_PTS = figure("finaccessGenderGapFormalPriorPts");
 /** Passed all three questions: inflation, INTEREST RATES, risk diversification. */
 export const FINACCESS_LITERACY_PASS_PCT = figure("finaccessLiteracyPassPct");
 /** The complement, derived — never a second number to keep in step by hand. */

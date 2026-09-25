@@ -155,10 +155,14 @@ describe("no page restates a registry figure as a literal", () => {
    * A guard that fails on its own documentation is a guard that gets deleted.
    * What renders is what is scanned.
    */
+  /* Inline style objects are stripped for the same reason: `lineHeight: 1.6`
+   * in global-error.tsx is not the FinAccess 1.6-point gender gap, and a CSS
+   * value cannot state a figure to a reader. */
   const rendered = (path: string) =>
     readFileSync(path, "utf8")
       .replace(/\/\*[\s\S]*?\*\//g, " ")
-      .replace(/^\s*\/\/.*$/gm, " ");
+      .replace(/^\s*\/\/.*$/gm, " ")
+      .replace(/style=\{\{[^}]*\}\}/g, " ");
 
   it("scans a real set of pages", () => {
     expect(files.length, "found no app files — the scan below is vacuous").toBeGreaterThan(5);

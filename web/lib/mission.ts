@@ -143,6 +143,11 @@ export const PERMITTED_ASK_SURFACES = [
  */
 export const FORBIDDEN_CLAIMS: { pattern: RegExp; because: string }[] = [
   {
+    pattern: /\bM-?Pesa\b[^.]{0,40}\bgender\b/i,
+    because:
+      "FinAccess 2024 credits the narrowed gender gap (1.6 points, §2.5) to digital technology generally, not to any one product",
+  },
+  {
     pattern: /\bplan\.\s*save\.\s*grow\b/i,
     because:
       'the brand pack\'s tagline; the house line is "Plan. Save. Track." because this product does not grow anyone\'s money',
