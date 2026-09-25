@@ -253,6 +253,15 @@ export const SOURCES = {
     reviewBy: "2027-10-31",
     note: "Down from 15.2% in 2024. Average loan Ksh 10.0M over 11.5 years; 16.3% of mortgage value non-performing.",
   },
+  cbkMortgageAvgRatePriorPct: {
+    value: 15.2,
+    unit: "% average interest rate on residential mortgages, 2024",
+    publisher: "Central Bank of Kenya",
+    title: "Bank Supervision Annual Report 2025 — Residential Mortgage Survey (§2.10.1)",
+    url: "https://www.centralbank.go.ke/reports/bank-supervision-and-banking-sector-reports/",
+    asOf: "2024-12-31",
+    reviewBy: "2027-10-31",
+  },
   cbkMortgageAvgTermYears: {
     value: 11.5,
     unit: "years, average mortgage maturity, 2025 (minimum 5.7, maximum 18)",

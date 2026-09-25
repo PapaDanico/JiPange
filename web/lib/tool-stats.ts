@@ -1,6 +1,6 @@
 import { calculateNetPay, PENSION_RELIEF_CAP_MONTHLY } from "./tax";
 import { futureValue, DEFAULT_WITH_PLAN_RETURN_RATE, DEFAULT_RETIREMENT_AGE } from "./projections";
-import { currentInflation } from "./rates-feed";
+import { bestPayingTenor, currentInflation } from "./rates-feed";
 import { assumedMmfYield } from "./mmf-assumption";
 import { calculateLandPurchase } from "./land";
 import { calculateFulizaCost } from "./fuliza";
@@ -9,6 +9,7 @@ import { calculateLoanAmortization } from "./loans";
 import { SACCO_MONTHLY_RATE } from "./loan-comparison";
 import { figure } from "./sources";
 import { WHT_ON_INTEREST } from "./mmf-vs-tbill";
+import { BANK_NET_YIELD } from "./journey";
 
 /**
  * The headline figures on tool pages, computed instead of typed.
@@ -421,4 +422,46 @@ export function mmfVsBankDepositGapKES(): number {
   const mmf = grow(net(assumedMmfYield()));
   const bank = grow(net(figure("cbkAvgDepositRatePct") / 100));
   return Math.round((mmf - bank) / 100) * 100;
+}
+
+// ── Figures that were typed on tool pages, now computed (September 2026) ────
+/*
+ * inflation-reality said "Ksh 73,000 ... after 5 years at 6.3% inflation",
+ * credited to a 2025 KNBS average the snapshot has since moved past. dhowcsd
+ * said "Ksh 8,100+ ... on a Ksh 100,000 bill — what a savings account pays on
+ * more than twice the money": the best bill now pays about 7,700 after tax,
+ * and against CBK's average deposit rate that is 1.3 times the money, not two.
+ * Each now reads the same feed and registry the calculators use.
+ */
+
+export const EROSION_EXAMPLE_KES = 100_000;
+export const EROSION_EXAMPLE_YEARS = 5;
+
+/** What Ksh 100,000 buys after 5 years at the current inflation reading. */
+export function erosionRealValueKES(): number {
+  return Math.round(
+    EROSION_EXAMPLE_KES / Math.pow(1 + currentInflation(), EROSION_EXAMPLE_YEARS) / 100
+  ) * 100;
+}
+
+export const BILL_EXAMPLE_KES = 100_000;
+
+/** A year's after-tax income on Ksh 100,000 in the best-paying bill. */
+export function bestBillAnnualNetKES(): number {
+  return Math.round((BILL_EXAMPLE_KES * bestPayingTenor().netEAY) / 100);
+}
+
+/** How many times the money a bank deposit needs, after tax, to earn the same. */
+export function bankMultipleForBillIncome(): number {
+  return bestPayingTenor().netEAY / 100 / BANK_NET_YIELD;
+}
+
+export const MOVE_EXAMPLE_KES = 50_000;
+export const MOVE_EXAMPLE_YEARS = 3;
+
+/** Extra earned, after tax, moving Ksh 50,000 from the average bank deposit to an MMF for 3 years. */
+export function bankToMmfExtraKES(): number {
+  const net = (r: number) => r * (1 - WHT_ON_INTEREST);
+  const gain = (r: number) => MOVE_EXAMPLE_KES * (Math.pow(1 + r, MOVE_EXAMPLE_YEARS) - 1);
+  return Math.round((gain(net(assumedMmfYield())) - gain(BANK_NET_YIELD)) / 100) * 100;
 }

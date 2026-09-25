@@ -3,9 +3,9 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import {
-  ASSUMED_CURRENT_YIELD,
+  BANK_NET_YIELD,
+  MMF_NET_YIELD,
   CURRENT_INFLATION,
-  TARGET_MMF_YIELD,
   mapJourney,
   type DashboardModel,
 } from "@/lib/journey";
@@ -42,12 +42,14 @@ function AnalystCard({ model }: { model: DashboardModel }) {
     rows.push(
       ["Median savings for your bracket", kes(model.inflationDrag.medianSavings)],
       [
-        "Bank yield vs inflation",
-        `${pctOf(ASSUMED_CURRENT_YIELD)} vs ${pctOf(CURRENT_INFLATION)} → −${kes(model.inflationDrag.netLossAnnual)}/yr real`,
+        "Average bank deposit vs inflation (after tax)",
+        model.inflationDrag.bankTrailsInflation
+          ? `${pctOf(BANK_NET_YIELD)} vs ${pctOf(CURRENT_INFLATION)} → −${kes(model.inflationDrag.netLossAnnual)}/yr real`
+          : `${pctOf(BANK_NET_YIELD)} vs ${pctOf(CURRENT_INFLATION)} → keeps pace`,
       ],
       [
-        "MMF baseline upside",
-        `${pctOf(TARGET_MMF_YIELD)} (+${model.inflationDrag.upsidePoints} pts) → +${kes(model.inflationDrag.mmfExtraAnnual)}/yr`,
+        "MMF baseline upside (after tax)",
+        `${pctOf(MMF_NET_YIELD)} (+${model.inflationDrag.upsidePoints} pts) → +${kes(model.inflationDrag.mmfExtraAnnual)}/yr`,
       ]
     );
   }

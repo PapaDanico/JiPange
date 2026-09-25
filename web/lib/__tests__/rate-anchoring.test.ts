@@ -7,7 +7,7 @@ import { assumedMmfYield, MMF_FALLBACK_YIELD } from "../mmf-assumption";
 import { TARGET_MMF_YIELD } from "../journey";
 import { SMOOTHER_MMF_RATE } from "../school-fees";
 import { BANK_SAVINGS_BASELINE } from "../market-2026";
-import { ASSUMED_CURRENT_YIELD } from "../journey";
+import { BANK_NET_YIELD } from "../journey";
 
 /**
  * Market rates are read, not typed.
@@ -55,8 +55,9 @@ describe("market rate assumptions are anchored to the feed", () => {
 
   it("the bank savings baseline is one constant, not two copies", () => {
     // Both held the literal 0.0323, so a future correction would have landed
-    // in one file and silently disagreed with the other.
-    expect(BANK_SAVINGS_BASELINE).toBe(ASSUMED_CURRENT_YIELD);
+    // in one file and silently disagreed with the other. Now the after-tax
+    // form of CBK's average deposit rate, derived in journey.ts.
+    expect(BANK_SAVINGS_BASELINE).toBe(BANK_NET_YIELD);
   });
 
   it("under-promises when the anchor is missing", () => {

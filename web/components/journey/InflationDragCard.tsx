@@ -1,14 +1,15 @@
 import { formatKES } from "@/lib/budget";
 import {
-  ASSUMED_CURRENT_YIELD,
+  BANK_NET_YIELD,
   CURRENT_INFLATION,
-  TARGET_MMF_YIELD,
+  MMF_NET_YIELD,
   type InflationDrag,
 } from "@/lib/journey";
+import { CBK_BSAR_2025_CITE } from "@/lib/kenya-stats";
 
 /**
- * Rule Block B output: the explicit loss of local purchasing power for
- * money parked at bank/M-Pesa yields, and the MMF upside swing.
+ * Rule Block B output: how the average bank deposit keeps pace with inflation
+ * after tax, and the MMF upside. Every rate after tax, every rate sourced.
  */
 export default function InflationDragCard({ drag }: { drag: InflationDrag }) {
   return (
@@ -17,26 +18,41 @@ export default function InflationDragCard({ drag }: { drag: InflationDrag }) {
       className="rounded-2xl border-2 border-accent bg-accent-soft p-5"
     >
       <h2 className="text-sm font-semibold uppercase tracking-wide text-accent-ink">
-        The silent inflation drag
+        Keeping pace with inflation
       </h2>
+      {/* After tax on every side, and honest in both directions. This read
+          "The silent inflation drag", compared a GROSS 3.23% (unsourced)
+          against inflation, and had no wording for a bank that keeps pace —
+          at CBK's measured rate it would have printed "−Ksh −1,234". */}
       <p className="mt-2 text-sm text-ink-soft">
-        Money in a standard bank account earns ~{(ASSUMED_CURRENT_YIELD * 100).toFixed(2)}% while
-        inflation runs at ~{(CURRENT_INFLATION * 100).toFixed(1)}%. On an estimated{" "}
-        {formatKES(drag.medianSavings)} sitting idle, that&apos;s
+        The average bank deposit keeps about {(BANK_NET_YIELD * 100).toFixed(2)}% after tax, while
+        inflation runs at {(CURRENT_INFLATION * 100).toFixed(1)}%. On an estimated{" "}
+        {formatKES(drag.medianSavings)} in savings,
+        {drag.bankTrailsInflation ? " that is" : " that stays roughly level —"}
       </p>
-      <p className="mt-1 text-3xl font-semibold text-danger">
-        −{formatKES(drag.netLossAnnual)}
-        <span className="text-base font-normal text-ink-soft"> of buying power / year</span>
-      </p>
+      {drag.bankTrailsInflation ? (
+        <p className="mt-1 text-3xl font-semibold text-danger">
+          −{formatKES(drag.netLossAnnual)}
+          <span className="text-base font-normal text-ink-soft"> of buying power a year</span>
+        </p>
+      ) : (
+        <p className="mt-1 text-base font-semibold text-primary">
+          no loss of buying power, but little growth either.
+        </p>
+      )}
       <div className="mt-3 rounded-xl bg-white p-3 text-sm text-ink-soft">
         <p>
-          <span className="font-semibold text-success">+{drag.upsidePoints}% yield swing</span>{" "}
-          available now: at an MMF&apos;s ~{(TARGET_MMF_YIELD * 100).toFixed(1)}% baseline the
-          same money earns about{" "}
+          <span className="font-semibold text-success">+{drag.upsidePoints} points</span> is
+          available by moving to a money market fund: at about{" "}
+          {(MMF_NET_YIELD * 100).toFixed(1)}% after tax, the same money earns roughly{" "}
           <span className="font-semibold text-success">
-            {formatKES(drag.mmfExtraAnnual)}/year more
+            {formatKES(drag.mmfExtraAnnual)} more a year
           </span>{" "}
-          — beating inflation instead of feeding it.
+          and grows ahead of inflation.
+        </p>
+        <p className="mt-2 text-xs text-muted">
+          Bank benchmark: {CBK_BSAR_2025_CITE}, average deposit rate, Dec 2025. Many savings
+          accounts pay less than the average.
         </p>
       </div>
     </section>

@@ -62,13 +62,12 @@ export default function JourneyWizard() {
     setSubmitting(true);
     clearJourneyDraft();
     setStoredJourneyAnswers(finalAnswers);
-    // Fire-and-forget: the dashboard recomputes from stored answers with the
-    // identical pure engine, so the reveal moment never waits on the network.
-    fetch("/api/journey-map", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(finalAnswers),
-    }).catch(() => {});
+    // No network call. This used to POST the answers to /api/journey-map,
+    // fire-and-forget, and discard the reply — the dashboard has always
+    // recomputed from stored answers with the same pure engine. So the answers
+    // left the device for nothing, while lib/privacy-facts.ts (and the privacy
+    // notice built from it) said they never do. Removed September 2026; the
+    // notice is now simply true.
     router.push("/dashboard");
   }
 

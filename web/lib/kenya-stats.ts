@@ -65,6 +65,7 @@ export const BANK_SAVINGS_EARNING_BELOW_INFLATION_TRILLION =
 
 // ── CBK Bank Supervision Annual Report 2025 (year to 31 December 2025) ──
 export const CBK_MORTGAGE_AVG_RATE_PCT = figure("cbkMortgageAvgRatePct");
+export const CBK_MORTGAGE_AVG_RATE_PRIOR_PCT = figure("cbkMortgageAvgRatePriorPct");
 export const CBK_MORTGAGE_AVG_TERM_YEARS = figure("cbkMortgageAvgTermYears");
 export const CBK_AVG_LENDING_RATE_PCT = figure("cbkAvgLendingRatePct");
 export const CBK_AVG_DEPOSIT_RATE_PCT = figure("cbkAvgDepositRatePct");

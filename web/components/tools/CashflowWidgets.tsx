@@ -186,7 +186,7 @@ export function PaydayRouter() {
         steps={[
           "Enter your net salary and the two fixed outflows — rent and bills.",
           "What's left is your floating surplus; ÷4.33 weeks gives your true weekly spend limit.",
-          "On payday, move the surplus out of your main M-Pesa wallet into a locked pocket or MMF before it evaporates.",
+          "On payday, move the surplus out of your main M-Pesa wallet into a locked pocket or MMF, so it is set aside before the month's spending begins.",
           "Withdraw only the weekly limit back — the wallet you see is the money you spend.",
         ]}
       />

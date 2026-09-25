@@ -2,7 +2,8 @@ import { describe, expect, it } from "vitest";
 import {
   CURRENT_INFLATION,
   ASSUMED_CURRENT_YIELD,
-  TARGET_MMF_YIELD,
+  BANK_NET_YIELD,
+  MMF_NET_YIELD,
   derivePersona,
   deriveSurvivalState,
   microMilestoneTarget,
@@ -97,21 +98,26 @@ describe("Rule Block B — the Inflation Drag calculator", () => {
     const model = mapJourney({ ...base, current_vehicle: ["mpesa_bank", "chama"] });
     expect(model.inflationDrag).not.toBeNull();
     const drag = model.inflationDrag!;
-    // Net_Loss = median × (inflation − bank yield), per spec.
+    // Net_Loss = median × (inflation − bank yield AFTER TAX), floored at zero.
+    // After tax since September 2026: both sides of every comparison are now
+    // what the saver keeps, and a bank that keeps pace reports no loss rather
+    // than a negative one.
     expect(drag.netLossAnnual).toBe(
-      Math.round(drag.medianSavings * (CURRENT_INFLATION - ASSUMED_CURRENT_YIELD))
+      Math.max(0, Math.round(drag.medianSavings * (CURRENT_INFLATION - BANK_NET_YIELD)))
     );
+    expect(drag.bankTrailsInflation).toBe(BANK_NET_YIELD < CURRENT_INFLATION);
+    expect(BANK_NET_YIELD).toBeCloseTo(ASSUMED_CURRENT_YIELD * 0.85, 12);
     // Derived from the constants, not pinned at 8.2. That literal was
     // (11.5 - 3.23) frozen into the test, so it asserted the value of a
     // hardcoded MMF yield rather than the arithmetic the card performs — and
     // it failed the moment that yield became anchored to the live bill, which
     // is the one change it should have been indifferent to.
     expect(drag.upsidePoints).toBeCloseTo(
-      Math.floor((TARGET_MMF_YIELD - ASSUMED_CURRENT_YIELD) * 1000) / 10,
+      Math.floor((MMF_NET_YIELD - BANK_NET_YIELD) * 1000) / 10,
       5
     );
     expect(drag.mmfExtraAnnual).toBe(
-      Math.round(drag.medianSavings * (TARGET_MMF_YIELD - ASSUMED_CURRENT_YIELD))
+      Math.round(drag.medianSavings * (MMF_NET_YIELD - BANK_NET_YIELD))
     );
   });
 
@@ -293,5 +299,17 @@ describe("restoredSteps", () => {
 
   it("returns a list the caller can index at every step", () => {
     expect(restoredSteps(undefined, 4)).toHaveLength(4);
+  });
+});
+
+describe("the bank benchmark", () => {
+  it("is CBK's measured average deposit rate, not the unsourced 3.23%", () => {
+    expect(ASSUMED_CURRENT_YIELD).toBeCloseTo(0.0713, 12);
+    expect(ASSUMED_CURRENT_YIELD).not.toBeCloseTo(0.0323, 4);
+  });
+
+  it("never reports a negative loss when the bank keeps pace with inflation", () => {
+    const model = mapJourney({ ...base, current_vehicle: ["mpesa_bank"] });
+    expect(model.inflationDrag!.netLossAnnual).toBeGreaterThanOrEqual(0);
   });
 });

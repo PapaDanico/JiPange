@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import ToolLayout from "@/components/tools/ToolLayout";
 import DhowcsdLadderCalculator from "@/components/tools/DhowcsdLadderCalculator";
+import { formatKES } from "@/lib/budget";
+import { CBK_BSAR_2025_CITE } from "@/lib/kenya-stats";
+import { attribution } from "@/lib/rates-feed";
+import { BILL_EXAMPLE_KES, bankMultipleForBillIncome, bestBillAnnualNetKES } from "@/lib/tool-stats";
 
 export const metadata: Metadata = {
   title: "DhowCSD T-Bill Ladder Calculator Kenya",
@@ -25,15 +29,14 @@ export default function DhowcsdPage() {
         {
           icon: "🏆",
           tone: "hopeful",
-          // Was "Ksh 7,000+ ... on a Ksh 50,000 ladder", which implies 14% —
-          // roughly the tax-free yield on a long infrastructure bond, not a
-          // bill. At the current blended 8.15% net, Ksh 50,000 earns about
-          // Ksh 4,080. The bank comparison is the honest version of the same
-          // point and is arguably stronger: it takes ~Ksh 126,000 in a savings
-          // account at 3.23% to earn what Ksh 50,000 earns here.
-          stat: "Ksh 8,100+",
-          label: "earned per year, after tax, on a Ksh 100,000 bill — what a savings account pays on more than twice the money.",
-          source: "CBK auction yields via Mwangaza Yield, net of 15% withholding tax",
+          // Was "Ksh 7,000+ ... on a Ksh 50,000 ladder" (implying 14%), then
+          // "Ksh 8,100+ ... what a savings account pays on more than twice the
+          // money" — both typed, both overtaken by the market. Computed now:
+          // the best bill's after-tax income, and the multiple of money the
+          // average bank deposit (CBK, after tax) needs to match it.
+          stat: formatKES(bestBillAnnualNetKES()),
+          label: `earned per year, after tax, on ${formatKES(BILL_EXAMPLE_KES)} in the best-paying bill — the average bank deposit would need about ${bankMultipleForBillIncome().toFixed(1)}× the money to match it.`,
+          source: `${attribution()}, net of 15% withholding tax · bank: ${CBK_BSAR_2025_CITE}, §3.7`,
         },
       ]}
       deeper={{

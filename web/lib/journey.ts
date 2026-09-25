@@ -1,6 +1,8 @@
 import { fulizaDailyFee } from "./fuliza";
 import { currentInflation } from "./rates-feed";
 import { assumedMmfYieldPct, assumedMmfYield } from "./mmf-assumption";
+import { WHT_ON_INTEREST } from "./mmf-vs-tbill";
+import { figure } from "./sources";
 
 /**
  * The 90-second journey funnel: 5 tap-only questions → a deterministic
@@ -101,13 +103,35 @@ export const JOURNEY_QUESTIONS: JourneyQuestion[] = [
 
 // ── Engine constants (Rule Block B, per spec) ──
 
-export const ASSUMED_CURRENT_YIELD = 0.0323; // bank savings average
+/**
+ * The bank benchmark, BEFORE withholding tax: CBK's measured average deposit
+ * rate (Bank Supervision Annual Report 2025, §3.7, December 2025).
+ *
+ * This was 0.0323 — "bank savings average" — an original-spec constant with no
+ * source anywhere, shown to readers on the homepage, three calculators, the
+ * dashboard and the action plan, and on the homepage credited to a "CBK
+ * Banking Sector Report, 2026" that does not exist. CBK's figure is an average
+ * over ALL interest-bearing deposits, fixed deposits included, so an ordinary
+ * savings account usually pays less: the comparisons built on it are
+ * conservative, which is the safe direction. Chosen by the owner, September
+ * 2026, over keeping the unsourced figure.
+ */
+export const ASSUMED_CURRENT_YIELD = figure("cbkAvgDepositRatePct") / 100;
+/**
+ * The same benchmark AFTER the 15% withholding tax — what a depositor keeps.
+ * Every comparison against inflation or against an MMF uses the after-tax
+ * figure on both sides; comparing a gross bank rate with a net fund or bill
+ * yield (as the DhowCSD ladder did) flatters whichever side is net.
+ */
+export const BANK_NET_YIELD = ASSUMED_CURRENT_YIELD * (1 - WHT_ON_INTEREST);
 /**
  * Derived from the live 91-day bill — see lib/mmf-assumption.ts for why a
  * hand-typed MMF yield is a promise the market stops keeping the moment rates
  * move, and why three calculators held three different ones.
  */
 export const TARGET_MMF_YIELD = assumedMmfYield();
+/** The MMF assumption after the same 15% withholding tax. */
+export const MMF_NET_YIELD = TARGET_MMF_YIELD * (1 - WHT_ON_INTEREST);
 /**
  * The published inflation rate, read from the rates feed.
  *
@@ -126,7 +150,7 @@ export const CURRENT_INFLATION = currentInflation();
  * the gap between a fund and a bank account is not a constant of nature.
  */
 export const YIELD_UPSIDE_POINTS =
-  Math.floor((TARGET_MMF_YIELD - ASSUMED_CURRENT_YIELD) * 1000) / 10;
+  Math.floor((MMF_NET_YIELD - BANK_NET_YIELD) * 1000) / 10;
 
 // ── Income-tier tables (documented assumptions, all user-visible copy says "estimated") ──
 
@@ -224,8 +248,14 @@ export interface FulizaTax {
 
 export interface InflationDrag {
   medianSavings: number;
-  /** Ksh of purchasing power lost per year at the assumed bank yield. */
+  /**
+   * Ksh of purchasing power lost per year at the bank benchmark after tax.
+   * Zero — never negative — when the benchmark keeps pace with inflation; a
+   * negative "loss" rendered as "−Ksh −1,234" is garbage, not a gain.
+   */
   netLossAnnual: number;
+  /** True when the after-tax bank benchmark trails inflation. */
+  bankTrailsInflation: boolean;
   /** Percentage-point yield swing available by moving to an MMF. */
   upsidePoints: number;
   /** Ksh gained per year at the target MMF yield vs the bank yield. */
@@ -306,9 +336,10 @@ export function mapJourney(answers: JourneyAnswers): DashboardModel {
     const medianSavings = SAVINGS_MEDIAN[answers.income_bracket];
     inflationDrag = {
       medianSavings,
-      netLossAnnual: Math.round(medianSavings * (CURRENT_INFLATION - ASSUMED_CURRENT_YIELD)),
+      netLossAnnual: Math.max(0, Math.round(medianSavings * (CURRENT_INFLATION - BANK_NET_YIELD))),
+      bankTrailsInflation: BANK_NET_YIELD < CURRENT_INFLATION,
       upsidePoints: YIELD_UPSIDE_POINTS,
-      mmfExtraAnnual: Math.round(medianSavings * (TARGET_MMF_YIELD - ASSUMED_CURRENT_YIELD)),
+      mmfExtraAnnual: Math.round(medianSavings * (MMF_NET_YIELD - BANK_NET_YIELD)),
     };
   }
 

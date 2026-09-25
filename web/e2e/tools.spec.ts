@@ -892,9 +892,30 @@ test("the money check page has exactly one top-level heading", async ({ page }) 
  * an explicit {" "}, and this reads what a reader actually sees. */
 test("landing: numbers inside the evidence prose keep their spaces", async ({ page }) => {
   await page.goto("/", { waitUntil: "networkidle" });
-  await page.getByText("Explore the research", { exact: false }).first().click();
+  // The evidence section is open by default now — clicking it would close it.
   const text = await page.locator("main").innerText();
-  expect(text).toMatch(/Ksh \d+ feels like loose change/);
+  expect(text).toMatch(/Ksh \d+ is easy\s+to overlook/);
   expect(text).toMatch(/\d% against the average bank/);
-  expect(text).not.toMatch(/\d(feels|against)\b/);
+  expect(text).not.toMatch(/\d(is|against)\b/);
+});
+
+/* Information is the landing page's pillar: the evidence is open without a
+ * click, and every figure in "Kenya's money, this month" carries a source. */
+test("landing: the evidence is open by default", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator("details.group\\/evidence")).toHaveAttribute("open", "");
+});
+
+test("landing: every figure in the information panel shows its source", async ({ page }) => {
+  await page.goto("/", { waitUntil: "networkidle" });
+  const panel = page.locator("section[aria-labelledby='money-now-heading']");
+  await expect(panel.getByRole("heading", { name: /Kenya.s money, this month/ })).toBeVisible();
+  const cards = panel.locator("a, div.rounded-2xl");
+  const n = await cards.count();
+  expect(n, "no figures rendered").toBeGreaterThanOrEqual(6);
+  for (let i = 0; i < n; i++) {
+    const t = await cards.nth(i).innerText();
+    expect(t, `figure ${i} has no dated source`).toMatch(/CBK|Central Bank|KNBS|Mwangaza/);
+  }
+  await expect(panel.getByText(/CBK auction of \d/).first()).toBeVisible();
 });

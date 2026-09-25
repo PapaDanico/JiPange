@@ -3,6 +3,8 @@ import Link from "next/link";
 import ResumeToast from "@/components/onboarding/ResumeToast";
 import ReturningUserRedirect from "@/components/onboarding/ReturningUserRedirect";
 import LandingInteractivity from "@/components/landing/LandingInteractivity";
+import KenyaMoneyNow from "@/components/landing/KenyaMoneyNow";
+import { liveFigures } from "@/lib/landing-pulse";
 import { fulizaDailyFee } from "@/lib/fuliza";
 import { TOOL_META } from "@/lib/tool-meta";
 import { CURRENT_INFLATION, TARGET_MMF_YIELD } from "@/lib/journey";
@@ -77,6 +79,10 @@ const pct = (rate: number) => `${parseFloat((rate * 100).toFixed(2))}%`;
  * the sentence follows the answer instead of assuming it. */
 const BANK_NET_BELOW_INFLATION = CBK_AVG_DEPOSIT_RATE_NET_PCT / 100 < CURRENT_INFLATION;
 
+/* The hero's three live readings — the same figures, with the same dates and
+ * publishers, that the "Kenya's money, this month" section shows in full. */
+const HERO_PULSE = liveFigures().slice(0, 3);
+
 const TRUST_CHIPS = [
   "🕶️ 100% anonymous",
   "👆🏿 No salary questions",
@@ -104,8 +110,8 @@ const REALITY_STATS: {
     color: "text-[#F4A09A]",
     label: "Average bank deposit rate, after tax",
     detail: BANK_NET_BELOW_INFLATION
-      ? `Inflation runs at ${pct(CURRENT_INFLATION)}. Even the average bank deposit — fixed deposits included — keeps less than that after tax, so money "safe" in the bank is losing purchasing power.`
-      : `Inflation runs at ${pct(CURRENT_INFLATION)}, so the average bank deposit is only just ahead after tax — and an ordinary savings account is not the average.`,
+      ? `With inflation at ${pct(CURRENT_INFLATION)}, the average deposit falls slightly short of it after tax. For savings you will not need this month, a better-paying home can turn that around.`
+      : `With inflation at ${pct(CURRENT_INFLATION)}, the average deposit stays just ahead after tax — and many ordinary savings accounts pay less than the average, so it pays to compare.`,
     source: `${CBK_BSAR_2025_CITE} (Dec 2025, ${CBK_AVG_DEPOSIT_RATE_PCT}% before tax) · ${inflationAttribution()}`,
     cta: "Run the inflation maths →",
     href: "/tools/inflation-reality",
@@ -115,10 +121,9 @@ const REALITY_STATS: {
     dataCount: (TARGET_MMF_YIELD * 100).toFixed(1),
     dataSuffix: "%",
     color: "text-[#86CBA5]",
-    label: "Kenya MMF baseline return",
-    detail: `Same shillings, right vehicle. Yet Ksh ${BANK_DEPOSITS_TRILLION_KSH} trillion sits in bank accounts — only Ksh ${MMF_AUM_BILLION_KSH} billion (${MMF_SHARE_OF_DEPOSITS_PCT}%) is in money market funds.`,
-    source:
-      "CMA Collective Investment Schemes Quarterly Report, Q1 2026 · CBK banking sector data",
+    label: "Money market fund return we assume, before tax",
+    detail: `The same shillings, in a better-paying home. Of Ksh ${BANK_DEPOSITS_TRILLION_KSH} trillion in bank deposits, Ksh ${MMF_AUM_BILLION_KSH} billion (${MMF_SHARE_OF_DEPOSITS_PCT}%) has so far found its way into money market funds — plenty of room to grow.`,
+    source: `${cite("mmfAumBillionKsh")} · ${cite("bankDepositsTrillionKsh")} · MMF rate assumed from the latest 91-day bill`,
     cta: "See the compounding →",
     href: "/tools/investment-returns",
   },
@@ -128,9 +133,9 @@ const REALITY_STATS: {
     dataSuffix: "M",
     color: "text-[#F0C060]",
     label: "Kenyans who used Fuliza in a year",
-    detail: `Ksh ${FULIZA_VOLUME_TRILLION_KSH} trillion borrowed — mostly for food, rent and school fees. That is ${ksh(FULIZA_PER_USER_KSH)} per borrower across the year. This is a planning gap, not a cash-flow accident.`,
+    detail: `Ksh ${FULIZA_VOLUME_TRILLION_KSH} trillion borrowed — about ${ksh(FULIZA_PER_USER_KSH)} per borrower across the year. Short-term credit is a useful bridge; knowing its true cost, and building a small buffer, makes the next month lighter.`,
     source: "Safaricom PLC FY2026 Annual Results",
-    cta: "Calculate Fuliza's true cost →",
+    cta: "See Fuliza's true cost →",
     href: "/tools/fuliza-cost",
   },
 ];
@@ -142,7 +147,7 @@ const RESEARCH_CARDS = [
     dataSuffix: "%",
     tone: "danger" as const,
     label: "of Kenya's workforce has no active pension contribution",
-    body: `Only ${100 - RBA_NO_PENSION_PCT}% of working Kenyans actively contribute to a pension scheme. And of those who do reach retirement, just ${RBA_INCOME_MEETS_NEEDS_PCT}% say their retirement income covers their daily needs — ${RBA_INCOME_FALLS_SHORT_PCT}% say it does not, after saving for 30–40 years.`,
+    body: `${100 - RBA_NO_PENSION_PCT}% of working Kenyans actively contribute to a pension scheme. Of recent retirees, ${RBA_INCOME_MEETS_NEEDS_PCT}% say their retirement income covers their daily needs and ${RBA_INCOME_FALLS_SHORT_PCT}% say it does not — which is why starting early, even small, matters so much.`,
     cite: "Retirement Benefits Authority — Pensioners Survey 2024 (427 recent retirees)",
   },
   {
@@ -169,7 +174,7 @@ const RESEARCH_CARDS = [
     dataSuffix: "%",
     tone: "success" as const,
     label: "of Kenyans passed all 3 financial literacy questions",
-    body: `Questions covered inflation, interest rates, and risk diversification. ${FINACCESS_LITERACY_FAIL_PCT}% could not pass — meaning the majority are making daily financial decisions without the tools to understand the consequences. JiPange is the missing tool.`,
+    body: `The questions covered inflation, interest rates and risk diversification. For the ${FINACCESS_LITERACY_FAIL_PCT}% who found them hard, clear explanations and worked examples make a real difference — and that is exactly what JiPange is built to provide.`,
     cite: "FinAccess Household Survey 2024 — CBK / FSD Kenya / KNBS",
   },
 ];
@@ -258,17 +263,16 @@ export default function Home() {
                 className="mb-5 text-[2.25rem] font-black leading-tight tracking-tight text-primary sm:text-5xl"
                 style={{ textWrap: "balance" } as React.CSSProperties}
               >
-                Your money is working hard.{" "}
+                Every shilling deserves a plan.{" "}
                 <span className="block">
-                  Just not{" "}
-                  <em className="not-italic text-accent-ink">for you.</em>
+                  <em className="not-italic text-accent-ink">Let&apos;s build yours.</em>
                 </span>
               </h1>
               <p className="mb-8 max-w-prose text-base leading-relaxed text-ink-soft">
-                Inflation quietly erodes your savings. Fuliza bridges the gap for{" "}
-                {FULIZA_USERS_MILLIONS} million Kenyans borrowing for food and rent. And{" "}
-                {RBA_NO_PENSION_PCT}% of Kenya&apos;s workforce has no pension plan. JiPange
-                changes that — one honest calculation at a time.
+                JiPange brings together the latest figures from the Central Bank, KNBS and
+                Kenya&apos;s regulators, and turns them into a clear, personal next step — for your
+                salary, your savings and your family&apos;s goals. Every number is dated and
+                sourced, so you can plan with confidence.
               </p>
               {/* Stacked buttons match each other's width; side-by-side ones
                   do not. Measured at 390px these wrapped to their own content
@@ -327,32 +331,43 @@ export default function Home() {
                 sizes="(max-width: 640px) 176px, 224px"
                 className="w-44 sm:w-56 h-auto"
               />
+              {/* The market pulse — live, dated readings, where the page used
+                  to lead with "57.9% cannot pass a basic literacy test". The
+                  statistic is still on the page, in the research section with
+                  its context; the first thing a reader sees is now something
+                  useful to them. */}
               <div
                 data-reveal
-                className="w-full max-w-xs rounded-2xl border border-border bg-canvas px-6 py-5 text-center"
+                className="w-full max-w-xs rounded-2xl border border-border bg-canvas px-5 py-4"
               >
-                <p
-                  className="text-4xl font-black tracking-tighter text-danger-deep"
-                  style={{ fontVariantNumeric: "tabular-nums" }}
-                  data-count={FINACCESS_LITERACY_FAIL_PCT}
-                  data-suffix="%"
-                  data-decimals="1"
-                >
-                  {FINACCESS_LITERACY_FAIL_PCT}%
+                <p className="text-[0.6875rem] font-bold uppercase tracking-widest text-accent-ink">
+                  Market pulse
                 </p>
-                <p className="mt-1.5 text-[0.8125rem] text-muted">
-                  of Kenyans cannot pass a basic financial literacy test
-                  <br />
-                  <span className="mt-1 block text-[0.7rem] text-muted">
-                    FinAccess Household Survey, 2024
-                  </span>
-                </p>
+                <dl className="mt-2 divide-y divide-border">
+                  {HERO_PULSE.map((f) => (
+                    <div key={f.id} className="flex items-baseline justify-between gap-3 py-2">
+                      <dt className="text-[0.8125rem] leading-snug text-ink-soft">
+                        {f.label}
+                        <span className="block text-[0.6875rem] text-muted">{f.source}</span>
+                      </dt>
+                      <dd
+                        className="text-xl font-black tracking-tight text-primary"
+                        style={{ fontVariantNumeric: "tabular-nums" }}
+                      >
+                        {f.value}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
               </div>
             </div>
 
           </div>
         </div>
       </section>
+
+      {/* ── Information first ── */}
+      <KenyaMoneyNow />
 
       {/* ── Goal-based quick start ── */}
       <section className="border-b border-border bg-background py-10 sm:py-12">
@@ -391,10 +406,10 @@ export default function Home() {
         <div className="mx-auto max-w-5xl px-4 sm:px-6">
           <div data-reveal className="mb-10 text-center">
             <p className="mb-2 text-[0.6875rem] font-bold uppercase tracking-[0.16em] text-canvas/60">
-              The Kenya money gap — in three numbers
+              Where Kenyans stand — in three numbers
             </p>
             <h2 className="text-xl font-extrabold tracking-tight text-canvas/90 sm:text-2xl" style={{ textWrap: "balance" } as React.CSSProperties}>
-              What the data actually says about how Kenyans manage money
+              The opportunity in front of us, measured
             </h2>
           </div>
 
@@ -431,13 +446,16 @@ export default function Home() {
         </div>
       </section>
 
-      <details className="group/evidence bg-canvas">
+      {/* Open by default. Information is this site's pillar, and the research
+          was folded behind a toggle most readers never pressed. It still
+          collapses for anyone who wants a shorter page. */}
+      <details open className="group/evidence bg-canvas">
         <summary className="cursor-pointer list-none border-b border-border px-4 py-5 marker:content-none sm:px-6">
           <span className="mx-auto flex max-w-5xl items-center justify-between gap-4">
             <span>
-              <span className="block text-xs font-bold uppercase tracking-widest text-accent-ink">Want the evidence?</span>
+              <span className="block text-xs font-bold uppercase tracking-widest text-accent-ink">The evidence</span>
               <span className="mt-1 block text-sm font-semibold text-primary sm:text-base">
-                Explore the research behind JiPange’s Kenya-first approach
+                The research behind JiPange’s Kenya-first approach
               </span>
             </span>
             <span aria-hidden="true" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#D4CEC5] bg-white text-xl text-primary transition-transform group-open/evidence:rotate-45">+</span>
@@ -458,8 +476,8 @@ export default function Home() {
               The problem is structural, not personal
             </h2>
             <p className="mt-2 max-w-prose text-[0.9375rem] text-ink-soft">
-              These are not individual failures. They are system-wide gaps that JiPange is designed
-              to help you navigate.
+              These are system-wide gaps, not individual failings — and each one can be navigated
+              with the right information at the right moment.
             </p>
           </div>
 
@@ -504,23 +522,23 @@ export default function Home() {
                 className="mb-5 text-2xl font-extrabold leading-tight tracking-tight text-primary sm:text-3xl"
                 style={{ textWrap: "balance" } as React.CSSProperties}
               >
-                &ldquo;Most Kenyans aren&apos;t broke —<br />
-                they&apos;re <em className="not-italic text-accent-ink">misallocated.</em>
+                &ldquo;Kenyans work hard for every shilling.
                 <br />
-                The money is there. The plan is missing.&rdquo;
+                With a clear plan, those shillings can{" "}
+                <em className="not-italic text-accent-ink">work just as hard in return.</em>&rdquo;
               </p>
               <p data-reveal data-delay="1" className="mb-4 text-[0.9375rem] leading-loose text-ink-soft">
                 You earn a salary. PAYE, NSSF, SHIF and Housing Levy leave before you touch it.
                 Rent on the first. School fees in January, April, September. Fuliza at the end of
                 the month when the calculation doesn&apos;t balance. A Sacco loan you&apos;re
-                guaranteeing for three colleagues. Your financial life is genuinely complex — and it
-                was never designed with a Kenya-specific plan in mind.
+                guaranteeing for three colleagues. Your financial life is genuinely complex, and it
+                deserves tools that understand it.
               </p>
               <p data-reveal data-delay="2" className="mb-5 text-[0.9375rem] leading-loose text-ink-soft">
-                JiPange is the only calculator suite built specifically for this reality. Every
-                number is grounded in Kenya&apos;s actual tax bands, real MMF yields, the NSSF Act
-                2013 phased rollout, SHIF contributions, and Sacco mechanics — not a US retirement
-                spreadsheet with a Ksh sign dropped in.
+                JiPange is built for this reality. Every number is grounded in Kenya&apos;s
+                actual tax bands, each week&apos;s Treasury bill auction results, the NSSF Act 2013 phased rollout, SHIF
+                contributions and Sacco mechanics — not a spreadsheet from somewhere else with a
+                Ksh sign added.
               </p>
               <p data-reveal data-delay="2" className="text-[0.9375rem] leading-loose text-ink-soft">
                 <strong className="text-primary">No black box. No selling. No accounts.</strong>
@@ -534,33 +552,33 @@ export default function Home() {
             <div className="flex flex-col gap-4">
               <div
                 data-reveal
-                className="rounded-2xl border border-[#F5C8C4] bg-danger-soft p-6"
+                className="rounded-2xl border border-[#F0D08A] bg-accent-soft p-6"
               >
-                <p className="mb-3 text-xs font-bold uppercase tracking-widest text-danger-deep">
-                  ⚠️ Fuliza reality check
+                <p className="mb-3 text-xs font-bold uppercase tracking-widest text-accent-ink">
+                  📱 Understanding mobile credit
                 </p>
                 <p
-                  className="text-4xl font-black leading-none tracking-tighter text-danger-deep"
+                  className="text-4xl font-black leading-none tracking-tighter text-accent-ink"
                   style={{ fontVariantNumeric: "tabular-nums" }}
                 >
                   ≈{FULIZA_EXAMPLE_APR}%
                 </p>
                 <p className="mt-1.5 mb-3 text-[0.875rem] font-semibold text-ink-soft">
-                  Real annualised cost of Fuliza
+                  Fuliza&apos;s cost, expressed as an annual rate
                 </p>
                 <p className="text-[0.8125rem] leading-relaxed text-muted">
-                  Ksh {FULIZA_EXAMPLE_DAILY.toFixed(2)}/day on Ksh {FULIZA_EXAMPLE_BALANCE}{" "}feels like loose change. Annualised, it&apos;s the most
-                  expensive credit product most Kenyans ever use — more than bank overdrafts, more
-                  than credit cards. Kenyans borrowed Ksh {FULIZA_VOLUME_TRILLION_KSH} trillion
-                  through Fuliza in the year to March 2026.
+                  Ksh {FULIZA_EXAMPLE_DAILY.toFixed(2)}/day on Ksh {FULIZA_EXAMPLE_BALANCE}{" "}is easy
+                  to overlook. Expressed as an annual rate, it is one of the costliest ways to
+                  borrow — worth knowing whenever a cheaper option is within reach. Kenyans borrowed
+                  Ksh {FULIZA_VOLUME_TRILLION_KSH} trillion through Fuliza in the year to March 2026.
                 </p>
                 <p className="mt-2 text-[0.8125rem] leading-relaxed text-muted">
-                  And Fuliza is one lender. The {CBK_DIGITAL_LENDERS_LICENSED} digital lenders CBK
+                  Digital lending is growing fast too. The {CBK_DIGITAL_LENDERS_LICENSED} digital lenders CBK
                   licenses were owed Ksh {CBK_DIGITAL_CREDIT_BILLION_KSH} billion in December 2025
                   — nearly double a year earlier — across {CBK_DIGITAL_CREDIT_LOANS_MILLIONS} million
                   loans averaging about {ksh(CBK_AVG_DIGITAL_LOAN_KSH)}.
                 </p>
-                <p className="mt-3 text-[0.6875rem] italic text-danger-deep">
+                <p className="mt-3 text-[0.6875rem] italic text-accent-ink">
                   Safaricom PLC FY2026 Annual Results · {CBK_BSAR_2025_CITE}, §3.24
                 </p>
               </div>
@@ -594,7 +612,7 @@ export default function Home() {
                 </p>
                 <p className="mt-3 text-[0.6875rem] italic text-success-deep">
                   {cite("mmfAumBillionKsh")} · {CBK_BSAR_2025_CITE}, §3.7 · MMF yield assumed from
-                  the live 91-day bill
+                  the latest 91-day bill
                 </p>
               </div>
             </div>
