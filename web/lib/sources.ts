@@ -351,6 +351,37 @@ export const SOURCES = {
     reviewBy: "2027-10-31",
   },
 
+  cbkDigitalCreditLoansMillions: {
+    value: 6.74,
+    unit: "million loans outstanding with licensed digital credit providers, December 2025",
+    publisher: "Central Bank of Kenya",
+    title: "Bank Supervision Annual Report 2025 — Digital Credit Providers (§3.24, Chart 16)",
+    url: "https://www.centralbank.go.ke/reports/bank-supervision-and-banking-sector-reports/",
+    asOf: "2025-12-31",
+    reviewBy: "2027-10-31",
+    note: "Up 71% from 3.9 million. Chart 16 gives the average loan as Ksh 16,341; 110.1bn / 6.74M reproduces it to within rounding.",
+  },
+  cbkDigitalLendersLicensed: {
+    value: 195,
+    unit: "digital credit providers licensed by CBK, December 2025",
+    publisher: "Central Bank of Kenya",
+    title: "Bank Supervision Annual Report 2025 — Structure of the Banking Sector (§1.1)",
+    url: "https://www.centralbank.go.ke/reports/bank-supervision-and-banking-sector-reports/",
+    asOf: "2025-12-31",
+    reviewBy: "2027-10-31",
+    note: "85 a year earlier (§3.24).",
+  },
+  cbkMobileMoneySubscriptionsMillions: {
+    value: 51.4,
+    unit: "million mobile money subscriptions, December 2025",
+    publisher: "Central Bank of Kenya",
+    title: "Bank Supervision Annual Report 2025 — Table 8, Mobile Transaction Data",
+    url: "https://www.centralbank.go.ke/reports/bank-supervision-and-banking-sector-reports/",
+    asOf: "2025-12-31",
+    reviewBy: "2027-10-31",
+    note: "Up from 42.3 million. CBK compiles Table 8 from Communications Authority sector statistics; subscriptions, not people.",
+  },
+
   /* IMF World Economic Outlook — the forward-looking layer.
    *
    * Every other entry here is a measured outturn: a survey, a digest, a
@@ -468,4 +499,9 @@ export function cbkHouseholdNplRatioPct(): number {
 /** Growth in digital-credit-provider lending over 2025, in percent. */
 export function cbkDigitalCreditGrowthPct(): number {
   return (figure("cbkDigitalCreditBillionKsh") / figure("cbkDigitalCreditPriorBillionKsh") - 1) * 100;
+}
+
+/** Average outstanding digital loan, Ksh — the book divided by the loan count. */
+export function cbkAvgDigitalLoanKsh(): number {
+  return (figure("cbkDigitalCreditBillionKsh") * 1e9) / (figure("cbkDigitalCreditLoansMillions") * 1e6);
 }

@@ -885,3 +885,16 @@ test("the money check page has exactly one top-level heading", async ({ page }) 
   await page.goto("/profile");
   await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
 });
+
+/* Two landing-page sentences rendered with a word welded to the number before
+ * it — "Ksh 600feels like loose change", "9.08%against the average bank" —
+ * though the source had an ordinary space; the build dropped it. Both now use
+ * an explicit {" "}, and this reads what a reader actually sees. */
+test("landing: numbers inside the evidence prose keep their spaces", async ({ page }) => {
+  await page.goto("/", { waitUntil: "networkidle" });
+  await page.getByText("Explore the research", { exact: false }).first().click();
+  const text = await page.locator("main").innerText();
+  expect(text).toMatch(/Ksh \d+ feels like loose change/);
+  expect(text).toMatch(/\d% against the average bank/);
+  expect(text).not.toMatch(/\d(feels|against)\b/);
+});

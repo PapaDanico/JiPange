@@ -19,6 +19,7 @@
 
 import {
   SOURCES,
+  cbkAvgDigitalLoanKsh,
   cbkDigitalCreditGrowthPct,
   cbkHouseholdNplRatioPct,
   cbkInsuredShareOfDepositsPct,
@@ -82,6 +83,11 @@ export const CBK_HOUSEHOLD_NPL_RATIO_PCT = Math.round(cbkHouseholdNplRatioPct() 
 export const CBK_DIGITAL_CREDIT_BILLION_KSH = figure("cbkDigitalCreditBillionKsh");
 /** Growth in digital lending over 2025, whole percent. */
 export const CBK_DIGITAL_CREDIT_GROWTH_PCT = Math.round(cbkDigitalCreditGrowthPct());
+export const CBK_DIGITAL_CREDIT_LOANS_MILLIONS = figure("cbkDigitalCreditLoansMillions");
+export const CBK_DIGITAL_LENDERS_LICENSED = figure("cbkDigitalLendersLicensed");
+/** Average digital loan outstanding, to the nearest hundred shillings. */
+export const CBK_AVG_DIGITAL_LOAN_KSH = Math.round(cbkAvgDigitalLoanKsh() / 100) * 100;
+export const CBK_MOBILE_MONEY_SUBSCRIPTIONS_MILLIONS = figure("cbkMobileMoneySubscriptionsMillions");
 /** The report's own date and name, for a citation line beside any of these. */
 export const CBK_BSAR_2025_CITE = "CBK Bank Supervision Annual Report 2025";
 

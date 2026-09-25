@@ -14,7 +14,9 @@ import {
   CBK_MORTGAGE_AVG_RATE_PCT,
   CBK_SECTOR_NPL_RATIO_PCT,
 } from "../kenya-stats";
-import { saccoVsBankInterestSavingKES } from "../tool-stats";
+import { mmfVsBankDepositGapKES, saccoVsBankInterestSavingKES } from "../tool-stats";
+import { cbkAvgDigitalLoanKsh } from "../sources";
+import { assumedMmfYield } from "../mmf-assumption";
 import { calculateLoanAmortization } from "../loans";
 
 /**
@@ -131,5 +133,40 @@ describe("mortgage rates are data, not prose", () => {
 
   it("the planner's rate is the one CBK published", () => {
     expect(CBK_MORTGAGE_AVG_RATE_PCT).toBe(13.5);
+  });
+});
+
+describe("mobile lending", () => {
+  it("the average digital loan reproduces Chart 16's Ksh 16,341 from §3.24's two totals", () => {
+    // 110.1bn / 6.74M. Both inputs are rounded in print, so agreement is to
+    // within a few shillings, not exact — and that closeness is the check
+    // that neither figure was mistyped.
+    expect(Math.abs(cbkAvgDigitalLoanKsh() - 16_341)).toBeLessThan(20);
+  });
+});
+
+describe("the landing page's MMF-vs-bank gap", () => {
+  it("is computed after tax on both sides from the live MMF assumption", () => {
+    const net = (r: number) => r * 0.85;
+    const grow = (r: number) => 100_000 * Math.pow(1 + r, 5);
+    const expected = Math.round((grow(net(assumedMmfYield())) - grow(net(0.0713))) / 100) * 100;
+    expect(mmfVsBankDepositGapKES()).toBe(expected);
+  });
+
+  it("is nowhere near the 'over Ksh 50,000' the page used to claim", () => {
+    expect(mmfVsBankDepositGapKES()).toBeLessThan(50_000);
+  });
+});
+
+describe("the landing page states no bank or fund rate in prose", () => {
+  const src = readFileSync(new URL("../../app/page.tsx", import.meta.url), "utf8")
+    .replace(/\/\*[\s\S]*?\*\//g, " ")
+    .replace(/^\s*\/\/.*$/gm, " ");
+
+  it("no longer carries the unsourced 3.23%, the typed 9–12% range, or the phantom 2026 report", () => {
+    expect(src).not.toMatch(/ASSUMED_CURRENT_YIELD/);
+    expect(src).not.toMatch(/9\s*[–-]\s*12%/);
+    expect(src).not.toMatch(/Banking Sector Report, 2026/);
+    expect(src).not.toMatch(/over Ksh 50,000/);
   });
 });

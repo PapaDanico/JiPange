@@ -8,6 +8,7 @@ import { round2 } from "./money";
 import { calculateLoanAmortization } from "./loans";
 import { SACCO_MONTHLY_RATE } from "./loan-comparison";
 import { figure } from "./sources";
+import { WHT_ON_INTEREST } from "./mmf-vs-tbill";
 
 /**
  * The headline figures on tool pages, computed instead of typed.
@@ -394,4 +395,30 @@ export function saccoVsBankInterestSavingKES(): number {
   return Math.round(
     interestAt(figure("cbkAvgLendingRatePct")) - interestAt(SACCO_EXAMPLE_ANNUAL_RATE_PCT)
   );
+}
+
+// ── landing page: money market fund vs the average bank deposit ─────────────
+/*
+ * The homepage said MMFs were "earning 9–12% vs. bank rates of 3.23%. The
+ * difference at Ksh 100,000 over 5 years is over Ksh 50,000." Three problems:
+ * 3.23% had no source anywhere (an "original spec" constant, cited on the
+ * page to a "CBK Banking Sector Report, 2026" that does not exist); 9–12% was
+ * typed beside a live MMF assumption that reads 9.1% today; and even on those
+ * inputs the gap is about Ksh 37,000, not "over 50,000" — the top of a range
+ * quoted as the whole of it.
+ *
+ * Now: the app's own MMF assumption against CBK's measured average deposit
+ * rate (Bank Supervision Annual Report 2025, December 2025), both AFTER the
+ * same 15% withholding tax, compounded annually. It is a smaller number. It is
+ * the true one.
+ */
+export const SAVINGS_GAP_PRINCIPAL_KES = 100_000;
+export const SAVINGS_GAP_YEARS = 5;
+
+export function mmfVsBankDepositGapKES(): number {
+  const net = (grossRate: number) => grossRate * (1 - WHT_ON_INTEREST);
+  const grow = (rate: number) => SAVINGS_GAP_PRINCIPAL_KES * Math.pow(1 + rate, SAVINGS_GAP_YEARS);
+  const mmf = grow(net(assumedMmfYield()));
+  const bank = grow(net(figure("cbkAvgDepositRatePct") / 100));
+  return Math.round((mmf - bank) / 100) * 100;
 }

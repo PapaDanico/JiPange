@@ -5,11 +5,13 @@ import ReturningUserRedirect from "@/components/onboarding/ReturningUserRedirect
 import LandingInteractivity from "@/components/landing/LandingInteractivity";
 import { fulizaDailyFee } from "@/lib/fuliza";
 import { TOOL_META } from "@/lib/tool-meta";
+import { CURRENT_INFLATION, TARGET_MMF_YIELD } from "@/lib/journey";
+import { inflationAttribution } from "@/lib/rates-feed";
 import {
-  ASSUMED_CURRENT_YIELD,
-  CURRENT_INFLATION,
-  TARGET_MMF_YIELD,
-} from "@/lib/journey";
+  SAVINGS_GAP_PRINCIPAL_KES,
+  SAVINGS_GAP_YEARS,
+  mmfVsBankDepositGapKES,
+} from "@/lib/tool-stats";
 import {
   FINACCESS_LITERACY_FAIL_PCT,
   FINACCESS_FORMAL_INCLUSION_PCT,
@@ -25,7 +27,14 @@ import {
   BANK_DEPOSITS_TRILLION_KSH,
   MMF_AUM_BILLION_KSH,
   MMF_SHARE_OF_DEPOSITS_PCT,
-  BANK_SAVINGS_EARNING_BELOW_INFLATION_TRILLION,
+  CBK_AVG_DEPOSIT_RATE_NET_PCT,
+  CBK_AVG_DEPOSIT_RATE_PCT,
+  CBK_AVG_DIGITAL_LOAN_KSH,
+  CBK_BSAR_2025_CITE,
+  CBK_DIGITAL_CREDIT_BILLION_KSH,
+  CBK_DIGITAL_CREDIT_LOANS_MILLIONS,
+  CBK_DIGITAL_LENDERS_LICENSED,
+  CBK_MOBILE_MONEY_SUBSCRIPTIONS_MILLIONS,
 } from "@/lib/kenya-stats";
 import { cite } from "@/lib/sources";
 
@@ -57,6 +66,17 @@ const ksh = (n: number) => `Ksh ${n.toLocaleString("en-KE")}`;
 
 const pct = (rate: number) => `${parseFloat((rate * 100).toFixed(2))}%`;
 
+/* The bank-rate claim, computed rather than asserted.
+ *
+ * This card showed "3.23% — Average bank savings rate", cited to a "CBK
+ * Banking Sector Report, 2026". No such report exists; the 3.23% was an
+ * unsourced spec constant (lib/journey.ts ASSUMED_CURRENT_YIELD). CBK's Bank
+ * Supervision Annual Report 2025 measures the average deposit rate at 7.13%
+ * for December 2025 — 6.06% after the 15% withholding tax. Whether that beats
+ * inflation is a comparison the page now MAKES, against the live reading, and
+ * the sentence follows the answer instead of assuming it. */
+const BANK_NET_BELOW_INFLATION = CBK_AVG_DEPOSIT_RATE_NET_PCT / 100 < CURRENT_INFLATION;
+
 const TRUST_CHIPS = [
   "🕶️ 100% anonymous",
   "👆🏿 No salary questions",
@@ -77,14 +97,16 @@ const REALITY_STATS: {
   href: string;
 }[] = [
   {
-    figure: pct(ASSUMED_CURRENT_YIELD),
-    dataCount: (ASSUMED_CURRENT_YIELD * 100).toFixed(2),
+    figure: `${CBK_AVG_DEPOSIT_RATE_NET_PCT}%`,
+    dataCount: CBK_AVG_DEPOSIT_RATE_NET_PCT.toFixed(2),
     dataSuffix: "%",
     decimals: "2",
     color: "text-[#F4A09A]",
-    label: "Average bank savings rate",
-    detail: `Inflation runs at ${pct(CURRENT_INFLATION)}. Money "safe" in a bank account loses real purchasing power every single day — silently, automatically.`,
-    source: "CBK Banking Sector Report, 2026",
+    label: "Average bank deposit rate, after tax",
+    detail: BANK_NET_BELOW_INFLATION
+      ? `Inflation runs at ${pct(CURRENT_INFLATION)}. Even the average bank deposit — fixed deposits included — keeps less than that after tax, so money "safe" in the bank is losing purchasing power.`
+      : `Inflation runs at ${pct(CURRENT_INFLATION)}, so the average bank deposit is only just ahead after tax — and an ordinary savings account is not the average.`,
+    source: `${CBK_BSAR_2025_CITE} (Dec 2025, ${CBK_AVG_DEPOSIT_RATE_PCT}% before tax) · ${inflationAttribution()}`,
     cta: "Run the inflation maths →",
     href: "/tools/inflation-reality",
   },
@@ -138,8 +160,8 @@ const RESEARCH_CARDS = [
     dataSuffix: "%",
     tone: "success" as const,
     label: "of Kenyans have access to formal financial services",
-    body: "Financial inclusion has never been higher — M-Pesa has driven gender parity to within 1.6 percentage points. Access is not the problem. What Kenyans do with that access is where the gap persists.",
-    cite: "FinAccess Household Survey 2024 — CBK / FSD Kenya / KNBS",
+    body: `Financial inclusion has never been higher — M-Pesa has driven gender parity to within 1.6 percentage points, and mobile money subscriptions reached ${CBK_MOBILE_MONEY_SUBSCRIPTIONS_MILLIONS} million by December 2025. Access is not the problem. What Kenyans do with that access is where the gap persists.`,
+    cite: `FinAccess Household Survey 2024 — CBK / FSD Kenya / KNBS · ${CBK_BSAR_2025_CITE}, Table 8`,
   },
   {
     figure: `${FINACCESS_LITERACY_PASS_PCT}%`,
@@ -527,13 +549,19 @@ export default function Home() {
                   Real annualised cost of Fuliza
                 </p>
                 <p className="text-[0.8125rem] leading-relaxed text-muted">
-                  Ksh {FULIZA_EXAMPLE_DAILY.toFixed(2)}/day on Ksh {FULIZA_EXAMPLE_BALANCE} feels like loose change. Annualised, it&apos;s the most
+                  Ksh {FULIZA_EXAMPLE_DAILY.toFixed(2)}/day on Ksh {FULIZA_EXAMPLE_BALANCE}{" "}feels like loose change. Annualised, it&apos;s the most
                   expensive credit product most Kenyans ever use — more than bank overdrafts, more
                   than credit cards. Kenyans borrowed Ksh {FULIZA_VOLUME_TRILLION_KSH} trillion
                   through Fuliza in the year to March 2026.
                 </p>
+                <p className="mt-2 text-[0.8125rem] leading-relaxed text-muted">
+                  And Fuliza is one lender. The {CBK_DIGITAL_LENDERS_LICENSED} digital lenders CBK
+                  licenses were owed Ksh {CBK_DIGITAL_CREDIT_BILLION_KSH} billion in December 2025
+                  — nearly double a year earlier — across {CBK_DIGITAL_CREDIT_LOANS_MILLIONS} million
+                  loans averaging about {ksh(CBK_AVG_DIGITAL_LOAN_KSH)}.
+                </p>
                 <p className="mt-3 text-[0.6875rem] italic text-danger-deep">
-                  Safaricom PLC FY2026 Annual Results
+                  Safaricom PLC FY2026 Annual Results · {CBK_BSAR_2025_CITE}, §3.24
                 </p>
               </div>
 
@@ -549,19 +577,24 @@ export default function Home() {
                   className="text-4xl font-black leading-none tracking-tighter text-success-deep"
                   style={{ fontVariantNumeric: "tabular-nums" }}
                 >
-                  Ksh {BANK_SAVINGS_EARNING_BELOW_INFLATION_TRILLION}T
+                  Ksh {BANK_DEPOSITS_TRILLION_KSH}T
                 </p>
                 <p className="mt-1.5 mb-3 text-[0.875rem] font-semibold text-ink-soft">
-                  in bank accounts earning below inflation
+                  {BANK_NET_BELOW_INFLATION
+                    ? "in bank deposits, where the average rate after tax trails inflation"
+                    : "in bank deposits, where the average rate after tax barely clears inflation"}
                 </p>
                 <p className="text-[0.8125rem] leading-relaxed text-muted">
-                  Of Ksh {BANK_DEPOSITS_TRILLION_KSH} trillion in Kenyan bank savings, only Ksh{" "}
-                  {MMF_AUM_BILLION_KSH} billion is in money market funds — earning 9–12% vs. bank
-                  rates of {pct(ASSUMED_CURRENT_YIELD)}. The difference at Ksh 100,000 over 5 years
-                  is over Ksh 50,000 earned or lost.
+                  Only Ksh {MMF_AUM_BILLION_KSH} billion sits in money market funds, which we
+                  assume earn about {pct(TARGET_MMF_YIELD)}{" "}against the average bank
+                  deposit&apos;s {CBK_AVG_DEPOSIT_RATE_PCT}%. After tax on both, Ksh{" "}
+                  {SAVINGS_GAP_PRINCIPAL_KES.toLocaleString("en-KE")} over {SAVINGS_GAP_YEARS} years
+                  comes out about {ksh(mmfVsBankDepositGapKES())} ahead in the fund — and more
+                  against a savings account paying below the average.
                 </p>
                 <p className="mt-3 text-[0.6875rem] italic text-success-deep">
-                  CMA Collective Investment Schemes Quarterly Report, Q1 2026 · CBK
+                  {cite("mmfAumBillionKsh")} · {CBK_BSAR_2025_CITE}, §3.7 · MMF yield assumed from
+                  the live 91-day bill
                 </p>
               </div>
             </div>
@@ -774,10 +807,15 @@ export default function Home() {
             * page states statistics, not rates — no PAYE band or fund yield
             * appears on it — so the sentence was claiming currency for figures
             * that are not here, while the tables it sounded like it covered
-            * are governed by lib/statutes.ts and carry their own dates. */}
+            * are governed by lib/statutes.ts and carry their own dates.
+            *
+            * "Pension Policy International/KIPPRA 2024" was listed here with no
+            * figure on the page drawing on it — the KIPPRA-linked number was
+            * removed from lib/sources.ts and its credit line outlived it. The
+            * list is now exactly what the cards above cite. */}
           Sources: FinAccess Household Survey 2024 (CBK/FSD Kenya/KNBS) · RBA Pensioners Survey
-          2024 · {cite("mmfAumBillionKsh")} · Safaricom FY2026 Annual Report · Pension Policy
-          International/KIPPRA 2024.
+          2024 and industry brief to June 2025 · KNBS Economic Survey · {cite("mmfAumBillionKsh")}{" "}
+          · Safaricom FY2026 Annual Report · {CBK_BSAR_2025_CITE} · inflation: {inflationAttribution()}.
         </p>
       </div>
     </>
