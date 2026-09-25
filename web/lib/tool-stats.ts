@@ -5,6 +5,9 @@ import { assumedMmfYield } from "./mmf-assumption";
 import { calculateLandPurchase } from "./land";
 import { calculateFulizaCost } from "./fuliza";
 import { round2 } from "./money";
+import { calculateLoanAmortization } from "./loans";
+import { SACCO_MONTHLY_RATE } from "./loan-comparison";
+import { figure } from "./sources";
 
 /**
  * The headline figures on tool pages, computed instead of typed.
@@ -360,3 +363,35 @@ export function seniorSchoolBoardingTotalKES(): number {
   return SENIOR_SCHOOL_BOARDING_ANNUAL_KES * SENIOR_SCHOOL_YEARS;
 }
 
+
+// ── loan-repayment: SACCO vs the average bank rate ─────────────────────────
+/*
+ * This card read "Ksh 12,000 saved in interest by choosing a Sacco (12% p.a.)
+ * over a bank (19% p.a.) on a Ksh 100,000 loan over 2 years." Run through the
+ * calculator directly beneath it, that loan costs Ksh 12,976 in interest at
+ * 12% and Ksh 20,981 at 19%: the saving is Ksh 8,004. The 12,000 was, near
+ * enough, the SACCO loan's own interest bill mistaken for the difference.
+ * The 19% was unsourced; CBK's Bank Supervision Annual Report 2025 measures
+ * the average bank lending rate at 14.82% (December 2025).
+ *
+ * So both rates now come from somewhere — the SACCO rate the loan comparison
+ * already uses, and CBK's measured average — and the engine does the sum.
+ */
+export const LOAN_EXAMPLE_KES = 100_000;
+export const LOAN_EXAMPLE_MONTHS = 24;
+export const SACCO_EXAMPLE_ANNUAL_RATE_PCT = SACCO_MONTHLY_RATE * 12 * 100;
+
+function interestAt(annualRatePct: number): number {
+  return calculateLoanAmortization({
+    principal: LOAN_EXAMPLE_KES,
+    annualRate: annualRatePct / 100,
+    termMonths: LOAN_EXAMPLE_MONTHS,
+  }).totalInterest;
+}
+
+/** Interest saved on the example loan at the SACCO rate versus CBK's average bank lending rate. */
+export function saccoVsBankInterestSavingKES(): number {
+  return Math.round(
+    interestAt(figure("cbkAvgLendingRatePct")) - interestAt(SACCO_EXAMPLE_ANNUAL_RATE_PCT)
+  );
+}

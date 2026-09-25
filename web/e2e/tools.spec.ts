@@ -1,6 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { readFileSync } from "node:fs";
 import { visibleText } from "./helpers";
+import { SOURCES } from "../lib/sources";
 
 // Text assertions go through visibleText (see helpers.ts) so the hidden
 // print letterhead can never satisfy them, and each "shows output" test
@@ -497,11 +498,12 @@ test("recent tools bar: appears after visiting a tool", async ({ page }) => {
 
 test("tool insights: loan repayment caution card is visible", async ({ page }) => {
   await page.goto("/tools/loan-repayment");
-  // The figure is the assertion; the currency prefix is not. This pinned
-  // "KSh 1,500" and broke the moment the app settled on one spelling of the
-  // shilling — a test failing over a label it was not written to check. The
-  // spelling is enforced on its own, in lib/__tests__/currency-label.test.ts.
-  await expect(visibleText(page, /1,500/)).toBeVisible();
+  // The figure is the assertion; the currency prefix is not (spelling is
+  // enforced in lib/__tests__/currency-label.test.ts). It is read from the
+  // registry, not retyped: this test used to pin "1,500", the very figure
+  // that turned out wrong — a test that copies the copy protects the error.
+  const owed = SOURCES.cbkDigitalCreditBillionKsh.value;
+  await expect(visibleText(page, `${owed}bn`)).toBeVisible();
 });
 
 // ─── Navigation ───────────────────────────────────────────────────────────

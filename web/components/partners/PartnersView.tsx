@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { CBK_BSAR_2025_CITE, CBK_INSURED_SHARE_OF_DEPOSITS_PCT } from "@/lib/kenya-stats";
 import {
   PRODUCT_LINKS,
   MMF_LINKS,
@@ -310,6 +311,9 @@ export default function PartnersView() {
             deposits, not on shares — but it is <strong>not yet operational</strong>; the Sacco
             Societies (Amendment) Bill 2025 seeks to activate it. Bank deposits have KDIC
             cover today and SACCO deposits do not, which is a difference no yield figure shows.
+            Bank cover is capped, though: in December 2025 it protected{" "}
+            {CBK_INSURED_SHARE_OF_DEPOSITS_PCT}% of bank customer deposits by value ({CBK_BSAR_2025_CITE},
+            Appendix IX).
           </li>
           <li>
             SACCO dividends are declared once a year at an AGM out of a surplus that has not

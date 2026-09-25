@@ -17,7 +17,16 @@
  * they would have summed to something other than 100 with nothing to say so.
  */
 
-import { SOURCES, figure, fulizaPerUserKsh, mmfShareOfDepositsPct } from "./sources";
+import {
+  SOURCES,
+  cbkDigitalCreditGrowthPct,
+  cbkHouseholdNplRatioPct,
+  cbkInsuredShareOfDepositsPct,
+  figure,
+  fulizaPerUserKsh,
+  mmfShareOfDepositsPct,
+} from "./sources";
+import { WHT_ON_INTEREST } from "./mmf-vs-tbill";
 
 // ── FinAccess Household Survey 2024 (CBK / KNBS / FSD Kenya) ──
 export const FINACCESS_FORMAL_INCLUSION_PCT = figure("finaccessFormalInclusionPct");
@@ -52,6 +61,29 @@ export const MMF_SHARE_OF_DEPOSITS_PCT = Math.round(mmfShareOfDepositsPct() * 10
 /** The remainder, sitting in accounts that pay below inflation. Ksh trillion. */
 export const BANK_SAVINGS_EARNING_BELOW_INFLATION_TRILLION =
   Math.round((BANK_DEPOSITS_TRILLION_KSH - MMF_AUM_BILLION_KSH / 1000) * 10) / 10;
+
+// ── CBK Bank Supervision Annual Report 2025 (year to 31 December 2025) ──
+export const CBK_MORTGAGE_AVG_RATE_PCT = figure("cbkMortgageAvgRatePct");
+export const CBK_MORTGAGE_AVG_TERM_YEARS = figure("cbkMortgageAvgTermYears");
+export const CBK_AVG_LENDING_RATE_PCT = figure("cbkAvgLendingRatePct");
+export const CBK_AVG_DEPOSIT_RATE_PCT = figure("cbkAvgDepositRatePct");
+/**
+ * The average deposit rate after the 15% withholding tax — the number to set
+ * beside a T-bill's net yield, since both are then what the saver keeps.
+ */
+export const CBK_AVG_DEPOSIT_RATE_NET_PCT =
+  Math.round(CBK_AVG_DEPOSIT_RATE_PCT * (1 - WHT_ON_INTEREST) * 100) / 100;
+/** Insured share of bank customer deposits by value, to one decimal. */
+export const CBK_INSURED_SHARE_OF_DEPOSITS_PCT =
+  Math.round(cbkInsuredShareOfDepositsPct() * 10) / 10;
+export const CBK_SECTOR_NPL_RATIO_PCT = figure("cbkSectorNplRatioPct");
+/** Non-performing share of household lending, to one decimal. Derived, not stated. */
+export const CBK_HOUSEHOLD_NPL_RATIO_PCT = Math.round(cbkHouseholdNplRatioPct() * 10) / 10;
+export const CBK_DIGITAL_CREDIT_BILLION_KSH = figure("cbkDigitalCreditBillionKsh");
+/** Growth in digital lending over 2025, whole percent. */
+export const CBK_DIGITAL_CREDIT_GROWTH_PCT = Math.round(cbkDigitalCreditGrowthPct());
+/** The report's own date and name, for a citation line beside any of these. */
+export const CBK_BSAR_2025_CITE = "CBK Bank Supervision Annual Report 2025";
 
 // ── IMF World Economic Outlook, April 2026 ──
 /**
