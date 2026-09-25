@@ -203,3 +203,20 @@ describe("the terms of use do not contradict the privacy notice", () => {
     }
   });
 });
+
+/**
+ * The journey answers stay on the device, as DEVICE_ONLY says.
+ *
+ * JourneyWizard POSTed them to /api/journey-map, fire-and-forget, and threw
+ * the reply away — the dashboard recomputes locally. The disclosure said
+ * "Your device only" throughout, and nothing checked it against the call.
+ */
+describe("the journey answers never leave the device", () => {
+  it("no component calls the journey-map endpoint", () => {
+    const src = readFileSync(
+      new URL("../../components/journey/JourneyWizard.tsx", import.meta.url),
+      "utf8"
+    ).replace(/\/\*[\s\S]*?\*\//g, " ").replace(/^\s*\/\/.*$/gm, " ");
+    expect(src).not.toMatch(/fetch\(\s*["'`]\/api\/journey-map/);
+  });
+});
