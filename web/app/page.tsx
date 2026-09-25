@@ -17,6 +17,8 @@ import {
 import {
   FINACCESS_LITERACY_FAIL_PCT,
   FINACCESS_FORMAL_INCLUSION_PCT,
+  FINACCESS_GENDER_GAP_PTS,
+  FINACCESS_GENDER_GAP_PRIOR_PTS,
   FINACCESS_LITERACY_PASS_PCT,
   RBA_NO_PENSION_PCT,
   RBA_COVERAGE_OF_WORKING_AGE_PCT,
@@ -165,7 +167,7 @@ const RESEARCH_CARDS = [
     dataSuffix: "%",
     tone: "success" as const,
     label: "of Kenyans have access to formal financial services",
-    body: `Financial inclusion has never been higher — M-Pesa has driven gender parity to within 1.6 percentage points, and mobile money subscriptions reached ${CBK_MOBILE_MONEY_SUBSCRIPTIONS_MILLIONS} million by December 2025. Access is not the problem. What Kenyans do with that access is where the gap persists.`,
+    body: `Financial inclusion has never been higher — digital finance has narrowed the gap between women's and men's formal access to ${FINACCESS_GENDER_GAP_PTS} percentage points, from ${FINACCESS_GENDER_GAP_PRIOR_PTS} in 2021, and mobile money subscriptions reached ${CBK_MOBILE_MONEY_SUBSCRIPTIONS_MILLIONS} million by December 2025. Access is not the problem. What Kenyans do with that access is where the gap persists.`,
     cite: `FinAccess Household Survey 2024 — CBK / FSD Kenya / KNBS · ${CBK_BSAR_2025_CITE}, Table 8`,
   },
   {

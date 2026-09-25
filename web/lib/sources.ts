@@ -87,6 +87,31 @@ export const SOURCES = {
     reviewBy: "2027-03-31",
   },
 
+  /* Figure 2.7(a), §2.5 "Access by Sex", p.15: "Access to formal financial
+   * services and products between the female and male population narrowed to
+   * 1.6 percentage points in 2024 from 4.2 percentage points in 2021." The
+   * executive summary credits "digital technology" — not any one product, so
+   * copy must not name M-Pesa as the cause. */
+  finaccessGenderGapFormalPts: {
+    value: 1.6,
+    unit: "percentage points between men's and women's formal access",
+    publisher: "CBK / KNBS / FSD Kenya",
+    title: "FinAccess Household Survey 2024, §2.5",
+    url: "https://www.centralbank.go.ke/finaccess/",
+    asOf: "2024-12-31",
+    reviewBy: "2027-03-31",
+  },
+
+  finaccessGenderGapFormalPriorPts: {
+    value: 4.2,
+    unit: "percentage points between men's and women's formal access, 2021",
+    publisher: "CBK / KNBS / FSD Kenya",
+    title: "FinAccess Household Survey 2024, §2.5",
+    url: "https://www.centralbank.go.ke/finaccess/",
+    asOf: "2021-12-31",
+    reviewBy: "2027-03-31",
+  },
+
   finaccessLiteracyPassPct: {
     value: 42.1,
     unit: "% of adults answering all three literacy questions correctly",
