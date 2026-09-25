@@ -3,6 +3,8 @@
 import { amountOrZero } from "@/lib/money";
 import { useMemo } from "react";
 import { assumedMmfYieldPct } from "@/lib/mmf-assumption";
+import { CBK_AVG_DEPOSIT_RATE_PCT } from "@/lib/kenya-stats";
+import { bestPayingTenor } from "@/lib/rates-feed";
 import { futureValueWithStepUp, inflationAdjust } from "@/lib/projections";
 import { formatKES } from "@/lib/budget";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
@@ -57,9 +59,13 @@ function clampRate(percent: number): number {
   return Math.min(percent, MAX_RETURN_PCT) / 100;
 }
 
+/* Read from the latest auction. "~8.9%" was typed, and outlived the rate it
+ * described. Before tax, like the other presets and the rate the reader types. */
+const BEST_BILL_GROSS = bestPayingTenor().grossEAY.toFixed(1);
+
 const RATE_PRESETS = [
-  { label: "Bank 3.23%", value: "3.23" },
-  { label: "T-Bill ~8.9%", value: "8.9" },
+  { label: `Bank avg ${CBK_AVG_DEPOSIT_RATE_PCT}%`, value: String(CBK_AVG_DEPOSIT_RATE_PCT) },
+  { label: `T-Bill ~${BEST_BILL_GROSS}%`, value: BEST_BILL_GROSS },
   { label: `MMF ~${assumedMmfYieldPct()}%`, value: assumedMmfYieldPct() },
 ];
 
@@ -275,6 +281,7 @@ export default function InvestmentReturnsCalculator() {
           "Pick a return preset (bank, T-Bill, MMF) or type your own rate.",
           "Use the step-up slider if your contributions will grow with your income — even +10%/yr changes the ending dramatically.",
           "Check the 'today's shillings' line: that is what the money will actually buy after inflation.",
+          "The presets come from the latest CBK auction and CBK's own averages. Returns are before withholding tax, and past rates are not a promise of future ones.",
         ]}
       />
     </div>

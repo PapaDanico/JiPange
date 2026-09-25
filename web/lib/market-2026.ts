@@ -1,5 +1,5 @@
 import { solveYearsToTarget } from "./goal-planner";
-import { ASSUMED_CURRENT_YIELD, CURRENT_INFLATION, TARGET_MMF_YIELD } from "./journey";
+import { BANK_NET_YIELD, CURRENT_INFLATION, TARGET_MMF_YIELD } from "./journey";
 import { TBILL_RATES } from "./rates-feed";
 
 /**
@@ -47,7 +47,10 @@ export const MAX_SALARY_DEBT_LIMIT = 0.33; // one-third gross pay rule
  * savings average would land in one file and silently disagree with the other.
  * Two constants holding one fact is a divergence that has not happened yet.
  */
-export const BANK_SAVINGS_BASELINE = ASSUMED_CURRENT_YIELD;
+export const BANK_SAVINGS_BASELINE = BANK_NET_YIELD;
+/* AFTER tax, since September 2026. The ladder it is compared against is net of
+ * withholding tax (netEAY), and setting a net ladder beside a gross bank rate
+ * flattered the bank by 15% of its own yield. */
 
 // ── Module 1: the localized FIRE engine ──
 

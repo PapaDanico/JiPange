@@ -5,10 +5,34 @@
  * that only tidy up someone's understanding are left out; questions where the
  * common answer is confidently wrong are in.
  *
- * Every numeric claim here either comes from the published rates feed at
- * render time or is a statutory figure the app already computes elsewhere, so
- * nothing in this file can drift away from the calculators it sits beside.
+ * That sentence used to claim every figure here came from the rates feed or
+ * the statutes. It did not: the Fuliza answer said "roughly 400% a year" while
+ * lib/fuliza.ts computes 365% for the same 1% a day, and the savings-account
+ * answer typed "inflation above 6%". Figures that describe the market are now
+ * computed from the feed and the sources registry at build time; worked
+ * examples (a 12% flat loan, a fund advertising 12%) are illustrations and
+ * say so. September 2026.
  */
+
+import { fulizaDailyFee } from "./fuliza";
+import { currentInflation, inflationAttribution, attribution } from "./rates-feed";
+import {
+  CBK_AVG_DEPOSIT_RATE_NET_PCT,
+  CBK_AVG_DEPOSIT_RATE_PCT,
+  CBK_AVG_LENDING_RATE_PCT,
+  CBK_BSAR_2025_CITE,
+  CBK_DIGITAL_LENDERS_LICENSED,
+  CBK_INSURED_SHARE_OF_DEPOSITS_PCT,
+  CBK_MORTGAGE_AVG_RATE_PCT,
+  CBK_MORTGAGE_AVG_RATE_PRIOR_PCT,
+  CBK_MORTGAGE_AVG_TERM_YEARS,
+} from "./kenya-stats";
+
+/* Ksh 600 is the balance the homepage uses for the same example. */
+const FULIZA_EXAMPLE_BALANCE = 600;
+const FULIZA_DAILY_PCT = (fulizaDailyFee(FULIZA_EXAMPLE_BALANCE) / FULIZA_EXAMPLE_BALANCE) * 100;
+const FULIZA_APR = Math.round(FULIZA_DAILY_PCT * 365);
+const INFLATION_PCT = (currentInflation() * 100).toFixed(1);
 
 export interface Faq {
   question: string;
@@ -75,8 +99,7 @@ export const FAQS: Faq[] = [
   /* ───────────────────────────────────────────────────────── Debt */
   {
     question: "Fuliza is only about 1% a day. That is cheap, isn't it?",
-    answer:
-      "It is roughly 400% a year. A daily rate is the most effective way to make a very expensive loan sound small, and it is not a trick — the number is accurate, it is simply quoted over a period short enough to look harmless. Borrowing at 400% to bridge a gap that recurs every month means the gap now costs more than it did.",
+    answer: `It is about ${FULIZA_APR}% a year — on a Ksh ${FULIZA_EXAMPLE_BALANCE} balance the daily fee works out to ${FULIZA_DAILY_PCT.toFixed(1)}% a day. A daily rate is accurate, but it is quoted over a period short enough to look small. Fuliza is genuinely useful for a true emergency; used every month to bridge the same gap, the gap ends up costing more than it did. A small buffer built up over a few months is usually the gentler way out.`,
     topic: "Debt",
     toolPath: "/tools/fuliza-cost",
     toolLabel: "See what a Fuliza habit costs a year",
@@ -98,6 +121,28 @@ export const FAQS: Faq[] = [
     toolLabel: "See what a guarantee freezes",
   },
 
+  {
+    question: "How are bank loan rates worked out now?",
+    answer: `Since 1 September 2025, Kenyan banks price variable-rate loans as a published benchmark (KESONIA, the overnight interbank rate, or the Central Bank Rate) plus a premium for the bank's costs and your credit risk, plus fees. Existing loans moved across by the end of February 2026. Banks must publish their rates, premiums and fees on the Total Cost of Credit website, so you can compare offers before you sign. For context, the average bank lending rate was ${CBK_AVG_LENDING_RATE_PCT}% in December 2025 (${CBK_BSAR_2025_CITE}).`,
+    topic: "Debt",
+    toolPath: "/tools/loan-repayment",
+    toolLabel: "See what a rate means in monthly repayments",
+  },
+  {
+    question: "How do I know a digital lender is licensed?",
+    answer: `The Central Bank of Kenya licenses digital credit providers — ${CBK_DIGITAL_LENDERS_LICENSED} of them by December 2025 — and publishes the list. Check a lender's name against CBK's directory before you borrow or share your contacts. A licensed lender must disclose its full cost of credit up front; if an app cannot tell you what you will repay in total, that is reason enough to pause.`,
+    topic: "Debt",
+    toolPath: "/tools/debt-escape",
+    toolLabel: "Plan a way out of app loans",
+  },
+  {
+    question: "What does a mortgage cost in Kenya today?",
+    answer: `CBK's mortgage survey put the average rate at ${CBK_MORTGAGE_AVG_RATE_PCT}% in 2025, down from ${CBK_MORTGAGE_AVG_RATE_PRIOR_PCT}% in 2024, over an average term of about ${CBK_MORTGAGE_AVG_TERM_YEARS} years — though individual rates range widely around that. Lenders refinanced by the Kenya Mortgage Refinance Company offer fixed-rate home loans at single-digit rates to qualifying buyers, so it is worth asking any bank or SACCO whether it takes part.`,
+    topic: "Debt",
+    toolPath: "/planners/home",
+    toolLabel: "Plan a home deposit",
+  },
+
   /* ────────────────────────────────────────────────────── Investing */
   {
     question: "A fund advertises 12% and a Treasury bill quotes 9%. Is the fund better?",
@@ -109,11 +154,17 @@ export const FAQS: Faq[] = [
   },
   {
     question: "My savings account pays 3%. That is still growth, isn't it?",
-    answer:
-      "In shillings, yes. In what those shillings buy, no. With inflation above 6%, money in a 3% account loses purchasing power every year — the balance rises while the value falls. This is the quietest way money is lost in Kenya, because nothing ever appears to go wrong.",
+    answer: `In shillings, yes. In what those shillings buy, not quite. Inflation is ${INFLATION_PCT}% (${inflationAttribution()}), so a 3% account — less 15% withholding tax — loses a little buying power each year even as the balance rises. For comparison, CBK measured the average bank deposit rate at ${CBK_AVG_DEPOSIT_RATE_PCT}% in December 2025, about ${CBK_AVG_DEPOSIT_RATE_NET_PCT}% after tax. Your emergency money belongs somewhere instantly available; money you will not need for a while can usually do better.`,
     topic: "Investing",
     toolPath: "/tools/inflation-reality",
     toolLabel: "See what inflation is doing to yours",
+  },
+  {
+    question: "Is my money in the bank insured?",
+    answer: `Bank deposits are covered by the Kenya Deposit Insurance Corporation up to a limit per depositor, so small balances are well protected and large ones only partly. At December 2025, insured deposits were ${CBK_INSURED_SHARE_OF_DEPOSITS_PCT}% of all bank customer deposits by value (${CBK_BSAR_2025_CITE}). SACCO deposits have no statutory guarantee yet — the fund the law provides for is not operational — which is worth weighing alongside any rate.`,
+    topic: "Investing",
+    toolPath: "/tools/where-to-save",
+    toolLabel: "Compare where to save",
   },
   {
     question: "Is a SACCO safer than a bank?",
@@ -167,8 +218,12 @@ export const FAQS: Faq[] = [
   /* ────────────────────────────────────────────────── About JiPange */
   {
     question: "Where do your numbers come from?",
-    answer:
-      "Statutory figures — PAYE bands, NSSF, SHA, the housing levy — come from the Acts and are cited on each calculator. Market rates come from a published feed maintained by our sister tool Mwangaza Yield, which derives them from Central Bank of Kenya releases and verifies them against real contract notes. Where a figure is our estimate rather than a published one, the calculator says so.",
+    answer: `Statutory figures — PAYE bands, NSSF, SHA, the housing levy — come from the Acts and are cited on each calculator. Treasury bill yields come from each CBK auction (currently the ${attribution()}), and inflation from the official reading (${inflationAttribution()}). Banking-sector figures — average deposit and lending rates, mortgage costs, mobile money and digital lending — come from the ${CBK_BSAR_2025_CITE}. Every figure carries its date and publisher, and where a number is our estimate rather than a published one, the calculator says so.`,
+    topic: "About JiPange",
+  },
+  {
+    question: "How current are the rates on JiPange?",
+    answer: `Treasury bill yields update with each weekly CBK auction and are always shown with the auction date — at present the ${attribution()}. Inflation is the latest official reading (${inflationAttribution()}), and banking-sector averages come from CBK's annual report. If our rates source ever falls behind, the affected pages say so plainly rather than let an old number look new.`,
     topic: "About JiPange",
   },
   {

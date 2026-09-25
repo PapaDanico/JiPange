@@ -2,7 +2,13 @@ import type { Metadata } from "next";
 import { assumedMmfYield, assumedMmfYieldPct, monthlyContributionFV } from "@/lib/mmf-assumption";
 import ToolLayout from "@/components/tools/ToolLayout";
 import InvestmentReturnsCalculator from "@/components/tools/InvestmentReturnsCalculator";
-import { BANK_SAVINGS_EARNING_BELOW_INFLATION_TRILLION } from "@/lib/kenya-stats";
+import {
+  BANK_DEPOSITS_TRILLION_KSH,
+  CBK_AVG_DEPOSIT_RATE_NET_PCT,
+  CBK_BSAR_2025_CITE,
+} from "@/lib/kenya-stats";
+import { CURRENT_INFLATION } from "@/lib/journey";
+import { cite } from "@/lib/sources";
 
 export const metadata: Metadata = {
   title: "Investment Returns Calculator — Compound Growth Kenya",
@@ -20,9 +26,17 @@ export default function InvestmentReturnsPage() {
         {
           icon: "⚠️",
           tone: "caution",
-          stat: `Ksh ${BANK_SAVINGS_EARNING_BELOW_INFLATION_TRILLION}T`,
-          label: "sits in Kenyan bank accounts earning 3.23% — below inflation — silently losing real value every day.",
-          source: "CMA Collective Investment Schemes Quarterly Report, Q1 2026 · CBK",
+          /* Was "sits in Kenyan bank accounts earning 3.23% — below
+           * inflation — silently losing real value every day": an unsourced
+           * rate, and a subtraction (deposits minus MMF assets) passed off as
+           * money earning below inflation. The comparison is now made, after
+           * tax, against the live inflation reading. */
+          stat: `Ksh ${BANK_DEPOSITS_TRILLION_KSH}T`,
+          label:
+            CBK_AVG_DEPOSIT_RATE_NET_PCT / 100 < CURRENT_INFLATION
+              ? `sits in Kenyan bank deposits, where the average rate after tax (${CBK_AVG_DEPOSIT_RATE_NET_PCT}%) trails inflation (${(CURRENT_INFLATION * 100).toFixed(1)}%). Money you will not need soon can do better.`
+              : `sits in Kenyan bank deposits, where the average rate after tax (${CBK_AVG_DEPOSIT_RATE_NET_PCT}%) only just keeps pace with inflation (${(CURRENT_INFLATION * 100).toFixed(1)}%).`,
+          source: `${cite("bankDepositsTrillionKsh")} · ${CBK_BSAR_2025_CITE}, §3.7`,
         },
         {
           icon: "🚀",

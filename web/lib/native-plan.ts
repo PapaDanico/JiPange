@@ -38,7 +38,7 @@ import type { ActionPlan, ActionPlanItem, GoalStrategy, GoalStrategyRequest, Pro
 import { actionPlanSchema, goalStrategySchema } from "./types";
 import { formatKES } from "./budget";
 import { tbillRate } from "./rates-feed";
-import { ASSUMED_CURRENT_YIELD, TARGET_MMF_YIELD } from "./journey";
+import { BANK_NET_YIELD, MMF_NET_YIELD } from "./journey";
 import { PAYE_BANDS, PENSION_RELIEF_CAP_MONTHLY } from "./tax";
 import { PRODUCT_LINKS } from "./affiliate-links";
 
@@ -83,8 +83,12 @@ function marginalRate(taxableMonthly: number): number {
   return PAYE_BANDS[PAYE_BANDS.length - 1].rate;
 }
 
-const MMF_PCT = (TARGET_MMF_YIELD * 100).toFixed(1);
-const BANK_PCT = (ASSUMED_CURRENT_YIELD * 100).toFixed(2);
+/* After tax on both sides, since September 2026 — the bank side had been an
+ * unsourced 3.23% gross set against a gross MMF assumption. Now CBK's average
+ * deposit rate and the MMF assumption, each less 15% withholding tax. */
+const MMF_PCT = (MMF_NET_YIELD * 100).toFixed(1);
+const BANK_PCT = (BANK_NET_YIELD * 100).toFixed(1);
+const NET_GAP = MMF_NET_YIELD - BANK_NET_YIELD;
 
 interface Candidate extends Omit<ActionPlanItem, "rank"> {
   /** Rough 12-month shilling impact — the ranking key. Never shown. */
@@ -138,7 +142,7 @@ export function buildActionPlan({ profile, net, surplus }: NativePlanInput): Act
 
   const candidates: Candidate[] = [];
   const emergencyMonthly = friendly(surplus * 0.5);
-  const yieldGapPct = ((TARGET_MMF_YIELD - ASSUMED_CURRENT_YIELD) * 100).toFixed(1);
+  const yieldGapPct = (NET_GAP * 100).toFixed(1);
 
   // Emergency cushion in an MMF — the near-universal first move, scored on the
   // cushion itself, not just the yield, because the yield is not why you do it.
@@ -146,10 +150,10 @@ export function buildActionPlan({ profile, net, surplus }: NativePlanInput): Act
     title: "Build a one-month cushion in a money market fund",
     description:
       `Open an MMF — ${mmfNames()} all take small minimums — and set a standing order of ${formatKES(emergencyMonthly)} for payday. Target: one month of net pay — ${formatKES(net)} — as your do-not-touch floor.`,
-    impact: `About ${formatKES(emergencyMonthly * 12)} of cushion in 12 months, earning ~${MMF_PCT}% instead of ~${BANK_PCT}% in a bank account — ${yieldGapPct} points of pure difference for the same shilling.`,
+    impact: `About ${formatKES(emergencyMonthly * 12)} of cushion in 12 months, earning about ${MMF_PCT}% after tax instead of the average bank deposit's ${BANK_PCT}% — ${yieldGapPct} extra points for the same shilling, and ready when you need it.`,
     effort: "low",
     category: "savings",
-    score: emergencyMonthly * 12 * 0.5 + emergencyMonthly * 12 * (TARGET_MMF_YIELD - ASSUMED_CURRENT_YIELD),
+    score: emergencyMonthly * 12 * 0.5 + emergencyMonthly * 12 * NET_GAP,
   });
 
   // Pension relief — real money returned by KRA, scored on the actual tax
@@ -206,10 +210,10 @@ export function buildActionPlan({ profile, net, surplus }: NativePlanInput): Act
       title: "Make the chama money work between meetings",
       description:
         "Move the group's idle float from a bank account into a regulated Sacco or an MMF in the group's name, and before guaranteeing any member's loan, check what it freezes with the Guarantor Shield tool.",
-      impact: `Idle group funds earn ~${MMF_PCT}% instead of ~${BANK_PCT}%, and an unpriced guarantee is the most common way disciplined savers lose capital.`,
+      impact: `Idle group funds earn about ${MMF_PCT}% after tax instead of ${BANK_PCT}%, and pricing a guarantee before you sign protects the savings the group has worked for.`,
       effort: "medium",
       category: "savings",
-      score: surplus * 6 * (TARGET_MMF_YIELD - ASSUMED_CURRENT_YIELD) + net * 0.1,
+      score: surplus * 6 * NET_GAP + net * 0.1,
     });
   } else if (surplus >= 5_000 && !(bill && surplus >= 15_000)) {
     candidates.push({

@@ -185,8 +185,8 @@ export default function MoneyRunwayCalculator() {
         steps={[
           "Enter everything you could access within days: M-Pesa, bank, and instant-withdrawal MMF balances.",
           "Set your survival burn rate — rent, basic food, and core utilities only (use 0% return for a strict stress test).",
-          "The runway is how long you'd survive a job loss or cash-flow freeze at that burn rate.",
-          "Under 3 months: build the cushion first. Over 3 months: your surplus is free for long-term wealth builders.",
+          "The runway is how long you could cover the essentials through a job change or a slow month, at that burn rate.",
+          "Under 3 months: building the cushion comes first, and every month you add is real security. Over 3 months: your surplus is free to start working on long-term goals.",
         ]}
       />
     </div>

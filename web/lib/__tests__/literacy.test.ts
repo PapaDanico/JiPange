@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { readFileSync, existsSync } from "node:fs";
 import { FAQS, FAQ_TOPICS } from "@/lib/faqs";
+import { GOAL_TYPES } from "@/lib/goal-planner";
 import { GLOSSARY, GLOSSARY_TOPICS } from "@/lib/glossary";
 import { faqPageJsonLd, glossaryJsonLd } from "@/lib/structured-data";
 
@@ -15,8 +16,12 @@ import { faqPageJsonLd, glossaryJsonLd } from "@/lib/structured-data";
  */
 
 describe("every link goes somewhere that exists", () => {
+  // Static pages by file; the planners by the same list the dynamic
+  // [goal] route builds its pages from, so a link to a goal that page would
+  // not generate still fails.
   const routeExists = (path: string) =>
-    existsSync(`${process.cwd()}/app${path}/page.tsx`);
+    existsSync(`${process.cwd()}/app${path}/page.tsx`) ||
+    GOAL_TYPES.some((g) => path === `/planners/${g}`);
 
   it.each(FAQS.filter((f) => f.toolPath).map((f) => [f.question, f.toolPath!]))(
     "FAQ %# points at a real calculator",

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  BANK_SAVINGS_BASELINE,
   dhowcsdLadder,
   mjengoPlan,
 } from "../market-2026";
@@ -49,7 +50,10 @@ describe("dhowcsdLadder", () => {
       ladder.buckets.reduce((sum, b) => sum + b.yieldRate, 0) / ladder.buckets.length;
     expect(ladder.blendedYield).toBeCloseTo(expected, 10);
     expect(ladder.ladderAnnualKes).toBeCloseTo(300_000 * ladder.blendedYield, 6);
-    expect(ladder.advantageKes).toBeCloseTo(ladder.ladderAnnualKes - 300_000 * 0.0323, 6);
+    // Against the bank benchmark AFTER tax: the ladder is net, so the bank
+    // must be too. This compared against a gross, unsourced 3.23% until
+    // September 2026.
+    expect(ladder.advantageKes).toBeCloseTo(ladder.ladderAnnualKes - 300_000 * BANK_SAVINGS_BASELINE, 6);
     expect(ladder.advantageKes).toBeGreaterThan(0);
   });
 
