@@ -367,11 +367,14 @@ CACHED_COMMIT_REF=<last built> COMMIT_REF=<head> bash scripts/netlify-should-bui
   the build, non-zero builds it. Every uncertain case builds.
 - **Deploy previews and branch deploys are off** deliberately, on cost. The
   comments in `netlify.toml` say what to delete to bring them back.
-- **`react-hooks/set-state-in-effect` is a warning, not off.** ~24 call sites
-  hydrate state from `localStorage` in a mount effect on purpose, so the server
-  and first client render agree. The correct fix is `useSyncExternalStore` —
-  see `ExportCardButton.tsx`, where the share-sheet probe was converted. Do the
-  rest as a deliberate migration, not as a drive-by.
+- **`react-hooks/set-state-in-effect` is an error.** The migration it once
+  waited on is done: state read from storage goes through `useStorageValue`
+  (`useSyncExternalStore`) in `lib/hooks.ts`, and derived state is stamped with
+  the inputs it came from instead of reset by an effect (see `inputsKey` in
+  `GoalPlanner.tsx`). Four one-time mount effects remain on purpose — each
+  restores a draft into fields the reader then edits, which `useStorageValue`
+  must not do — and each says so in its `eslint-disable` line. Adding a fifth
+  means arguing that same case there, not loosening the rule.
 
 ## Tests
 
