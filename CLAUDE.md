@@ -153,49 +153,32 @@ schema, tenors, net-below-gross-above-quote, and the one-day move bound. This
 is a git-verified route to the publisher's own bytes, which is if anything
 better provenance than an HTTP fetch. It is NOT a licence to hand-edit.
 
-**A fresh sync may not clear the staleness alarm, and that is upstream's bug.**
-Mwangaza's contract says `generatedAt` is "when the EVIDENCE was refreshed, not
-the build". As of September 2026 its `meta.json` is frozen while its scrapers
-keep running — its own `freshness.json` flags "Pipeline last ran" as stale
-against a 7-day budget while `tbills.json` and `macro.json` are current. So the
-stamp we key off has stopped moving and the evidence behind it has not.
+**The frozen `generatedAt` of August–September 2026 is fixed — upstream.**
+From 19 August to 26 September Mwangaza stamped its feed with its
+pipeline's last run rather than its newest evidence, so our snapshot read 37
+days old while the yields in it were current, and readers were shown the
+stale notice throughout. Mwangaza fixed the stamp in
+PapaDanico/Mwangaza-Yield#312, and #225 here synced the corrected feed
+(dated 24 September; it also now carries an additive `pipelineRanAt`).
 
-`npm run doctor` detects this divergence and names it. **Do not re-base
-`isStale()` onto `auctionDate` to get green.** `generatedAt` is the field the
-publisher vouches for; substituting our own freshness signal invents a claim
-they have not made. Being over-cautious about freshness is the safe direction.
-The fix belongs upstream.
+Two rules came out of it and still stand:
 
-**It is not Mwangaza's SITE that is stuck — it is Mwangaza's SCRAPERS.**
-Checked properly on 11 September 2026, after a first pass got this wrong (see
-below). mwangazayield.org is a **Netlify** project (`mwangazayield`,
-`16fef5cc-…`) and it is publishing perfectly well: production deploy
-`6aa3d22e`, commit `d93ce8d`, published 10:05 that morning, `state: ready`,
-`error_message: null`.
+- **Do not re-base `isStale()` onto `auctionDate` to get green.**
+  `generatedAt` is the field the publisher vouches for; substituting our own
+  freshness signal invents a claim they have not made. We waited five weeks
+  for the fix rather than do that, and the stale notice was right to show.
+  Being over-cautious about freshness is the safe direction.
+- **Check which platform actually serves a domain before explaining an
+  outage.** A first pass blamed a blocked Vercel project named
+  `mwangaza-yield` (DN Consultancy team, `readyState: BLOCKED`). It is a
+  disused duplicate; mwangazayield.org is the Netlify project
+  `mwangazayield` (`16fef5cc-…`), and it was publishing normally the whole
+  time. A plausible cause assembled from one side of the evidence is the
+  precise failure mode the top of this file exists to forbid.
 
-So the frozen stamp is not a deploy failure. The cause is named in that
-deploy's own commit message, from the publisher's side:
-
-> every scraper host is egress-blocked from a session, so it cannot be
-> cleared from here, and meta.json must not be stamped by hand to silence it
-
-plus, in the same message, *"Actions has been dead since 15 August"* on that
-repository too. Their pipeline cannot run, exactly as ours cannot; the
-auction data that `--from` finds has been landing through commits rather than
-through the scrapers. Same shape of problem as this repository's, one repo
-over, and the same answer: it is fixed upstream, at their Actions, not here.
-
-**A first pass got this wrong, and the way it went wrong is the lesson.**
-There IS a blocked Vercel project named `mwangaza-yield` in the DN Consultancy
-team, `live: false`, latest deployment `readyState: BLOCKED`. From that alone
-it looked like a tidy explanation of the frozen stamp, and it was written up as
-one — a plausible cause assembled from one side of the evidence, which is the
-precise failure mode the top of this file exists to forbid. The Vercel project
-is a disused duplicate. Checking which platform actually serves the domain
-took one read and would have prevented the claim.
-
-It changes nothing about the rule above. Until the publisher's stamp moves, we
-keep keying off `generatedAt` and keep showing readers the stale notice.
+If `npm run doctor` ever reports that divergence again (a stale
+`generatedAt` over current `tbills.json`), it is the same class of upstream
+bug, and the fix is theirs.
 
 The 403 from `https://mwangazayield.org/data/rates.json` inside an agent
 session is a *separate* thing and is still the egress policy, not the origin:
