@@ -179,8 +179,10 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
   /** Ksh/mo already committed to the reader's OTHER goals, so unavailable to this one. */
   const [claimedByOthers, setClaimedByOthers] = useState(0);
 
-  const [strategy, setStrategy] = useState<GoalStrategy | null>(null);
-  const [goalSaved, setGoalSaved] = useState(false);
+  /* Each is stamped with the inputs it was produced for (see `inputsKey`),
+   * rather than cleared by an effect when those inputs change. */
+  const [strategyFor, setStrategyFor] = useState<{ key: string; value: GoalStrategy } | null>(null);
+  const [savedFor, setSavedFor] = useState<string | null>(null);
 
   // Prefill from the onboarding journey when it exists. One-time seed into
   // hand-editable fields — every value here can be typed over afterward, so
@@ -332,20 +334,15 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
 
   const animatedRequiredMonthly = useCountUp(multi ? multi.totalRequiredMonthly : null);
 
-  // A strategy is grounded in the numbers it was generated for — clear it
-  // when those numbers change so we never show advice for a different goal.
-  // Bumping the sequence also invalidates any request still in flight. The
-  // ref bump has to happen here (mutating a ref during render isn't safe —
-  // a render can be discarded and retried without committing), and the
-  // A shown strategy must not outlive the numbers it was computed from. With
-  // generation synchronous there is no in-flight request to invalidate any
-  // more — the reset is all that is left of the old sequencing machinery.
+  // A strategy is grounded in the numbers it was generated for, and a saved
+  // badge in the goal it saved. Both are stamped with the inputs they came
+  // from and simply stop showing when those inputs change, so advice for a
+  // different goal is never on screen — not even for the one frame a reset
+  // effect used to leave it there.
   const itemsKey = items.map((i) => `${i.todayValue}:${i.years}`).join("|");
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- deliberate reset when the inputs change
-    setStrategy(null);
-    setGoalSaved(false);
-  }, [itemsKey, parsedSavings, statedCapacity]);
+  const inputsKey = `${itemsKey}#${parsedSavings}#${statedCapacity ?? ""}`;
+  const strategy = strategyFor?.key === inputsKey ? strategyFor.value : null;
+  const goalSaved = savedFor === inputsKey;
 
   function buildContext(): string | undefined {
     if (isChildrenBuilder && items.length > 0) {
@@ -386,7 +383,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
       requiredMonthly: multi.totalRequiredMonthly,
       savedAt: new Date().toISOString(),
     });
-    setGoalSaved(true);
+    setSavedFor(inputsKey);
   }
 
   /** Lever 1: adopt the timeline that fits saving the full capacity. */
@@ -414,8 +411,9 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
    */
   function fetchStrategy() {
     if (!multi) return;
-    setStrategy(
-      buildGoalStrategy({
+    setStrategyFor({
+      key: inputsKey,
+      value: buildGoalStrategy({
         goalType: config.type,
         goalTitle: config.title,
         targetAmount: nominalTarget,
@@ -425,8 +423,8 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
         feasibility: multi.feasibility,
         monthlyCapacity: parsedCapacity > 0 ? parsedCapacity : null,
         context: buildContext(),
-      })
-    );
+      }),
+    });
   }
 
   const badge =

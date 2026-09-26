@@ -1,30 +1,31 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { TOOL_META, findResumableTool } from "@/lib/tool-meta";
 import { useStorageValue } from "@/lib/hooks";
 
 const DISMISSED_KEY = "jipange:continue-banner-dismissed";
 
+function readDismissed(): boolean {
+  try {
+    return sessionStorage.getItem(DISMISSED_KEY) !== null;
+  } catch {
+    return false; // sessionStorage unavailable
+  }
+}
+
 export default function ContinueSessionBanner() {
   const href = useStorageValue(findResumableTool, () => null);
 
-  // Session-dismissal is a one-directional, click-driven flag (it only ever
-  // goes false → true, never back) scoped to this component instance, not
-  // something other components need to react to — unlike `href` above,
-  // this doesn't fit useSyncExternalStore's "continuously synced" model.
-  // Still needs a mount effect to read it without a hydration mismatch
-  // (sessionStorage doesn't exist during SSR).
-  const [dismissed, setDismissed] = useState(false);
-  useEffect(() => {
-    try {
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time, one-directional mount check; see comment above
-      if (sessionStorage.getItem(DISMISSED_KEY)) setDismissed(true);
-    } catch {
-      // sessionStorage unavailable — no-op.
-    }
-  }, []);
+  // Dismissal is a one-directional flag (false → true, never back). What was
+  // stored earlier in this session is read through the same external-store
+  // hook as `href`, so the server render and first paint agree without a
+  // mount effect; a click this render is local state, because storage may be
+  // unavailable (private mode) and the banner must still go away.
+  const dismissedEarlier = useStorageValue(readDismissed, () => false);
+  const [dismissedNow, setDismissedNow] = useState(false);
+  const dismissed = dismissedEarlier || dismissedNow;
 
   function handleDismiss() {
     try {
@@ -32,7 +33,7 @@ export default function ContinueSessionBanner() {
     } catch {
       // sessionStorage unavailable — no-op.
     }
-    setDismissed(true);
+    setDismissedNow(true);
   }
 
   if (!href || dismissed) return null;

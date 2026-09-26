@@ -48,17 +48,16 @@ const config = [
   { ignores: ["**/.netlify/**", "**/.next/**", "**/node_modules/**", "public/**"] },
   {
     rules: {
-      // New in eslint-plugin-react-hooks@7 (pulled in by this ESLint bump).
-      // The codebase has ~24 pre-existing, intentional instances of the
-      // exact pattern this flags — hydrating state from a browser-only
-      // source (localStorage) inside a mount effect, specifically so the
-      // server and first client render match before hydration swaps in the
-      // real value. The correct long-term fix is useSyncExternalStore, but
-      // migrating ~24 call sites' state-hydration architecture is a real
-      // refactor with its own behavioral surface, not something to fold
-      // into a dependency-version bump. Downgraded to a warning so it stays
-      // visible rather than either silently suppressed or blocking builds.
-      "react-hooks/set-state-in-effect": "warn",
+      /* An error, not a warning, since the migration this rule once
+       * waited on is done. What was ~24 mount effects hydrating state from
+       * localStorage now reads through useSyncExternalStore (useStorageValue
+       * in lib/hooks.ts). Four call sites keep a one-time mount effect on
+       * purpose — each restores a draft into fields the reader then edits,
+       * which useStorageValue's own doc says it must not do, since it would
+       * re-read storage over the reader's typing — and each carries an
+       * eslint-disable with that reason. A new instance has to argue the
+       * same case in its disable comment, or be written without the effect. */
+      "react-hooks/set-state-in-effect": "error",
     },
   },
 ];
