@@ -322,7 +322,7 @@ export default function HustleIncomeSmootherCalculator() {
 
             {result.shortMonths > 0 && (
               <p className="text-xs text-ink-soft">
-                {result.shortMonths} of {validIncomes.length} months fell below your salary
+                {result.shortMonths} of {validIncomes.length}{" "}months fell below your salary
                 draw — that&apos;s exactly what the buffer fund covers.
               </p>
             )}

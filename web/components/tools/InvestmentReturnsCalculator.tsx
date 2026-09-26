@@ -260,7 +260,7 @@ export default function InvestmentReturnsCalculator() {
               />
             </div>
             <ShareResultButton
-              message={`📈 *My Investment Projection*\n\nIn ${years} years: ${formatKES(result.total)}\nGrowth earned: ${formatKES(result.growth)}\n\nCalculate yours → jipangefinance.org/tools/investment-returns`}
+              message={`📈 *My Investment Projection*\n\nIn ${years} year${Number(years) === 1 ? "" : "s"}: ${formatKES(result.total)}\nGrowth earned: ${formatKES(result.growth)}\n\nCalculate yours → jipangefinance.org/tools/investment-returns`}
             />
           </div>
           <ExportCardButton containerRef={resultsRef} filename="investment-returns" />

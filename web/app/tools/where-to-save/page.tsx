@@ -20,7 +20,7 @@ export default function WhereToSavePage() {
       path="/tools/where-to-save"
       exportAs="where-to-save"
       title="Where to put your savings"
-      description="What each option pays after tax, with the things that can be compared compared — and the one that cannot kept separate."
+      description="What each option pays after tax: the options that can be compared side by side, and the one that cannot kept separate."
       insights={[
         {
           icon: "⚠️",

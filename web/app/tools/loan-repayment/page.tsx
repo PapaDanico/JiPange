@@ -18,7 +18,7 @@ import {
 export const metadata: Metadata = {
   title: "Loan & HELB Repayment Calculator Kenya",
   description:
-    "Calculate your monthly loan or HELB installment and total interest — free Kenyan loan repayment calculator.",
+    "Calculate your monthly loan or HELB instalment and total interest — free Kenyan loan repayment calculator.",
 };
 
 export default function LoanRepaymentPage() {
@@ -26,7 +26,7 @@ export default function LoanRepaymentPage() {
     <ToolLayout
       path="/tools/loan-repayment"
       title="Loan / HELB Repayment Calculator"
-      description="See your monthly installment and total interest on any loan."
+      description="See your monthly instalment and total interest on any loan."
       insights={[
         /* Both cards were hand-written and both were wrong: "Ksh 1,500 ... 18%
          * for one month, or 216% annualised" (1,500 on 10,000 is 15%, and the

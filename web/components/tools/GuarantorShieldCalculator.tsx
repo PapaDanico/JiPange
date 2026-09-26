@@ -59,7 +59,7 @@ export default function GuarantorShieldCalculator() {
           </div>
           {ratio > 0.5 ? (
             <p data-testid="guarantor-status" className="rounded-2xl border-2 border-danger bg-danger-soft p-4 text-sm text-ink-soft">
-              ❌ <strong className="text-danger">Status: Serious Credit Lockout.</strong> Over 50% of
+              ❌ <strong className="text-danger">Status: Serious Credit Lockout.</strong>{" "}Over 50% of
               your deposits are backing other people&apos;s loans — apply for a development loan
               tomorrow and your allocation gets slashed. <strong>Action:</strong> ask the primary
               borrowers to execute a <em>guarantor substitution</em> to release your capacity.

@@ -226,7 +226,7 @@ export default function SavingsGoalCalculator() {
               </div>
             )}
             <ShareResultButton
-              message={`🎯 *My Savings Goal*\n\nTarget: ${formatKES(Number(target))} in ${years} years\nMonthly savings needed: ${formatKES(result)}\n\nOpen my numbers and change them → ${shareableUrl("/tools/savings-goal", {
+              message={`🎯 *My Savings Goal*\n\nTarget: ${formatKES(Number(target))} in ${years} year${Number(years) === 1 ? "" : "s"}\nMonthly savings needed: ${formatKES(result)}\n\nOpen my numbers and change them → ${shareableUrl("/tools/savings-goal", {
                 target: Number(target),
                 years: Number(years),
                 currentSavings: Number(currentSavings),
