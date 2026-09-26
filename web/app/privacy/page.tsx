@@ -78,7 +78,7 @@ export default function PrivacyPage() {
         <div className="mt-8 space-y-10 text-sm leading-relaxed text-ink-soft">
           <section>
             <p>
-              This notice is written to the duty to notify in <strong>section 29</strong> of
+              This notice is written to the duty to notify in <strong>section 29</strong>{" "}of
               Kenya&apos;s <strong>Data Protection Act, 2019</strong>: what is collected, why,
               who else receives it, how it is protected, and what rights you have.
             </p>

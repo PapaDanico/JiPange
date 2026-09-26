@@ -117,7 +117,7 @@ test("loan repayment: shows monthly instalment", async ({ page }) => {
   await inputs.nth(0).fill("200000");
   await inputs.nth(1).fill("12");
   await inputs.nth(2).fill("24");
-  await expect(visibleText(page, "Monthly installment")).toBeVisible();
+  await expect(visibleText(page, "Monthly instalment")).toBeVisible();
 });
 
 // ─── Investment Returns ────────────────────────────────────────────────────

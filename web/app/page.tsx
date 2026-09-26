@@ -734,7 +734,7 @@ export default function Home() {
             <div data-reveal className="space-y-3 text-[0.9375rem] leading-loose text-ink-soft">
               <p>
                 Six planners that reverse-engineer exactly what you need to do{" "}
-                <strong className="text-primary">this month</strong> to hit your goal — whether
+                <strong className="text-primary">this month</strong>{" "}to hit your goal — whether
                 it&apos;s school fees next term, a plot, or a retirement that doesn&apos;t
                 disappoint.
               </p>

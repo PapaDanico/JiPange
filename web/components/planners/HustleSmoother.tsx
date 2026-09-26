@@ -158,7 +158,7 @@ export default function HustleSmoother() {
                   ⚠️ STATUS: RUNWAY GAP EXPOSED
                 </p>
                 <p className="mt-1 text-sm text-ink-soft">
-                  You&apos;re {formatKES(runway.shortfall)} short of next cycle&apos;s{" "}
+                  You&apos;re {formatKES(runway.shortfall)}{" "}short of next cycle&apos;s{" "}
                   {formatKES(parsedCosts)} input costs — ring-fence that first, before drawing a
                   salary.
                 </p>
@@ -230,7 +230,7 @@ export default function HustleSmoother() {
 
             {currentDraw > safeDraw ? (
               <p className="mt-3 rounded-xl bg-danger-soft p-3 text-sm text-danger">
-                Drawing {formatKES(currentDraw - Math.round(safeDraw))} above the safe line eats
+                Drawing {formatKES(currentDraw - Math.round(safeDraw))}{" "}above the safe line eats
                 next cycle&apos;s seed capital — the tank runs dry before the payout lands.
               </p>
             ) : (

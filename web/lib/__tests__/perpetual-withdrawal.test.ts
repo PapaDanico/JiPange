@@ -78,7 +78,7 @@ describe("the retirement pot is sized for the income it promises", () => {
      * number must be told before they act on it. */
     const body = planner.slice(planner.indexOf("export default function"));
     expect(body, "the page does not warn that a lower draw needs a bigger pot").toMatch(
-      /bigger<\/strong> pot|bigger pot/i
+      /bigger<\/strong>(?: |\{" "\})pot|bigger pot/i
     );
   });
 

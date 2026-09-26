@@ -45,7 +45,7 @@ export default function DebtFreedomTracker({
 
       <div className="mt-3 rounded-xl bg-canvas p-4 text-center">
         <p className="text-xs uppercase tracking-wide text-faint">
-          Paying {formatKES(payment)}/month
+          Paying <span className="normal-case">{formatKES(payment)}/month</span>
         </p>
         <p className="mt-1 text-3xl font-semibold text-primary" data-testid="freedom-date">
           {addMonths(monthsToFreedom)}

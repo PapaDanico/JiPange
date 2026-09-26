@@ -48,7 +48,7 @@ export default function FireEducation() {
         </p>
         <p className="mt-3 text-sm leading-relaxed text-ink-soft">
           The gap is not small. The stat at the top of this page — the value of starting ten years
-          earlier — is <strong>{earlyStartMultipleReal()}×</strong> in today&apos;s money and{" "}
+          earlier — is <strong>{earlyStartMultipleReal()}×</strong>{" "}in today&apos;s money and{" "}
           <strong>{earlyStartMultiple()}×</strong> in nominal shillings. Same savings, same return,
           same person: only the units differ. Whenever you meet a projection that sounds
           extraordinary, the first question is which of those two it is quoting.

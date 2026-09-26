@@ -711,7 +711,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
                 ))}
               </div>
               <p className="mt-1 text-xs text-faint">
-                A lower rate needs a <strong>bigger</strong> pot, not a smaller one — it is the
+                A lower rate needs a <strong>bigger</strong>{" "}pot, not a smaller one — it is the
                 slice you live on, so a thinner slice means a larger cake. At 4% the pot lasts
                 roughly 30 years; at 2–3% it need never run out, which is what Kenyan real
                 yields of 2–3% can support once today&apos;s unusually high rates normalise.
@@ -1009,7 +1009,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
                   {singleItem.amountAtCapacityByTargetDate !== null && (
                     <div className="flex items-start justify-between gap-3">
                       <p>
-                        🎯 <span className="font-medium">Shrink the target:</span> by your
+                        🎯 <span className="font-medium">Shrink the target:</span>{" "}by your
                         original date you&apos;d have{" "}
                         <span className="font-semibold">
                           {formatKES(singleItem.amountAtCapacityByTargetDate)}

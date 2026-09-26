@@ -275,9 +275,9 @@ export default function DhowcsdLadderCalculator() {
 
           <ResultCard
             label={`Blended ladder yield: ${(ladder.blendedYield * 100).toFixed(2)}% p.a. net of tax`}
-            value={`+${formatKES(ladder.advantageKes)}/yr`}
-            sublabel={`vs the same ${formatKES(parsed)} at a bank's ${(BANK_SAVINGS_BASELINE * 100).toFixed(2)}% average: ${formatKES(ladder.ladderAnnualKes)} vs ${formatKES(ladder.bankAnnualKes)} a year — and a tranche matures every ~13 weeks for liquidity.`}
-            tone="success"
+            value={`${ladder.advantageKes >= 0 ? "+" : ""}${formatKES(ladder.advantageKes)}/yr`}
+            sublabel={`vs the same ${formatKES(parsed)} at the average bank deposit rate, ${(BANK_SAVINGS_BASELINE * 100).toFixed(2)}% after tax: ${formatKES(ladder.ladderAnnualKes)} vs ${formatKES(ladder.bankAnnualKes)} a year — and a tranche matures every ~13 weeks for liquidity.`}
+            tone={ladder.advantageKes >= 0 ? "success" : "warning"}
           />
 
           {ladder.unallocatedKes > 0 && (
@@ -316,7 +316,7 @@ export default function DhowcsdLadderCalculator() {
           />
 
           <ShareResultButton
-            message={`🏦 *My DhowCSD T-Bill Ladder*\n\n${formatKES(parsed)} across ${ladder.buckets.map((b) => b.days + "d").join("/")} T-Bills earns ~${formatKES(ladder.ladderAnnualKes)}/yr (${(ladder.blendedYield * 100).toFixed(2)}% blended, net of tax) — ${formatKES(ladder.advantageKes)} more than bank savings, with quarterly liquidity.\n\nBuild yours → jipangefinance.org/tools/dhowcsd`}
+            message={`🏦 *My DhowCSD T-Bill Ladder*\n\n${formatKES(parsed)} across ${ladder.buckets.map((b) => b.days + "d").join("/")} T-Bills earns ~${formatKES(ladder.ladderAnnualKes)}/yr (${(ladder.blendedYield * 100).toFixed(2)}% blended, net of tax) — ${ladder.advantageKes >= 0 ? `${formatKES(ladder.advantageKes)} more` : `${formatKES(-ladder.advantageKes)} less`} than the average bank deposit after tax, with quarterly liquidity.\n\nBuild yours → jipangefinance.org/tools/dhowcsd`}
           />
         </div>
         <ExportCardButton containerRef={resultsRef} filename="dhowcsd-ladder" />

@@ -297,7 +297,7 @@ export default function TwentiethChallengeTracker() {
       {/* Share */}
       {currentStreak > 0 && (
         <ShareResultButton
-          message={`🔥 *My 20th-to-20th Challenge*\n\nCurrent streak: ${currentStreak} month${currentStreak !== 1 ? "s" : ""}\nBest streak: ${bestStreak} months\nTotal saved: ${formatKES(saved)}\n\nJoin the challenge → jipangefinance.org/tools/20th-challenge`}
+          message={`🔥 *My 20th-to-20th Challenge*\n\nCurrent streak: ${currentStreak} month${currentStreak !== 1 ? "s" : ""}\nBest streak: ${bestStreak} month${bestStreak !== 1 ? "s" : ""}\nTotal saved: ${formatKES(saved)}\n\nJoin the challenge → jipangefinance.org/tools/20th-challenge`}
         />
       )}
 

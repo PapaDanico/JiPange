@@ -51,7 +51,7 @@ export const CALCULATOR_GROUPS: ToolGroup[] = [
         href: "/tools/loan-repayment",
         icon: "🏦",
         title: "Loan / HELB Repayment Calculator",
-        description: "See your monthly installment and total interest on any loan.",
+        description: "See your monthly instalment and total interest on any loan.",
         insight: "A SACCO loan can cost a third of what a mobile lender charges for the same amount.",
       },
     ],

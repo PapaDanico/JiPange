@@ -308,7 +308,7 @@ export default function SchoolFeesLifetimeCalculator() {
           Kenyan private schools are widely reported to raise fees{" "}
           {Math.round(FEE_ESCALATION_TYPICAL_RANGE.low * 100)}–
           {Math.round(FEE_ESCALATION_TYPICAL_RANGE.high * 100)}% a year. This is an{" "}
-          <strong>assumption, not a measurement</strong> — check your own school&apos;s last
+          <strong>assumption, not a measurement</strong>{" "}— check your own school&apos;s last
           three invoices and set it to what they actually did.
         </p>
 
