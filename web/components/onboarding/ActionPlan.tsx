@@ -61,7 +61,7 @@ export default function ActionPlan() {
           🤖
         </p>
         <h2 className="mt-2 text-lg font-semibold text-primary">
-          Your AI action plan needs your real numbers
+          Your action plan needs your real numbers
         </h2>
         <p className="mt-1 text-sm text-ink-soft">
           Six quick questions — your actual salary and household — and JiPange generates a

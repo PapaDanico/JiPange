@@ -11,7 +11,7 @@ export default function TermsPage() {
     <div className="flex flex-1 flex-col items-center px-6 py-12">
       <div className="w-full max-w-2xl">
         <h1 className="text-2xl font-semibold text-primary">Terms of Use</h1>
-        <p className="mt-1 text-sm text-ink-soft">Last updated: July 2026</p>
+        <p className="mt-1 text-sm text-ink-soft">Last updated: September 2026</p>
 
         <div className="mt-8 space-y-6 text-sm leading-relaxed text-ink-soft">
           <section>
@@ -25,8 +25,8 @@ export default function TermsPage() {
           <section>
             <h2 className="text-base font-semibold text-primary">2. What JiPange is</h2>
             <p className="mt-2">
-              JiPange provides free financial calculators, goal planners, and an AI-generated
-              action plan based on anonymous inputs you provide (such as income range, savings
+              JiPange provides free financial calculators, goal planners, and an action plan
+              worked out on your own device from the inputs you provide (such as income range, savings
               situation, and goals). The Service is intended as a general educational and
               planning tool for personal use. No account or registration is required.
             </p>
@@ -37,7 +37,7 @@ export default function TermsPage() {
             <p className="mt-2">
               JiPange is not a licensed financial advisor, tax consultant, or investment
               manager, and nothing on this Service constitutes professional financial, tax,
-              legal, or investment advice. Calculator results and AI-generated recommendations
+              legal, or investment advice. Calculator results and action-plan recommendations
               are estimates based on the figures you enter and general assumptions (such as the
               KRA PAYE bands in effect at the time of the calculation) — they may not reflect
               your exact tax liability, statutory deductions, or the best decision for your
@@ -110,7 +110,7 @@ export default function TermsPage() {
             <p className="mt-2">
               The Service is provided &ldquo;as is&rdquo; without warranties of any kind,
               express or implied. We do not guarantee that calculations, projections, or
-              AI-generated recommendations are accurate, complete, or suitable for your
+              action-plan recommendations are accurate, complete, or suitable for your
               situation. Tax rules and rates change — always verify against official sources.
             </p>
           </section>
@@ -120,7 +120,7 @@ export default function TermsPage() {
             <p className="mt-2">
               To the fullest extent permitted by law, JiPange and its operators are not liable
               for any loss or damage arising from your use of, or reliance on, the Service,
-              including financial decisions made based on calculator results or AI-generated
+              including financial decisions made based on calculator results or action
               plans.
             </p>
           </section>

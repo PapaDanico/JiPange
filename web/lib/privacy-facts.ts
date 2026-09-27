@@ -165,7 +165,7 @@ export const DPA_RIGHTS: { right: string; whatItMeans: string }[] = [
   {
     right: "To object",
     whatItMeans:
-      "To object to processing of all or part of your data. In practice: do not request an AI plan, and do not sign in. Neither is required to use any calculator.",
+      "To object to processing of all or part of your data. In practice there is little to object to: nothing you enter in a calculator or the action plan is sent to us. Sending a contribution is optional, and is the only thing that gives us any of your details.",
   },
   {
     right: "To correction",

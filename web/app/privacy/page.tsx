@@ -65,7 +65,7 @@ export default function PrivacyPage() {
     <div className="flex flex-1 flex-col items-center px-6 py-12">
       <div className="w-full max-w-2xl">
         <h1 className="text-2xl font-semibold text-primary">Privacy notice</h1>
-        <p className="mt-1 text-sm text-ink-soft">Last updated: July 2026</p>
+        <p className="mt-1 text-sm text-ink-soft">Last updated: September 2026</p>
 
         <div className="mt-4 rounded-2xl border border-[#CFE3CF] bg-[#f0f7f0] px-5 py-4 text-sm text-success-deep">
           <strong>Short version:</strong> every calculator — and the action plan — runs
@@ -219,9 +219,10 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-base font-semibold text-primary">8. How it is protected</h2>
             <p className="mt-2">
-              Everything is served over HTTPS. The AI endpoint accepts only a fixed, validated
-              set of fields — anything else is rejected rather than forwarded — and it is rate
-              limited. Data held on your device is protected by your browser&apos;s own site
+              Everything is served over HTTPS. The site&apos;s two server functions, a tax
+              calculation and a journey mapping, accept only a fixed, validated set of fields —
+              anything else is rejected — compute a result and store nothing. The app itself
+              calls neither today. Data held on your device is protected by your browser&apos;s own site
               isolation. Where a provider holds data, it is held under that provider&apos;s
               security terms.
             </p>

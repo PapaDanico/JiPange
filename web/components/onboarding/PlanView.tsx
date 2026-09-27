@@ -36,7 +36,7 @@ export default function PlanView() {
           {answers && hasProfile && (
             <div className="mb-4 border-t border-border pt-8 print:border-t-0 print:pt-0">
               <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold text-primary">Your AI action plan</h2>
+                <h2 className="text-lg font-semibold text-primary">Your action plan</h2>
                 <Link
                   href="/profile/full"
                   className="text-xs font-medium text-primary underline print:hidden"
