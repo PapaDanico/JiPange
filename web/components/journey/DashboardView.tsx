@@ -189,7 +189,7 @@ export default function DashboardView() {
         <p className="text-sm font-medium text-primary">Want shilling-exact numbers?</p>
         <p className="mt-1 text-xs text-ink-soft">
           Take the 90-second deep profile for your precise take-home pay, budget split, and an
-          AI action plan built on real KRA tax maths.
+          action plan built on real KRA tax maths.
         </p>
         <Link
           href="/profile/full"

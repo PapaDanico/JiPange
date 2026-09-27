@@ -4,7 +4,7 @@ import ProfileForm from "@/components/onboarding/ProfileForm";
 export const metadata: Metadata = {
   title: "Full profile",
   description:
-    "Six quick questions for your shilling-exact Pesa Picture — take-home pay, budget split and AI action plan.",
+    "Six quick questions for your shilling-exact Pesa Picture — take-home pay, budget split and action plan.",
 };
 
 export default function FullProfilePage() {

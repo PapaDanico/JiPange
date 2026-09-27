@@ -7,7 +7,7 @@ import PrintLetterhead from "@/components/tools/PrintLetterhead";
 export const metadata: Metadata = {
   title: "My Action Plan",
   description:
-    "Your money roadmap: a first milestone, exact execution steps for the right Kenyan vehicle, and an AI plan when you want shilling-exact numbers.",
+    "Your money roadmap: a first milestone, exact execution steps for the right Kenyan vehicle, and a full action plan when you want shilling-exact numbers.",
 };
 
 export default function PlanPage() {
