@@ -311,7 +311,7 @@ export default function DebtEscapeCalculator() {
             message={`💸 *My Debt Escape Plan*\n\nTotal debt: ${formatKES(result.totalBalance)}\nMonthly payment: ${formatKES(amountOrZero(budget))}\nDebt-free: ${result.debtFreeLabel} (${result.monthsToDebtFree} months)\nTotal interest: ${formatKES(result.totalInterestPaid)}\n\nPlan yours → jipangefinance.org/tools/debt-escape`}
           />
 
-          <CalculatorDisclaimer
+          <CalculatorDisclaimer payroll={false}
             extraNotes={[
               "Monthly rates shown are approximate — lenders change rates frequently. Always verify the current rate in your lender's app before relying on this figure.",
               "The avalanche method minimises total interest paid. The snowball method (smallest balance first) builds psychological momentum but costs more overall.",

@@ -264,7 +264,7 @@ export default function InvestmentReturnsCalculator() {
             />
           </div>
           <ExportCardButton containerRef={resultsRef} filename="investment-returns" />
-          <CalculatorDisclaimer
+          <CalculatorDisclaimer payroll={false}
             extraNotes={[
               "Returns shown are nominal and compound monthly. Actual returns vary with market conditions and are not guaranteed.",
               "The inflation adjustment uses Kenya's long-run CPI average of ~6.5% p.a. Actual inflation will differ.",

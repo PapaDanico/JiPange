@@ -502,7 +502,7 @@ export default function FireNumberCalculator() {
             worth acting on is the medical share, not the multiple.
           </p>
 
-          <CalculatorDisclaimer
+          <CalculatorDisclaimer payroll={false}
             extraNotes={[
               "Past returns do not guarantee future returns.",
               "JiPange is not a licensed investment advisor.",

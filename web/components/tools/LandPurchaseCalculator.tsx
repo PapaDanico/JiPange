@@ -199,7 +199,7 @@ export default function LandPurchaseCalculator() {
 
           <ExportCardButton containerRef={resultsRef} filename="land-purchase-costs" />
 
-          <CalculatorDisclaimer
+          <CalculatorDisclaimer payroll={false}
             extraNotes={[
               "Stamp duty is paid to KRA at the time of transfer. Verify the current rate on kra.go.ke before completion.",
               "Conveyancing fees are regulated by the Advocates Remuneration Order but may vary — get a written fee note from your lawyer.",

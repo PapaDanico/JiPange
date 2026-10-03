@@ -80,7 +80,7 @@ export default function InflationRealityCalculator() {
               (KNBS).
             </p>
 
-            <CalculatorDisclaimer />
+            <CalculatorDisclaimer payroll={false} />
 
             <ShareResultButton
               message={`📉 *Inflation Reality Check*\n\nIn ${result.yearsValue} year${result.yearsValue === 1 ? "" : "s"}, my ${formatKES(result.salaryValue)} salary will feel like ${formatKES(result.realValue)} today.\nTo keep up, I need my salary to reach ${formatKES(result.salaryNeeded)}.\n\nCalculate yours → jipangefinance.org/tools/inflation-reality`}
