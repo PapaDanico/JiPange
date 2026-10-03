@@ -171,7 +171,7 @@ export default function MoneyRunwayCalculator() {
             />
           </div>
           <ExportCardButton containerRef={resultsRef} filename="money-runway" />
-          <CalculatorDisclaimer
+          <CalculatorDisclaimer payroll={false}
             extraNotes={[
               "Returns assumed in this calculator are not guaranteed. For an emergency fund stress test, set the return rate to 0%.",
               "This runway assumes a constant monthly withdrawal. Actual spending varies — discretionary costs are often the first to cut.",

@@ -148,7 +148,24 @@ export default function ExportCardButton({
    * pale grey until that was fixed.
    */
   async function renderCard(el: HTMLElement) {
-    const chrome = Array.from(el.querySelectorAll<HTMLElement>(".print\\:hidden"));
+    /* The bodies of CLOSED <details> are hidden for the capture too.
+     * html2canvas ignores the closed state and paints a disclosure's content
+     * anyway, but the live page gave that content no layout boxes, so it was
+     * drawn on top of whatever followed. Every "Where these assumptions come
+     * from" footnote landed across the cards below it; the FIRE export of
+     * 3 Oct 2026 was unreadable from the medical card down. Same inline-style
+     * route as the chrome, so it is restored in the finally block. */
+    const closedBodies = Array.from(el.querySelectorAll<HTMLDetailsElement>("details:not([open])")).flatMap(
+      (d) => Array.from(d.children).filter((c): c is HTMLElement => c.tagName !== "SUMMARY" && c instanceof HTMLElement)
+    );
+    const chrome = [...Array.from(el.querySelectorAll<HTMLElement>(".print\\:hidden")), ...closedBodies];
+    /* html2canvas draws a <summary>'s disclosure triangle as a list ordinal,
+     * so "Where these assumptions come from" exported as "1. Where these…". */
+    const summaries = Array.from(el.querySelectorAll<HTMLElement>("summary"));
+    const previousListStyle = summaries.map((node) => node.style.listStyle);
+    summaries.forEach((node) => {
+      node.style.listStyle = "none";
+    });
     const previousDisplay = chrome.map((node) => node.style.display);
     chrome.forEach((node) => {
       node.style.display = "none";
@@ -202,6 +219,9 @@ export default function ExportCardButton({
     } finally {
       chrome.forEach((node, i) => {
         node.style.display = previousDisplay[i];
+      });
+      summaries.forEach((node, i) => {
+        node.style.listStyle = previousListStyle[i];
       });
       underlined.forEach((node, i) => {
         node.style.textDecoration = previousDecoration[i];

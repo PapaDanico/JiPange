@@ -25,11 +25,19 @@ import { type TariffKey, tariffLine, tariffsDueForReview } from "@/lib/tariffs";
 export default function CalculatorDisclaimer({
   extraNotes,
   tariffs,
+  payroll = true,
 }: {
   extraNotes?: string[];
+  /**
+   * False for tools that compute no payroll deduction. The statute list is
+   * PAYE, NSSF, SHIF and the Housing Levy only, so on a retirement, loan or
+   * savings tool it was four irrelevant Acts and a "check your payslip" line
+   * in every exported sheet.
+   */
+  payroll?: boolean;
   tariffs?: readonly TariffKey[];
 }) {
-  const stale = dueForReview();
+  const stale = payroll ? dueForReview() : [];
   const staleTariffs = tariffs ? tariffsDueForReview(tariffs) : [];
 
   return (
@@ -48,26 +56,30 @@ export default function CalculatorDisclaimer({
           time, so confirm before relying on these figures.
         </p>
       )}
-      <p>Sources: {statuteLine()}.</p>
+      {payroll && <p>Sources: {statuteLine()}.</p>}
       {tariffs && tariffs.length > 0 && <p>Pricing: {tariffLine(tariffs)}.</p>}
-      {statuteNotes().map((note) => (
+      {payroll && statuteNotes().map((note) => (
         <p key={note}>{note}</p>
       ))}
       {extraNotes?.map((note) => (
         <p key={note}>{note}</p>
       ))}
-      <p>
-        For guidance only. Verify against your payslip and check your exact figures at{" "}
-        <a
-          href="https://itax.kra.go.ke"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="underline hover:text-primary"
-        >
-          itax.kra.go.ke
-        </a>
-        .
-      </p>
+      {payroll ? (
+        <p>
+          For guidance only. Verify against your payslip and check your exact figures at{" "}
+          <a
+            href="https://itax.kra.go.ke"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:text-primary"
+          >
+            itax.kra.go.ke
+          </a>
+          .
+        </p>
+      ) : (
+        <p>For guidance only. Check the figures against your provider&rsquo;s own statement before acting on them.</p>
+      )}
     </div>
   );
 }

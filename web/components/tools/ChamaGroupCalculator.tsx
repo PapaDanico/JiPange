@@ -313,7 +313,7 @@ export default function ChamaGroupCalculator() {
         <>
           <ExportCardButton containerRef={resultsRef} filename="chama-calculator" />
           <ProductLinks products={MMF_LINKS.slice(0, 2)} heading="Where to invest your chama savings" />
-          <CalculatorDisclaimer
+          <CalculatorDisclaimer payroll={false}
             extraNotes={[
               "Chama governance, rotation order, and emergency fund rules vary by group constitution.",
               "Investment returns shown are estimates using a constant compounding rate — actual group MMF or SACCO returns fluctuate.",

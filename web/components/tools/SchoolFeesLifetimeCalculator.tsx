@@ -406,7 +406,13 @@ export default function SchoolFeesLifetimeCalculator() {
             {result.sharePct > 0 && (
               <ResultCard
                 label="Share of your take-home pay"
-                value={`${result.sharePct}%`}
+                value={
+                  // Spelled out past 100%: a shared image read "258560%" when
+                  // take-home pay was entered as a tiny figure.
+                  result.sharePct > 100
+                    ? "More than your take-home pay"
+                    : `${result.sharePct.toLocaleString("en-KE")}%`
+                }
                 sublabel={
                   result.sharePct > 40
                     ? "Above 40% of net pay on school fees alone leaves very little for everything else — worth testing a different school against this same calculator before committing."

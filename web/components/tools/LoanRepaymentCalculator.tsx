@@ -162,7 +162,7 @@ export default function LoanRepaymentCalculator() {
             />
           </div>
           <ExportCardButton containerRef={resultsRef} filename="loan-repayment" />
-          <CalculatorDisclaimer
+          <CalculatorDisclaimer payroll={false}
             extraNotes={[
               "Interest rates shown are approximate. Verify the current rate in your loan agreement or lender app before making repayment decisions.",
               "Early repayment penalties may apply — check your loan terms before making extra payments.",

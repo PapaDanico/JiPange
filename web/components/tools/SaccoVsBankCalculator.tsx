@@ -140,7 +140,7 @@ export default function SaccoVsBankCalculator() {
             </ol>
           </details>
 
-          <CalculatorDisclaimer />
+          <CalculatorDisclaimer payroll={false} />
 
           <ShareResultButton
             message={`⚖️ *SACCO vs Bank*\n\nFor a ${formatKES(Number(amount))} loan over ${termMonths} months:\nSACCO: ${formatKES(results[0].totalRepaid)} total\nBank: ${formatKES(results[1].totalRepaid)} total\nDigital lender: ${formatKES(results[2].totalRepaid)} total\n\nCompare yours → jipangefinance.org/tools/sacco-vs-bank`}

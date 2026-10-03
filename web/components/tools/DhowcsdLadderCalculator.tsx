@@ -302,7 +302,7 @@ export default function DhowcsdLadderCalculator() {
             </p>
           </div>
 
-          <CalculatorDisclaimer
+          <CalculatorDisclaimer payroll={false}
             extraNotes={[
               isStale()
                 ? `These rates were last refreshed ${daysSinceRefresh()} days ago — check the current CBK auction before bidding.`

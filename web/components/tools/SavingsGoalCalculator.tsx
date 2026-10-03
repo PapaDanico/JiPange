@@ -206,7 +206,7 @@ export default function SavingsGoalCalculator() {
             <ResultCard
               label="Monthly savings needed"
               value={formatKES(result)}
-              sublabel="Assumes returns compound monthly at the rate above."
+              sublabel={`Assumes ${Math.max(0, Number(annualReturn) || 0)}% a year, compounding monthly.`}
               tone="success"
             />
             <CompoundGrowthChart data={chartData} />
@@ -235,7 +235,7 @@ export default function SavingsGoalCalculator() {
             />
           </div>
           <ExportCardButton containerRef={resultsRef} filename="savings-goal" />
-          <CalculatorDisclaimer
+          <CalculatorDisclaimer payroll={false}
             extraNotes={[
               "Returns compound monthly at the rate entered. Actual MMF yields fluctuate daily — check your provider's current rate before setting contribution amounts.",
               "This calculator assumes you contribute every month without interruption. A buffer month of missed contributions delays your goal.",
