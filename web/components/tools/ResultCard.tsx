@@ -64,7 +64,11 @@ export default function ResultCard({
           )}
         </button>
       </div>
-      <p className={`mt-1 break-words font-display text-2xl font-semibold tabular-nums sm:text-3xl ${toneClass}`}>{value}</p>
+      <p className={`mt-1 break-words font-display text-2xl font-semibold tabular-nums sm:text-3xl ${toneClass}`}>
+        {/* Non-breaking after the currency: narrow PDF columns split "Ksh" from
+            its figure onto two lines. */}
+        {value.replace(/^Ksh /, "Ksh\u00a0")}
+      </p>
       {sublabel && <p className="mt-1 text-xs text-ink-soft">{sublabel}</p>}
     </div>
   );
