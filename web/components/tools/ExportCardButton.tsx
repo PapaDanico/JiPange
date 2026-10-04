@@ -4,7 +4,6 @@ import { RefObject, useState, useSyncExternalStore } from "react";
 import { TOOL_META } from "@/lib/tool-meta";
 import {
   buildSheet,
-  prefersLandscape,
   awaitFonts,
   A4_PORTRAIT,
   A4_LANDSCAPE,
@@ -332,9 +331,9 @@ export default function ExportCardButton({
       }
 
       const { jsPDF } = await import("jspdf");
-      const landscape = orientation
-        ? orientation === "landscape"
-        : prefersLandscape(el);
+      // Landscape unless a caller asks otherwise (owner's call, 4 Oct 2026):
+      // the sheet flows its content into columns to use the width.
+      const landscape = orientation ? orientation === "landscape" : true;
       const page = landscape ? A4_LANDSCAPE : A4_PORTRAIT;
       const pdf = new jsPDF({
         unit: "mm",
@@ -359,44 +358,47 @@ export default function ExportCardButton({
        * summaries, and half a summary on a second page is worse than slightly
        * smaller type.
        */
-      const { node, dispose } = buildSheet({
+      const { node, dispose, pages, showPage } = buildSheet({
         title: title?.trim() || titleFromFilename(filename),
         body: el,
         assumptions,
         notes,
         orientation: landscape ? "landscape" : "portrait",
       });
-      let shot: HTMLCanvasElement;
       try {
         const { default: html2canvas } = await import("html2canvas-pro");
         // See awaitFonts. The sheet furniture is typeset in the brand fonts
         // too, so this path needs the same wait as the card capture.
         await awaitFonts();
-        shot = await html2canvas(node, {
-          scale: 2,
-          useCORS: true,
-          logging: false,
-          backgroundColor: "#FFFFFF",
-          width: page.w,
-          height: page.h,
-          windowWidth: page.w,
-          windowHeight: page.h,
-        });
+        for (let k = 0; k < pages; k++) {
+          showPage(k);
+          const shot = await html2canvas(node, {
+            scale: 2,
+            useCORS: true,
+            logging: false,
+            backgroundColor: "#FFFFFF",
+            width: page.w,
+            height: page.h,
+            windowWidth: page.w,
+            windowHeight: page.h,
+          });
+          const fit = Math.min(pageW / shot.width, pageH / shot.height);
+          const drawW = shot.width * fit;
+          const drawH = shot.height * fit;
+          if (k > 0) pdf.addPage("a4", landscape ? "landscape" : "portrait");
+          pdf.addImage(
+            shot.toDataURL("image/jpeg", 0.94),
+            "JPEG",
+            (pageW - drawW) / 2,
+            0,
+            drawW,
+            drawH,
+          );
+        }
       } finally {
         dispose();
       }
 
-      const fit = Math.min(pageW / shot.width, pageH / shot.height);
-      const drawW = shot.width * fit;
-      const drawH = shot.height * fit;
-      pdf.addImage(
-        shot.toDataURL("image/jpeg", 0.94),
-        "JPEG",
-        (pageW - drawW) / 2,
-        0,
-        drawW,
-        drawH,
-      );
       pdf.save(`${filename}.pdf`);
       setDelivered(true);
     } catch (err) {
