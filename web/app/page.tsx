@@ -4,6 +4,7 @@ import ResumeToast from "@/components/onboarding/ResumeToast";
 import ReturningUserRedirect from "@/components/onboarding/ReturningUserRedirect";
 import LandingInteractivity from "@/components/landing/LandingInteractivity";
 import KenyaMoneyNow from "@/components/landing/KenyaMoneyNow";
+import HeroRates from "@/components/landing/HeroRates";
 import { liveFigures } from "@/lib/landing-pulse";
 import { fulizaDailyFee } from "@/lib/fuliza";
 import { TOOL_META } from "@/lib/tool-meta";
@@ -296,6 +297,7 @@ export default function Home() {
                   screens get full width", it is "a button that is alone on its
                   line gets full width", and lg is the other place that is
                   true. */}
+              <HeroRates />
               <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                 <Link
                   href="/profile"
