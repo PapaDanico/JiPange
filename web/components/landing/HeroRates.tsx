@@ -32,6 +32,11 @@ export default function HeroRates() {
               {t.netEAY.toFixed(2)}%
             </p>
             <p className="mt-1 text-[0.8125rem] text-muted">{t.tenorDays}-day</p>
+            {/* Same three lines as Mwangaza Yield's card, so a reader moving
+                between the two products reads one format. */}
+            <p className="text-[0.6875rem] text-muted" style={{ fontVariantNumeric: "tabular-nums" }}>
+              CBK rate {t.quotedDiscountRate.toFixed(2)}%
+            </p>
           </div>
         ))}
       </div>

@@ -114,7 +114,7 @@ export default function AppHeader() {
           </span>
         </Link>
 
-        <nav className="ml-1 flex items-center gap-0.5 lg:ml-6 lg:gap-1" aria-label="Primary">
+        <nav className="ml-1 flex flex-1 items-center gap-0.5 lg:ml-6 lg:gap-1" aria-label="Primary">
           <div className="hidden sm:block">
             <NavDropdown label="Planners" active={underPath("/planners")}>
               <PlannersDropdownPanel />
@@ -136,7 +136,11 @@ export default function AppHeader() {
           ))}
           <Link
             href={cta.href}
-            className="ml-auto inline-flex min-h-11 shrink-0 items-center justify-center whitespace-nowrap rounded-full bg-accent px-4 text-sm font-semibold text-ink transition-colors hover:bg-accent-deep focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-ink"
+            className={`ml-auto inline-flex min-h-11 shrink-0 items-center justify-center whitespace-nowrap rounded-full px-4 text-sm font-semibold text-ink transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-ink ${
+              pathname === "/"
+                ? "border border-border bg-white hover:border-accent sm:border-0 sm:bg-accent sm:hover:bg-accent-deep"
+                : "bg-accent hover:bg-accent-deep"
+            }`}
           >
             {cta.label}
           </Link>
