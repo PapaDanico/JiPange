@@ -224,6 +224,28 @@ export function buildSheet(input: SheetInput): { node: HTMLElement; dispose: () 
     .querySelectorAll<HTMLElement>('[data-export-omit], .print\\:hidden, button')
     .forEach((n) => n.remove());
 
+  /* Closed <details>: html2canvas paints their bodies anyway, over whatever
+   * follows, because the layout gave them no boxes. The image path hides them
+   * for the capture (ExportCardButton); this is the same fix for the sheet.
+   * Removed rather than hidden — the clone is thrown away after. Summaries
+   * lose their marker, which html2canvas draws as a list number. */
+  clone.querySelectorAll<HTMLDetailsElement>("details:not([open])").forEach((d) => {
+    Array.from(d.children).forEach((c) => {
+      if (c.tagName !== "SUMMARY") c.remove();
+    });
+  });
+  clone.querySelectorAll<HTMLElement>("summary").forEach((s) => {
+    s.style.listStyle = "none";
+  });
+
+  /* Shadows off. html2canvas paints a Tailwind box-shadow (a color-mix value)
+   * as a solid grey slab behind the card, so the FIRE sheet's white cards
+   * came out as grey blocks with white corner flecks. The border carries the
+   * card edge on paper. */
+  [clone, ...Array.from(clone.querySelectorAll<HTMLElement>("*"))].forEach((n) => {
+    n.style.boxShadow = "none";
+  });
+
   /* Animations frozen. `animate-rise` starts at opacity 0 and the clone
    * remounts it, so an unfrozen capture lands mid-fade — every early export
    * came out washed pale until this was handled on the original path. */
@@ -272,6 +294,23 @@ export function buildSheet(input: SheetInput): { node: HTMLElement; dispose: () 
 
   slot.appendChild(clone);
   document.body.appendChild(sheet);
+
+  /* Headline figures on one line, shrunk to their column.
+   *
+   * ResultCard figures wrap anywhere (break-words), which on screen is a
+   * safety net and on a narrow sheet column split "Ksh 18,906" into
+   * "Ksh 18," / "906". Measured, not guessed: each figure is set nowrap and,
+   * only if it then overruns its box, its font is reduced in proportion. */
+  clone.querySelectorAll<HTMLElement>(".tabular-nums").forEach((n) => {
+    n.style.whiteSpace = "nowrap";
+    n.style.overflowWrap = "normal";
+    n.style.wordBreak = "normal";
+    const avail = n.clientWidth;
+    if (avail > 0 && n.scrollWidth > avail) {
+      const size = parseFloat(getComputedStyle(n).fontSize);
+      n.style.fontSize = `${Math.floor((size * avail) / n.scrollWidth)}px`;
+    }
+  });
 
   /* Scale the body down if it overruns the sheet.
    *
@@ -326,8 +365,21 @@ export function prefersLandscape(body: HTMLElement): boolean {
    * Card count is a reason to use more columns, not a reason to rotate the
    * paper.
    */
-  return Array.from(body.querySelectorAll("table")).some(
-    (t) => t.querySelectorAll("tbody tr").length > 6
+  const tables = Array.from(body.querySelectorAll("table"));
+  /* Long tables, as before. */
+  if (tables.some((t) => t.querySelectorAll("tbody tr").length > 6)) return true;
+  /* Wide tables: five or more columns squeeze to unreadable widths on the
+   * 794px portrait sheet, whatever their row count. */
+  if (tables.some((t) => (t.querySelector("tr")?.children.length ?? 0) >= 5)) return true;
+  /* Charts: a time series or growth curve reads along its x-axis, and the
+   * long edge gives it 50% more of one. Added 3 Oct 2026 at the owner's
+   * request ("landscape is better in some cases"). Card count still does
+   * not rotate the paper — see above. */
+  /* Only a chart the sheet will actually carry. Charts marked print:hidden
+   * or data-export-omit are removed from the clone, and counting them turned
+   * Money Runway into an empty landscape page. */
+  return Array.from(body.querySelectorAll(".recharts-wrapper, svg[data-export-landscape]")).some(
+    (c) => !c.closest(".print\\:hidden, [data-export-omit]")
   );
 }
 

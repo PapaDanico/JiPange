@@ -23,9 +23,12 @@ function formatDuration(months: number): string {
   if (!Number.isFinite(months)) return "Forever — your balance keeps growing";
   const years = Math.floor(months / 12);
   const remainingMonths = Math.round(months % 12);
-  if (years === 0) return `${remainingMonths} months`;
-  if (remainingMonths === 0) return `${years} years`;
-  return `${years} years, ${remainingMonths} months`;
+  // Singular and plural: the export read "1 years, 1 months".
+  const y = `${years} ${years === 1 ? "year" : "years"}`;
+  const m = `${remainingMonths} ${remainingMonths === 1 ? "month" : "months"}`;
+  if (years === 0) return m;
+  if (remainingMonths === 0) return y;
+  return `${y}, ${m}`;
 }
 
 export default function MoneyRunwayCalculator() {
@@ -148,7 +151,7 @@ export default function MoneyRunwayCalculator() {
             <ResultCard
               label="Your money will last"
               value={formatDuration(result)}
-              sublabel="Assumes the remaining balance keeps earning the return rate above."
+              sublabel={`${formatKES(Number(startingBalance) || 0)} drawn down at ${formatKES(Number(monthlyWithdrawal) || 0)} a month, the remainder earning ${Number(annualReturn) || 0}% a year.`}
               tone="success"
             />
             <RunwayDeclineChart data={chartData} infinite={!Number.isFinite(result)} />
