@@ -86,6 +86,8 @@ export function sheetDate(d: Date = new Date()): string {
  * backstop against a pathological input, not a design preference.
  */
 export const MIN_FIT_SCALE = 0.5;
+/** The most short content is enlarged to fill a page. */
+export const MAX_FILL_SCALE = 1.6;
 
 export function fitScale(contentHeight: number, availableHeight: number): number {
   if (!(availableHeight > 0) || !(contentHeight > 0)) return 1;
@@ -100,7 +102,60 @@ export function fitScale(contentHeight: number, availableHeight: number): number
  * the live element before painting its clone, and a hidden element measures
  * zero. This is the same lesson the card exporter already paid for once.
  */
-export function buildSheet(input: SheetInput): { node: HTMLElement; dispose: () => void } {
+export interface BuiltSheet {
+  node: HTMLElement;
+  dispose: () => void;
+  /** How many A4 pages the content needs. 1 unless it flowed into columns. */
+  pages: number;
+  /** Show page `k` (0-based) of a multi-page sheet before capturing it. */
+  showPage: (k: number) => void;
+}
+
+/** Columns per page when tall content flows. Landscape is the default since
+ *  4 Oct 2026 (owner's call): three columns across 1123px use the page;
+ *  one phone-width column used 45% of it. */
+export const FLOW_COLUMNS = { landscape: 3, portrait: 2 } as const;
+const FLOW_GAP = 24;
+
+/** Any text that ends past the inner edge of its own box is scaled down until
+ *  it does not. Measured on the FINAL layout (after any scaling or column
+ *  flow) — run earlier it read the wrong widths: it clipped Money Runway's
+ *  headline and, reading inline elements' zero clientWidth as overflow,
+ *  shrank School Fees to unreadable type. */
+function fitOverflowingText(root: HTMLElement): void {
+  Array.from(root.querySelectorAll<HTMLElement>("*")).forEach((n) => {
+    if (n.children.length || !n.textContent?.trim()) return;
+    // Only one-line text is fitted; prose wraps on its own.
+    if (getComputedStyle(n).whiteSpace !== "nowrap") return;
+    // Against the CARD it sits in (the root's direct child), not its own
+    // wrapper — an inline wrapper grows with the text and never "overflows".
+    // The nearest ancestor that draws a box (fill or border), else the card
+    // the text sits in (the root's direct child). An inline wrapper grows
+    // with its text and never "overflows", so it is never the reference.
+    const framed = (el: HTMLElement) => {
+      const c = getComputedStyle(el);
+      return c.backgroundColor !== "rgba(0, 0, 0, 0)" || parseFloat(c.borderRightWidth) > 0;
+    };
+    let box: HTMLElement | null = n.parentElement;
+    while (box && box !== root && box.parentElement !== root && !framed(box)) box = box.parentElement;
+    if (!box || box === root) return;
+    const cs = getComputedStyle(box);
+    const inner =
+      box.getBoundingClientRect().right - parseFloat(cs.paddingRight) - parseFloat(cs.borderRightWidth);
+    const r = n.getBoundingClientRect();
+    // A block's edge does not move when its text overflows; its scrollWidth
+    // does. Inline elements report clientWidth 0, so only blocks use it.
+    const scrolled = n.clientWidth > 0 ? n.scrollWidth - n.clientWidth : 0;
+    const over = Math.max(r.right - inner, scrolled);
+    if (over > 1 && r.width > over) {
+      const size = parseFloat(getComputedStyle(n).fontSize);
+      const width = n.clientWidth > 0 ? n.scrollWidth : r.width;
+      n.style.fontSize = `${Math.floor((size * (width - over)) / width)}px`;
+    }
+  });
+}
+
+export function buildSheet(input: SheetInput): BuiltSheet {
   const landscape = input.orientation === "landscape";
   const page = landscape ? A4_LANDSCAPE : A4_PORTRAIT;
 
@@ -190,7 +245,20 @@ export function buildSheet(input: SheetInput): { node: HTMLElement; dispose: () 
    * layout; on a 794px sheet that is a column of very wide, very empty cards.
    * Two columns is what turns a two-page export into a one-page document. */
   const slot = sheet.querySelector<HTMLElement>("[data-sheet-body]")!;
-  const clone = input.body.cloneNode(true) as HTMLElement;
+  let clone = input.body.cloneNode(true) as HTMLElement;
+  /* A SINGLE WRAPPER IS NOT A LAYOUT. My Pesa Picture's export came back as
+   * one phone-width column on 45% of the page with its last section cut off:
+   * its body is one wrapper div, so the grid below saw one item and gave it
+   * one column, and the wrapper's own max-width held it narrow. Descend
+   * through lone wrappers to the real blocks, and let nothing cap its width. */
+  while (clone.children.length === 1 && !clone.querySelector(":scope > table")) {
+    const only = clone.firstElementChild as HTMLElement;
+    if (!only.children.length) break;
+    clone = only;
+  }
+  [clone, ...Array.from(clone.querySelectorAll<HTMLElement>("*"))].forEach((n) => {
+    n.style.maxWidth = "none";
+  });
   clone.style.display = "grid";
   clone.style.gap = "12px";
   clone.style.alignItems = "start";
@@ -286,10 +354,24 @@ export function buildSheet(input: SheetInput): { node: HTMLElement; dispose: () 
    *
    * Applied by text size rather than by class, so it covers whatever the
    * calculators call their headline number. */
+  // The app's own single-line styling (truncate / nowrap) clips a long
+  // sentence on paper — Money Runway's "Forever — your balance keeps
+  // growing". Long non-figure text is allowed to wrap.
+  clone.querySelectorAll<HTMLElement>(".truncate, .whitespace-nowrap, .text-ellipsis").forEach((n) => {
+    const t = n.textContent?.trim() ?? "";
+    if (t.length > 24 || !/\d/.test(t)) {
+      n.style.whiteSpace = "normal";
+      n.style.overflow = "visible";
+      n.style.textOverflow = "clip";
+    }
+  });
   clone.querySelectorAll<HTMLElement>("*").forEach((n) => {
     if (n.children.length) return;
     const size = parseFloat(window.getComputedStyle(n).fontSize || "0");
-    if (size >= 20) n.style.whiteSpace = "nowrap";
+    // Large FIGURES stay on one line; a large sentence ("Forever — your
+    // balance keeps growing", Money Runway) wraps instead of being clipped.
+    const t = n.textContent?.trim() ?? "";
+    if (size >= 20 && /\d/.test(t) && t.length <= 24) n.style.whiteSpace = "nowrap";
   });
 
   slot.appendChild(clone);
@@ -301,7 +383,19 @@ export function buildSheet(input: SheetInput): { node: HTMLElement; dispose: () 
    * safety net and on a narrow sheet column split "Ksh 18,906" into
    * "Ksh 18," / "906". Measured, not guessed: each figure is set nowrap and,
    * only if it then overruns its box, its font is reduced in proportion. */
+  /* Filled links are calls to action ("Open the goal planners →"): a button
+   * on paper does nothing, so it goes, like the real buttons above. */
+  clone.querySelectorAll<HTMLElement>("a[href]").forEach((n) => {
+    if (/\bbg-(accent|primary|ink)\b/.test(n.className)) n.remove();
+  });
+  /* Every one-line figure, not only .tabular-nums: a large amount held on one
+   * line (nowrap, above) ran out of its card — "Ksh 30,559,608" in Wealth at
+   * age 60 — because only tabular-nums text was shrunk to fit. */
   clone.querySelectorAll<HTMLElement>(".tabular-nums").forEach((n) => {
+    // Figures only: a tabular-nums SENTENCE ("Forever — your balance keeps
+    // growing") must wrap, not be forced to one line and clipped.
+    const tn = n.textContent?.trim() ?? "";
+    if (!(/\d/.test(tn) && tn.length <= 24)) return;
     n.style.whiteSpace = "nowrap";
     n.style.overflowWrap = "normal";
     n.style.wordBreak = "normal";
@@ -337,14 +431,80 @@ export function buildSheet(input: SheetInput): { node: HTMLElement; dispose: () 
    * of the two costs nothing when they agree and is the only correct answer
    * when they do not. */
   const contentHeight = Math.max(slot.scrollHeight, clone.scrollHeight, clone.offsetHeight);
-  const factor = fitScale(contentHeight, slot.clientHeight);
-  if (factor < 1) {
-    clone.style.transformOrigin = "top left";
-    clone.style.transform = `scale(${factor})`;
-    clone.style.width = `${100 / factor}%`;
+  const avail = slot.clientHeight;
+  let pages = 1;
+  let showPage: (k: number) => void = () => {};
+  /* A little over the page: shrink, as before — a summary that misses by a
+   * few lines reads better slightly smaller than split. Well over: flow into
+   * columns across the page, and past the last column onto further pages.
+   * Never crop: the old path stopped shrinking at 50% and the fixed-height
+   * sheet clipped the rest, which is how "Wealth at age 60" vanished. */
+  /* Tables never flow into columns: a fee table squeezed into a third of the
+   * page spilled its amount column sideways and broke across pages (School
+   * Fees, 4 Oct). A table keeps the full width and the sheet shrinks to fit. */
+  const hasTable = !!clone.querySelector("table");
+  if (hasTable || contentHeight <= avail * 1.25) {
+    /* Short content GROWS to use the page, up to MAX_FILL_SCALE. Landscape
+     * by default made this matter: measured 4 Oct, Payday Router used 14% of
+     * its page body, KPLC 24%, the 20th Challenge 27% — a few figures in the
+     * top corner of a blank sheet. Capped so a two-line result does not turn
+     * into a poster. */
+    // The slot's own scrollHeight is never less than the slot, so growth is
+    // judged on the content's natural height alone.
+    const natural = Math.max(clone.scrollHeight, clone.offsetHeight);
+    const factor =
+      natural > 0 && natural < avail ? Math.min(MAX_FILL_SCALE, avail / natural) : fitScale(contentHeight, avail);
+    if (factor !== 1) {
+      clone.style.transformOrigin = "top left";
+      clone.style.transform = `scale(${factor})`;
+      clone.style.width = `${100 / factor}%`;
+    }
+  } else {
+    const cols = landscape ? FLOW_COLUMNS.landscape : FLOW_COLUMNS.portrait;
+    /* Each block's height AT COLUMN WIDTH, measured before columns fragment
+     * it (a fragmented block reports only its first piece). */
+    const colW = (slot.clientWidth - FLOW_GAP * (cols - 1)) / cols;
+    Object.assign(clone.style, { display: "block", width: `${colW}px`, gridTemplateColumns: "" } as CSSStyleDeclaration);
+    const tall = new Set(
+      Array.from(clone.children).filter((c) => (c as HTMLElement).offsetHeight > avail),
+    );
+    Object.assign(clone.style, {
+      display: "block",
+      gridTemplateColumns: "",
+      columnCount: String(cols),
+      columnGap: `${FLOW_GAP}px`,
+      columnFill: "auto",
+      height: `${avail}px`,
+      width: "100%",
+    } as CSSStyleDeclaration);
+    /* Blocks that fit a column stay whole. One taller than a column has to
+     * break, and loses its frame and fill so the break does not show a card
+     * torn in half (FIRE Number's yellow panel). Splitting such containers
+     * into their parts was tried and dropped content from My Pesa Picture. */
+    Array.from(clone.children).forEach((c) => {
+      const el = c as HTMLElement;
+      if (tall.has(el)) {
+        el.style.breakInside = "auto";
+        el.style.background = "none";
+        el.style.border = "none";
+        el.style.padding = "0";
+        el.style.marginBottom = "12px";
+        return;
+      }
+      el.style.breakInside = "avoid";
+      el.style.marginBottom = "12px";
+      el.style.gridColumn = "";
+    });
+    /* Columns that do not fit run off to the right; each further page is the
+     * next band of them, slid into view. */
+    const band = slot.clientWidth + FLOW_GAP;
+    pages = Math.max(1, Math.ceil((clone.scrollWidth + FLOW_GAP - 1) / band));
+    showPage = (k) => {
+      clone.style.transform = k ? `translateX(${-k * band}px)` : "none";
+    };
   }
-
-  return { node: sheet, dispose: () => sheet.remove() };
+  fitOverflowingText(clone);
+  return { node: sheet, dispose: () => sheet.remove(), pages, showPage };
 }
 
 /**
