@@ -96,7 +96,7 @@ describe('export titles come from the registry', () => {
   });
 
   it('consults the registry before title-casing a slug', () => {
-    const src = readFileSync(new URL('../../components/tools/ExportCardButton.tsx', import.meta.url), 'utf8');
+    const src = readFileSync(new URL('../export-sheet.ts', import.meta.url), 'utf8');
     const fn = src.slice(src.indexOf('function titleFromFilename'));
     const body = fn.slice(0, fn.indexOf('\n}'));
     expect(body, 'the exporter still reconstructs the title from the slug alone').toMatch(
@@ -109,7 +109,23 @@ describe('export titles come from the registry', () => {
   it('still produces something printable for a slug with no registry entry', () => {
     // The fallback is why this function exists; losing it would put
     // "undefined" on a printed page.
-    const src = readFileSync(new URL('../../components/tools/ExportCardButton.tsx', import.meta.url), 'utf8');
+    const src = readFileSync(new URL('../export-sheet.ts', import.meta.url), 'utf8');
     expect(src).toMatch(/return "Result";/);
+  });
+});
+
+describe('titleFromFilename', () => {
+  it('names every exported sheet from the registry, never from the slug', async () => {
+    const { titleFromFilename } = await import('../export-sheet');
+    const { execSync } = await import('node:child_process');
+    const names = execSync(`grep -rhoE 'filename="[^"]+"' components`, { cwd: `${__dirname}/../..` })
+      .toString().match(/filename="([^"]+)"/g)!.map((m) => m.slice(10, -1));
+    const registered = new Set(Object.values(TOOL_META).map((m) => m.name));
+    const stray = [...new Set(names)].filter((n) => n !== 'jipange-result' && !registered.has(titleFromFilename(n)));
+    expect(stray).toEqual([]);
+  });
+  it('resolves a filename that extends its route slug', async () => {
+    const { titleFromFilename } = await import('../export-sheet');
+    expect(titleFromFilename('dhowcsd-ladder')).toBe(TOOL_META['/tools/dhowcsd'].name);
   });
 });

@@ -1,3 +1,4 @@
+import { TOOL_META } from "./tool-meta";
 /**
  * Builds the A4 document that gets exported, around the live result cards.
  *
@@ -116,6 +117,8 @@ export interface BuiltSheet {
  *  one phone-width column used 45% of it. */
 export const FLOW_COLUMNS = { landscape: 3, portrait: 2 } as const;
 const FLOW_GAP = 24;
+/** Narrowest grid cell (px) allowed to survive into a flow column. */
+const MIN_FLOW_CELL = 160;
 
 /** Any text that ends past the inner edge of its own box is scaled down until
  *  it does not. Measured on the FINAL layout (after any scaling or column
@@ -152,6 +155,21 @@ function fitOverflowingText(root: HTMLElement): void {
       const width = n.clientWidth > 0 ? n.scrollWidth : r.width;
       n.style.fontSize = `${Math.floor((size * (width - over)) / width)}px`;
     }
+  });
+}
+
+/**
+ * A row of cards keeps its screen tracks inside whatever slice of the page it
+ * lands in: DhowCSD's three rungs came out ~110px each, one word per line
+ * (6 Oct). Any grid whose cells would fall under MIN_FLOW_CELL stacks
+ * instead. Called before measuring, so heights are the real ones.
+ */
+function stackNarrowGrids(root: HTMLElement): void {
+  root.querySelectorAll<HTMLElement>("*").forEach((g) => {
+    const cs = getComputedStyle(g);
+    if (cs.display !== "grid" && cs.display !== "inline-grid") return;
+    const tracks = cs.gridTemplateColumns.split(" ").filter(Boolean).length;
+    if (tracks > 1 && g.clientWidth / tracks < MIN_FLOW_CELL) g.style.gridTemplateColumns = "minmax(0, 1fr)";
   });
 }
 
@@ -297,11 +315,10 @@ export function buildSheet(input: SheetInput): BuiltSheet {
    * for the capture (ExportCardButton); this is the same fix for the sheet.
    * Removed rather than hidden — the clone is thrown away after. Summaries
    * lose their marker, which html2canvas draws as a list number. */
-  clone.querySelectorAll<HTMLDetailsElement>("details:not([open])").forEach((d) => {
-    Array.from(d.children).forEach((c) => {
-      if (c.tagName !== "SUMMARY") c.remove();
-    });
-  });
+  /* A closed <details> on paper is only its summary: a collapsed control
+   * ("How this works — 30-second tutorial") that cannot be opened. Payday
+   * Router's sheet spent a third of its page on one (6 Oct). Dropped whole. */
+  clone.querySelectorAll<HTMLDetailsElement>("details:not([open])").forEach((d) => d.remove());
   clone.querySelectorAll<HTMLElement>("summary").forEach((s) => {
     s.style.listStyle = "none";
   });
@@ -444,6 +461,7 @@ export function buildSheet(input: SheetInput): BuiltSheet {
    * Fees, 4 Oct). A table keeps the full width and the sheet shrinks to fit. */
   const hasTable = !!clone.querySelector("table");
   if (hasTable || contentHeight <= avail * 1.25) {
+    stackNarrowGrids(clone);
     /* Short content GROWS to use the page, up to MAX_FILL_SCALE. Landscape
      * by default made this matter: measured 4 Oct, Payday Router used 14% of
      * its page body, KPLC 24%, the 20th Challenge 27% — a few figures in the
@@ -468,6 +486,17 @@ export function buildSheet(input: SheetInput): BuiltSheet {
     const tall = new Set(
       Array.from(clone.children).filter((c) => (c as HTMLElement).offsetHeight > avail),
     );
+    /* Inside a block that will break, any part tall enough to break with it
+     * must lose its fill too: html2canvas paints a fragmented box as ONE
+     * rectangle spanning every column it touches, so FIRE Number's yellow
+     * inner cards were painted over the "What you need at 60" headline that
+     * shared the first column (6 Oct). Small chips keep their colour. */
+    const breakable = new Set<HTMLElement>();
+    tall.forEach((t) =>
+      (t as HTMLElement).querySelectorAll<HTMLElement>("*").forEach((d) => {
+        if (d.offsetHeight > avail / 4) breakable.add(d);
+      }),
+    );
     Object.assign(clone.style, {
       display: "block",
       gridTemplateColumns: "",
@@ -481,6 +510,10 @@ export function buildSheet(input: SheetInput): BuiltSheet {
      * break, and loses its frame and fill so the break does not show a card
      * torn in half (FIRE Number's yellow panel). Splitting such containers
      * into their parts was tried and dropped content from My Pesa Picture. */
+    breakable.forEach((d) => {
+      d.style.background = "none";
+      d.style.border = "none";
+    });
     Array.from(clone.children).forEach((c) => {
       const el = c as HTMLElement;
       if (tall.has(el)) {
@@ -573,4 +606,31 @@ export async function awaitFonts(timeoutMs: number = FONT_READY_TIMEOUT_MS): Pro
       setTimeout(resolve, timeoutMs);
     }),
   ]);
+}
+
+/**
+ * The document's title, in order of preference: written, registered, derived.
+ *
+ * Title-casing the filename slug is a last resort and it showed: the Hustle
+ * Income Smoother's sheet was headed "Hustle Smoother", because the slug is
+ * `hustle-smoother` and the slug is not the name. On a document a reader may
+ * forward to a SACCO or a bursar, the masthead naming a tool that does not
+ * exist is not a small thing.
+ *
+ * TOOL_META already holds the canonical name for every tool, keyed by the same
+ * route the slug comes from, so the registry is consulted before falling back
+ * to string manipulation. Same move as the planner naming fix: read the name,
+ * do not reconstruct it.
+ */
+export function titleFromFilename(name: string): string {
+  /* Some filenames extend the route slug (`dhowcsd-ladder` for /tools/dhowcsd,
+   * `chama-calculator`, `land-purchase-costs`), and missing the registry for
+   * those printed "Dhowcsd Ladder". Trim trailing words until a route matches. */
+  for (let slug = name; slug; slug = slug.includes("-") ? slug.slice(0, slug.lastIndexOf("-")) : "") {
+    const registered = TOOL_META[`/tools/${slug}`]?.name;
+    if (registered) return registered;
+  }
+  const words = name.replace(/[-_]+/g, " ").replace(/\s+/g, " ").trim();
+  if (!words) return "Result";
+  return words.replace(/\b[a-z]/g, (c) => c.toUpperCase());
 }
