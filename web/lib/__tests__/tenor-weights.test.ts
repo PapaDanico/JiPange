@@ -63,26 +63,23 @@ describe("weights change the answer, in the right direction", () => {
     }
   });
 
-  it("records that the longest rung is not the best-paying one", () => {
-    // Not an assertion about which way the curve should point — a note that
-    // fails if the shape changes, so nobody reads the test above as a claim
-    // about the market. Rolling short currently beats locking in for the year.
-    //
-    // The condition was `y364 < y91 || y364 > y182`, and the second operator
-    // is inverted: it passes whenever the one-year bill beats the six-month
-    // one, which is the very thing this guard exists to catch. It survived
-    // only because the curve was fully inverted, so the first clause carried
-    // it; when the 20 Aug 2026 auction left a humped curve (91d below 364d
-    // below 182d) the whole assertion went red at once, having never actually
-    // tested the property it names. What it means is that 364d is not the top
-    // rung — say that directly, and it holds under any shape.
+  it("records which rung is the best-paying one", () => {
+    // Not an assertion about which way the curve should point — a tripwire
+    // that fails when the shape changes, so somebody re-checks every place
+    // that ranks the tenors. History: 364d trailed 182d from 20 Aug 2026; the
+    // 15 Oct auction (364d 9.0383 vs 182d 8.8600 quoted) put 364d back on top.
+    // Re-checked that day: all reader-facing copy asks bestPayingTenor() or
+    // LONGEST_IS_BEST_PAYING rather than naming a tenor. When this fails again,
+    // do the same check and update EXPECTED_TOP.
+    const EXPECTED_TOP = 364;
     const [y91, y182, y364] = ([91, 182, 364] as const).map((d) => tbillRate(d)!.netEAY);
+    const top = y364 >= Math.max(y91, y182) ? 364 : y182 >= y91 ? 182 : 91;
     expect(
-      y364 < Math.max(y91, y182),
+      top,
       `the tenor curve has changed shape: 91d ${y91}%, 182d ${y182}%, 364d ${y364}% — ` +
-        "re-check anything that presents a longer tenor as the better-paying rung, " +
-        "starting with bestPayingTenor() in lib/rates-feed.ts and the ladder presets"
-    ).toBe(true);
+        "re-check anything that ranks the tenors, starting with bestPayingTenor() " +
+        "in lib/rates-feed.ts and the ladder presets, then update EXPECTED_TOP"
+    ).toBe(EXPECTED_TOP);
   });
 
   it("a single tenor lands exactly on that bill's net yield", () => {
