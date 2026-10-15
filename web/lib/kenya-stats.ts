@@ -95,7 +95,7 @@ export const CBK_MOBILE_MONEY_SUBSCRIPTIONS_MILLIONS = figure("cbkMobileMoneySub
 /** The report's own date and name, for a citation line beside any of these. */
 export const CBK_BSAR_2025_CITE = "CBK Bank Supervision Annual Report 2025";
 
-// ── IMF World Economic Outlook, April 2026 ──
+// ── IMF World Economic Outlook, October 2026 ──
 /**
  * Projections, not measurements — calendar-2026 annual figures IMF staff
  * expect, re-checked on the WEO's April/October cadence. Use these where a
