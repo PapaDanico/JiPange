@@ -3,6 +3,20 @@ import Link from "next/link";
 import { GLOSSARY, GLOSSARY_TOPICS, glossaryByTopic } from "@/lib/glossary";
 import JsonLd from "@/components/seo/JsonLd";
 import { breadcrumbJsonLd, glossaryJsonLd } from "@/lib/structured-data";
+import { CALCULATOR_GROUPS } from "@/lib/tool-groups";
+
+/** Name the tool a term links to, so 23 links do not all read the same. */
+const TOOL_TITLES = new Map<string, string>([
+  ...CALCULATOR_GROUPS.flatMap((g) => g.calculators.map((c) => [c.href.replace(/\/$/, ""), c.title] as const)),
+  // Reached through the Salary hub or the planners, so not in the tools index.
+  ["/tools/take-home-pay", "Take-home Pay Calculator"],
+  ["/tools/salary-negotiation", "Salary Negotiation tool"],
+  ["/planners/home", "Home Purchase Planner"],
+]);
+function toolTitle(path: string): string {
+  const base = path.split(/[?#]/)[0].replace(/\/$/, "");
+  return `Open the ${TOOL_TITLES.get(base) ?? "calculator"}`;
+}
 
 export const metadata: Metadata = {
   title: "Money words, decoded — JiPange",
@@ -83,7 +97,7 @@ export default function GlossaryPage() {
                             href={g.toolPath}
                             className="inline-flex min-h-11 items-center text-sm font-medium text-primary underline"
                           >
-                            Work it out with your own numbers →
+                            {toolTitle(g.toolPath)} →
                           </Link>
                         </dd>
                       )}
