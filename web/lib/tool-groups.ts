@@ -14,7 +14,6 @@ export const CALCULATOR_GROUPS: ToolGroup[] = [
         title: "Salary & Pay Hub",
         description: "Take-home pay, 50/25/25 budget split, payday routing, KRA tax shield, and salary negotiation — all from one gross salary.",
         insight: "≈37% of a Ksh 100,000 gross goes to deductions before you see a shilling. Model every angle here.",
-        isNew: true,
       },
       {
         href: "/tools/where-to-save",
@@ -22,7 +21,6 @@ export const CALCULATOR_GROUPS: ToolGroup[] = [
         title: "Where to put your savings",
         description: "What Treasury bills and money market funds pay after withholding tax, ranked — with SACCO dividends explained separately rather than ranked beside them.",
         insight: "A SACCO dividend is not interest and is not guaranteed. It belongs in the conversation, not in the league table.",
-        isNew: true,
       },
       {
         href: "/tools/savings-goal",
@@ -37,7 +35,6 @@ export const CALCULATOR_GROUPS: ToolGroup[] = [
         title: "Hustle Income Smoother",
         description: "Turn months of variable freelance or informal income into a steady, reliable monthly salary.",
         insight: "Enter your last 3–12 months' earnings, get the safe draw and buffer fund needed to ride out lean months.",
-        isNew: true,
       },
       {
         href: "/tools/20th-challenge",
@@ -45,7 +42,6 @@ export const CALCULATOR_GROUPS: ToolGroup[] = [
         title: "20th-to-20th Savings Challenge",
         description: "Commit to saving a fixed amount every month and build an unbroken streak with monthly check-ins.",
         insight: "6 months is the habit-formation threshold. Check in between the 15th and 25th — the app keeps score.",
-        isNew: true,
       },
       {
         href: "/tools/loan-repayment",
@@ -79,7 +75,6 @@ export const CALCULATOR_GROUPS: ToolGroup[] = [
         title: "DhowCSD T-Bill Ladder",
         description: "Split capital across 91/182/364-day Treasury Bills for quarterly liquidity.",
         insight: "The blended ladder yield nearly triples what a bank savings account pays.",
-        isNew: true,
       },
       {
         href: "/tools/money-runway",
@@ -94,7 +89,6 @@ export const CALCULATOR_GROUPS: ToolGroup[] = [
         title: "School Fees Sinking Fund Smoother",
         description: "Turn three termly fee shocks into one flat monthly deposit that earns its own subsidy.",
         insight: "An MMF's interest quietly pays ~12% of your annual fees for you — free school uniforms.",
-        isNew: true,
       },
       {
         href: "/tools/school-fees-lifetime",
@@ -102,7 +96,6 @@ export const CALCULATOR_GROUPS: ToolGroup[] = [
         title: "The Full Cost of Private School",
         description: "Every year of fees from your child's current grade to Grade 12, increases compounded, across all your children.",
         insight: "Multiplying this year's fee by the years left understates a 14-year private education by roughly half.",
-        isNew: true,
       },
     ],
   },
@@ -115,7 +108,6 @@ export const CALCULATOR_GROUPS: ToolGroup[] = [
         title: "Debt Stack Buster",
         description: "Enter your Fuliza, Tala, and mobile loans. The avalanche plan shows you the fastest, cheapest way to clear every shilling.",
         insight: "Fuliza at 32%/month is the costliest debt most Kenyans carry — tackle it first.",
-        isNew: true,
       },
       {
         href: "/tools/sha-health",
@@ -123,7 +115,6 @@ export const CALCULATOR_GROUPS: ToolGroup[] = [
         title: "SHA Health Coverage Gap",
         description: "See your exact SHIF contribution and the top-up cost needed to access private hospitals, dental, and optical.",
         insight: "SHA covers public facilities only — know what it misses before you need it.",
-        isNew: true,
       },
       {
         href: "/tools/land-purchase",
@@ -131,7 +122,6 @@ export const CALCULATOR_GROUPS: ToolGroup[] = [
         title: "Land Purchase True Cost",
         description: "The quoted plot price is only the start. See stamp duty, legal fees, valuation, title transfer, and survey costs before you sign.",
         insight: "Transaction fees add 8–12% on top of the quoted price — budget this before negotiating.",
-        isNew: true,
       },
     ],
   },
@@ -144,7 +134,6 @@ export const CALCULATOR_GROUPS: ToolGroup[] = [
         title: "SACCO vs Bank Loan Comparison",
         description: "Compare SACCO, bank, and mobile lender costs for the same loan.",
         insight: "Most Kenyans don't realise how much cheaper SACCO loans are.",
-        isNew: true,
       },
       {
         href: "/tools/inflation-reality",
@@ -152,7 +141,6 @@ export const CALCULATOR_GROUPS: ToolGroup[] = [
         title: "Inflation Reality Calculator",
         description: "See what your salary will really be worth in the future.",
         insight: "Kenya CPI has averaged 6.5% per year — your salary needs to keep pace.",
-        isNew: true,
       },
       {
         href: "/tools/kplc-optimizer",
@@ -160,7 +148,6 @@ export const CALCULATOR_GROUPS: ToolGroup[] = [
         title: "KPLC Token Band Checker",
         description: "Work out your true cost per unit and see which tariff band your month lands in.",
         insight: "Two half-month purchases keep you in the lower tariff band — same money, more kWh.",
-        isNew: true,
       },
       {
         href: "/tools/fuliza-cost",
@@ -168,7 +155,6 @@ export const CALCULATOR_GROUPS: ToolGroup[] = [
         title: "True Cost of Fuliza Calculator",
         description: "Find out what Fuliza really costs before you borrow.",
         insight: "Fuliza costs ~400% APR — more than a payday lender.",
-        isNew: true,
       },
       {
         href: "/tools/guarantor-shield",
@@ -176,7 +162,6 @@ export const CALCULATOR_GROUPS: ToolGroup[] = [
         title: "Sacco Guarantor Liability Shield",
         description: "See how much of your 3× borrowing power is frozen by loans you've guaranteed.",
         insight: "Guarantee half your deposits away and your development loan gets slashed — check before you apply.",
-        isNew: true,
       },
       {
         href: "/tools/one-third-rule",
@@ -184,7 +169,6 @@ export const CALCULATOR_GROUPS: ToolGroup[] = [
         title: "1/3 Rule Checker",
         description: "Check if your SACCO and loan deductions are legally compliant.",
         insight: "Many Kenyans unknowingly have illegal deductions taken from their pay.",
-        isNew: true,
       },
       {
         href: "/tools/chama",
@@ -192,7 +176,6 @@ export const CALCULATOR_GROUPS: ToolGroup[] = [
         title: "Chama / Group Savings Optimizer",
         description: "Simulate merry-go-round payouts, welfare fund size, or group investment returns over 1–5 years.",
         insight: "11.4 million Kenyans save through chamas — model yours before the next meeting.",
-        isNew: true,
       },
     ],
   },
