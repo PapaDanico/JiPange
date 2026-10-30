@@ -65,6 +65,26 @@ export default withPWAConfig({
         destination: "/tools/school-fees-lifetime",
         permanent: true,
       },
+      /* THE SALARY TOOLS WERE ONE TOOL SHOWN TWICE.
+       *
+       * The Salary & Pay Hub has a tab for each of take-home pay, the 50/25/25
+       * split, the payday router, the tax shield and salary negotiation, and
+       * each of those also had its own page running the same calculation. Two
+       * copies of one tool meant two places to keep correct and two answers to
+       * "where do I do this". The hub is the one; the old addresses redirect
+       * permanently to its matching tab, because they have been shared,
+       * bookmarked and indexed. */
+      ...[
+        ["take-home-pay", "takehome"],
+        ["budget-split", "allocate"],
+        ["payday-router", "route"],
+        ["tax-shield", "shield"],
+        ["salary-negotiation", "negotiate"],
+      ].map(([old, tab]) => ({
+        source: `/tools/${old}`,
+        destination: `/tools/salary#${tab}`,
+        permanent: true,
+      })),
     ];
   },
 });

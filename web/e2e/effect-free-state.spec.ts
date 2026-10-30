@@ -33,8 +33,8 @@ test("the continue banner stays dismissed for the rest of the session", async ({
   await page.goto("/tools");
   await settled(page);
   await page.evaluate(() => {
-    localStorage.setItem("jipange_recent_tools", JSON.stringify(["/tools/take-home-pay"]));
-    localStorage.setItem("jipange:tool:take-home-pay:gross", JSON.stringify("150000"));
+    localStorage.setItem("jipange_recent_tools", JSON.stringify(["/tools/savings-goal"]));
+    localStorage.setItem("jipange:tool:savings-goal:target", JSON.stringify("500000"));
   });
 
   await page.reload();

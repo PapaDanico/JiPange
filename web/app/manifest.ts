@@ -42,7 +42,7 @@ export default function manifest(): MetadataRoute.Manifest {
         name: "Take-Home Pay",
         short_name: "Pay",
         description: "Calculate your net Kenya salary",
-        url: "/tools/take-home-pay",
+        url: "/tools/salary#takehome",
       },
       {
         name: "Savings Goal",

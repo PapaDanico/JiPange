@@ -6,9 +6,11 @@ const ROUTES = [
   "/planners", "/planners/education", "/planners/home", "/planners/emergency",
   "/planners/business", "/planners/retirement", "/planners/hustle", "/tools",
   ...[
-    "take-home-pay", "savings-goal", "budget-split", "payday-router", "loan-repayment",
-    "tax-shield", "investment-returns", "fire-number", "dhowcsd", "money-runway",
-    "salary-negotiation", "sacco-vs-bank", "inflation-reality",
+    // The take-home, budget-split, payday-router, tax-shield and salary-negotiation
+    // addresses redirect to tabs of /tools/salary, so only the hub is listed.
+    "savings-goal", "loan-repayment",
+    "investment-returns", "fire-number", "dhowcsd", "money-runway",
+    "sacco-vs-bank", "inflation-reality",
     "kplc-optimizer", "fuliza-cost", "one-third-rule", "guarantor-shield",
     "chama", "hustle-smoother", "20th-challenge", "debt-escape", "land-purchase",
     "salary", "sha-health", "school-fees-lifetime",

@@ -201,7 +201,7 @@ const STEPS = [
 ];
 
 const TOOLS = [
-  { href: "/tools/take-home-pay", emoji: "💰", name: "Take-Home Pay", hook: "Exact net: PAYE, NSSF, SHIF & Housing Levy" },
+  { href: "/tools/salary#takehome", emoji: "💰", name: "Take-Home Pay", hook: "Exact net: PAYE, NSSF, SHIF & Housing Levy" },
   { href: "/tools/investment-returns", emoji: "📈", name: "Investment Returns", hook: "MMF vs bank vs T-Bill — see the compounding gap" },
   { href: "/tools/money-runway", emoji: "⏳", name: "Money Runway", hook: "How long your savings survive a job loss" },
   { href: "/tools/guarantor-shield", emoji: "🛡️", name: "Sacco Guarantor Shield", hook: "Your real unencumbered borrowing power" },
@@ -220,7 +220,7 @@ const PLANNERS = [
 
 const QUICK_STARTS = [
   {
-    href: "/tools/take-home-pay",
+    href: "/tools/salary#takehome",
     eyebrow: "Keep more salary",
     title: "Understand my payslip",
     detail: "See PAYE, NSSF, SHIF and your exact take-home pay.",

@@ -21,11 +21,11 @@ test("tools index loads and lists calculators", async ({ page }) => {
 
 // ─── Take-Home Pay ─────────────────────────────────────────────────────────
 
-test("take-home pay: shows net salary for valid input", async ({ page }) => {
+test("take-home pay: the old address opens the Take-Home tab and shows net salary", async ({ page }) => {
   await page.goto("/tools/take-home-pay");
-  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-  await expect(visibleText(page, /80%\+/)).toBeVisible();
-  await page.getByRole("spinbutton").first().fill("150000");
+  await expect(page).toHaveURL(/\/tools\/salary#takehome$/);
+  await expect(page.getByRole("tab", { name: /take-home/i })).toHaveAttribute("aria-selected", "true");
+  await page.getByLabel("Monthly gross salary (Ksh)").fill("150000");
   // Ledger rows only exist once the breakdown computed.
   await expect(visibleText(page, "Less: NSSF Tier 1")).toBeVisible();
   await expect(visibleText(page, "PAYE (before relief)")).toBeVisible();
@@ -61,8 +61,8 @@ test("take-home pay: the PDF button downloads a real, single-page PDF", async ({
   // case that used to overflow onto a second sheet. If one page holds here, it
   // holds at desktop width too.
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/tools/take-home-pay");
-  await page.getByRole("spinbutton").first().fill("150000");
+  await page.goto("/tools/salary#takehome");
+  await page.getByLabel("Monthly gross salary (Ksh)").fill("150000");
   await expect(visibleText(page, "PAYE (before relief)")).toBeVisible();
 
   const downloadPromise = page.waitForEvent("download");
@@ -215,55 +215,51 @@ test("money runway: shows months of runway", async ({ page }) => {
 
 // ─── Budget Split ──────────────────────────────────────────────────────────
 
-test("budget split: renders split amounts", async ({ page }) => {
+test("budget split: the old address opens the Allocate tab and renders split amounts", async ({ page }) => {
   await page.goto("/tools/budget-split");
-  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-  await page.getByRole("spinbutton").first().fill("120000");
-  await expect(visibleText(page, "Household expenses (50%)")).toBeVisible();
+  await expect(page).toHaveURL(/\/tools\/salary#allocate$/);
+  await page.getByLabel("Monthly gross salary (Ksh)").fill("120000");
+  await expect(visibleText(page, "50% — Household expenses")).toBeVisible();
 });
 
 // ─── Tax Shield ────────────────────────────────────────────────────────────
 
-test("tax shield: shows relief amounts", async ({ page }) => {
+test("tax shield: the old address opens the Shield tab and shows relief amounts", async ({ page }) => {
   await page.goto("/tools/tax-shield");
-  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-  await page.getByRole("spinbutton").first().fill("200000");
-  await expect(page.getByTestId("tax-leak")).toBeVisible();
+  await expect(page).toHaveURL(/\/tools\/salary#shield$/);
+  await page.getByLabel("Monthly gross salary (Ksh)").fill("200000");
   await expect(visibleText(page, /paye recoverable/i)).toBeVisible();
 });
 
 // ─── Salary Negotiation ───────────────────────────────────────────────────
 
-test("salary negotiation: reverse-engineers gross", async ({ page }) => {
+test("salary negotiation: the old address opens the Negotiate tab and reverse-engineers gross", async ({ page }) => {
   await page.goto("/tools/salary-negotiation");
-  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-  await page.getByRole("spinbutton").first().fill("100000");
-  await expect(visibleText(page, "Negotiate for a gross salary of")).toBeVisible();
+  await expect(page).toHaveURL(/\/tools\/salary#negotiate$/);
+  await page.getByLabel("Target take-home pay (Ksh/month)").fill("100000");
+  await expect(visibleText(page, "Gross salary to negotiate")).toBeVisible();
 });
 
 // ─── Payday Router ─────────────────────────────────────────────────────────
 
-test("payday router: shows weekly limit", async ({ page }) => {
+test("payday router: the old address opens the Route tab and shows the weekly limit", async ({ page }) => {
   await page.goto("/tools/payday-router");
-  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-  const inputs = page.getByRole("spinbutton");
-  await inputs.nth(0).fill("120000");
-  await inputs.nth(1).fill("30000");
-  await expect(page.getByTestId("weekly-limit")).toBeVisible();
+  await expect(page).toHaveURL(/\/tools\/salary#route$/);
+  await page.getByLabel("Monthly gross salary (Ksh)").fill("150000");
+  await page.getByLabel("Rent (Ksh/month)").fill("30000");
+  await expect(visibleText(page, "Your true weekly spend limit")).toBeVisible();
 });
 
-test("payday router: answers the overspent case instead of going blank", async ({ page }) => {
+test("payday router: answers the overspent case with the shortfall instead of going blank", async ({ page }) => {
   // Found by driving the tool, not by reading it: with outflows above salary
   // the page rendered its inputs and nothing else. The user in the worst
-  // position got the least information.
+  // position got the least information. The merge into the hub briefly kept
+  // the message but dropped the amount, which is the part that helps.
   await page.goto("/tools/payday-router");
-  const inputs = page.getByRole("spinbutton");
-  await inputs.nth(0).fill("60000");
-  await inputs.nth(1).fill("70000");
-  await expect(page.getByTestId("weekly-limit")).toHaveCount(0);
-  const shortfall = page.getByTestId("router-shortfall");
-  await expect(shortfall).toBeVisible();
-  await expect(shortfall).toContainText("Ksh 10,000");
+  await page.getByLabel("Monthly gross salary (Ksh)").fill("60000");
+  await page.getByLabel("Rent (Ksh/month)").fill("70000");
+  await expect(visibleText(page, "Your true weekly spend limit")).toHaveCount(0);
+  await expect(visibleText(page, /exceed your take-home pay by Ksh [\d,]+ a month/)).toBeVisible();
 });
 
 // ─── Fuliza Cost ───────────────────────────────────────────────────────────
@@ -469,7 +465,7 @@ test("affiliate links: /go/unknown-slug redirects to /tools", async ({ page }) =
 // ─── ToolEnhancements: related chips ────────────────────────────────────
 
 test("tool enhancements: shows Try next section with chips", async ({ page }) => {
-  await page.goto("/tools/take-home-pay");
+  await page.goto("/tools/salary");
   await expect(visibleText(page, /try next/i)).toBeVisible();
   await expect(page.getByRole("link", { name: "Salary & Pay Hub", exact: true }).first()).toBeVisible();
 });
@@ -486,12 +482,13 @@ test("recent tools bar: appears after visiting a tool", async ({ page }) => {
   await page.evaluate(() => {
     localStorage.setItem(
       "jipange_recent_tools",
-      JSON.stringify(["/tools/take-home-pay", "/tools/savings-goal"])
+      JSON.stringify(["/tools/salary", "/tools/savings-goal"])
     );
   });
   await page.reload();
   await expect(visibleText(page, /recently used/i)).toBeVisible();
-  await expect(page.getByRole("link", { name: "Take-Home Pay", exact: true })).toBeVisible();
+  // The hub also appears in the tools list below the bar, so take the first.
+  await expect(page.getByRole("link", { name: "Salary & Pay Hub", exact: true }).first()).toBeVisible();
 });
 
 // ─── ToolInsights: both cards rendered ────────────────────────────────────
@@ -588,7 +585,7 @@ test("header: dropdown closes on outside click and on Escape", async ({ page }) 
 });
 
 test("all tools breadcrumb back link goes to /tools", async ({ page }) => {
-  await page.goto("/tools/budget-split");
+  await page.goto("/tools/salary");
   await page.getByRole("link", { name: "← All calculators", exact: true }).click();
   await expect(page).toHaveURL("/tools");
 });
@@ -621,7 +618,7 @@ test("landing page: loads and has CTA", async ({ page }) => {
  *     getBoundingClientRect reports a defect where someone already did the
  *     right thing.
  */
-const ERGONOMIC_ROUTES = ["/tools/take-home-pay", "/tools/savings-goal", "/tools/salary", "/tools"];
+const ERGONOMIC_ROUTES = ["/tools/savings-goal", "/tools/salary", "/tools"];
 
 for (const route of ERGONOMIC_ROUTES) {
   test(`mobile: ${route} has no sub-40px controls and no sideways scroll`, async ({ page }) => {

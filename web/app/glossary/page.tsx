@@ -9,13 +9,13 @@ import { CALCULATOR_GROUPS } from "@/lib/tool-groups";
 const TOOL_TITLES = new Map<string, string>([
   ...CALCULATOR_GROUPS.flatMap((g) => g.calculators.map((c) => [c.href.replace(/\/$/, ""), c.title] as const)),
   // Reached through the Salary hub or the planners, so not in the tools index.
-  ["/tools/take-home-pay", "Take-home Pay Calculator"],
-  ["/tools/salary-negotiation", "Salary Negotiation tool"],
+  ["/tools/salary#takehome", "Take-home Pay Calculator"],
+  ["/tools/salary#negotiate", "Salary Negotiation tool"],
   ["/planners/home", "Home Purchase Planner"],
 ]);
 function toolTitle(path: string): string {
   const base = path.split(/[?#]/)[0].replace(/\/$/, "");
-  return `Open the ${TOOL_TITLES.get(base) ?? "calculator"}`;
+  return `Open the ${TOOL_TITLES.get(path) ?? TOOL_TITLES.get(base) ?? "calculator"}`;
 }
 
 export const metadata: Metadata = {
