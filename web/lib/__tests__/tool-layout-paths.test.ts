@@ -20,7 +20,7 @@ const toolDirs = readdirSync(TOOLS_DIR, { withFileTypes: true })
 
 describe("ToolLayout path props", () => {
   it("covers every tool directory", () => {
-    expect(toolDirs.length).toBeGreaterThanOrEqual(25);
+    expect(toolDirs.length).toBeGreaterThanOrEqual(20);
   });
 
   it.each(toolDirs)("%s: page.tsx passes its own directory as path", (slug) => {

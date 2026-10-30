@@ -77,7 +77,7 @@ export const FAQS: Faq[] = [
     answer:
       "Probably not. PAYE rises in bands, and NSSF, SHA and the housing levy are all percentages of gross — so a raise increases four deductions at once. Only the portion above the band threshold is taxed at the higher rate, though; the whole salary is never re-taxed. If the net went DOWN, that is worth querying.",
     topic: "Pay & tax",
-    toolPath: "/tools/take-home-pay",
+    toolPath: "/tools/salary#takehome",
     toolLabel: "See exactly where your salary goes",
   },
   {
@@ -85,7 +85,7 @@ export const FAQS: Faq[] = [
     answer:
       "No. This is the most persistent myth in Kenyan pay, and it costs people promotions. Only the shillings above the threshold are taxed at the higher rate. Earning more always leaves you with more after tax — the increase is just smaller than the headline.",
     topic: "Pay & tax",
-    toolPath: "/tools/salary-negotiation",
+    toolPath: "/tools/salary#negotiate",
     toolLabel: "Work out the gross you need for a target net",
   },
   {
@@ -93,7 +93,7 @@ export const FAQS: Faq[] = [
     answer:
       "It is a statutory 1.5% of gross pay, matched by your employer, under the Affordable Housing Act. It is not optional for salaried employees. What matters for planning is that it comes off before you see anything, so every budget and loan-affordability sum should be built on the figure after it — not on your gross.",
     topic: "Pay & tax",
-    toolPath: "/tools/take-home-pay",
+    toolPath: "/tools/salary#takehome",
   },
 
   /* ───────────────────────────────────────────────────────── Debt */

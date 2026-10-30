@@ -324,7 +324,12 @@ describe("figures we attribute to ourselves are actually ours", () => {
   ];
 
   it.each(RETIRED)("$slug no longer states $value", ({ slug, value, was }) => {
-    const page = pages.find((p) => p.includes(`/${slug}/`))!;
+    /* take-home-pay, tax-shield and salary-negotiation are tabs of the Salary &
+     * Pay Hub now, so a retired figure would reappear in the hub component. */
+    const HUB_TABS = ["take-home-pay", "tax-shield", "salary-negotiation"];
+    const page = HUB_TABS.includes(slug)
+      ? "components/tools/SalaryPlannerHub.tsx"
+      : pages.find((p) => p.includes(`/${slug}/`))!;
     const src = readFileSync(page, "utf8")
       .replace(/\/\*[\s\S]*?\*\//g, " ")
       .replace(/^\s*\/\/.*$/gm, " ");

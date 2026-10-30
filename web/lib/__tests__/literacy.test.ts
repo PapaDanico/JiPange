@@ -20,8 +20,8 @@ describe("every link goes somewhere that exists", () => {
   // [goal] route builds its pages from, so a link to a goal that page would
   // not generate still fails.
   const routeExists = (path: string) =>
-    existsSync(`${process.cwd()}/app${path}/page.tsx`) ||
-    GOAL_TYPES.some((g) => path === `/planners/${g}`);
+    existsSync(`${process.cwd()}/app${path.split("#")[0]}/page.tsx`) ||
+    GOAL_TYPES.some((g) => path.split("#")[0] === `/planners/${g}`);
 
   it.each(FAQS.filter((f) => f.toolPath).map((f) => [f.question, f.toolPath!]))(
     "FAQ %# points at a real calculator",

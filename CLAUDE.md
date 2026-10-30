@@ -37,6 +37,19 @@ scripts/          Rates sync, the rates doctor, the Netlify build gate.
 twice and the two copies drift — and the copy that drifts is never the one that
 gets corrected.
 
+**One tool, one page.** The same rule applies to pages. Take-home pay, the
+50/25/25 split, the payday router, the tax shield and salary negotiation were
+each a page AND a tab of the Salary & Pay Hub (`/tools/salary`), running the same
+calculation twice. They are one tool now: the hub is the page, and the five old
+addresses (`/tools/take-home-pay`, `budget-split`, `payday-router`, `tax-shield`,
+`salary-negotiation`) are permanent redirects in `next.config.mjs` to the matching
+tab, `/tools/salary#takehome`, `#allocate`, `#route`, `#shield`, `#negotiate`. The
+hub reads the tab from the address (an external store, not an effect) so every
+tab is linkable and the back button works. **Link to the `#tab` address, never to
+a retired page, and do not recreate those pages**: if a tool is a tab of another,
+it does not also get a route. Before adding a calculator, check it is not one
+more view of numbers an existing one already produces.
+
 ## Commands
 
 | Command | What it does |

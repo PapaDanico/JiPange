@@ -41,7 +41,7 @@ export const GLOSSARY: GlossaryEntry[] = [
     whyItMatters:
       "Almost every quoted figure in Kenyan finance is gross, and almost every figure you can actually spend is net. Comparing one to the other is the single most common money mistake there is — it is why a job offer can be larger and leave you poorer.",
     topic: "Pay & tax",
-    toolPath: "/tools/take-home-pay",
+    toolPath: "/tools/salary#takehome",
   },
   {
     term: "PAYE",
@@ -50,7 +50,7 @@ export const GLOSSARY: GlossaryEntry[] = [
     whyItMatters:
       "It is charged on the band, not the whole salary: a raise that pushes you into a higher band taxes only the part above the threshold, not everything. People turn down money believing otherwise.",
     topic: "Pay & tax",
-    toolPath: "/tools/take-home-pay",
+    toolPath: "/tools/salary#takehome",
   },
   {
     term: "Personal relief",
@@ -58,7 +58,7 @@ export const GLOSSARY: GlossaryEntry[] = [
     whyItMatters:
       "Because it comes off the tax rather than the pay, it is worth the same shillings to everyone — which makes it proportionally far more valuable at a low salary than a high one.",
     topic: "Pay & tax",
-    toolPath: "/tools/take-home-pay",
+    toolPath: "/tools/salary#takehome",
   },
   {
     term: "NSSF Tier I and Tier II",
@@ -67,7 +67,7 @@ export const GLOSSARY: GlossaryEntry[] = [
     whyItMatters:
       "Tier II can be contracted out to an approved private scheme. Readers who do not know the two layers are separate cannot tell whether their employer has done so, or what happened to that money.",
     topic: "Pay & tax",
-    toolPath: "/tools/take-home-pay",
+    toolPath: "/tools/salary#takehome",
   },
   {
     term: "Withholding tax (WHT)",
@@ -248,7 +248,7 @@ export const GLOSSARY: GlossaryEntry[] = [
     whyItMatters:
       "It is deducted before you see your pay and reduces the net figure every other calculation should be built on — including how much loan you can genuinely service.",
     topic: "Pay & tax",
-    toolPath: "/tools/take-home-pay",
+    toolPath: "/tools/salary#takehome",
   },
 ];
 

@@ -233,6 +233,8 @@ describe("tool cross-links", () => {
 
   it("points every related link and next move at something that exists", () => {
     const known = new Set(Object.keys(TOOL_META));
+    // A "#tab" selects a tab inside the Salary & Pay Hub; the page is what must exist.
+    const page = (href: string) => href.split("#")[0];
     const dangling: string[] = [];
     for (const [href, meta] of Object.entries(TOOL_META)) {
       for (const r of meta.related ?? []) {
@@ -240,7 +242,7 @@ describe("tool cross-links", () => {
         if (!known.has(r) && !r.startsWith("/planners")) dangling.push(`${href} -> ${r}`);
       }
       const next = meta.nextMove?.href;
-      if (next && !known.has(next) && !next.startsWith("/planners")) {
+      if (next && !known.has(page(next)) && !next.startsWith("/planners")) {
         dangling.push(`${href} -> ${next} (nextMove)`);
       }
     }

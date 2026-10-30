@@ -2,7 +2,7 @@
 
 import { positiveAmount } from "@/lib/money";
 import dynamic from "next/dynamic";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useSyncExternalStore } from "react";
 import {
   calculateNetPay,
   MORTGAGE_INTEREST_RELIEF_CAP_MONTHLY,
@@ -35,8 +35,27 @@ const TABS: { id: Tab; label: string }[] = [
   { id: "negotiate", label: "💼 Negotiate" },
 ];
 
+/* THE ADDRESS CHOOSES THE TAB.
+ *
+ * The five tools that used to be separate pages (take-home pay, budget split,
+ * payday router, tax shield, negotiation) now redirect here as
+ * /tools/salary#takehome, #allocate, #route, #shield and #negotiate, so a link
+ * someone shared, or a search result, still lands on the tool it named. The
+ * hash is read as an external store, not copied into state by an effect (the
+ * lint rule forbids that), and written by navigating to it, which also gives each
+ * tab a shareable address and lets the back button step between tabs. */
+const subscribeHash = (notify: () => void) => {
+  window.addEventListener("hashchange", notify);
+  return () => window.removeEventListener("hashchange", notify);
+};
+const tabFromHash = (): Tab =>
+  TABS.find((t) => t.id === window.location.hash.slice(1))?.id ?? "takehome";
+
 export default function SalaryPlannerHub() {
-  const [activeTab, setActiveTab] = useState<Tab>("takehome");
+  const activeTab = useSyncExternalStore(subscribeHash, tabFromHash, () => "takehome" as Tab);
+  const setActiveTab = (tab: Tab) => {
+    window.location.assign(`#${tab}`);
+  };
   const [showReliefs, setShowReliefs] = useState(false);
 
   const [gross, setGross] = useStickyState("jipange:hub:salary:gross", "");
@@ -330,7 +349,7 @@ export default function SalaryPlannerHub() {
                   message={`🇰🇪 *My Take-Home Pay*\n\nGross: ${formatKES(Number(gross))}\nTake-home: ${formatKES(taxResult.netMonthly)}/month\n\nCalculate yours → jipangefinance.org/tools/salary`}
                 />
               </div>
-              <ExportCardButton containerRef={resultsRef} filename="take-home-pay" />
+              <ExportCardButton containerRef={resultsRef} filename="salary-take-home-pay" />
               <CalculatorDisclaimer
                 extraNotes={[
                   // The NSSF/SHIF/AHL line that stood here restated both the
@@ -439,7 +458,8 @@ export default function SalaryPlannerHub() {
               )}
               {routeSurplus !== null && routeSurplus <= 0 && (Number(rent) > 0 || Number(bills) > 0) && (
                 <div className="rounded-xl border border-danger bg-danger-soft p-4 text-sm text-danger">
-                  Rent and bills exceed your take-home — review your fixed costs.
+                  Rent and bills exceed your take-home pay by {formatKES(-routeSurplus)} a month — review
+                  your fixed costs.
                 </div>
               )}
             </>
