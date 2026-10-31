@@ -405,6 +405,148 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── How it works ── */}
+      <section className="bg-canvas py-14 sm:py-16">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6">
+          <div className="mb-8">
+            <p className="mb-1.5 text-xs font-bold uppercase tracking-widest text-accent-ink">
+              The process
+            </p>
+            <h2
+              className="text-2xl font-extrabold tracking-tight text-primary sm:text-3xl"
+              style={{ textWrap: "balance" } as React.CSSProperties}
+            >
+              From &ldquo;pesa inaisha&rdquo; to a plan — in three steps
+            </h2>
+            <p className="mt-2 max-w-prose text-[0.9375rem] text-ink-soft">
+              No spreadsheets. No financial jargon. No signup. Just the honest picture and the next
+              move.
+            </p>
+          </div>
+
+          <ol className="grid grid-cols-1 gap-4 sm:grid-cols-3 list-none">
+            {STEPS.map((step, i) => (
+              <li
+                key={step.num}
+                data-reveal
+                data-delay={i > 0 ? String(i) : undefined}
+                className="rounded-2xl border border-border bg-white p-7"
+              >
+                <div className="mb-4 flex h-9 w-9 items-center justify-center rounded-full bg-accent text-sm font-black text-accent-contrast" aria-hidden="true">
+                  {step.num}
+                </div>
+                <h3 className="mb-1.5 text-base font-extrabold text-primary">{step.title}</h3>
+                <p className="text-sm leading-relaxed text-ink-soft">{step.body}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      {/* ── Popular tools ── */}
+      <section className="border-t border-border bg-white py-14 sm:py-16">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6">
+          <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <p className="mb-1 text-xs font-bold uppercase tracking-widest text-accent-ink">
+                Self-serve calculators
+              </p>
+              <h2 className="text-2xl font-extrabold tracking-tight text-primary">
+                Start with a quick win
+              </h2>
+            </div>
+            <Link
+              href="/tools"
+              className="inline-flex min-h-11 items-center text-sm font-semibold text-primary underline underline-offset-4 hover:text-accent-ink"
+            >
+              All {TOOL_COUNT} calculators →
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+            {TOOLS.map((tool, i) => (
+              <Link
+                key={tool.href}
+                href={tool.href}
+                data-reveal
+                data-delay={i % 2 === 1 ? "1" : undefined}
+                className="group flex items-center gap-3.5 rounded-xl border border-border bg-canvas p-4 transition-all hover:-translate-y-0.5 hover:border-accent hover:shadow-[0_3px_12px_rgba(232,160,32,0.12)]"
+              >
+                <div className="flex h-11 w-10 shrink-0 items-center justify-center rounded-lg border border-border bg-white text-lg">
+                  {tool.emoji}
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[0.9rem] font-bold text-primary">{tool.name}</p>
+                  <p className="text-[0.8rem] text-muted">{tool.hook}</p>
+                </div>
+                {/* text-muted, not text-border. A border colour used as a glyph
+                    measured 1.12:1 — not subtle, unseeable. */}
+                <span className="ml-auto shrink-0 text-muted transition-colors group-hover:text-accent-ink">
+                  ›
+                </span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Goal planners ── */}
+      <section className="border-t border-border bg-canvas py-14 sm:py-16">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6">
+          <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <p className="mb-1.5 text-xs font-bold uppercase tracking-widest text-accent-ink">
+                Goal planners
+              </p>
+              <h2 className="text-2xl font-extrabold tracking-tight text-primary sm:text-3xl">
+                Working toward something specific?
+              </h2>
+            </div>
+            <Link
+              href="/planners"
+              className="inline-flex min-h-11 items-center text-sm font-semibold text-primary underline underline-offset-4 hover:text-accent-ink"
+            >
+              All 6 planners →
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:items-start">
+            <div data-reveal className="space-y-3 text-[0.9375rem] leading-loose text-ink-soft">
+              <p>
+                Six planners that reverse-engineer exactly what you need to do{" "}
+                <strong className="text-primary">this month</strong>{" "}to hit your goal — whether
+                it&apos;s school fees next term, a plot, or a retirement that doesn&apos;t
+                disappoint.
+              </p>
+              <p>
+                Each planner accounts for Kenya inflation, Sacco mechanics, and the actual savings
+                vehicles available to you — not a generic compound-interest graph built for a
+                different country.
+              </p>
+            </div>
+
+            <div data-reveal data-delay="1" className="flex flex-wrap gap-2.5">
+              {PLANNERS.map((planner) => (
+                <Link
+                  key={planner.href}
+                  href={planner.href}
+                  // min-h-11: measured 42px at 390px, two short of the 44 that every
+                  // header control now holds to. Padding is untouched so the
+                  // pill keeps its shape; only the floor moves.
+                  // grow: at 390px these pills stop sharing lines and stack one
+                  // per row, where they came out 163/159px — a 4px mismatch on
+                  // drawn borders, which reads as a wobble rather than a list.
+                  className="inline-flex min-h-11 grow items-center gap-1.5 rounded-full border-[1.5px] border-border bg-white px-4 py-2.5 text-sm font-semibold text-ink-soft transition-colors hover:border-primary hover:text-primary"
+                >
+                  <span>{planner.emoji}</span>
+                  {planner.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ── Reality band ── */}
       <section className="bg-shell py-14 sm:py-16">
         <div className="mx-auto max-w-5xl px-4 sm:px-6">
@@ -626,148 +768,6 @@ export default function Home() {
       </section>
 
       </details>
-
-      {/* ── How it works ── */}
-      <section className="bg-canvas py-14 sm:py-16">
-        <div className="mx-auto max-w-5xl px-4 sm:px-6">
-          <div className="mb-8">
-            <p className="mb-1.5 text-xs font-bold uppercase tracking-widest text-accent-ink">
-              The process
-            </p>
-            <h2
-              className="text-2xl font-extrabold tracking-tight text-primary sm:text-3xl"
-              style={{ textWrap: "balance" } as React.CSSProperties}
-            >
-              From &ldquo;pesa inaisha&rdquo; to a plan — in three steps
-            </h2>
-            <p className="mt-2 max-w-prose text-[0.9375rem] text-ink-soft">
-              No spreadsheets. No financial jargon. No signup. Just the honest picture and the next
-              move.
-            </p>
-          </div>
-
-          <ol className="grid grid-cols-1 gap-4 sm:grid-cols-3 list-none">
-            {STEPS.map((step, i) => (
-              <li
-                key={step.num}
-                data-reveal
-                data-delay={i > 0 ? String(i) : undefined}
-                className="rounded-2xl border border-border bg-white p-7"
-              >
-                <div className="mb-4 flex h-9 w-9 items-center justify-center rounded-full bg-accent text-sm font-black text-accent-contrast" aria-hidden="true">
-                  {step.num}
-                </div>
-                <h3 className="mb-1.5 text-base font-extrabold text-primary">{step.title}</h3>
-                <p className="text-sm leading-relaxed text-ink-soft">{step.body}</p>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
-
-      {/* ── Popular tools ── */}
-      <section className="border-t border-border bg-white py-14 sm:py-16">
-        <div className="mx-auto max-w-5xl px-4 sm:px-6">
-          <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
-            <div>
-              <p className="mb-1 text-xs font-bold uppercase tracking-widest text-accent-ink">
-                Self-serve calculators
-              </p>
-              <h2 className="text-2xl font-extrabold tracking-tight text-primary">
-                Start with a quick win
-              </h2>
-            </div>
-            <Link
-              href="/tools"
-              className="inline-flex min-h-11 items-center text-sm font-semibold text-primary underline underline-offset-4 hover:text-accent-ink"
-            >
-              All {TOOL_COUNT} calculators →
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
-            {TOOLS.map((tool, i) => (
-              <Link
-                key={tool.href}
-                href={tool.href}
-                data-reveal
-                data-delay={i % 2 === 1 ? "1" : undefined}
-                className="group flex items-center gap-3.5 rounded-xl border border-border bg-canvas p-4 transition-all hover:-translate-y-0.5 hover:border-accent hover:shadow-[0_3px_12px_rgba(232,160,32,0.12)]"
-              >
-                <div className="flex h-11 w-10 shrink-0 items-center justify-center rounded-lg border border-border bg-white text-lg">
-                  {tool.emoji}
-                </div>
-                <div className="min-w-0">
-                  <p className="text-[0.9rem] font-bold text-primary">{tool.name}</p>
-                  <p className="text-[0.8rem] text-muted">{tool.hook}</p>
-                </div>
-                {/* text-muted, not text-border. A border colour used as a glyph
-                    measured 1.12:1 — not subtle, unseeable. */}
-                <span className="ml-auto shrink-0 text-muted transition-colors group-hover:text-accent-ink">
-                  ›
-                </span>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Goal planners ── */}
-      <section className="border-t border-border bg-canvas py-14 sm:py-16">
-        <div className="mx-auto max-w-5xl px-4 sm:px-6">
-          <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
-            <div>
-              <p className="mb-1.5 text-xs font-bold uppercase tracking-widest text-accent-ink">
-                Goal planners
-              </p>
-              <h2 className="text-2xl font-extrabold tracking-tight text-primary sm:text-3xl">
-                Working toward something specific?
-              </h2>
-            </div>
-            <Link
-              href="/planners"
-              className="inline-flex min-h-11 items-center text-sm font-semibold text-primary underline underline-offset-4 hover:text-accent-ink"
-            >
-              All 6 planners →
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:items-start">
-            <div data-reveal className="space-y-3 text-[0.9375rem] leading-loose text-ink-soft">
-              <p>
-                Six planners that reverse-engineer exactly what you need to do{" "}
-                <strong className="text-primary">this month</strong>{" "}to hit your goal — whether
-                it&apos;s school fees next term, a plot, or a retirement that doesn&apos;t
-                disappoint.
-              </p>
-              <p>
-                Each planner accounts for Kenya inflation, Sacco mechanics, and the actual savings
-                vehicles available to you — not a generic compound-interest graph built for a
-                different country.
-              </p>
-            </div>
-
-            <div data-reveal data-delay="1" className="flex flex-wrap gap-2.5">
-              {PLANNERS.map((planner) => (
-                <Link
-                  key={planner.href}
-                  href={planner.href}
-                  // min-h-11: measured 42px at 390px, two short of the 44 that every
-                  // header control now holds to. Padding is untouched so the
-                  // pill keeps its shape; only the floor moves.
-                  // grow: at 390px these pills stop sharing lines and stack one
-                  // per row, where they came out 163/159px — a 4px mismatch on
-                  // drawn borders, which reads as a wobble rather than a list.
-                  className="inline-flex min-h-11 grow items-center gap-1.5 rounded-full border-[1.5px] border-border bg-white px-4 py-2.5 text-sm font-semibold text-ink-soft transition-colors hover:border-primary hover:text-primary"
-                >
-                  <span>{planner.emoji}</span>
-                  {planner.label}
-                </Link>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* ── CTA band ── */}
       <section className="bg-primary py-16 sm:py-24">
