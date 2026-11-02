@@ -168,7 +168,7 @@ export default function TermlyFeeSmoother() {
             {/* Standard vs JiPange visualizer */}
             <div className="mt-5 grid grid-cols-2 gap-3">
               <div className="rounded-xl bg-danger-soft p-3">
-                <p className="text-[11px] font-semibold uppercase tracking-wide text-danger">
+                <p className="text-xs font-semibold uppercase tracking-wide text-danger">
                   Standard approach
                 </p>
                 <p className="mt-1 text-lg font-semibold text-danger" data-testid="term-shock">
@@ -184,7 +184,7 @@ export default function TermlyFeeSmoother() {
                 </div>
               </div>
               <div className="rounded-xl bg-success-soft p-3">
-                <p className="text-[11px] font-semibold uppercase tracking-wide text-success">
+                <p className="text-xs font-semibold uppercase tracking-wide text-success">
                   JiPange approach
                 </p>
                 <p className="mt-1 text-lg font-semibold text-success" data-testid="smoother-monthly">

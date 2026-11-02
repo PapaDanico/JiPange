@@ -139,7 +139,7 @@ export default function DhowcsdLadderCalculator() {
                 }`}
               >
                 <span className="block text-sm font-medium text-ink">{preset.label}</span>
-                <span className="mt-0.5 block text-[11px] leading-snug text-ink-soft">
+                <span className="mt-0.5 block text-xs leading-snug text-ink-soft">
                   {preset.hint}
                 </span>
               </button>
@@ -148,7 +148,7 @@ export default function DhowcsdLadderCalculator() {
         </div>
 
         <div className="mt-4 space-y-3">
-          <p className="text-[11px] text-ink-soft">
+          <p className="text-xs text-ink-soft">
             Or set the weights yourself. These are shares, not shillings — drag one to zero to
             drop that tenor entirely.
           </p>
@@ -265,7 +265,7 @@ export default function DhowcsdLadderCalculator() {
                     +{formatKES(bucket.annualYieldKes)}/yr
                   </span>
                 </p>
-                <p className="mt-1 text-[11px] leading-relaxed text-ink-soft/80">
+                <p className="mt-1 text-xs leading-relaxed text-ink-soft/80">
                   CBK quotes {(bucket.quotedRate * 100).toFixed(2)}%; that is a discount rate worth{" "}
                   {(bucket.grossRate * 100).toFixed(2)}% before tax.
                 </p>

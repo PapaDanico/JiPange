@@ -62,16 +62,16 @@ function ProductCard({ product }: { product: ProductLink }) {
           <p className="text-sm font-semibold text-primary leading-snug">{product.name}</p>
           <div className="mt-1 flex flex-wrap gap-1.5">
             <span
-              className="inline-block rounded-full px-2 py-0.5 text-[10px] font-semibold"
+              className="inline-block rounded-full px-2 py-0.5 text-xs font-semibold"
               style={{ backgroundColor: badge.bg, color: badge.text }}
             >
               {badge.label}
             </span>
-            <span className="inline-block rounded-full border border-border px-2 py-0.5 text-[10px] font-medium text-faint">
+            <span className="inline-block rounded-full border border-border px-2 py-0.5 text-xs font-medium text-faint">
               {product.regulator}
             </span>
             {product.isAffiliate && (
-              <span className="inline-block rounded-full bg-accent/20 px-2 py-0.5 text-[10px] font-semibold text-warning">
+              <span className="inline-block rounded-full bg-accent/20 px-2 py-0.5 text-xs font-semibold text-warning">
                 ★ Partner
               </span>
             )}
@@ -87,7 +87,7 @@ function ProductCard({ product }: { product: ProductLink }) {
                   same way. The sister card already rounded; this one did not. */}
               ~{product.yieldPct.toFixed(1)}%
             </p>
-            <p className="text-[10px] text-faint">
+            <p className="text-xs text-faint">
               {product.type === "sacco" ? "dividends p.a." : "yield p.a."}
             </p>
           </div>
@@ -114,7 +114,7 @@ function ProductCard({ product }: { product: ProductLink }) {
       </div>
 
       {(product.yieldApplies || product.protection) && (
-        <div className="mt-3 space-y-1 text-[11px] leading-relaxed text-ink-soft">
+        <div className="mt-3 space-y-1 text-xs leading-relaxed text-ink-soft">
           {product.yieldApplies && (
             // "13% dividends p.a." beside "min entry Ksh 1,000" reads as 13%
             // on everything you put in. It is paid on share capital; deposits
@@ -179,7 +179,7 @@ function RecommendedStrip({ vehicleId }: { vehicleId: VehicleId }) {
 
   return (
     <section className="mb-6 rounded-2xl border-2 border-accent bg-accent-soft p-4">
-      <p className="text-[10px] font-semibold uppercase tracking-wider text-warning">
+      <p className="text-xs font-semibold uppercase tracking-wider text-warning">
         Recommended for you
       </p>
       <p className="mt-0.5 text-sm font-semibold text-primary">{label}</p>
@@ -188,7 +188,7 @@ function RecommendedStrip({ vehicleId }: { vehicleId: VehicleId }) {
           <ProductCard key={p.slug} product={p} />
         ))}
       </div>
-      <p className="mt-2 text-[11px] text-faint">
+      <p className="mt-2 text-xs text-faint">
         Based on your 5-question snapshot.{" "}
         <Link href="/profile" className="underline hover:text-primary">
           Retake the journey →

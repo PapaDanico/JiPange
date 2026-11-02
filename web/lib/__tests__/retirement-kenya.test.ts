@@ -91,7 +91,7 @@ describe("the return assumption is conservative, and the evidence is shown", () 
     const mmfRealToday = (1 + nominalNetOfWht) / (1 + currentInflation()) - 1;
     expect(
       REAL_RETURN_DEFAULT - mmfRealToday,
-      `at today's CPI the 3% planning default is ${((REAL_RETURN_DEFAULT - mmfRealToday) * 100).toFixed(2)}pp ` +
+      `at today's CPI the planning default is ${((REAL_RETURN_DEFAULT - mmfRealToday) * 100).toFixed(2)}pp ` +
         "above what an 11.5% nominal MMF actually delivers in real terms. A gap this wide is " +
         "inflation moving far enough to invalidate the planning assumption, not rounding — " +
         "re-read REAL_RETURN_DEFAULT against the evidence rather than widening this bound."

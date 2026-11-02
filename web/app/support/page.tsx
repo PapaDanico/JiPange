@@ -122,7 +122,7 @@ export default function SupportPage() {
           </p>
 
           <div className="mt-4 rounded-xl bg-canvas p-4">
-            <p className="text-[11px] font-semibold uppercase tracking-widest text-faint">
+            <p className="text-xs font-semibold uppercase tracking-widest text-faint">
               Buy Goods &amp; Services — Till
             </p>
             <p className="mt-1 font-mono text-2xl font-bold tracking-wider text-primary">

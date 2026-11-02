@@ -172,7 +172,7 @@ export default function DebtEscapeCalculator() {
               />
             </div>
             {(monthlyRateOrNull(loan.rate) ?? 0) > 0 && (
-              <p className="text-[11px] text-faint">
+              <p className="text-xs text-faint">
                 ≈ {Math.round(effectiveAprPct(monthlyRateOrNull(loan.rate) ?? 0)).toLocaleString("en-KE")}% effective APR — verify the current rate in
                 your lender&apos;s app.
               </p>
@@ -262,7 +262,7 @@ export default function DebtEscapeCalculator() {
               Pay minimums on all loans. Pour every spare shilling into Loan #1 until
               it&apos;s gone, then roll that payment to Loan #2.
             </p>
-            <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-accent-wash px-2.5 py-1 text-[11px] font-medium text-accent-ink">
+            <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-accent-wash px-2.5 py-1 text-xs font-medium text-accent-ink">
               💡 Ranked by effective cost — your priciest debt (often Fuliza) clears first, saving
               the most interest
             </span>
@@ -286,7 +286,7 @@ export default function DebtEscapeCalculator() {
                     <p className="text-xs font-semibold text-danger">
                       {loan.aprPct}% APR
                     </p>
-                    <p className="text-[11px] text-faint">
+                    <p className="text-xs text-faint">
                       {formatKES(loan.totalInterestPaid)} total interest
                     </p>
                   </div>

@@ -150,7 +150,7 @@ export default function HustleIncomeSmootherCalculator() {
             onChange={(e) => setDrawPct(e.target.value)}
             className="mt-2 h-11 w-full cursor-pointer accent-primary"
           />
-          <div className="mt-1 flex justify-between text-[10px] text-muted">
+          <div className="mt-1 flex justify-between text-xs text-muted">
             <span>50% (very conservative)</span>
             <span>100% (median)</span>
           </div>
@@ -226,7 +226,7 @@ export default function HustleIncomeSmootherCalculator() {
                             the biggest month. The figure itself is beside it. */}
                         {offScale && (
                           <span
-                            className="absolute inset-y-0 right-1 flex items-center text-[9px] font-semibold text-white"
+                            className="absolute inset-y-0 right-1 flex items-center text-xs font-semibold text-white"
                             title={`${formatKES(income)} — beyond this chart's scale`}
                           >
                             ▸ {formatKES(income)}

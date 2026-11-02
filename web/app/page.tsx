@@ -344,7 +344,7 @@ export default function Home() {
                 data-reveal
                 className="w-full max-w-xs rounded-2xl border border-border bg-canvas px-5 py-4"
               >
-                <p className="text-[0.6875rem] font-bold uppercase tracking-widest text-accent-ink">
+                <p className="text-xs font-bold uppercase tracking-widest text-accent-ink">
                   Market pulse
                 </p>
                 <dl className="mt-2 divide-y divide-border">
@@ -352,7 +352,7 @@ export default function Home() {
                     <div key={f.id} className="flex items-baseline justify-between gap-3 py-2">
                       <dt className="text-[0.8125rem] leading-snug text-ink-soft">
                         {f.label}
-                        <span className="block text-[0.6875rem] text-muted">{f.source}</span>
+                        <span className="block text-xs text-muted">{f.source}</span>
                       </dt>
                       <dd
                         className="text-xl font-black tracking-tight text-primary"
@@ -395,7 +395,7 @@ export default function Home() {
                 className="group flex min-h-36 flex-col rounded-2xl border border-border bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-accent hover:shadow-md"
               >
                 <span aria-hidden="true" className="text-2xl">{item.icon}</span>
-                <span className="mt-4 text-[0.6875rem] font-bold uppercase tracking-widest text-accent-ink">{item.eyebrow}</span>
+                <span className="mt-4 text-xs font-bold uppercase tracking-widest text-accent-ink">{item.eyebrow}</span>
                 <span className="mt-1 font-bold text-primary">{item.title}</span>
                 <span className="mt-1 text-sm leading-relaxed text-muted">{item.detail}</span>
                 <span className="mt-auto pt-3 text-sm font-semibold text-primary group-hover:text-accent-ink">Start here →</span>
@@ -409,7 +409,7 @@ export default function Home() {
       <section className="bg-shell py-14 sm:py-16">
         <div className="mx-auto max-w-5xl px-4 sm:px-6">
           <div data-reveal className="mb-10 text-center">
-            <p className="mb-2 text-[0.6875rem] font-bold uppercase tracking-[0.16em] text-canvas/60">
+            <p className="mb-2 text-xs font-bold uppercase tracking-[0.16em] text-canvas/60">
               Where Kenyans stand — in three numbers
             </p>
             <h2 className="text-xl font-extrabold tracking-tight text-canvas/90 sm:text-2xl" style={{ textWrap: "balance" } as React.CSSProperties}>
@@ -438,7 +438,7 @@ export default function Home() {
                 <p className="mt-1 text-[0.8125rem] leading-relaxed text-canvas/60">
                   {stat.detail}
                 </p>
-                <p className="mt-auto border-t border-white/7 pt-3 text-[0.6875rem] text-canvas/60">
+                <p className="mt-auto border-t border-white/7 pt-3 text-xs text-canvas/60">
                   {stat.source}
                 </p>
                 <span className="text-[0.8125rem] font-semibold text-accent group-hover:opacity-80">
@@ -505,7 +505,7 @@ export default function Home() {
                 </p>
                 <p className="mt-2 text-[0.9375rem] font-bold text-primary">{card.label}</p>
                 <p className="mt-1.5 text-[0.875rem] leading-relaxed text-muted">{card.body}</p>
-                <p className="mt-3 border-t border-border pt-3 text-[0.6875rem] italic text-muted">
+                <p className="mt-3 border-t border-border pt-3 text-xs italic text-muted">
                   {card.cite}
                 </p>
               </div>
@@ -582,7 +582,7 @@ export default function Home() {
                   — nearly double a year earlier — across {CBK_DIGITAL_CREDIT_LOANS_MILLIONS} million
                   loans averaging about {ksh(CBK_AVG_DIGITAL_LOAN_KSH)}.
                 </p>
-                <p className="mt-3 text-[0.6875rem] italic text-accent-ink">
+                <p className="mt-3 text-xs italic text-accent-ink">
                   Safaricom PLC FY2026 Annual Results · {CBK_BSAR_2025_CITE}, §3.24
                 </p>
               </div>
@@ -614,7 +614,7 @@ export default function Home() {
                   comes out about {ksh(mmfVsBankDepositGapKES())} ahead in the fund — and more
                   against a savings account paying below the average.
                 </p>
-                <p className="mt-3 text-[0.6875rem] italic text-success-deep">
+                <p className="mt-3 text-xs italic text-success-deep">
                   {cite("mmfAumBillionKsh")} · {CBK_BSAR_2025_CITE}, §3.7 · MMF yield assumed from
                   the latest 91-day bill
                 </p>
@@ -816,7 +816,7 @@ export default function Home() {
           * three times the width the eye can track back from. Every other
           * block on this page is bounded; this one was missed because it sits
           * outside the sections. */}
-        <p className="mx-auto max-w-3xl text-[0.6875rem] text-canvas/90">
+        <p className="mx-auto max-w-3xl text-xs text-canvas/90">
           {/* Two hand-typed errors lived in this sentence.
             *
             * "CMA Collective Investment Schemes, July 2026" named a month in

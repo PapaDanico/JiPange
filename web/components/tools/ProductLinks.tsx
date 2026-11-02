@@ -48,7 +48,7 @@ function ProductCard({ product }: { product: ProductLink }) {
         </div>
       </div>
       <div className="flex items-center gap-2 shrink-0 ml-3">
-        <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${regulatorClass}`}>
+        <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${regulatorClass}`}>
           {product.regulator}
         </span>
         {product.url !== undefined && (
@@ -79,7 +79,7 @@ export default function ProductLinks({ products, heading }: ProductLinksProps) {
           <ProductCard key={p.slug} product={p} />
         ))}
       </div>
-      <p className="text-[10px] text-muted leading-relaxed">
+      <p className="text-xs text-muted leading-relaxed">
         {hasAffiliate || HAS_AFFILIATE_LINKS
           ? "JiPange may earn a small commission if you open an account through these links, at no extra cost to you. We only list CMA- or CBK-regulated products."
           : "Direct links to CMA- or CBK-regulated Kenyan products — no commission currently. Yields are approximate and change weekly."}

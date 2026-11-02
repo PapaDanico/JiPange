@@ -85,7 +85,7 @@ export default function FirePathChart({
         <p className="text-sm font-semibold text-primary">
           What you spend each year in retirement
         </p>
-        <span className="shrink-0 text-[10px] text-muted">today&apos;s shillings</span>
+        <span className="shrink-0 text-xs text-muted">today&apos;s shillings</span>
       </div>
       <div style={{ height: 210 }}>
         <ResponsiveContainer width="100%" height="100%">
@@ -138,7 +138,7 @@ export default function FirePathChart({
           </AreaChart>
         </ResponsiveContainer>
       </div>
-      <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-[10px] text-muted">
+      <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted">
         <span className="flex items-center gap-1.5">
           <span className="inline-block h-2 w-3 rounded-sm bg-[#3a7d44]/30" /> Everything else
         </span>
@@ -146,7 +146,7 @@ export default function FirePathChart({
           <span className="inline-block h-2 w-3 rounded-sm bg-[#E8A838]/70" /> Medical cover
         </span>
       </div>
-      <p className="mt-2 text-[10px] leading-relaxed text-muted">
+      <p className="mt-2 text-xs leading-relaxed text-muted">
         The green band drifts down as fees end and the household shrinks; the gold one climbs
         the whole way. By {last.age} medical is {(last.medicalShare * 100).toFixed(0)}% of
         everything you spend.

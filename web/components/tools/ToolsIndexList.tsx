@@ -157,7 +157,7 @@ export default function ToolsIndexList({ groups }: { groups: ToolGroup[] }) {
                     <span className="flex items-center gap-2">
                       <span className="block text-sm font-semibold text-primary">{calc.title}</span>
                       {calc.isNew && (
-                        <span className="rounded-full bg-accent px-2 py-0.5 text-[10px] font-semibold uppercase text-ink">
+                        <span className="rounded-full bg-accent px-2 py-0.5 text-xs font-semibold uppercase text-ink">
                           New
                         </span>
                       )}

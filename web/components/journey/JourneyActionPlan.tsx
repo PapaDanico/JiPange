@@ -264,7 +264,7 @@ function VendorBlueprint({ vehicleId }: { vehicleId: Vehicle["id"] }) {
           lib/paybills.ts, where a review date can actually suppress the
           number. The instruction to confirm stays: it is the one line on this
           card that is true regardless of how fresh our record is. */}
-      <p className="mt-1.5 text-[11px] text-faint">
+      <p className="mt-1.5 text-xs text-faint">
         Payment details last confirmed {PAYBILLS[blueprint.payment].verifiedOn} — always confirm
         with the provider before sending money.
       </p>
@@ -385,7 +385,7 @@ function LifeCapitalMap({ goal }: { goal: PrimaryGoal }) {
                 {dm.emoji}
               </span>
               <p
-                className="text-[10px] font-semibold leading-tight"
+                className="text-xs font-semibold leading-tight"
                 style={{ color: isActive ? dm.textColor : "#9A8B80" }}
               >
                 {domain}
@@ -400,11 +400,11 @@ function LifeCapitalMap({ goal }: { goal: PrimaryGoal }) {
         className="mt-4 rounded-xl border p-4"
         style={{ backgroundColor: meta.bg, borderColor: meta.border }}
       >
-        <p className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: meta.textColor }}>
+        <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: meta.textColor }}>
           {meta.emoji} {active} capital — your current focus
         </p>
         <p className="mt-1.5 text-xs leading-relaxed text-[#1E3A4A]">{meta.insight}</p>
-        <p className="mt-2 text-[11px] text-ink-soft">
+        <p className="mt-2 text-xs text-ink-soft">
           <strong>After this milestone:</strong> {meta.next}
         </p>
       </div>
