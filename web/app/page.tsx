@@ -5,7 +5,6 @@ import ReturningUserRedirect from "@/components/onboarding/ReturningUserRedirect
 import LandingInteractivity from "@/components/landing/LandingInteractivity";
 import KenyaMoneyNow from "@/components/landing/KenyaMoneyNow";
 import HeroRates from "@/components/landing/HeroRates";
-import { liveFigures } from "@/lib/landing-pulse";
 import { fulizaDailyFee } from "@/lib/fuliza";
 import { TOOL_META } from "@/lib/tool-meta";
 import { CURRENT_INFLATION, TARGET_MMF_YIELD } from "@/lib/journey";
@@ -84,7 +83,6 @@ const BANK_NET_BELOW_INFLATION = CBK_AVG_DEPOSIT_RATE_NET_PCT / 100 < CURRENT_IN
 
 /* The hero's three live readings — the same figures, with the same dates and
  * publishers, that the "Kenya's money, this month" section shows in full. */
-const HERO_PULSE = liveFigures().slice(0, 3);
 
 const TRUST_CHIPS = [
   "🕶️ 100% anonymous",
@@ -201,7 +199,6 @@ const STEPS = [
 ];
 
 const TOOLS = [
-  { href: "/tools/salary#takehome", emoji: "💰", name: "Take-Home Pay", hook: "Exact net: PAYE, NSSF, SHIF & Housing Levy" },
   { href: "/tools/investment-returns", emoji: "📈", name: "Investment Returns", hook: "MMF vs bank vs T-Bill — see the compounding gap" },
   { href: "/tools/money-runway", emoji: "⏳", name: "Money Runway", hook: "How long your savings survive a job loss" },
   { href: "/tools/guarantor-shield", emoji: "🛡️", name: "Sacco Guarantor Shield", hook: "Your real unencumbered borrowing power" },
@@ -324,8 +321,10 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Right column — logo + teaser */}
-            <div className="flex flex-col items-center gap-6 lg:items-start">
+            {/* Right column — the shield, desktop only. On a phone it cost ~250px
+                before any content, and the market readings it used to carry are
+                the same figures as the hero rates card and "Latest readings". */}
+            <div className="hidden flex-col items-center gap-6 lg:flex lg:items-start">
               <Image
                 src="/logo-icon.webp"
                 alt="JiPange shield"
@@ -335,35 +334,6 @@ export default function Home() {
                 sizes="(max-width: 640px) 176px, 224px"
                 className="w-44 sm:w-56 h-auto"
               />
-              {/* The market pulse — live, dated readings, where the page used
-                  to lead with "57.9% cannot pass a basic literacy test". The
-                  statistic is still on the page, in the research section with
-                  its context; the first thing a reader sees is now something
-                  useful to them. */}
-              <div
-                data-reveal
-                className="w-full max-w-xs rounded-2xl border border-border bg-canvas px-5 py-4"
-              >
-                <p className="text-xs font-bold uppercase tracking-widest text-accent-ink">
-                  Market pulse
-                </p>
-                <dl className="mt-2 divide-y divide-border">
-                  {HERO_PULSE.map((f) => (
-                    <div key={f.id} className="flex items-baseline justify-between gap-3 py-2">
-                      <dt className="text-[0.8125rem] leading-snug text-ink-soft">
-                        {f.label}
-                        <span className="block text-xs text-muted">{f.source}</span>
-                      </dt>
-                      <dd
-                        className="text-xl font-black tracking-tight text-primary"
-                        style={{ fontVariantNumeric: "tabular-nums" }}
-                      >
-                        {f.value}
-                      </dd>
-                    </div>
-                  ))}
-                </dl>
-              </div>
             </div>
 
           </div>
