@@ -199,10 +199,10 @@ export default function TwentiethChallengeTracker() {
               }`}
             >
               <span className="text-xl">{m.emoji}</span>
-              <p className="mt-1 text-[10px] font-semibold text-primary">
+              <p className="mt-1 text-xs font-semibold text-primary">
                 {m.months} mo
               </p>
-              <p className="text-[9px] text-ink-soft">{m.label}</p>
+              <p className="text-xs text-ink-soft">{m.label}</p>
             </div>
           );
         })}

@@ -171,7 +171,7 @@ export default function LandPurchaseCalculator() {
                 >
                   <div>
                     <p className="text-sm text-ink-soft">{row.label}</p>
-                    <p className="text-[11px] text-muted">{row.note}</p>
+                    <p className="text-xs text-muted">{row.note}</p>
                   </div>
                   <p className="text-sm font-medium text-ink-soft tabular-nums">
                     {formatKES(row.value)}

@@ -99,13 +99,20 @@ import { currentInflation, tbillRate } from "./rates-feed";
  *   Treasury bonds 7–12y, IFB (tax-free) .. 6.19% real
  *   Treasury bonds 20y+, IFB (tax-free) ... 7.00% real
  *
+ * Re-read on 2026-11-01, after October CPI rose to 7.3%: the money market
+ * fund's real yield fell to 2.31% and the 364-day bill's to 0.35%. The default
+ * went from 3% to 2.5% in the same change, because 3% had stopped being "at
+ * the real yield of a money market fund" and the canary test in
+ * retirement-kenya.test.ts said so. The long-bond figures above were not
+ * re-measured and are July's; only the two liquid instruments moved the call.
+ *
  * Today's Kenyan real yields are extraordinary, and that is precisely why a
  * thirty-year plan must not assume them. They are a fiscal moment, not a
  * constant — the same reason lib/projections.ts keeps a long-run inflation
  * assumption instead of quoting this month's print. Planning at 6% real is
  * planning on the government still needing to borrow this expensively in 2056.
  *
- * 3% is chosen to sit:
+ * 2.5% is chosen to sit (it was 3% until 2026-11-01):
  *   - BELOW every long-bond real yield on the board today, so the plan does not
  *     depend on the current moment persisting;
  *   - AT the real yield of a money market fund, i.e. reachable with no skill,
@@ -116,7 +123,7 @@ import { currentInflation, tbillRate } from "./rates-feed";
  * If it turns out conservative, the plan finishes early. That is the direction
  * to be wrong in.
  */
-export const REAL_RETURN_DEFAULT = 0.03;
+export const REAL_RETURN_DEFAULT = 0.025;
 
 /**
  * How much of today's LIVING costs a household still needs the day it retires.

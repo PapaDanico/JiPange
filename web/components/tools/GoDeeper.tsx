@@ -47,7 +47,7 @@ export default function GoDeeper({ deeper }: { deeper: DeeperLink }) {
       >
         {deeper.label} →
       </Link>
-      <p className="mt-2 text-[11px] leading-relaxed text-ink-soft/80">
+      <p className="mt-2 text-xs leading-relaxed text-ink-soft/80">
         Mwangaza Yield is our sister tool — free, no account, and it sells nothing either.
       </p>
     </div>

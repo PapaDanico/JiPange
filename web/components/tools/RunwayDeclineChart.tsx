@@ -38,7 +38,7 @@ export default function RunwayDeclineChart({
       <div className="mb-3 flex items-center justify-between">
         <p className="text-sm font-semibold text-primary">Balance over time</p>
         {infinite && (
-          <span className="rounded-full bg-success-soft px-2 py-0.5 text-[10px] font-medium text-success-deep">
+          <span className="rounded-full bg-success-soft px-2 py-0.5 text-xs font-medium text-success-deep">
             Never depletes ♾
           </span>
         )}

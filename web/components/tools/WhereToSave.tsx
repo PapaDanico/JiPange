@@ -112,7 +112,7 @@ export default function WhereToSave() {
                       /* An assumed figure must not sit in a table of published
                          ones wearing the same clothes. No MMF publishes a rate
                          on the terms the government does. */
-                      <span className="block text-[11px] font-normal text-faint">
+                      <span className="block text-xs font-normal text-faint">
                         our estimate, not a published rate
                       </span>
                     )}
@@ -123,7 +123,7 @@ export default function WhereToSave() {
                       /* Marked, not silently ordered. These sit inside the
                          margin the sister module calls "too close to call", so
                          their position in the sort is not a result. */
-                      <span className="block text-[11px] font-normal text-faint">level</span>
+                      <span className="block text-xs font-normal text-faint">level</span>
                     )}
                   </td>
                   <td className="py-2 pr-4 tabular-nums text-faint">{pct(o.grossPct)}</td>

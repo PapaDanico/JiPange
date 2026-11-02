@@ -93,7 +93,7 @@ export default function LoanAmortizationChart({
     >
       <div className="mb-3 flex items-center justify-between">
         <p className="text-sm font-semibold text-primary">Where your payments go</p>
-        <div className="flex items-center gap-3 text-[10px] text-ink-soft">
+        <div className="flex items-center gap-3 text-xs text-ink-soft">
           <span className="flex items-center gap-1">
             <span className="inline-block h-2.5 w-2.5 rounded-sm bg-[#3a7d44]" />
             Principal
@@ -165,7 +165,7 @@ export default function LoanAmortizationChart({
         </ResponsiveContainer>
       </div>
       {principal > 0 && (
-        <p className="mt-2 text-[10px] text-muted">
+        <p className="mt-2 text-xs text-muted">
           The interest band is money paid to the lender on top of the original{" "}
           {formatKES(principal)} — every extra payment shrinks it from the right.
         </p>

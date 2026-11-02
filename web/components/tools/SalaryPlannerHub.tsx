@@ -160,7 +160,7 @@ export default function SalaryPlannerHub() {
               onChange={(e) => setPension(e.target.value)}
               className="mt-2 h-11 w-full cursor-pointer accent-primary"
             />
-            <div className="mt-1 flex justify-between text-[10px] text-muted">
+            <div className="mt-1 flex justify-between text-xs text-muted">
               <span>0</span>
               <span>cap {formatKES(PENSION_RELIEF_CAP_MONTHLY)}</span>
             </div>
@@ -191,7 +191,7 @@ export default function SalaryPlannerHub() {
               onChange={(e) => setMortgage(e.target.value)}
               className="mt-2 h-11 w-full cursor-pointer accent-primary"
             />
-            <div className="mt-1 flex justify-between text-[10px] text-muted">
+            <div className="mt-1 flex justify-between text-xs text-muted">
               <span>0</span>
               <span>cap {formatKES(MORTGAGE_INTEREST_RELIEF_CAP_MONTHLY)}</span>
             </div>

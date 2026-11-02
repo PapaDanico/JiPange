@@ -53,7 +53,7 @@ export default function Footer() {
       <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 sm:grid-cols-3">
         {COLUMNS.map((column) => (
           <div key={column.heading}>
-            <h2 className="text-[11px] font-semibold uppercase tracking-wide text-primary">
+            <h2 className="text-xs font-semibold uppercase tracking-wide text-primary">
               {column.heading}
             </h2>
             {/* Measured at 390px, these links were 14px tall on a 22px pitch

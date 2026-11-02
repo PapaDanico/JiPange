@@ -63,7 +63,7 @@ export default function MjengoMilestone() {
         Build the deposit vault, then let the Sacco&apos;s {SACCO_LEVERAGE_MULTIPLIER}× multiplier
         fund the build.
       </p>
-      <p className="mt-1 text-[11px] text-faint">
+      <p className="mt-1 text-xs text-faint">
         {CBK_MORTGAGE_AVG_RATE_PCT}% is the average Kenyan mortgage rate for 2025 —{" "}
         {CBK_BSAR_2025_CITE}, Residential Mortgage Survey.
       </p>
@@ -113,7 +113,7 @@ export default function MjengoMilestone() {
           {/* Vertical milestone stepper */}
           <ol className="relative space-y-6 border-l-2 border-border pl-5">
             <li>
-              <span className="absolute -left-[11px] flex h-5 w-5 items-center justify-center rounded-full bg-accent text-[10px] font-bold text-ink">
+              <span className="absolute -left-[11px] flex h-5 w-5 items-center justify-center rounded-full bg-accent text-xs font-bold text-ink">
                 1
               </span>
               <p className="text-sm font-semibold text-primary">The Accumulation Vault</p>
@@ -129,7 +129,7 @@ export default function MjengoMilestone() {
               )}
             </li>
             <li>
-              <span className="absolute -left-[11px] flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white">
+              <span className="absolute -left-[11px] flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs font-bold text-white">
                 2
               </span>
               <p className="text-sm font-semibold text-primary">The Multiplier Strike</p>

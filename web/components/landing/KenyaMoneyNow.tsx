@@ -23,7 +23,7 @@ function Figure({ f }: { f: PulseFigure }) {
       </p>
       <p className="mt-2 text-[0.875rem] font-bold leading-snug text-primary sm:text-[0.9375rem]">{f.label}</p>
       <p className="mt-1 text-[0.8125rem] leading-relaxed text-muted">{f.meaning}</p>
-      <p className="mt-auto border-t border-border pt-2.5 text-[0.6875rem] text-muted">{f.source}</p>
+      <p className="mt-auto border-t border-border pt-2.5 text-xs text-muted">{f.source}</p>
     </>
   );
   const shell = "flex min-h-full flex-col gap-0.5 rounded-2xl border border-border bg-white p-3.5 shadow-sm sm:p-5";
