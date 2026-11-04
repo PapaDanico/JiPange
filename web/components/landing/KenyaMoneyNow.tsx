@@ -46,7 +46,7 @@ export default function KenyaMoneyNow() {
   const note = pulseFreshnessNote();
 
   return (
-    <section aria-labelledby="money-now-heading" className="border-b border-border bg-canvas py-14 sm:py-16">
+    <section aria-labelledby="money-now-heading" className="border-b border-border bg-canvas py-9 sm:py-16">
       <div className="mx-auto max-w-5xl px-4 sm:px-6">
         <div data-reveal className="mb-8 max-w-2xl">
           <p className="mb-1.5 text-xs font-bold uppercase tracking-widest text-accent-ink">

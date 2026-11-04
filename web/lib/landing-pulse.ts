@@ -11,9 +11,6 @@ import {
   CBK_AVG_DEPOSIT_RATE_PCT,
   CBK_AVG_LENDING_RATE_PCT,
   CBK_BSAR_2025_CITE,
-  CBK_MOBILE_MONEY_SUBSCRIPTIONS_MILLIONS,
-  CBK_MORTGAGE_AVG_RATE_PCT,
-  CBK_MORTGAGE_AVG_RATE_PRIOR_PCT,
 } from "./kenya-stats";
 
 /**
@@ -133,21 +130,6 @@ export function annualFigures(): PulseFigure[] {
       meaning: "Useful to know before you sign — banks now publish theirs on the Total Cost of Credit site.",
       source: src,
       href: "/tools/loan-repayment",
-    },
-    {
-      id: "mortgage",
-      value: `${CBK_MORTGAGE_AVG_RATE_PCT}%`,
-      label: "Average mortgage rate",
-      meaning: `Down from ${CBK_MORTGAGE_AVG_RATE_PRIOR_PCT}% a year earlier — the price of a home loan is easing.`,
-      source: `${CBK_BSAR_2025_CITE}, mortgage survey`,
-      href: "/planners/home",
-    },
-    {
-      id: "mobile-money",
-      value: `${CBK_MOBILE_MONEY_SUBSCRIPTIONS_MILLIONS}M`,
-      label: "Mobile money subscriptions",
-      meaning: "Access is nearly universal. The next step is using it to build, not only to spend.",
-      source: `${CBK_BSAR_2025_CITE}, Table 8`,
     },
   ];
 }

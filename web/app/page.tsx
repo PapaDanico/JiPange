@@ -247,7 +247,7 @@ export default function Home() {
       <LandingInteractivity />
 
       {/* ── Hero ── */}
-      <section className="bg-white border-b border-border py-14 sm:py-16">
+      <section className="bg-white border-b border-border py-9 sm:py-16">
         <div className="mx-auto max-w-5xl px-4 sm:px-6">
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:items-center lg:gap-16">
 
@@ -376,7 +376,7 @@ export default function Home() {
       </section>
 
       {/* ── How it works ── */}
-      <section className="bg-canvas py-14 sm:py-16">
+      <section className="bg-canvas py-9 sm:py-16">
         <div className="mx-auto max-w-5xl px-4 sm:px-6">
           <div className="mb-8">
             <p className="mb-1.5 text-xs font-bold uppercase tracking-widest text-accent-ink">
@@ -414,7 +414,7 @@ export default function Home() {
       </section>
 
       {/* ── Popular tools ── */}
-      <section className="border-t border-border bg-white py-14 sm:py-16">
+      <section className="border-t border-border bg-white py-9 sm:py-16">
         <div className="mx-auto max-w-5xl px-4 sm:px-6">
           <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
             <div>
@@ -461,7 +461,7 @@ export default function Home() {
       </section>
 
       {/* ── Goal planners ── */}
-      <section className="border-t border-border bg-canvas py-14 sm:py-16">
+      <section className="border-t border-border bg-canvas py-9 sm:py-16">
         <div className="mx-auto max-w-5xl px-4 sm:px-6">
           <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
             <div>
@@ -488,11 +488,6 @@ export default function Home() {
                 it&apos;s school fees next term, a plot, or a retirement that doesn&apos;t
                 disappoint.
               </p>
-              <p>
-                Each planner accounts for Kenya inflation, Sacco mechanics, and the actual savings
-                vehicles available to you — not a generic compound-interest graph built for a
-                different country.
-              </p>
             </div>
 
             <div data-reveal data-delay="1" className="flex flex-wrap gap-2.5">
@@ -518,7 +513,7 @@ export default function Home() {
       </section>
 
       {/* ── Reality band ── */}
-      <section className="bg-shell py-14 sm:py-16">
+      <section className="bg-shell py-9 sm:py-16">
         <div className="mx-auto max-w-5xl px-4 sm:px-6">
           <div data-reveal className="mb-10 text-center">
             <p className="mb-2 text-xs font-bold uppercase tracking-[0.16em] text-canvas/60">
@@ -579,7 +574,7 @@ export default function Home() {
         </summary>
 
       {/* ── Research findings ── */}
-      <section className="bg-canvas py-14 sm:py-16">
+      <section className="bg-canvas py-9 sm:py-16">
         <div className="mx-auto max-w-5xl px-4 sm:px-6">
           <div data-reveal className="mb-6">
             <p className="mb-1.5 text-xs font-bold uppercase tracking-widest text-accent-ink">
@@ -627,7 +622,7 @@ export default function Home() {
       </section>
 
       {/* ── Narrative ── */}
-      <section className="border-y border-border bg-white py-14 sm:py-16">
+      <section className="border-y border-border bg-white py-9 sm:py-16">
         <div className="mx-auto max-w-5xl px-4 sm:px-6">
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-[5fr_4fr] lg:items-start lg:gap-16">
 
