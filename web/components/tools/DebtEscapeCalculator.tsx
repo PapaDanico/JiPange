@@ -221,7 +221,7 @@ export default function DebtEscapeCalculator() {
       {result && (
         <div ref={resultsRef} className="animate-rise space-y-4" aria-live="polite">
           {/* Hero result */}
-          <ResultCard
+          <ResultCard headline
             label="Debt-free by"
             value={result.debtFreeLabel}
             sublabel={`${result.monthsToDebtFree} months from now, paying ${formatKES(amountOrZero(budget))}/month in total.`}

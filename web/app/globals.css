@@ -137,6 +137,48 @@ summary {
   outline-offset: 3px;
 }
 
+
+/* ── Range sliders ──
+ * A hairline track with a thumb big enough to grab on a phone (22px inside a
+ * 28px hit area, above the 24px WCAG 2.5.8 floor). Umber ring on paper, so the
+ * control reads as part of the brand rather than as a browser default. */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  height: 1.75rem;
+  cursor: pointer;
+}
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 9999px;
+  background: var(--color-border-strong);
+}
+input[type="range"]::-moz-range-track {
+  height: 6px;
+  border-radius: 9999px;
+  background: var(--color-border-strong);
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  margin-top: -8px;
+  height: 22px;
+  width: 22px;
+  border-radius: 9999px;
+  background: #fff;
+  border: 2px solid var(--color-primary);
+  box-shadow: 0 1px 3px rgba(58, 46, 38, 0.3);
+}
+input[type="range"]::-moz-range-thumb {
+  height: 18px;
+  width: 18px;
+  border-radius: 9999px;
+  background: #fff;
+  border: 2px solid var(--color-primary);
+  box-shadow: 0 1px 3px rgba(58, 46, 38, 0.3);
+}
+
 button,
 a,
 summary {

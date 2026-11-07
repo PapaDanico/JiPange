@@ -11,7 +11,7 @@ interface BehavioralInsightStripProps {
 export default function BehavioralInsightStrip({ insight }: BehavioralInsightStripProps) {
   return (
     <div className="rounded-2xl border border-[#C8DDE8] bg-[#EEF5F9] px-4 py-3.5">
-      <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-[#3A6B82]">
+      <p className="mb-1 text-sm font-semibold text-[#3A6B82]">
         Behavioural insight
       </p>
       <p className="text-xs leading-relaxed text-[#1E3A4A]">{insight}</p>

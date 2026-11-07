@@ -248,12 +248,12 @@ export default function Home() {
 
       {/* ── Hero ── */}
       <section className="bg-white border-b border-border py-9 sm:py-16">
-        <div className="mx-auto max-w-5xl px-4 sm:px-6">
+        <div className="mx-auto max-w-[67rem] px-4 sm:px-6">
           <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] lg:gap-x-16">
 
             {/* Copy */}
             <div className="lg:col-start-1 lg:row-start-1">
-              <p className="mb-5 inline-block rounded-full border border-[#F0D08A] bg-accent-soft px-3 py-1.5 text-xs font-bold uppercase tracking-widest text-accent-ink">
+              <p className="mb-5 inline-block rounded-full border border-[#F0D08A] bg-accent-soft px-3 py-1.5 text-sm font-bold text-accent-ink">
                 Free · Anonymous · Built for Kenya 🇰🇪
               </p>
               <p className="mb-2 text-base italic font-medium text-muted">
@@ -350,10 +350,10 @@ export default function Home() {
 
       {/* ── Goal-based quick start ── */}
       <section className="border-b border-border bg-background py-10 sm:py-12">
-        <div className="mx-auto max-w-5xl px-4 sm:px-6">
+        <div className="mx-auto max-w-[67rem] px-4 sm:px-6">
           <div className="mb-5 flex flex-wrap items-end justify-between gap-2">
             <div>
-              <p className="text-xs font-bold uppercase tracking-widest text-accent-ink">Start with one win</p>
+              <p className="text-sm font-bold text-accent-ink">Start with one win</p>
               <h2 className="mt-1 text-xl font-extrabold tracking-tight text-primary sm:text-2xl">
                 What do you want your money to do better?
               </h2>
@@ -370,7 +370,7 @@ export default function Home() {
                 className="group flex min-h-36 flex-col rounded-2xl border border-border bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-accent hover:shadow-md"
               >
                 <span aria-hidden="true" className="text-2xl">{item.icon}</span>
-                <span className="mt-4 text-xs font-bold uppercase tracking-widest text-accent-ink">{item.eyebrow}</span>
+                <span className="mt-4 text-sm font-bold text-accent-ink">{item.eyebrow}</span>
                 <span className="mt-1 font-bold text-primary">{item.title}</span>
                 <span className="mt-1 text-sm leading-relaxed text-muted">{item.detail}</span>
                 <span className="mt-auto pt-3 text-sm font-semibold text-primary group-hover:text-accent-ink">Start here →</span>
@@ -382,9 +382,9 @@ export default function Home() {
 
       {/* ── How it works ── */}
       <section className="bg-canvas py-9 sm:py-16">
-        <div className="mx-auto max-w-5xl px-4 sm:px-6">
+        <div className="mx-auto max-w-[67rem] px-4 sm:px-6">
           <div className="mb-8">
-            <p className="mb-1.5 text-xs font-bold uppercase tracking-widest text-accent-ink">
+            <p className="mb-1.5 text-sm font-bold text-accent-ink">
               The process
             </p>
             <h2
@@ -420,10 +420,10 @@ export default function Home() {
 
       {/* ── Popular tools ── */}
       <section className="border-t border-border bg-white py-9 sm:py-16">
-        <div className="mx-auto max-w-5xl px-4 sm:px-6">
+        <div className="mx-auto max-w-[67rem] px-4 sm:px-6">
           <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
             <div>
-              <p className="mb-1 text-xs font-bold uppercase tracking-widest text-accent-ink">
+              <p className="mb-1 text-sm font-bold text-accent-ink">
                 Self-serve calculators
               </p>
               <h2 className="text-2xl font-extrabold tracking-tight text-primary">
@@ -467,10 +467,10 @@ export default function Home() {
 
       {/* ── Goal planners ── */}
       <section className="border-t border-border bg-canvas py-9 sm:py-16">
-        <div className="mx-auto max-w-5xl px-4 sm:px-6">
+        <div className="mx-auto max-w-[67rem] px-4 sm:px-6">
           <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
             <div>
-              <p className="mb-1.5 text-xs font-bold uppercase tracking-widest text-accent-ink">
+              <p className="mb-1.5 text-sm font-bold text-accent-ink">
                 Goal planners
               </p>
               <h2 className="text-2xl font-extrabold tracking-tight text-primary sm:text-3xl">
@@ -519,9 +519,9 @@ export default function Home() {
 
       {/* ── Reality band ── */}
       <section className="bg-shell py-9 sm:py-16">
-        <div className="mx-auto max-w-5xl px-4 sm:px-6">
+        <div className="mx-auto max-w-[67rem] px-4 sm:px-6">
           <div data-reveal className="mb-10 text-center">
-            <p className="mb-2 text-xs font-bold uppercase tracking-[0.16em] text-canvas/60">
+            <p className="mb-2 text-sm font-bold tracking-[0.16em] text-canvas/60">
               Where Kenyans stand — in three numbers
             </p>
             <h2 className="text-xl font-extrabold tracking-tight text-canvas/90 sm:text-2xl" style={{ textWrap: "balance" } as React.CSSProperties}>
@@ -569,7 +569,7 @@ export default function Home() {
         <summary className="cursor-pointer list-none border-b border-border px-4 py-5 marker:content-none sm:px-6">
           <span className="mx-auto flex max-w-5xl items-center justify-between gap-4">
             <span>
-              <span className="block text-xs font-bold uppercase tracking-widest text-accent-ink">The evidence</span>
+              <span className="block text-sm font-bold text-accent-ink">The evidence</span>
               <span className="mt-1 block text-sm font-semibold text-primary sm:text-base">
                 The research behind JiPange’s Kenya-first approach
               </span>
@@ -580,9 +580,9 @@ export default function Home() {
 
       {/* ── Research findings ── */}
       <section className="bg-canvas py-9 sm:py-16">
-        <div className="mx-auto max-w-5xl px-4 sm:px-6">
+        <div className="mx-auto max-w-[67rem] px-4 sm:px-6">
           <div data-reveal className="mb-6">
-            <p className="mb-1.5 text-xs font-bold uppercase tracking-widest text-accent-ink">
+            <p className="mb-1.5 text-sm font-bold text-accent-ink">
               Research findings
             </p>
             <h2
@@ -628,7 +628,7 @@ export default function Home() {
 
       {/* ── Narrative ── */}
       <section className="border-y border-border bg-white py-9 sm:py-16">
-        <div className="mx-auto max-w-5xl px-4 sm:px-6">
+        <div className="mx-auto max-w-[67rem] px-4 sm:px-6">
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-[5fr_4fr] lg:items-start lg:gap-16">
 
             {/* Left — pull quote + body */}
@@ -670,7 +670,7 @@ export default function Home() {
                 data-reveal
                 className="rounded-2xl border border-[#F0D08A] bg-accent-soft p-6"
               >
-                <p className="mb-3 text-xs font-bold uppercase tracking-widest text-accent-ink">
+                <p className="mb-3 text-sm font-bold text-accent-ink">
                   📱 Understanding mobile credit
                 </p>
                 <p
@@ -704,7 +704,7 @@ export default function Home() {
                 data-delay="1"
                 className="rounded-2xl border border-[#C5E8CC] bg-success-soft p-6"
               >
-                <p className="mb-3 text-xs font-bold uppercase tracking-widest text-success-deep">
+                <p className="mb-3 text-sm font-bold text-success-deep">
                   💡 The opportunity
                 </p>
                 <p
@@ -741,7 +741,7 @@ export default function Home() {
 
       {/* ── CTA band ── */}
       <section className="bg-primary py-16 sm:py-24">
-        <div className="mx-auto max-w-5xl px-4 sm:px-6 text-center">
+        <div className="mx-auto max-w-[67rem] px-4 sm:px-6 text-center">
           <div data-reveal>
             <h2
               className="mb-3 text-3xl font-black leading-tight tracking-tight text-canvas sm:text-4xl"

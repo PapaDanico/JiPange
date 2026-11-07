@@ -47,9 +47,9 @@ export default function KenyaMoneyNow() {
 
   return (
     <section aria-labelledby="money-now-heading" className="border-b border-border bg-canvas py-9 sm:py-16">
-      <div className="mx-auto max-w-5xl px-4 sm:px-6">
+      <div className="mx-auto max-w-[67rem] px-4 sm:px-6">
         <div data-reveal className="mb-8 max-w-2xl">
-          <p className="mb-1.5 text-xs font-bold uppercase tracking-widest text-accent-ink">
+          <p className="mb-1.5 text-sm font-bold text-accent-ink">
             Information first
           </p>
           <h2
@@ -72,7 +72,7 @@ export default function KenyaMoneyNow() {
           </p>
         </div>
 
-        <h3 className="mb-3 text-xs font-bold uppercase tracking-widest text-muted">
+        <h3 className="mb-3 text-sm font-bold text-muted">
           Latest readings
         </h3>
         <div className="grid grid-cols-2 gap-2.5 sm:gap-3 lg:grid-cols-4">
@@ -81,7 +81,7 @@ export default function KenyaMoneyNow() {
           ))}
         </div>
 
-        <h3 className="mb-3 mt-8 text-xs font-bold uppercase tracking-widest text-muted">
+        <h3 className="mb-3 mt-8 text-sm font-bold text-muted">
           The year in banking — Central Bank of Kenya, December 2025
         </h3>
         <div className="grid grid-cols-2 gap-2.5 sm:gap-3 lg:grid-cols-4">

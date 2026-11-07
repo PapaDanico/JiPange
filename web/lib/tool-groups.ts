@@ -45,7 +45,7 @@ export const CALCULATOR_GROUPS: ToolGroup[] = [
       },
       {
         href: "/tools/loan-repayment",
-        icon: "🏦",
+        icon: "🧮",
         title: "Loan / HELB Repayment Calculator",
         description: "See your monthly instalment and total interest on any loan.",
         insight: "A SACCO loan can cost a third of what a mobile lender charges for the same amount.",
@@ -64,14 +64,14 @@ export const CALCULATOR_GROUPS: ToolGroup[] = [
       },
       {
         href: "/tools/fire-number",
-        icon: "🔥",
+        icon: "🏝️",
         title: "FIRE Number Calculator",
         description: "Your Kenya-localized retirement number: 20× expenses, inflation-adjusted to your retirement year.",
         insight: "Kenya's high MMF/bond yields support a 5% withdrawal rate — 20× expenses, not the Western 25×.",
       },
       {
         href: "/tools/dhowcsd",
-        icon: "🏦",
+        icon: "🪜",
         title: "DhowCSD T-Bill Ladder",
         description: "Split capital across 91/182/364-day Treasury Bills for quarterly liquidity.",
         insight: "The blended ladder yield nearly triples what a bank savings account pays.",
@@ -158,7 +158,7 @@ export const CALCULATOR_GROUPS: ToolGroup[] = [
       },
       {
         href: "/tools/guarantor-shield",
-        icon: "🎯",
+        icon: "🤝",
         title: "Sacco Guarantor Liability Shield",
         description: "See how much of your 3× borrowing power is frozen by loans you've guaranteed.",
         insight: "Guarantee half your deposits away and your development loan gets slashed — check before you apply.",

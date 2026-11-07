@@ -209,7 +209,7 @@ export default function FireNumberCalculator() {
       {fire && (
         <>
         <div ref={resultsRef} className="animate-rise space-y-4" aria-live="polite">
-          <ResultCard
+          <ResultCard headline
             label={`What you need at ${Math.max(currentAge, targetAge)}, in today's shillings`}
             value={formatKES(fire.capitalRequiredKes)}
             sublabel={`${fire.impliedMultiple.toFixed(1)}× your current annual spending. Priced as the actual cost of ${fire.yearsInRetirement} years of living and medical care, discounted at ${(fire.realReturn * 100).toFixed(1)}% a year after inflation — not a rule of thumb. Today's money throughout, so there is no frightening nominal number to translate.`}

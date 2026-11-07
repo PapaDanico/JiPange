@@ -243,7 +243,7 @@ export default function InvestmentReturnsCalculator() {
       {result && (
         <>
           <div ref={resultsRef} className="animate-rise space-y-4" aria-live="polite">
-            <ResultCard
+            <ResultCard headline
               label="Projected future value"
               value={formatKES(result.total)}
               sublabel={`At ${annualReturn}% annual return over ${years} years.`}

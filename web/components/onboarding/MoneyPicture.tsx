@@ -187,7 +187,7 @@ export default function MoneyPicture() {
 
       {model === "kenya" && (
         <div className="rounded-2xl border-2 border-accent bg-accent-soft p-6 print:hidden">
-          <h3 className="text-sm font-semibold uppercase tracking-wide text-accent-ink">
+          <h3 className="text-sm font-semibold text-accent-ink">
             What most apps ignore
           </h3>
           <p className="mt-2 text-sm text-ink-soft">

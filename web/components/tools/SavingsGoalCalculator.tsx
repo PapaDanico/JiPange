@@ -203,7 +203,7 @@ export default function SavingsGoalCalculator() {
       {result !== null && (
         <>
           <div ref={resultsRef} className="animate-rise space-y-4" aria-live="polite">
-            <ResultCard
+            <ResultCard headline
               label="Monthly savings needed"
               value={formatKES(result)}
               sublabel={`Assumes ${Math.max(0, Number(annualReturn) || 0)}% a year, compounding monthly.`}

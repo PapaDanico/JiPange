@@ -117,7 +117,7 @@ export default function PesaDiagnostic({ answers }: { answers: JourneyAnswers })
 
       {/* ── Module 3: Pesa Engine Persona ── */}
       <section aria-label="Pesa Engine persona" className="text-center print:col-span-2">
-        <p className="text-xs font-semibold uppercase tracking-wide text-faint">
+        <p className="text-sm font-semibold text-faint">
           Your Pesa Engine persona
         </p>
         <p className="mt-2 inline-block rounded-2xl border-2 border-primary bg-white px-6 py-4 text-2xl font-bold text-primary shadow-sm">

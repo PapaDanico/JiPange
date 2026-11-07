@@ -148,7 +148,7 @@ export default function MoneyRunwayCalculator() {
       {result !== null && (
         <>
           <div ref={resultsRef} className="animate-rise space-y-4" aria-live="polite">
-            <ResultCard
+            <ResultCard headline
               label="Your money will last"
               value={formatDuration(result)}
               sublabel={`${formatKES(Number(startingBalance) || 0)} drawn down at ${formatKES(Number(monthlyWithdrawal) || 0)} a month, the remainder earning ${Number(annualReturn) || 0}% a year.`}

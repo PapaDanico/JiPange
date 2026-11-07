@@ -179,7 +179,7 @@ function RecommendedStrip({ vehicleId }: { vehicleId: VehicleId }) {
 
   return (
     <section className="mb-6 rounded-2xl border-2 border-accent bg-accent-soft p-4">
-      <p className="text-xs font-semibold uppercase tracking-wider text-warning">
+      <p className="text-sm font-semibold text-warning">
         Recommended for you
       </p>
       <p className="mt-0.5 text-sm font-semibold text-primary">{label}</p>

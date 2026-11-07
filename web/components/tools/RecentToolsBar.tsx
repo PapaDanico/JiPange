@@ -16,7 +16,7 @@ export default function RecentToolsBar() {
 
   return (
     <div className="mb-6 w-full max-w-2xl">
-      <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-muted">
+      <p className="mb-2 text-sm font-semibold text-muted">
         Recently used
       </p>
       <div className="flex flex-wrap gap-2">
