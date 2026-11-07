@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CALCULATOR_GROUPS } from "@/lib/tool-groups";
+import ToolIcon from "@/components/tools/ToolIcon";
 
 export default function CalculatorsDropdownPanel() {
   return (
@@ -15,7 +16,7 @@ export default function CalculatorsDropdownPanel() {
               href={tool.href}
               className="flex items-center gap-2.5 rounded-lg px-2 py-1.5 text-sm text-ink-soft hover:bg-canvas hover:text-primary"
             >
-              <span aria-hidden="true">{tool.icon}</span>
+              <ToolIcon href={tool.href} fallback={tool.icon} className="h-4 w-4 shrink-0 text-primary" />
               {tool.title}
             </Link>
           ))}

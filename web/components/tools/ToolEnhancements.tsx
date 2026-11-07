@@ -1,5 +1,6 @@
 "use client";
 
+import ToolIcon from "@/components/tools/ToolIcon";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -66,7 +67,7 @@ export default function ToolEnhancements() {
                    finish flush, whatever the labels measure. */
                 className="inline-flex min-h-11 grow items-center gap-1.5 rounded-full border border-border bg-white px-4 py-1.5 text-xs font-medium text-primary transition-colors hover:border-accent hover:text-accent"
               >
-                <span aria-hidden="true">{tool.icon}</span>
+                <ToolIcon href={tool.href} fallback={tool.icon} className="h-4 w-4" />
                 {tool.name}
               </Link>
             ))}

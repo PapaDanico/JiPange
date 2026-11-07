@@ -1,5 +1,6 @@
 "use client";
 
+import ToolIcon from "@/components/tools/ToolIcon";
 import { useMemo, useRef, useState } from "react";
 import Link from "next/link";
 
@@ -152,7 +153,9 @@ export default function ToolsIndexList({ groups }: { groups: ToolGroup[] }) {
                   href={calc.href}
                   className="group flex items-center gap-3 rounded-2xl border border-transparent bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-accent hover:shadow-md lg:h-full lg:items-start lg:flex-col"
                 >
-                  <span className="text-2xl">{calc.icon}</span>
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-accent-ink">
+                    <ToolIcon href={calc.href} fallback={calc.icon} className="h-6 w-6" />
+                  </span>
                   <span className="flex-1">
                     <span className="flex items-center gap-2">
                       <span className="block text-sm font-semibold text-primary">{calc.title}</span>
