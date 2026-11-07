@@ -68,7 +68,7 @@ export default function NavDropdown({
          * navigation was the hardest. */
         className={`inline-flex min-h-11 items-center gap-1 whitespace-nowrap rounded-lg px-3 py-1.5 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
           active
-            ? "bg-ink text-background"
+            ? "bg-primary text-background"
             : "text-muted hover:bg-canvas hover:text-ink"
         }`}
       >

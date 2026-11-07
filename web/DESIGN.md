@@ -34,6 +34,16 @@ Declared in `@theme` in `app/globals.css`. The rules:
   deliberate one-off local color (WhatsApp green, chart series, illustration
   chips) — that's the only sanctioned use.
 
+## Elevation and the passbook
+
+Shadows are a warm-tinted ramp (`--shadow-sm/md/lg` in `@theme`, umber rather
+than grey), so every existing `shadow-*` use inherits it. Each page gets at most
+one dark, raised surface: on the landing page it is the T-bill "passbook"
+(`HeroRates`, `bg-shell` + `shadow-passbook`), with the display serif in lining
+tabular numerals and amber figures. It changes the surface only; the figures,
+dates and labels still come from `lib/rates-feed.ts`. Display headings are
+semibold (600), not black: weight carries authority here, volume does not.
+
 ## Motion
 
 One entrance: `animate-rise` (`--animate-rise`, 400ms ease-out-quint,
