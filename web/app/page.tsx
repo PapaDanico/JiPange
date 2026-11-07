@@ -253,9 +253,6 @@ export default function Home() {
 
             {/* Copy */}
             <div className="lg:col-start-1 lg:row-start-1">
-              <p className="mb-5 inline-block rounded-full border border-[#F0D08A] bg-accent-soft px-3 py-1.5 text-sm font-bold text-accent-ink">
-                Free · Anonymous · Built for Kenya 🇰🇪
-              </p>
               <p className="mb-2 text-base italic font-medium text-muted">
                 Jipange kabla pesa ikupange.
               </p>
