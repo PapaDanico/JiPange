@@ -249,7 +249,7 @@ export default function SalaryPlannerHub() {
           {taxResult && (
             <>
               <div ref={resultsRef} className="animate-rise space-y-4" aria-live="polite">
-                <ResultCard
+                <ResultCard headline
                   label="Take-home pay"
                   value={formatKES(taxResult.netMonthly)}
                   tone="success"
@@ -434,7 +434,7 @@ export default function SalaryPlannerHub() {
               />
               {routeSurplus !== null && routeSurplus > 0 && (
                 <>
-                  <ResultCard
+                  <ResultCard headline
                     label="Your true weekly spend limit"
                     value={formatKES(Math.round(routeSurplus / 4.33))}
                     sublabel={`Floating surplus ${formatKES(routeSurplus)} ÷ 4.33 weeks`}
@@ -481,7 +481,7 @@ export default function SalaryPlannerHub() {
                   </p>
                 </div>
               ) : (
-                <ResultCard
+                <ResultCard headline
                   label="PAYE recoverable per month"
                   value={formatKES(shieldResult.totalMonthlyRecoverable)}
                   sublabel={`${formatKES(shieldResult.totalMonthlyRecoverable * 12)}/year you could redirect to your own pension or insurance`}

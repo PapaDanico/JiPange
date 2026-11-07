@@ -139,9 +139,13 @@ interface ChildGoal {
 }
 
 function formatYears(years: number): string {
-  if (years < 1) return `${Math.max(1, Math.round(years * 12))} months`;
+  if (years < 1) {
+    const months = Math.max(1, Math.round(years * 12));
+    return `${months} ${months === 1 ? "month" : "months"}`;
+  }
   const rounded = Math.round(years * 10) / 10;
-  return `${rounded % 1 === 0 ? rounded.toFixed(0) : rounded.toFixed(1)} years`;
+  // "1 years" read as a typo on the very first slider position.
+  return `${rounded % 1 === 0 ? rounded.toFixed(0) : rounded.toFixed(1)} ${rounded === 1 ? "year" : "years"}`;
 }
 
 function chipClass(selected: boolean): string {
