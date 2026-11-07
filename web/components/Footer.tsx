@@ -47,10 +47,41 @@ const COLUMNS: { heading: string; links: { href: string; label: string }[] }[] =
   },
 ];
 
+function LinkList({ links }: { links: { href: string; label: string }[] }) {
+  return (
+    <ul className="mt-2 space-y-0.5">
+              {links.map((link) => (
+                <li key={link.href + link.label}>
+                  <Link
+                    href={link.href}
+                    className="block py-1.5 hover:text-primary hover:underline"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+    </ul>
+  );
+}
+
 export default function Footer() {
   return (
     <footer className="mt-auto border-t border-border px-6 py-8 text-xs text-ink-soft print:hidden">
-      <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 sm:grid-cols-3">
+      {/* Phones: three folded groups (about 150px) instead of twenty visible
+          links (about 700px). Same links, native <details>; from 640px up the
+          three columns are unchanged. */}
+      <div className="mx-auto max-w-5xl sm:hidden">
+        {COLUMNS.map((column) => (
+          <details key={column.heading} className="group border-b border-border">
+            <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between text-xs font-semibold uppercase tracking-wide text-primary marker:content-none">
+              {column.heading}
+              <span aria-hidden className="text-lg transition-transform group-open:rotate-45">+</span>
+            </summary>
+            <LinkList links={column.links} />
+          </details>
+        ))}
+      </div>
+      <div className="mx-auto hidden max-w-5xl grid-cols-3 gap-6 sm:grid">
         {COLUMNS.map((column) => (
           <div key={column.heading}>
             <h2 className="text-xs font-semibold uppercase tracking-wide text-primary">
@@ -67,18 +98,7 @@ export default function Footer() {
                 instead of the ~30 a full 44px target would cost a stacked
                 mobile footer. Height is bought from the gap, not from the
                 page. */}
-            <ul className="mt-2 space-y-0.5">
-              {column.links.map((link) => (
-                <li key={link.href + link.label}>
-                  <Link
-                    href={link.href}
-                    className="block py-1.5 hover:text-primary hover:underline"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            <LinkList links={column.links} />
           </div>
         ))}
       </div>
