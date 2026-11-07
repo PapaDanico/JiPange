@@ -1,3 +1,4 @@
+import ToolIcon from "@/components/tools/ToolIcon";
 import Image from "next/image";
 import Link from "next/link";
 import ResumeToast from "@/components/onboarding/ResumeToast";
@@ -444,8 +445,8 @@ export default function Home() {
                 data-delay={i % 2 === 1 ? "1" : undefined}
                 className="group flex items-center gap-3.5 rounded-xl border border-border bg-canvas p-4 transition-all hover:-translate-y-0.5 hover:border-accent hover:shadow-[0_3px_12px_rgba(232,160,32,0.12)]"
               >
-                <div className="flex h-11 w-10 shrink-0 items-center justify-center rounded-lg border border-border bg-white text-lg">
-                  {tool.emoji}
+                <div className="flex h-11 w-10 shrink-0 items-center justify-center rounded-lg border border-border bg-white text-accent-ink">
+                  <ToolIcon href={tool.href} fallback={tool.emoji} className="h-5 w-5" />
                 </div>
                 <div className="min-w-0">
                   <p className="text-[0.9rem] font-bold text-primary">{tool.name}</p>

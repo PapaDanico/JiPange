@@ -1,5 +1,6 @@
 "use client";
 
+import ToolIcon from "@/components/tools/ToolIcon";
 import Link from "next/link";
 import { TOOL_META, getRecentTools } from "@/lib/tool-meta";
 import { useStorageValue } from "@/lib/hooks";
@@ -26,7 +27,7 @@ export default function RecentToolsBar() {
             href={tool.href}
             className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-border bg-white px-4 py-1.5 text-xs font-medium text-primary transition-colors hover:border-accent hover:text-accent"
           >
-            <span aria-hidden="true">{tool.icon}</span>
+            <ToolIcon href={tool.href} fallback={tool.icon} className="h-4 w-4" />
             {tool.name}
           </Link>
         ))}
