@@ -249,10 +249,10 @@ export default function Home() {
       {/* ── Hero ── */}
       <section className="bg-white border-b border-border py-9 sm:py-16">
         <div className="mx-auto max-w-5xl px-4 sm:px-6">
-          <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:items-center lg:gap-16">
+          <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] lg:gap-x-16">
 
-            {/* Left column */}
-            <div>
+            {/* Copy */}
+            <div className="lg:col-start-1 lg:row-start-1">
               <p className="mb-5 inline-block rounded-full border border-[#F0D08A] bg-accent-soft px-3 py-1.5 text-xs font-bold uppercase tracking-widest text-accent-ink">
                 Free · Anonymous · Built for Kenya 🇰🇪
               </p>
@@ -260,7 +260,7 @@ export default function Home() {
                 Jipange kabla pesa ikupange.
               </p>
               <h1
-                className="mb-5 text-[2.25rem] font-black leading-tight tracking-tight text-primary sm:text-5xl"
+                className="mb-5 text-[2.25rem] font-semibold leading-[1.06] text-primary sm:text-5xl lg:text-[3.5rem]"
                 style={{ textWrap: "balance" } as React.CSSProperties}
               >
                 Every shilling deserves a plan.{" "}
@@ -294,7 +294,27 @@ export default function Home() {
                   screens get full width", it is "a button that is alone on its
                   line gets full width", and lg is the other place that is
                   true. */}
+            </div>
+
+            {/* The passbook is the hero's anchor. One instance, placed by grid
+                area, so phones keep copy -> figures -> buttons and desktop
+                puts the figures beside the copy, centred on both rows. The
+                shield sits on its corner as a seal (desktop only). */}
+            <div className="relative mb-6 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:mb-0 lg:self-center">
               <HeroRates />
+              <Image
+                src="/logo-icon.webp"
+                alt="JiPange shield"
+                width={973}
+                height={833}
+                priority
+                sizes="96px"
+                className="absolute -right-5 -top-12 hidden h-auto w-24 drop-shadow-[0_10px_14px_rgba(34,25,19,0.35)] lg:block"
+              />
+            </div>
+
+            {/* Actions */}
+            <div className="lg:col-start-1 lg:row-start-2">
               <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                 <Link
                   href="/profile"
@@ -319,21 +339,6 @@ export default function Home() {
                   </span>
                 ))}
               </div>
-            </div>
-
-            {/* Right column — the shield, desktop only. On a phone it cost ~250px
-                before any content, and the market readings it used to carry are
-                the same figures as the hero rates card and "Latest readings". */}
-            <div className="hidden flex-col items-center gap-6 lg:flex lg:items-start">
-              <Image
-                src="/logo-icon.webp"
-                alt="JiPange shield"
-                width={973}
-                height={833}
-                priority
-                sizes="(max-width: 640px) 176px, 224px"
-                className="w-44 sm:w-56 h-auto"
-              />
             </div>
 
           </div>

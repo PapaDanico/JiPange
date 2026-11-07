@@ -47,7 +47,7 @@ export default function AppHeader() {
    * whoever decides where the link appears. */
   const linkClass = (isActive: boolean) =>
     `min-h-11 items-center whitespace-nowrap rounded-lg px-3 py-1.5 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
-      isActive ? "bg-ink text-background" : "text-muted hover:bg-canvas hover:text-ink"
+      isActive ? "bg-primary text-background" : "text-muted hover:bg-canvas hover:text-ink"
     }`;
 
   return (
