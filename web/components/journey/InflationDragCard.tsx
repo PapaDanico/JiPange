@@ -17,7 +17,7 @@ export default function InflationDragCard({ drag }: { drag: InflationDrag }) {
       aria-label="Inflation drag"
       className="rounded-2xl border-2 border-accent bg-accent-soft p-5"
     >
-      <h2 className="text-sm font-semibold uppercase tracking-wide text-accent-ink">
+      <h2 className="text-sm font-semibold text-accent-ink">
         Keeping pace with inflation
       </h2>
       {/* After tax on every side, and honest in both directions. This read

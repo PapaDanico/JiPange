@@ -11,7 +11,7 @@ export default function FulizaTaxCounter({ fulizaTax }: { fulizaTax: FulizaTax }
       aria-label="Fuliza tax counter"
       className="rounded-2xl border-2 border-danger bg-danger-soft p-5"
     >
-      <h2 className="text-sm font-semibold uppercase tracking-wide text-danger">
+      <h2 className="text-sm font-semibold text-danger">
         Your estimated &ldquo;Fuliza tax&rdquo;
       </h2>
       <p className="mt-2 text-3xl font-semibold text-danger">

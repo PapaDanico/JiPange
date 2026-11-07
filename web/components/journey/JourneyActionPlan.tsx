@@ -400,7 +400,7 @@ function LifeCapitalMap({ goal }: { goal: PrimaryGoal }) {
         className="mt-4 rounded-xl border p-4"
         style={{ backgroundColor: meta.bg, borderColor: meta.border }}
       >
-        <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: meta.textColor }}>
+        <p className="text-sm font-semibold" style={{ color: meta.textColor }}>
           {meta.emoji} {active} capital — your current focus
         </p>
         <p className="mt-1.5 text-xs leading-relaxed text-[#1E3A4A]">{meta.insight}</p>

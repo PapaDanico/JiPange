@@ -142,7 +142,7 @@ export default function ToolsIndexList({ groups }: { groups: ToolGroup[] }) {
       <div className="space-y-8">
         {filteredGroups.map((group) => (
           <div key={group.label}>
-            <h2 className="mb-3 text-xs font-semibold uppercase tracking-wide text-ink-soft">
+            <h2 className="mb-3 text-sm font-semibold text-ink-soft">
               {group.label}
             </h2>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -157,7 +157,7 @@ export default function ToolsIndexList({ groups }: { groups: ToolGroup[] }) {
                     <span className="flex items-center gap-2">
                       <span className="block text-sm font-semibold text-primary">{calc.title}</span>
                       {calc.isNew && (
-                        <span className="rounded-full bg-accent px-2 py-0.5 text-xs font-semibold uppercase text-ink">
+                        <span className="rounded-full bg-accent px-2 py-0.5 text-sm font-semibold text-ink">
                           New
                         </span>
                       )}

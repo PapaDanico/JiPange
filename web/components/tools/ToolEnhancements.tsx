@@ -46,7 +46,7 @@ export default function ToolEnhancements() {
 
       {related && related.length > 0 && (
         <div>
-          <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-muted">
+          <p className="mb-2 text-sm font-semibold text-muted">
             Try next
           </p>
           <div className="flex flex-wrap gap-2">

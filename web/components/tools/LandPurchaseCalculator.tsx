@@ -137,7 +137,7 @@ export default function LandPurchaseCalculator() {
       {result && (
         <div ref={resultsRef} className="animate-rise space-y-4" aria-live="polite">
           {/* Headline numbers */}
-          <ResultCard
+          <ResultCard headline
             label="Grand total — what you actually need"
             value={formatKES(result.grandTotal)}
             sublabel={`${formatKES(result.plotPrice)} plot + ${formatKES(result.totalTransactionCosts)} in transaction costs`}

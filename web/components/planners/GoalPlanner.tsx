@@ -1057,7 +1057,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
           {strategy && (
             <div className="space-y-4">
               <div className="rounded-2xl border-2 border-accent bg-accent-soft p-5">
-                <h3 className="text-sm font-semibold uppercase tracking-wide text-accent-ink">
+                <h3 className="text-sm font-semibold text-accent-ink">
                   Recommended home for this money
                 </h3>
                 <p className="mt-1 text-lg font-semibold text-primary">{strategy.vehicle}</p>

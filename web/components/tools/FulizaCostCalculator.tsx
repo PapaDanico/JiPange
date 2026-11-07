@@ -79,7 +79,7 @@ export default function FulizaCostCalculator() {
                 fee band would cost if you could — treat them as a comparison, not a quote.
               </p>
             )}
-            <ResultCard
+            <ResultCard headline
               label="Total cost of borrowing"
               value={formatKES(result.totalFee)}
               sublabel={`Borrowing ${formatKES(Number(amount))} for ${days} days costs ${formatKES(result.totalFee)} — equivalent to roughly ${Math.round(result.annualisedApr)}% APR.`}
@@ -111,7 +111,7 @@ export default function FulizaCostCalculator() {
               insight="Each Fuliza fee feels small in isolation — that's the marginal cost trap. Behavioural economists call it the 'pennies-a-day' illusion: we evaluate each transaction individually and never sum the true annual toll. The APR figure above converts that illusion into a single number your brain can actually weigh."
             />
             <div className="rounded-2xl border border-border bg-danger-soft/40 p-4">
-              <p className="text-xs font-semibold uppercase tracking-wide text-danger">
+              <p className="text-sm font-semibold text-danger">
                 And if you never clear it
               </p>
               <p className="mt-1.5 text-xs leading-relaxed text-ink-soft">

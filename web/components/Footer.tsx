@@ -73,7 +73,7 @@ export default function Footer() {
       <div className="mx-auto max-w-5xl sm:hidden">
         {COLUMNS.map((column) => (
           <details key={column.heading} className="group border-b border-border">
-            <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between text-xs font-semibold uppercase tracking-wide text-primary marker:content-none">
+            <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between text-sm font-semibold text-primary marker:content-none">
               {column.heading}
               <span aria-hidden className="text-lg transition-transform group-open:rotate-45">+</span>
             </summary>
@@ -84,7 +84,7 @@ export default function Footer() {
       <div className="mx-auto hidden max-w-5xl grid-cols-3 gap-6 sm:grid">
         {COLUMNS.map((column) => (
           <div key={column.heading}>
-            <h2 className="text-xs font-semibold uppercase tracking-wide text-primary">
+            <h2 className="text-sm font-semibold text-primary">
               {column.heading}
             </h2>
             {/* Measured at 390px, these links were 14px tall on a 22px pitch

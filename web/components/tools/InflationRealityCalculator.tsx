@@ -60,7 +60,7 @@ export default function InflationRealityCalculator() {
       {result && (
         <>
           <div ref={resultsRef} className="animate-rise space-y-4" aria-live="polite">
-            <ResultCard
+            <ResultCard headline
               label="Your salary will feel like"
               value={formatKES(result.realValue)}
               sublabel={`If it never rises, in ${result.yearsValue} years your ${formatKES(result.salaryValue)} salary will only buy what ${formatKES(result.realValue)} buys today.`}

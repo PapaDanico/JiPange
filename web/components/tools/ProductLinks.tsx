@@ -72,7 +72,7 @@ export default function ProductLinks({ products, heading }: ProductLinksProps) {
   return (
     <div className="space-y-2 print:hidden">
       {heading && (
-        <p className="text-xs font-semibold text-primary uppercase tracking-wide">{heading}</p>
+        <p className="text-sm font-semibold text-primary">{heading}</p>
       )}
       <div className="space-y-2">
         {products.map((p) => (

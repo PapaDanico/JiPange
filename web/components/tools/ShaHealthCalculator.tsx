@@ -175,7 +175,7 @@ export default function ShaHealthCalculator() {
 
           {/* Coverage summary */}
           <div className="rounded-2xl bg-success-soft p-4">
-            <p className="text-xs font-semibold uppercase tracking-wider text-success">
+            <p className="text-sm font-semibold text-success">
               What SHA covers
             </p>
             <ul className="mt-2 space-y-1 text-xs text-[#1A4A28]">
@@ -190,7 +190,7 @@ export default function ShaHealthCalculator() {
 
           {/* Gaps */}
           <div className="rounded-2xl bg-accent-wash p-4">
-            <p className="text-xs font-semibold uppercase tracking-wider text-warning">
+            <p className="text-sm font-semibold text-warning">
               SHA gaps to plug with a top-up plan
             </p>
             <ul className="mt-2 space-y-1 text-xs text-[#6B3A0A]">
@@ -225,7 +225,7 @@ export default function ShaHealthCalculator() {
 
           {!result.isStatutoryRate && (
             <div className="rounded-2xl border border-border bg-accent-soft/40 p-4">
-              <p className="text-xs font-semibold uppercase tracking-wide text-accent-ink">
+              <p className="text-sm font-semibold text-accent-ink">
                 How your contribution is really assessed
               </p>
               <p className="mt-1.5 text-xs leading-relaxed text-ink-soft">

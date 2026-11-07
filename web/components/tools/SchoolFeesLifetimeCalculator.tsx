@@ -370,7 +370,7 @@ export default function SchoolFeesLifetimeCalculator() {
       {result && (
         <>
           <div ref={resultsRef} className="animate-rise space-y-4" aria-live="polite">
-            <ResultCard
+            <ResultCard headline
               label={`Total fees to the end of school${university ? " and university" : ""}`}
               value={formatKES(result.household.totalNominalKES)}
               sublabel={`In today's money that is ${formatKES(

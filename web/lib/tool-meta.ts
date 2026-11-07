@@ -53,7 +53,7 @@ export const TOOL_META: Record<string, ToolMeta> = {
   },
   "/tools/guarantor-shield": {
     href: "/tools/guarantor-shield",
-    icon: "🎯",
+    icon: "🤝",
     name: "Guarantor Shield",
     related: ["/tools/sacco-vs-bank", "/tools/one-third-rule", "/tools/loan-repayment"],
     nextMove: { label: "Compare SACCO vs bank loan costs →", href: "/tools/sacco-vs-bank" },
@@ -91,7 +91,7 @@ export const TOOL_META: Record<string, ToolMeta> = {
   },
   "/tools/loan-repayment": {
     href: "/tools/loan-repayment",
-    icon: "🏦",
+    icon: "🧮",
     name: "Loan Repayment",
     related: ["/tools/sacco-vs-bank", "/tools/one-third-rule", "/tools/guarantor-shield"],
     nextMove: { label: "Check this is legally compliant →", href: "/tools/one-third-rule" },
@@ -99,7 +99,7 @@ export const TOOL_META: Record<string, ToolMeta> = {
   },
   "/tools/fire-number": {
     href: "/tools/fire-number",
-    icon: "🔥",
+    icon: "🏝️",
     name: "FIRE Number",
     related: ["/tools/investment-returns", "/tools/savings-goal", "/tools/money-runway"],
     nextMove: { label: "Stress-test your runway →", href: "/tools/money-runway" },
@@ -126,7 +126,7 @@ export const TOOL_META: Record<string, ToolMeta> = {
   },
   "/tools/dhowcsd": {
     href: "/tools/dhowcsd",
-    icon: "🏆",
+    icon: "🪜",
     name: "DhowCSD T-Bill Ladder",
     related: ["/tools/investment-returns", "/tools/inflation-reality", "/tools/fire-number"],
     nextMove: { label: "Compare against other vehicles →", href: "/tools/investment-returns" },

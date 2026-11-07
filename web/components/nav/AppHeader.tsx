@@ -57,7 +57,7 @@ export default function AppHeader() {
      * background page — the border was the only thing separating them, and it
      * vanished against a white hero section. */
     <header className="sticky top-0 z-40 border-b border-border bg-canvas/90 backdrop-blur print:hidden">
-      <div className="mx-auto flex h-14 max-w-5xl items-center gap-2 px-4 sm:px-6 lg:gap-3">
+      <div className="mx-auto flex h-14 max-w-[67rem] items-center gap-2 px-4 sm:px-6 lg:gap-3">
         <Link
           href="/"
           className="flex min-h-11 shrink-0 items-center gap-2 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"

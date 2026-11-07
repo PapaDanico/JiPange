@@ -120,7 +120,7 @@ export default function DhowcsdLadderCalculator() {
       {/* Allocation. Shown before the result because it changes it, and a
           control that only appears after an answer reads as a correction. */}
       <fieldset className="rounded-2xl border border-border bg-white p-4">
-        <legend className="px-1 text-xs font-semibold uppercase tracking-wide text-accent-ink">
+        <legend className="px-1 text-sm font-semibold text-accent-ink">
           How should it be split?
         </legend>
         <div className="mt-1 grid grid-cols-1 gap-2 sm:grid-cols-2">
@@ -252,7 +252,7 @@ export default function DhowcsdLadderCalculator() {
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             {ladder.buckets.map((bucket) => (
               <div key={bucket.days} className="rounded-2xl border border-border bg-white p-4">
-                <p className="text-xs font-semibold uppercase tracking-wide text-accent-ink">
+                <p className="text-sm font-semibold text-accent-ink">
                   {bucket.days}-day
                 </p>
                 <p className="mt-0.5 text-sm font-semibold text-primary">{bucket.label}</p>
@@ -273,7 +273,7 @@ export default function DhowcsdLadderCalculator() {
             ))}
           </div>
 
-          <ResultCard
+          <ResultCard headline
             label={`Blended ladder yield: ${(ladder.blendedYield * 100).toFixed(2)}% p.a. net of tax`}
             value={`${ladder.advantageKes >= 0 ? "+" : ""}${formatKES(ladder.advantageKes)}/yr`}
             sublabel={`vs the same ${formatKES(parsed)} at the average bank deposit rate, ${(BANK_SAVINGS_BASELINE * 100).toFixed(2)}% after tax: ${formatKES(ladder.ladderAnnualKes)} vs ${formatKES(ladder.bankAnnualKes)} a year — and a tranche matures every ~13 weeks for liquidity.`}
@@ -290,7 +290,7 @@ export default function DhowcsdLadderCalculator() {
           )}
 
           <div className="rounded-2xl border border-border bg-accent-soft/40 p-4">
-            <p className="text-xs font-semibold uppercase tracking-wide text-accent-ink">
+            <p className="text-sm font-semibold text-accent-ink">
               Why these differ from the rate you saw advertised
             </p>
             <p className="mt-1.5 text-xs leading-relaxed text-ink-soft">
