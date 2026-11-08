@@ -13,6 +13,7 @@ import { saveStoredGoal } from "@/lib/storage";
 import { targetDateIn } from "@/lib/dashboard";
 import HowItWorks from "@/components/tools/HowItWorks";
 import Toggle from "@/components/tools/Toggle";
+import { amountOrZero } from "@/lib/money";
 
 const FEE_PRESETS = [50_000, 100_000, 250_000];
 const MAX_CHILDREN = 5;
@@ -33,7 +34,7 @@ export default function TermlyFeeSmoother() {
   const [escalation, setEscalation] = useState(8);
   const [perTerm, setPerTerm] = useState(false); // parents often know the per-term figure
 
-  const parsedFees = Math.max(0, Number(annualFees) || 0) * (perTerm ? 3 : 1);
+  const parsedFees = amountOrZero(annualFees) * (perTerm ? 3 : 1);
   const monthly = termlyMonthlyTarget(parsedFees, children);
   const subsidy = mmfFeeSubsidy(parsedFees, children);
   const termLump = (parsedFees * children) / 3;

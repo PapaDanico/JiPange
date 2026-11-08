@@ -10,6 +10,7 @@ import {
 } from "@/lib/hustle";
 import { TARGET_MMF_YIELD } from "@/lib/journey";
 import HowItWorks from "@/components/tools/HowItWorks";
+import { amountOrZero } from "@/lib/money";
 
 /**
  * The three-bucket volatile-income smoother: cycle lump sums become a steady
@@ -25,9 +26,9 @@ export default function HustleSmoother() {
   const [draw, setDraw] = useState<number | null>(null); // null = follow the safe default
   const [buffer, setBuffer] = useState(0); // % of payout ring-fenced for a bad cycle
 
-  const parsedCosts = Math.max(0, Number(inputCosts) || 0);
-  const parsedPayout = Math.max(0, Number(payout) || 0);
-  const parsedSavings = Math.max(0, Number(activeSavings) || 0);
+  const parsedCosts = amountOrZero(inputCosts);
+  const parsedPayout = amountOrZero(payout);
+  const parsedSavings = amountOrZero(activeSavings);
 
   const safeDraw = useMemo(
     () =>

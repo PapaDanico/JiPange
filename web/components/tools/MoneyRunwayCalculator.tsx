@@ -1,6 +1,6 @@
 "use client";
 
-import { positiveAmount } from "@/lib/money";
+import { positiveAmount, amountOrZero } from "@/lib/money";
 import { useMemo } from "react";
 import { calculateMoneyRunwayMonths } from "@/lib/runway";
 import { formatKES } from "@/lib/budget";
@@ -121,7 +121,7 @@ export default function MoneyRunwayCalculator() {
             Drag to see the runway change instantly
           </label>
           <span className="text-sm font-semibold text-primary">
-            {formatKES(Number(monthlyWithdrawal) || 0)}/mo
+            {formatKES(amountOrZero(monthlyWithdrawal))}/mo
           </span>
         </div>
         <input
@@ -151,7 +151,7 @@ export default function MoneyRunwayCalculator() {
             <ResultCard headline
               label="Your money will last"
               value={formatDuration(result)}
-              sublabel={`${formatKES(Number(startingBalance) || 0)} drawn down at ${formatKES(Number(monthlyWithdrawal) || 0)} a month, the remainder earning ${Number(annualReturn) || 0}% a year.`}
+              sublabel={`${formatKES(amountOrZero(startingBalance))} drawn down at ${formatKES(amountOrZero(monthlyWithdrawal))} a month, the remainder earning ${Number(annualReturn) || 0}% a year.`}
               tone="success"
             />
             <RunwayDeclineChart data={chartData} infinite={!Number.isFinite(result)} />

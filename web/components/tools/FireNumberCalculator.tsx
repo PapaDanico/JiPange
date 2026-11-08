@@ -510,7 +510,7 @@ export default function FireNumberCalculator() {
           />
 
           <ShareResultButton
-            message={`🔥 *My Kenya Retirement Number*\n\nRetiring at ${Math.max(currentAge, targetAge)} on ${formatKES(Number(monthlyExpenses))}/month: I need ${formatKES(fire.capitalRequiredKes)} in today's money (${fire.impliedMultiple.toFixed(1)}× current spending, at ${(fire.realReturn * 100).toFixed(1)}% real).\n\n⚕️ ${formatKES(fire.medicalCapitalKes)} of that is medical cover alone — ${(fire.medicalShareOfCapital * 100).toFixed(0)}% of the pot from ${(fire.medicalShareOfSpendingToday * 100).toFixed(0)}% of today's budget.\n\nWork out yours → jipangefinance.org/tools/fire-number`}
+            message={`🔥 *My Kenya Retirement Number*\n\nRetiring at ${Math.max(currentAge, targetAge)} on ${formatKES(amountOrZero(monthlyExpenses))}/month: I need ${formatKES(fire.capitalRequiredKes)} in today's money (${fire.impliedMultiple.toFixed(1)}× current spending, at ${(fire.realReturn * 100).toFixed(1)}% real).\n\n⚕️ ${formatKES(fire.medicalCapitalKes)} of that is medical cover alone — ${(fire.medicalShareOfCapital * 100).toFixed(0)}% of the pot from ${(fire.medicalShareOfSpendingToday * 100).toFixed(0)}% of today's budget.\n\nWork out yours → jipangefinance.org/tools/fire-number`}
           />
         </div>
         <ExportCardButton containerRef={resultsRef} filename="fire-number" />

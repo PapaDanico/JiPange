@@ -514,8 +514,8 @@ export default function SchoolFeesLifetimeCalculator() {
               },
               { label: "Fee increase assumed", value: `${escalationPct}% a year` },
               { label: "Return assumed", value: `${(returnRate * 100).toFixed(1)}% a year` },
-              { label: "Already saved", value: formatKES(Number(alreadySaved) || 0) },
-              ...(university ? [{ label: "University", value: `4 years at ${formatKES(Number(uniFee) || 0)}/yr` }] : []),
+              { label: "Already saved", value: formatKES(amountOrZero(alreadySaved)) },
+              ...(university ? [{ label: "University", value: `4 years at ${formatKES(amountOrZero(uniFee))}/yr` }] : []),
               ...(frontLoaded ? [{ label: "Term 1", value: "Front-loaded (50/30/20)" }] : []),
             ]}
             notes={[

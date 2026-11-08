@@ -1,6 +1,6 @@
 "use client";
 
-import { positiveAmount } from "@/lib/money";
+import { positiveAmount, amountOrZero } from "@/lib/money";
 import dynamic from "next/dynamic";
 import { useMemo, useState, useSyncExternalStore } from "react";
 import {
@@ -147,7 +147,7 @@ export default function SalaryPlannerHub() {
                 Pension contribution (Ksh/month)
               </label>
               <span className="text-sm font-semibold text-primary">
-                {formatKES(Number(pension) || 0)}
+                {formatKES(amountOrZero(pension))}
               </span>
             </div>
             <input
@@ -178,7 +178,7 @@ export default function SalaryPlannerHub() {
                 Mortgage interest (Ksh/month)
               </label>
               <span className="text-sm font-semibold text-primary">
-                {formatKES(Number(mortgage) || 0)}
+                {formatKES(amountOrZero(mortgage))}
               </span>
             </div>
             <input
@@ -346,7 +346,7 @@ export default function SalaryPlannerHub() {
                   ahl={taxResult.ahl}
                 />
                 <ShareResultButton
-                  message={`🇰🇪 *My Take-Home Pay*\n\nGross: ${formatKES(Number(gross))}\nTake-home: ${formatKES(taxResult.netMonthly)}/month\n\nCalculate yours → jipangefinance.org/tools/salary`}
+                  message={`🇰🇪 *My Take-Home Pay*\n\nGross: ${formatKES(amountOrZero(gross))}\nTake-home: ${formatKES(taxResult.netMonthly)}/month\n\nCalculate yours → jipangefinance.org/tools/salary`}
                 />
               </div>
               <ExportCardButton containerRef={resultsRef} filename="salary-take-home-pay" />
@@ -596,7 +596,7 @@ export default function SalaryPlannerHub() {
                 and switch to Take-Home to confirm the net pay.
               </p>
               <ShareResultButton
-                message={`💼 *My Salary Negotiation*\n\nTarget take-home: ${formatKES(Number(targetNet))}\nGross to negotiate: ${formatKES(negotiateResult.grossWithBuffer)}\n\nCalculate yours → jipangefinance.org/tools/salary`}
+                message={`💼 *My Salary Negotiation*\n\nTarget take-home: ${formatKES(amountOrZero(targetNet))}\nGross to negotiate: ${formatKES(negotiateResult.grossWithBuffer)}\n\nCalculate yours → jipangefinance.org/tools/salary`}
               />
               <CalculatorDisclaimer
                 extraNotes={[

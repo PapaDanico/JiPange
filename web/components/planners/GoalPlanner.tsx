@@ -312,8 +312,8 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
   const items: PlanItemInput[] = useMemo(() => {
     if (isChildrenBuilder) {
       return children
-        .filter((c) => Number(c.amount) > 0 && Number(c.years) > 0)
-        .map((c) => ({ todayValue: Number(c.amount), years: Number(c.years) }));
+        .filter((c) => amountOrZero(c.amount) > 0 && Number(c.years) > 0)
+        .map((c) => ({ todayValue: amountOrZero(c.amount), years: Number(c.years) }));
     }
     return parsedAmount > 0 && parsedYears > 0
       ? [{ todayValue: parsedAmount, years: parsedYears }]
@@ -351,7 +351,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
   function buildContext(): string | undefined {
     if (isChildrenBuilder && items.length > 0) {
       const parts = children
-        .filter((c) => Number(c.amount) > 0)
+        .filter((c) => amountOrZero(c.amount) > 0)
         .map(
           (c, i) =>
             `child ${i + 1}: ${c.stageLabel ?? formatKES(Number(c.amount))} in ${c.years} yrs`
@@ -359,13 +359,13 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
       return `${parts.length} ${parts.length === 1 ? "child" : "children"} — ${parts.join("; ")}`.slice(0, 240);
     }
     if (config.builder === "expenses-months" && Number(expenses) > 0) {
-      return `${coverMonths} months of cover × ${formatKES(Number(expenses))} monthly expenses`;
+      return `${coverMonths} months of cover × ${formatKES(amountOrZero(expenses))} monthly expenses`;
     }
     if (config.builder === "price-deposit" && Number(price) > 0) {
-      return `${depositPct}% deposit on a ${formatKES(Number(price))} property`;
+      return `${depositPct}% deposit on a ${formatKES(amountOrZero(price))} property`;
     }
     if (config.builder === "income" && Number(income) > 0) {
-      return `target income ${formatKES(Number(income))}/month for life via the 4% rule`;
+      return `target income ${formatKES(amountOrZero(income))}/month for life via the 4% rule`;
     }
     return undefined;
   }
@@ -734,11 +734,11 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
             </p>
 
             <p className="mt-3 rounded-xl bg-canvas p-3 text-xs text-ink-soft">
-              {formatKES(Number(income) || 0)}/mo now × {Math.round(replacement * 100)}% ={" "}
-              <strong>{formatKES(Math.round((Number(income) || 0) * replacement))}/mo</strong> in
+              {formatKES(amountOrZero(income))}/mo now × {Math.round(replacement * 100)}% ={" "}
+              <strong>{formatKES(Math.round(amountOrZero(income) * replacement))}/mo</strong> in
               retirement, drawn at {Math.round(withdrawal * 100)}% a year →{" "}
               <strong>
-                {formatKES(potFor(Number(income) || 0, replacement, withdrawal))}
+                {formatKES(potFor(amountOrZero(income), replacement, withdrawal))}
               </strong>
               . An estimate, not a promise.
             </p>
@@ -932,7 +932,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
               <ul className="mt-2 space-y-2 text-sm">
                 {multi.items.map((item, i) => {
                   const child = children.filter(
-                    (c) => Number(c.amount) > 0 && Number(c.years) > 0
+                    (c) => amountOrZero(c.amount) > 0 && Number(c.years) > 0
                   )[i];
                   return (
                     <li key={i} className="flex items-center justify-between gap-2">
