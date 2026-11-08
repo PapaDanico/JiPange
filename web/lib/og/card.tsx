@@ -46,35 +46,42 @@ export async function ogCard(title: string, kicker = "Free · Anonymous · Built
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          backgroundColor: "#fafaf8",
+          // The shell brown of the site's one dark surface (the hero passbook).
+          // A light card disappears into a white WhatsApp bubble; this one is
+          // recognisable in a feed before any word of it is read.
+          backgroundColor: "#3a2e26",
           padding: "64px 72px",
           fontFamily: "Source Serif 4",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
-          {/* eslint-disable-next-line @next/next/no-img-element -- satori context, not the DOM */}
-          <img src={logoSrc} width={72} height={72} alt="" />
-          <div style={{ fontSize: 40, fontWeight: 600, color: "#6b5b4d" }}>JiPange</div>
-        </div>
-
-        <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 22 }}>
+          {/* The shield is dark-on-dark at this size, so it sits on a paper tile. */}
           <div
             style={{
-              fontSize: 22,
-              letterSpacing: "0.14em",
-              textTransform: "uppercase",
-              color: "#946213",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: 84,
+              height: 84,
+              borderRadius: 20,
+              backgroundColor: "#fafaf8",
             }}
           >
-            {kicker}
+            {/* eslint-disable-next-line @next/next/no-img-element -- satori context, not the DOM */}
+            <img src={logoSrc} width={64} height={64} alt="" />
           </div>
+          <div style={{ fontSize: 42, fontWeight: 600, color: "#fafaf8" }}>JiPange</div>
+        </div>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: 26 }}>
+          <div style={{ fontSize: 28, color: "#e8a838" }}>{kicker}</div>
           <div
             style={{
               fontSize: titleFontSize(title),
               fontWeight: 600,
-              color: "#171717",
+              color: "#fafaf8",
               lineHeight: 1.12,
-              letterSpacing: "-0.015em",
+              letterSpacing: "-0.02em",
               maxWidth: 1000,
             }}
           >
@@ -82,9 +89,9 @@ export async function ogCard(title: string, kicker = "Free · Anonymous · Built
           </div>
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 28 }}>
           <div style={{ display: "flex", width: 120, height: 8, backgroundColor: "#e8a838", borderRadius: 4 }} />
-          <div style={{ fontSize: 26, color: "#7a6b5e" }}>{new URL(SITE_URL).host}</div>
+          <div style={{ fontSize: 28, color: "#d6c7b2" }}>{new URL(SITE_URL).host}</div>
         </div>
       </div>
     ),
