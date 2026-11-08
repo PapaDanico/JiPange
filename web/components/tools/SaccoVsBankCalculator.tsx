@@ -1,6 +1,6 @@
 "use client";
 
-import { positiveAmount } from "@/lib/money";
+import { positiveAmount, amountOrZero } from "@/lib/money";
 import { useMemo } from "react";
 import { compareLoanProducts, type LoanProductTier } from "@/lib/loan-comparison";
 import { MAX_TERM_MONTHS } from "@/lib/loans";
@@ -143,7 +143,7 @@ export default function SaccoVsBankCalculator() {
           <CalculatorDisclaimer payroll={false} />
 
           <ShareResultButton
-            message={`⚖️ *SACCO vs Bank*\n\nFor a ${formatKES(Number(amount))} loan over ${termMonths} months:\nSACCO: ${formatKES(results[0].totalRepaid)} total\nBank: ${formatKES(results[1].totalRepaid)} total\nDigital lender: ${formatKES(results[2].totalRepaid)} total\n\nCompare yours → jipangefinance.org/tools/sacco-vs-bank`}
+            message={`⚖️ *SACCO vs Bank*\n\nFor a ${formatKES(amountOrZero(amount))} loan over ${termMonths} months:\nSACCO: ${formatKES(results[0].totalRepaid)} total\nBank: ${formatKES(results[1].totalRepaid)} total\nDigital lender: ${formatKES(results[2].totalRepaid)} total\n\nCompare yours → jipangefinance.org/tools/sacco-vs-bank`}
           />
         </div>
         <ExportCardButton containerRef={resultsRef} filename="sacco-vs-bank" />

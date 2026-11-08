@@ -171,7 +171,7 @@ export default function InvestmentReturnsCalculator() {
             Drag to explore instantly
           </label>
           <span className="text-sm font-semibold text-primary">
-            {formatKES(Number(monthly) || 0)}/mo
+            {formatKES(amountOrZero(monthly))}/mo
           </span>
         </div>
         <input

@@ -1,6 +1,6 @@
 "use client";
 
-import { positiveAmount } from "@/lib/money";
+import { positiveAmount, amountOrZero } from "@/lib/money";
 import { useMemo } from "react";
 import { calculateLoanAmortization, MAX_TERM_MONTHS } from "@/lib/loans";
 import { formatKES } from "@/lib/budget";
@@ -158,7 +158,7 @@ export default function LoanRepaymentCalculator() {
               insight={`Loss aversion means debt pain is felt more acutely than investment gains of the same amount feel good. That's useful here: at ${annualRate}% annual interest, paying down this loan early delivers a guaranteed, tax-free return equal to the rate — which very few savings products can beat. The total interest above is money already allocated to the lender; every extra payment reclaims a share of it.`}
             />
             <ShareResultButton
-              message={`🏦 *My Loan Repayment*\n\nLoan amount: ${formatKES(Number(principal))}\nMonthly instalment: ${formatKES(result.monthlyPayment)}\nTotal interest: ${formatKES(result.totalInterest)}\n\nCalculate yours → jipangefinance.org/tools/loan-repayment`}
+              message={`🏦 *My Loan Repayment*\n\nLoan amount: ${formatKES(amountOrZero(principal))}\nMonthly instalment: ${formatKES(result.monthlyPayment)}\nTotal interest: ${formatKES(result.totalInterest)}\n\nCalculate yours → jipangefinance.org/tools/loan-repayment`}
             />
           </div>
           <ExportCardButton containerRef={resultsRef} filename="loan-repayment" />

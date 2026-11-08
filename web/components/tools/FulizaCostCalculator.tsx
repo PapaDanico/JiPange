@@ -1,6 +1,6 @@
 "use client";
 
-import { positiveAmount } from "@/lib/money";
+import { positiveAmount, amountOrZero } from "@/lib/money";
 import { useMemo } from "react";
 import { calculateFulizaCost, FULIZA_MAX_LIMIT } from "@/lib/fuliza";
 import { formatKES } from "@/lib/budget";
@@ -75,14 +75,14 @@ export default function FulizaCostCalculator() {
             {overLimit && (
               <p className="rounded-2xl border border-danger bg-danger-soft px-4 py-3 text-sm text-danger-deep">
                 Fuliza&rsquo;s maximum overdraft is {formatKES(FULIZA_MAX_LIMIT)}, so you cannot
-                actually draw {formatKES(Number(amount))} on it. The figures below are what the top
+                actually draw {formatKES(amountOrZero(amount))} on it. The figures below are what the top
                 fee band would cost if you could — treat them as a comparison, not a quote.
               </p>
             )}
             <ResultCard headline
               label="Total cost of borrowing"
               value={formatKES(result.totalFee)}
-              sublabel={`Borrowing ${formatKES(Number(amount))} for ${days} days costs ${formatKES(result.totalFee)} — equivalent to roughly ${Math.round(result.annualisedApr)}% APR.`}
+              sublabel={`Borrowing ${formatKES(amountOrZero(amount))} for ${days} days costs ${formatKES(result.totalFee)} — equivalent to roughly ${Math.round(result.annualisedApr)}% APR.`}
               tone="danger"
             />
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -98,7 +98,7 @@ export default function FulizaCostCalculator() {
             <ResultCard
               label="If you borrow like this 12 times this year"
               value={formatKES(result.totalFee * 12)}
-              sublabel={`${Math.round((result.totalFee * 12 / Number(amount)) * 100)}% of your ${formatKES(Number(amount))} borrowing need — just in fees. Build an emergency float in an MMF and you'll never pay this again.`}
+              sublabel={`${Math.round((result.totalFee * 12 / Number(amount)) * 100)}% of your ${formatKES(amountOrZero(amount))} borrowing need — just in fees. Build an emergency float in an MMF and you'll never pay this again.`}
               tone="danger"
             />
             <p className="text-xs text-ink-soft">
@@ -131,7 +131,7 @@ export default function FulizaCostCalculator() {
             <CalculatorDisclaimer payroll={false} tariffs={["fuliza"]} />
 
             <ShareResultButton
-              message={`📱 *True Cost of Fuliza*\n\nBorrowing ${formatKES(Number(amount))} for ${days} days costs ${formatKES(result.totalFee)} in fees.\nThat's about ${Math.round(result.annualisedApr)}% APR.\n\nCalculate yours → jipangefinance.org/tools/fuliza-cost`}
+              message={`📱 *True Cost of Fuliza*\n\nBorrowing ${formatKES(amountOrZero(amount))} for ${days} days costs ${formatKES(result.totalFee)} in fees.\nThat's about ${Math.round(result.annualisedApr)}% APR.\n\nCalculate yours → jipangefinance.org/tools/fuliza-cost`}
             />
           </div>
           <ExportCardButton
@@ -139,7 +139,7 @@ export default function FulizaCostCalculator() {
             filename="fuliza-cost"
             title="The True Cost of Fuliza"
             assumptions={[
-              { label: "Amount borrowed", value: formatKES(Number(amount) || 0) },
+              { label: "Amount borrowed", value: formatKES(amountOrZero(amount)) },
               { label: "Days carried", value: `${days} days` },
               { label: "Chargeable days", value: `${result?.chargeableDays ?? 0}` },
               { label: "Daily fee", value: formatKES(result?.dailyFee ?? 0) },

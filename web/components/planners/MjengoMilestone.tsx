@@ -13,6 +13,7 @@ import {
 import { getStoredCalculations } from "@/lib/storage";
 import { useStorageValue } from "@/lib/hooks";
 import { CBK_BSAR_2025_CITE, CBK_MORTGAGE_AVG_RATE_PCT } from "@/lib/kenya-stats";
+import { amountOrZero } from "@/lib/money";
 
 /** Assumptions for the safeguard estimate — visible in the UI copy. */
 const SACCO_LOAN_RATE = 0.12;
@@ -37,7 +38,7 @@ export default function MjengoMilestone() {
     return stored && stored.netMonthly > 0 ? stored.netMonthly : null;
   }, () => null);
 
-  const parsedContribution = Math.max(0, Number(contribution) || 0);
+  const parsedContribution = amountOrZero(contribution);
   const plan = useMemo(
     () => mjengoPlan({ targetPropertyValue: propertyValue, monthlyContribution: parsedContribution }),
     [propertyValue, parsedContribution]

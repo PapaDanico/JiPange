@@ -865,6 +865,37 @@ for (const path of ["/tools/fuliza-cost", "/tools/sha-health", "/tools/fire-numb
   });
 }
 
+/* Finite and sane is still not the whole story: `1e308` used to reach these
+ * pages' arithmetic or labels through a raw Number(x) that skipped the parsers,
+ * and printed a 300-digit figure that made the page up to 2,675px wider than a
+ * phone. Found by driving every field at 390px with absurd values and measuring
+ * horizontal overflow. Each field is filled, then the page is measured. */
+for (const path of [
+  "/tools/investment-returns",
+  "/tools/money-runway",
+  "/planners/education",
+  "/planners/home",
+  "/planners/retirement",
+  "/planners/hustle",
+]) {
+  test(`${path}: a typed 1e308 never widens the page on a phone`, async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto(path, { waitUntil: "networkidle" });
+    const fields = page.locator(
+      "input:not([type=range]):not([type=checkbox]):not([type=radio]):not([type=hidden])",
+    );
+    const n = await fields.count();
+    expect(n, "no fields — this test would be vacuous").toBeGreaterThan(0);
+    for (let i = 0; i < n; i++) {
+      if (!(await fields.nth(i).isVisible())) continue;
+      await fields.nth(i).fill("1e308").catch(() => {});
+    }
+    await page.waitForTimeout(400);
+    const over = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    expect(over, `page is ${over}px wider than the screen`).toBeLessThanOrEqual(1);
+  });
+}
+
 /* The two hand-rolled planner inputs overlaid a unit suffix with no right
  * padding, so the placeholder and typed digits ran underneath "Ksh/yr". */
 test("planner inputs leave room for their unit suffix, and are labelled", async ({ page }) => {
