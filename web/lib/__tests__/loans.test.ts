@@ -39,6 +39,19 @@ describe("calculateLoanAmortization", () => {
     expect(result.totalPaid - result.totalInterest).toBeCloseTo(1_200_000, 1);
   });
 
+  it("rejects fractional month counts rather than returning a partial schedule", () => {
+    const fractional = calculateLoanAmortization({
+      principal: 12_000, annualRate: 0.12, termMonths: 12.5,
+    });
+    expect(fractional.schedule).toHaveLength(0);
+    expect(fractional.monthlyPayment).toBe(0);
+    const whole = calculateLoanAmortization({
+      principal: 12_000, annualRate: 0.12, termMonths: 12,
+    });
+    expect(whole.schedule).toHaveLength(12);
+    expect(whole.schedule.at(-1)?.remainingBalance).toBe(0);
+  });
+
   it("handles a zero/negative principal or term gracefully", () => {
     expect(calculateLoanAmortization({ principal: 0, annualRate: 0.1, termMonths: 12 }).schedule).toEqual([]);
     expect(calculateLoanAmortization({ principal: 1000, annualRate: 0.1, termMonths: 0 }).schedule).toEqual([]);
