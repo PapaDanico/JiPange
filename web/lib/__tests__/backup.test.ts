@@ -109,6 +109,25 @@ describe("importSnapshot", () => {
     expect(fake.store.has("evil-key")).toBe(false);
   });
 
+  it("rejects a null, array, or malformed older backup without touching saved data", async () => {
+    const { importSnapshot } = await backup();
+    fake.store.set("jipange:profile", '{"fullName":"Original"}');
+    const base = { app: "jipange", version: 1, data: { "jipange:profile": '{"fullName":"Other"}' } };
+    for (const input of ["null", JSON.stringify({ ...base, data: [] }), JSON.stringify({ ...base, version: 0 })]) {
+      expect(() => importSnapshot(input)).toThrow();
+      expect(fake.store.get("jipange:profile")).toBe('{"fullName":"Original"}');
+    }
+  });
+
+  it("validates every imported value before writing any of them", async () => {
+    const { importSnapshot } = await backup();
+    fake.store.set("jipange:profile", '{"fullName":"Original"}');
+    const data = { "jipange:profile": '{"fullName":"Changed"}', "jipange:goals": "not JSON" };
+    expect(() => importSnapshot(JSON.stringify({ app: "jipange", version: 1, data }))).toThrow(/damaged/);
+    expect(fake.store.get("jipange:profile")).toBe('{"fullName":"Original"}');
+    expect(fake.store.has("jipange:goals")).toBe(false);
+  });
+
   it("rejects non-JSON, foreign files, and newer versions", async () => {
     const { importSnapshot } = await backup();
     expect(() => importSnapshot("not json")).toThrow(/valid JSON/);
