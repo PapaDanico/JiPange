@@ -44,6 +44,15 @@ describe("compareLoanProducts", () => {
     expect(mshwari.monthlyPayment).toBeNull();
   });
 
+  it("rejects non-finite amounts, fractional months, and terms beyond engine limits", () => {
+    expect(compareLoanProducts(Number.NaN, 12)).toEqual([]);
+    expect(compareLoanProducts(Number.POSITIVE_INFINITY, 12)).toEqual([]);
+    expect(compareLoanProducts(1e16, 12)).toEqual([]);
+    expect(compareLoanProducts(100_000, 12.5)).toEqual([]);
+    expect(compareLoanProducts(100_000, 601)).toEqual([]);
+    expect(compareLoanProducts(100_000, Number.POSITIVE_INFINITY)).toEqual([]);
+  });
+
   it("returns an empty array for non-positive principal or term", () => {
     expect(compareLoanProducts(0, 6)).toEqual([]);
     expect(compareLoanProducts(100_000, 0)).toEqual([]);
