@@ -65,9 +65,9 @@ export default function NumberField({
             // Preserve the sign: the former digit-only filter silently changed
             // a pasted debt of -5000 into a positive 5000.
             const pasted = e.clipboardData.getData("text").trim()
-              .replace(/^(?:KES|KSH)\\s*/i, "")
+              .replace(/^(?:KES|KSH)[ ]*/i, "")
               .replace(/,/g, "");
-            if (/^-?\\d+(?:\\.\\d+)?$/.test(pasted)) onChange(pasted);
+            if (/^-?[0-9]+(?:[.][0-9]+)?$/.test(pasted)) onChange(pasted);
           }
           placeholder={placeholder}
           aria-describedby={hasError ? `${id}-error` : undefined}
