@@ -76,7 +76,7 @@ export function importSnapshot(json: string): { restored: number } {
     throw new Error("That file isn't a JiPange backup.");
   }
   if (!Number.isInteger(file.version) || file.version !== BACKUP_VERSION) {
-    throw new Error("This backup was made by a newer version of JiPange — update and try again.");
+    throw new Error("This JiPange backup version is unsupported — update the app or choose a compatible backup.");
   }
 
   // Validate the complete payload before changing a single existing key.
@@ -95,8 +95,9 @@ export function importSnapshot(json: string): { restored: number } {
     }
   }
 
-  // localStorage can reject writes (quota or browser policy). Roll back every
-  // change already made so users never receive half of a restored snapshot.
+  // localStorage can reject writes (quota or browser policy). Roll back
+  // successfully written keys when possible; a browser rejecting rollback
+  // cannot guarantee atomicity, so a failure must never be reported as success.
   const previous = new Map<string, string | null>();
   for (const [key] of entries) previous.set(key, window.localStorage.getItem(key));
   const written: string[] = [];
