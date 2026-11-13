@@ -65,7 +65,7 @@ export default function PrivacyPage() {
     <div className="flex flex-1 flex-col items-center px-6 py-12">
       <div className="w-full max-w-2xl">
         <h1 className="text-2xl font-semibold text-primary">Privacy notice</h1>
-        <p className="mt-1 text-sm text-ink-soft">Last updated: September 2026</p>
+        <p className="mt-1 text-sm text-ink-soft">Last updated: 13 November 2026</p>
 
         <div className="mt-4 rounded-2xl border border-[#CFE3CF] bg-[#f0f7f0] px-5 py-4 text-sm text-success-deep">
           <strong>Short version:</strong> every calculator — and the action plan — runs
@@ -225,6 +225,14 @@ export default function PrivacyPage() {
               calls neither today. Data held on your device is protected by your browser&apos;s own site
               isolation. Where a provider holds data, it is held under that provider&apos;s
               security terms.
+            </p>
+            <p className="mt-2">
+              Your data is in your browser on your own device, so on a shared phone or computer
+              anyone who can open your browser profile can open it: lock the device, and clear
+              the site&apos;s data before handing it on. Because we hold no personal data of yours
+              on a server, there is nothing on our side to be breached. If that ever changes, the
+              Data Protection Act requires us to tell the Data Commissioner and the people
+              affected without delay, and this page would change first.
             </p>
           </section>
 
