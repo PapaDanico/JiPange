@@ -45,7 +45,7 @@ export default function SaccoVsBankCalculator() {
     const principal = positiveAmount(amount);
     const months = positiveAmount(termMonths);
     if (principal === null || months === null) return null;
-    if (months > MAX_TERM_MONTHS) return null;
+    if (!Number.isSafeInteger(months) || months > MAX_TERM_MONTHS) return null;
     return compareLoanProducts(principal, months);
   }, [amount, termMonths]);
 

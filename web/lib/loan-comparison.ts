@@ -1,5 +1,5 @@
-import { calculateLoanAmortization } from "./loans";
-import { round2 } from "./money";
+import { calculateLoanAmortization, MAX_TERM_MONTHS } from "./loans";
+import { MAX_AMOUNT, round2 } from "./money";
 import { calculateFulizaCost, FULIZA_MAX_LIMIT } from "./fuliza";
 
 export type LoanProductTier = "green" | "amber" | "red";
@@ -28,7 +28,8 @@ const MSHWARI_FACILITY_FEE_PER_CYCLE = 0.075; // 7.5% per 30-day cycle — Safar
  * their rows are scaled to the same term for rough comparability only.
  */
 export function compareLoanProducts(principal: number, termMonths: number): LoanProductComparison[] {
-  if (principal <= 0 || termMonths <= 0) return [];
+  if (!Number.isFinite(principal) || principal <= 0 || principal > MAX_AMOUNT ||
+      !Number.isSafeInteger(termMonths) || termMonths <= 0 || termMonths > MAX_TERM_MONTHS) return [];
 
   const sacco = calculateLoanAmortization({
     principal,
