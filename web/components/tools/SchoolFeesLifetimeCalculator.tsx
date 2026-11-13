@@ -16,11 +16,11 @@ import {
 } from "@/lib/education-plan";
 import { assumedMmfYield } from "@/lib/mmf-assumption";
 import { formatKES } from "@/lib/budget";
-import { amountOrZero, positiveAmount } from "@/lib/money";
+import { amountOrZero, positiveAmount, typedNumber } from "@/lib/money";
 
 /** Optional money values must not silently become zero when malformed. */
 function validOptionalMoney(raw: string): boolean {
-  return raw.trim() === "" || (Number.isFinite(Number(raw)) && Number(raw) >= 0 && amountOrZero(raw) === Number(raw));
+  return raw.trim() === "" || (Number.isFinite(typedNumber(raw)) && typedNumber(raw) >= 0 && amountOrZero(raw) === typedNumber(raw));
 }
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
@@ -113,7 +113,7 @@ export default function SchoolFeesLifetimeCalculator() {
   const result = useMemo(() => {
     // A damaged saved scenario or an invalid user input must not be converted
     // into a plausible-looking lower school-fees estimate.
-    const escalation = Number(escalationPct);
+    const escalation = typedNumber(escalationPct);
     if (!Number.isFinite(escalation) || escalation < 0 || escalation > 20 ||
         !validOptionalMoney(alreadySaved) || !validOptionalMoney(netPay) ||
         (university && (positiveAmount(uniFee) === null))) return null;

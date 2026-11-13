@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { MAX_AMOUNT } from "@/lib/money";
+import { MAX_AMOUNT, typedNumber } from "@/lib/money";
 
 export default function NumberField({
   id,
@@ -35,7 +35,7 @@ export default function NumberField({
   max?: number;
 }) {
   const [touched, setTouched] = useState(false);
-  const num = Number(value);
+  const num = typedNumber(value);
   // Reject hostile but finite magnitudes as well as Infinity/NaN. A field
   // without a custom max must still respect the global arithmetic bound.
   const maxAllowed = Math.min(max ?? MAX_AMOUNT, MAX_AMOUNT);
@@ -65,7 +65,10 @@ export default function NumberField({
             // Preserve the sign: the former digit-only filter silently changed
             // a pasted debt of -5000 into a positive 5000.
             const pasted = e.clipboardData.getData("text").trim()
-              .replace(/^(?:KES|KSH)[ ]*/i, "")
+              // A leading or trailing currency word ("KSh 50,000", "50,000 /=") is
+              // dropped; whatever remains must still be a plain number.
+              .replace(/^[a-z]{2,4}[. ]*/i, "")
+              .replace(/[ ]*(?:[a-z]{2,4}|\/=)[.]?$/i, "")
               .replace(/,/g, "");
             if (/^-?[0-9]+(?:[.][0-9]+)?$/.test(pasted)) onChange(pasted);
           }}

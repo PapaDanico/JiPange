@@ -1,6 +1,6 @@
 "use client";
 
-import { MAX_AMOUNT, amountOrZero, positiveAmount } from "@/lib/money";
+import { MAX_AMOUNT, amountOrZero, positiveAmount, typedNumber } from "@/lib/money";
 
 const MAX_GOAL_YEARS = 100;
 const MAX_RETURN_PERCENT = 100;
@@ -79,7 +79,7 @@ export default function SavingsGoalCalculator() {
   const result = useMemo(() => {
     const targetFutureValue = positiveAmount(target);
     const yearsValue = positiveAmount(years);
-    const ratePercent = Number(annualReturn);
+    const ratePercent = typedNumber(annualReturn);
     if (targetFutureValue === null || yearsValue === null || yearsValue > MAX_GOAL_YEARS ||
         !Number.isFinite(ratePercent) || ratePercent < 0 || ratePercent > MAX_RETURN_PERCENT ||
         (currentSavings !== "" && (Number(currentSavings) < 0 || !Number.isFinite(Number(currentSavings)) ||
@@ -99,7 +99,7 @@ export default function SavingsGoalCalculator() {
     const targetFutureValue = positiveAmount(target);
     const yearsValue = positiveAmount(years);
     // The `> 1 year` rule is the sensitivity table's own, and is kept.
-    const ratePercent = Number(annualReturn);
+    const ratePercent = typedNumber(annualReturn);
     if (targetFutureValue === null || yearsValue === null || yearsValue <= 1 || yearsValue > MAX_GOAL_YEARS ||
         !Number.isFinite(ratePercent) || ratePercent < 0 || ratePercent > MAX_RETURN_PERCENT ||
         (currentSavings !== "" && (Number(currentSavings) < 0 || !Number.isFinite(Number(currentSavings)) ||
@@ -144,7 +144,7 @@ export default function SavingsGoalCalculator() {
     const targetFutureValue = positiveAmount(target);
     const yearsValue = positiveAmount(years);
     if (!result || targetFutureValue === null || yearsValue === null || yearsValue > MAX_GOAL_YEARS) return [];
-    const rate = Number(annualReturn) / 100;
+    const rate = typedNumber(annualReturn) / 100;
     const pv = amountOrZero(currentSavings);
     const step = Math.max(1, Math.ceil(yearsValue / 30));
     const points: GrowthDataPoint[] = [];

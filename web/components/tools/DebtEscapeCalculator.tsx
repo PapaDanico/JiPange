@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import { calculateDebtStack, compareStrategies, effectiveAprPct, monthlyRateOrNull, PRESET_LENDERS, type DebtStrategy } from "@/lib/debt";
 import { assumedMmfYieldPct } from "@/lib/mmf-assumption";
 import { formatKES } from "@/lib/budget";
-import { amountOrZero, positiveAmount } from "@/lib/money";
+import { amountOrZero, positiveAmount, typedNumber } from "@/lib/money";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import BehavioralInsightStrip from "./BehavioralInsightStrip";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
@@ -51,8 +51,8 @@ export default function DebtEscapeCalculator() {
     const fee = loan.fee ?? "";
     return positiveAmount(loan.balance) === null ||
       monthlyRateOrNull(loan.rate) === null ||
-      (fee.trim() !== "" && (Number(fee) < 0 || !Number.isFinite(Number(fee)) ||
-        amountOrZero(fee) !== Number(fee)));
+      (fee.trim() !== "" && (typedNumber(fee) < 0 || !Number.isFinite(typedNumber(fee)) ||
+        amountOrZero(fee) !== typedNumber(fee)));
   });
 
   const loanInputs = useMemo(
