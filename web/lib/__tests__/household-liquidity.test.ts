@@ -43,6 +43,17 @@ describe("simulateHouseholdLiquidity", () => {
     expect(simulateHouseholdLiquidity({ ...household, obligations: [{ month: 1.5, amount: 100 }] })).toBeNull();
   });
 
+  it("rejects aggregate amounts above the engine's supported bound", () => {
+    expect(simulateHouseholdLiquidity({
+      ...household, essentialExpenses: 1e15, monthlyDebtService: 1e15,
+    })).toBeNull();
+    expect(simulateHouseholdLiquidity({
+      ...household, obligations: [
+        { month: 1, amount: 1e15 }, { month: 1, amount: 1e15 },
+      ],
+    })).toBeNull();
+  });
+
   it("distinguishes zero expenses from infinite runway claims", () => {
     const result = simulateHouseholdLiquidity({
       liquidSavings: 0, monthlyIncome: 0, essentialExpenses: 0, monthlyDebtService: 0,
