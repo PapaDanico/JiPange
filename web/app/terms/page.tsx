@@ -11,7 +11,7 @@ export default function TermsPage() {
     <div className="flex flex-1 flex-col items-center px-6 py-12">
       <div className="w-full max-w-2xl">
         <h1 className="text-2xl font-semibold text-primary">Terms of Use</h1>
-        <p className="mt-1 text-sm text-ink-soft">Last updated: September 2026</p>
+        <p className="mt-1 text-sm text-ink-soft">Last updated: 13 November 2026</p>
 
         <div className="mt-8 space-y-6 text-sm leading-relaxed text-ink-soft">
           <section>
@@ -45,7 +45,17 @@ export default function TermsPage() {
             </p>
             <p className="mt-2">
               Always confirm figures against your payslip or KRA&apos;s own tools, and consult
-              a licensed professional before making significant financial decisions.
+              a licensed professional before making significant financial decisions. Tax and
+              statutory rates change by Finance Act or notice, and each figure is only as
+              current as the date shown beside it.
+            </p>
+            <p className="mt-2">
+              Suggestions in an action plan or a tool are educational and follow fixed, published
+              rules applied to the numbers you enter. They are not a recommendation made for you
+              by an adviser, and we do not assess whether any product suits you. Giving investment
+              advice in Kenya requires a licence from the Capital Markets Authority, which we do
+              not hold; if someone offers you advice, check their licence with the Authority
+              first.
             </p>
           </section>
 
@@ -121,7 +131,9 @@ export default function TermsPage() {
               To the fullest extent permitted by law, JiPange and its operators are not liable
               for any loss or damage arising from your use of, or reliance on, the Service,
               including financial decisions made based on calculator results or action
-              plans.
+              plans. Nothing in these Terms excludes or limits liability that cannot lawfully
+              be excluded, including for fraud or dishonesty, or any right you have under
+              Kenya&apos;s consumer-protection law.
             </p>
           </section>
 
@@ -135,7 +147,11 @@ export default function TermsPage() {
 
           <section>
             <h2 className="text-base font-semibold text-primary">11. Governing law</h2>
-            <p className="mt-2">These Terms are governed by the laws of Kenya.</p>
+            <p className="mt-2">
+              These Terms are governed by the laws of Kenya, and the courts of Kenya have
+              jurisdiction. If a part of these Terms is found unenforceable, the rest still
+              applies. Please write to us first; most problems are quicker to settle that way.
+            </p>
           </section>
 
           <section>
