@@ -62,9 +62,13 @@ export default function NumberField({
           onChange={(event) => onChange(event.target.value)}
           onPaste={(e) => {
             e.preventDefault();
-            const pasted = e.clipboardData.getData("text").replace(/,/g, "").replace(/[^\d.]/g, "");
-            if (pasted) onChange(pasted);
-          }}
+            // Preserve the sign: the former digit-only filter silently changed
+            // a pasted debt of -5000 into a positive 5000.
+            const pasted = e.clipboardData.getData("text").trim()
+              .replace(/^(?:KES|KSH)\\s*/i, "")
+              .replace(/,/g, "");
+            if (/^-?\\d+(?:\\.\\d+)?$/.test(pasted)) onChange(pasted);
+          }
           placeholder={placeholder}
           aria-describedby={hasError ? `${id}-error` : undefined}
           aria-invalid={hasError || undefined}
@@ -91,7 +95,7 @@ export default function NumberField({
             ? "Enter a valid number"
             : tooHigh
               ? `That looks too high — enter ${maxAllowed.toLocaleString()} or less`
-            : min > 0
+              : min > 0
               ? `Must be at least ${min.toLocaleString()}`
               : "Enter a positive number"}
         </p>
