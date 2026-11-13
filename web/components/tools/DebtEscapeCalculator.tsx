@@ -44,6 +44,17 @@ export default function DebtEscapeCalculator() {
   ]);
   const [budget, setBudget] = useStickyState("jipange:tool:debt-escape:budget", "");
 
+  // A loan with an entered balance must never disappear from the payoff plan
+  // just because its rate or settlement fee is invalid.
+  const invalidLoan = loans.some((loan) => {
+    if (loan.balance.trim() === "") return false;
+    const fee = loan.fee ?? "";
+    return positiveAmount(loan.balance) === null ||
+      monthlyRateOrNull(loan.rate) === null ||
+      (fee.trim() !== "" && (Number(fee) < 0 || !Number.isFinite(Number(fee)) ||
+        amountOrZero(fee) !== Number(fee)));
+  });
+
   const loanInputs = useMemo(
     () =>
       loans
@@ -59,8 +70,8 @@ export default function DebtEscapeCalculator() {
   );
 
   const result = useMemo(
-    () => calculateDebtStack(loanInputs, amountOrZero(budget)),
-    [loanInputs, budget]
+    () => invalidLoan ? null : calculateDebtStack(loanInputs, amountOrZero(budget)),
+    [loanInputs, budget, invalidLoan]
   );
 
   const interestThreshold = useMemo(
@@ -69,9 +80,9 @@ export default function DebtEscapeCalculator() {
   );
 
   const hasInput = positiveAmount(budget) !== null && loanInputs.length > 0;
-  const tooLow = hasInput && amountOrZero(budget) <= interestThreshold;
-  const comparison = useMemo(() => compareStrategies(loanInputs, amountOrZero(budget)), [loanInputs, budget]);
-  const horizonExceeded = hasInput && !tooLow && result === null;
+  const tooLow = !invalidLoan && hasInput && amountOrZero(budget) <= interestThreshold;
+  const comparison = useMemo(() => invalidLoan ? [] : compareStrategies(loanInputs, amountOrZero(budget)), [loanInputs, budget, invalidLoan]);
+  const horizonExceeded = !invalidLoan && hasInput && !tooLow && result === null;
 
   const resultsRef = useScrollIntoView<HTMLDivElement>(result !== null);
 
@@ -219,6 +230,13 @@ export default function DebtEscapeCalculator() {
         placeholder="e.g. 8000"
         min={1}
       />
+
+      {invalidLoan && (
+        <div role="alert" className="rounded-xl border border-danger bg-[#FDECEA] p-3 text-sm text-danger">
+          Check every entered loan: balances must be positive, monthly rates valid,
+          and settlement fees non-negative. No debt has been excluded from the estimate.
+        </div>
+      )}
 
       {tooLow && (
         <div className="rounded-xl border border-danger bg-[#FDECEA] p-3 text-sm text-danger">
