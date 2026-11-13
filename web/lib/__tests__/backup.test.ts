@@ -128,13 +128,37 @@ describe("importSnapshot", () => {
     expect(fake.store.has("jipange:goals")).toBe(false);
   });
 
+  it("rolls back earlier keys when a later browser write fails", async () => {
+    const { importSnapshot } = await backup();
+    fake.store.set("jipange:profile", '{"fullName":"Original"}');
+    const storage = fake.fakeWindow.localStorage;
+    const realSet = storage.setItem;
+    const spy = vi.spyOn(storage, "setItem").mockImplementation((key, value) => {
+      if (key === "jipange:goals") throw new Error("QuotaExceededError");
+      realSet(key, value);
+    });
+    const data = { "jipange:profile": '{"fullName":"Changed"}', "jipange:goals": "[]" };
+    expect(() => importSnapshot(JSON.stringify({ app: "jipange", version: 1, data })))
+      .toThrow(/could not save/);
+    expect(fake.store.get("jipange:profile")).toBe('{"fullName":"Original"}');
+    expect(fake.store.has("jipange:goals")).toBe(false);
+    spy.mockRestore();
+  });
+
+  it("rejects non-string app values rather than silently skipping damaged keys", async () => {
+    const { importSnapshot } = await backup();
+    const data = { "jipange:profile": '{"fullName":"Changed"}', "jipange:goals": 10 };
+    expect(() => importSnapshot(JSON.stringify({ app: "jipange", version: 1, data }))).toThrow(/damaged/);
+    expect(fake.store.has("jipange:profile")).toBe(false);
+  });
+
   it("rejects non-JSON, foreign files, and newer versions", async () => {
     const { importSnapshot } = await backup();
     expect(() => importSnapshot("not json")).toThrow(/valid JSON/);
     expect(() => importSnapshot('{"app":"else","data":{}}')).toThrow(/isn't a JiPange backup/);
     expect(() =>
       importSnapshot('{"app":"jipange","version":99,"data":{"jipange:x":"1"}}')
-    ).toThrow(/newer version/);
+    ).toThrow(/unsupported/);
   });
 });
 
