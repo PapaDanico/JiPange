@@ -4,7 +4,7 @@ import PartnersView from "@/components/partners/PartnersView";
 export const metadata: Metadata = {
   title: "Partners & Products — JiPange",
   description:
-    "Kenya's vetted financial product directory: CMA-regulated money market funds, CBK T-bills, SASRA SACCOs, and RBA pension providers — all in one place.",
+    "A directory of Kenyan money market funds, CBK T-bills, SACCOs and pension providers, each shown with the regulator it names and the date its details were surveyed. A listing is not an endorsement.",
 };
 
 export default function PartnersPage() {
@@ -20,8 +20,9 @@ export default function PartnersPage() {
       <div className="w-full max-w-5xl">
         <h1 className="text-2xl font-semibold text-primary">Partners & Products</h1>
         <p className="mt-1 max-w-2xl text-sm text-ink-soft">
-          Vetted, regulated financial products for Kenyans. Filter by type, or follow
-          your personalised recommendation from the 5-question journey.
+          Financial products for Kenyans, each shown with its regulator and the date its
+          details were surveyed. A listing is not an endorsement or a recommendation.
+          Filter by type, or follow your personalised recommendation from the 5-question journey.
         </p>
       </div>
       <div className="mt-8 w-full flex justify-center">
