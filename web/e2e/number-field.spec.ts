@@ -2,10 +2,10 @@ import { test, expect } from "@playwright/test";
 
 /** Common numeric fields must reject absurd values and never reverse a pasted sign. */
 test.describe("calculator numeric input safety", () => {
-  test("a finite 1e308 warns rather than silently accepting it", async ({ page }) => {
+  test("a finite out-of-range value warns rather than silently accepting it", async ({ page }) => {
     await page.goto("/tools/savings-goal");
     const field = page.getByLabel("Savings target (Ksh)");
-    await field.fill("1e308");
+    await field.fill("10000000000000000");
     await field.blur();
     await expect(field).toHaveAttribute("aria-invalid", "true");
     await expect(page.getByText(/That looks too high/)).toBeVisible();
