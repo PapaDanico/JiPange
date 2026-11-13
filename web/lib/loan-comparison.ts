@@ -10,7 +10,7 @@ export interface LoanProductComparison {
   monthlyPayment: number | null;
   totalRepaid: number;
   totalInterest: number;
-  /** Annualised true APR as a decimal (e.g. 0.12 for 12%). Estimated for mobile lenders. */
+  /** Illustrative annualised rate indicator as a decimal. Not a regulated, fee-inclusive APR. */
   apr: number;
   tier: LoanProductTier;
   estimated: boolean;
@@ -64,7 +64,7 @@ export function compareLoanProducts(principal: number, termMonths: number): Loan
       totalInterest: sacco.totalInterest,
       apr: Math.pow(1 + SACCO_MONTHLY_RATE, 12) - 1,
       tier: "green",
-      estimated: false,
+      estimated: true,
     },
     {
       name: "Bank personal loan (~15% p.a.)",

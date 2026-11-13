@@ -67,7 +67,7 @@ export function calculateLoanAmortization(params: {
   if (
     !Number.isFinite(principal) ||
     !Number.isFinite(annualRate) ||
-    !Number.isFinite(termMonths) ||
+    !Number.isSafeInteger(termMonths) ||
     principal <= 0 ||
     termMonths <= 0 ||
     termMonths > MAX_TERM_MONTHS ||

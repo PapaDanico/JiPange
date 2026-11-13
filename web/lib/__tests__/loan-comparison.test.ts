@@ -12,6 +12,12 @@ describe("compareLoanProducts", () => {
     }
   });
 
+  it("labels every assumed lender rate as estimated rather than a verified quote", () => {
+    const results = compareLoanProducts(60_000, 6);
+    expect(results.length).toBeGreaterThan(0);
+    expect(results.every((product) => product.estimated)).toBe(true);
+  });
+
   it("tiers SACCO as green and mobile lenders/Fuliza/M-Shwari as red", () => {
     const results = compareLoanProducts(60_000, 6);
     const byName = Object.fromEntries(results.map((r) => [r.name, r]));

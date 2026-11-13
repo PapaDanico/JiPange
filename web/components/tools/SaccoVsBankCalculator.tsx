@@ -2,7 +2,7 @@
 
 import { positiveAmount, amountOrZero } from "@/lib/money";
 import { useMemo } from "react";
-import { compareLoanProducts, type LoanProductTier } from "@/lib/loan-comparison";
+import { compareLoanProducts } from "@/lib/loan-comparison";
 import { MAX_TERM_MONTHS } from "@/lib/loans";
 import { formatKES } from "@/lib/budget";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
@@ -27,12 +27,6 @@ const TERM_CHIPS = [
   { label: "36 mo", value: "36" },
   { label: "48 mo", value: "48" },
 ];
-
-const TIER_CLASS: Record<LoanProductTier, string> = {
-  green: "text-success",
-  amber: "text-warning",
-  red: "text-danger",
-};
 
 export default function SaccoVsBankCalculator() {
   const [amount, setAmount] = useStickyState("jipange:tool:sacco-vs-bank:amount", "");
@@ -101,8 +95,8 @@ export default function SaccoVsBankCalculator() {
               <div key={product.name} className="rounded-2xl bg-white p-4 shadow-sm">
                 <div className="flex items-start justify-between gap-2">
                   <p className="text-sm font-semibold text-primary">{product.name}</p>
-                  <p className={`text-sm font-semibold ${TIER_CLASS[product.tier]}`}>
-                    ~{Math.round(product.apr * 100)}% APR
+                  <p className="text-sm font-semibold text-primary">
+                    ~{Math.round(product.apr * 100)}% annualised indicator
                   </p>
                 </div>
                 <div className="mt-2 grid grid-cols-2 gap-2 text-xs text-ink-soft">
@@ -118,16 +112,18 @@ export default function SaccoVsBankCalculator() {
                   </p>
                 </div>
                 {product.estimated && (
-                  <p className="mt-1 text-xs text-ink-soft">Estimated — check app for current rate.</p>
+                  <p className="mt-1 text-xs text-ink-soft">Illustrative assumption — obtain a current lender quotation and verify all fees.</p>
                 )}
               </div>
             ))}
           </div>
 
           <p className="text-xs text-ink-soft">
-            Fuliza and M-Shwari are emergency tools, not personal finance tools — their rows above
-            are scaled to the same term for comparison only and will cost far more than shown if
-            repeatedly rolled over.
+            No colour ranking or cheapest-loan recommendation is implied. These are illustrative scenarios, not current lender offers. The annualised indicators use
+            different approximation methods and are not fee-inclusive effective APRs. SACCO and bank
+            rates exclude membership, insurance and processing costs. Fuliza and M-Shwari are short-term
+            facilities; extending their fees across the selected term does not represent an available
+            instalment loan or predict the cost of repeated rollovers.
           </p>
 
           <details className="rounded-2xl bg-white p-4 shadow-sm text-sm text-ink-soft">

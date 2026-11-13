@@ -1,6 +1,6 @@
 import { ogAlt, ogCard, ogContentType, ogSize } from "@/lib/og/card";
 
-const title = "SACCO or bank? Find the cheaper loan";
+const title = "SACCO vs bank: explore borrowing costs";
 
 export const size = ogSize;
 export const contentType = ogContentType;

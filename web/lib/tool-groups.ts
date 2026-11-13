@@ -84,6 +84,13 @@ export const CALCULATOR_GROUPS: ToolGroup[] = [
         insight: "A modest return can make your savings last years longer.",
       },
       {
+        href: "/tools/household-resilience",
+        icon: "🛟",
+        title: "Household Resilience Check",
+        description: "Test twelve months of cash flow against an income drop, loan repayments and a school-fee bill.",
+        insight: "Shows the first month your cash would run out, not just how long savings last.",
+      },
+      {
         href: "/planners/education",
         icon: "🏫",
         title: "School Fees Sinking Fund Smoother",
