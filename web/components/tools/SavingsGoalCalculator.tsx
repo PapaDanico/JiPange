@@ -1,6 +1,9 @@
 "use client";
 
 import { amountOrZero, positiveAmount } from "@/lib/money";
+
+const MAX_GOAL_YEARS = 100;
+const MAX_RETURN_PERCENT = 100;
 import { useEffect, useMemo } from "react";
 import { solveMonthlyContribution } from "@/lib/savings-goal";
 import { futureValue } from "@/lib/projections";
@@ -76,12 +79,16 @@ export default function SavingsGoalCalculator() {
   const result = useMemo(() => {
     const targetFutureValue = positiveAmount(target);
     const yearsValue = positiveAmount(years);
-    if (targetFutureValue === null || yearsValue === null) return null;
+    const ratePercent = Number(annualReturn);
+    if (targetFutureValue === null || yearsValue === null || yearsValue > MAX_GOAL_YEARS ||
+        !Number.isFinite(ratePercent) || ratePercent < 0 || ratePercent > MAX_RETURN_PERCENT ||
+        (currentSavings !== "" && (Number(currentSavings) < 0 || !Number.isFinite(Number(currentSavings)) ||
+          Number(currentSavings) > 1e15))) return null;
 
     const monthly = solveMonthlyContribution({
       targetFutureValue,
-      presentValue: Number(currentSavings) || 0,
-      annualRate: Math.max(0, Number(annualReturn) || 0) / 100,
+      presentValue: amountOrZero(currentSavings),
+      annualRate: ratePercent / 100,
       years: yearsValue,
     });
 
@@ -92,12 +99,16 @@ export default function SavingsGoalCalculator() {
     const targetFutureValue = positiveAmount(target);
     const yearsValue = positiveAmount(years);
     // The `> 1 year` rule is the sensitivity table's own, and is kept.
-    if (targetFutureValue === null || yearsValue === null || yearsValue <= 1) return null;
+    const ratePercent = Number(annualReturn);
+    if (targetFutureValue === null || yearsValue === null || yearsValue <= 1 || yearsValue > MAX_GOAL_YEARS ||
+        !Number.isFinite(ratePercent) || ratePercent < 0 || ratePercent > MAX_RETURN_PERCENT ||
+        (currentSavings !== "" && (Number(currentSavings) < 0 || !Number.isFinite(Number(currentSavings)) ||
+          Number(currentSavings) > 1e15))) return null;
     const at = (y: number) =>
       solveMonthlyContribution({
         targetFutureValue,
-        presentValue: Number(currentSavings) || 0,
-        annualRate: Math.max(0, Number(annualReturn) || 0) / 100,
+        presentValue: amountOrZero(currentSavings),
+        annualRate: ratePercent / 100,
         years: y,
       });
     return { faster: at(yearsValue - 1), slower: at(yearsValue + 1) };
@@ -132,8 +143,8 @@ export default function SavingsGoalCalculator() {
      * wrong; the latent loop is real. */
     const targetFutureValue = positiveAmount(target);
     const yearsValue = positiveAmount(years);
-    if (!result || targetFutureValue === null || yearsValue === null) return [];
-    const rate = Math.max(0, Number(annualReturn) || 0) / 100;
+    if (!result || targetFutureValue === null || yearsValue === null || yearsValue > MAX_GOAL_YEARS) return [];
+    const rate = Number(annualReturn) / 100;
     const pv = amountOrZero(currentSavings);
     const step = Math.max(1, Math.ceil(yearsValue / 30));
     const points: GrowthDataPoint[] = [];
@@ -166,7 +177,7 @@ export default function SavingsGoalCalculator() {
   return (
     <div className="space-y-4">
       <NumberField id="target" label="Savings target (Ksh)" value={target} onChange={setTarget} placeholder="e.g. 500000" />
-      <NumberField id="years" label="Time to reach it (years)" value={years} onChange={setYears} placeholder="e.g. 3" />
+      <NumberField id="years" label="Time to reach it (years)" value={years} onChange={setYears} max={MAX_GOAL_YEARS} placeholder="e.g. 3" />
       <NumberField
         id="currentSavings"
         label="Current savings (Ksh)"
@@ -177,6 +188,7 @@ export default function SavingsGoalCalculator() {
       <NumberField
         id="annualReturn"
         label="Expected annual return"
+        max={MAX_RETURN_PERCENT}
         value={annualReturn}
         onChange={setAnnualReturn}
         suffix="%"
