@@ -1,6 +1,6 @@
 "use client";
 
-import { amountOrZero, positiveAmount } from "@/lib/money";
+import { MAX_AMOUNT, amountOrZero, positiveAmount } from "@/lib/money";
 
 const MAX_GOAL_YEARS = 100;
 const MAX_RETURN_PERCENT = 100;
@@ -83,7 +83,7 @@ export default function SavingsGoalCalculator() {
     if (targetFutureValue === null || yearsValue === null || yearsValue > MAX_GOAL_YEARS ||
         !Number.isFinite(ratePercent) || ratePercent < 0 || ratePercent > MAX_RETURN_PERCENT ||
         (currentSavings !== "" && (Number(currentSavings) < 0 || !Number.isFinite(Number(currentSavings)) ||
-          Number(currentSavings) > 1e15))) return null;
+          Number(currentSavings) > MAX_AMOUNT))) return null;
 
     const monthly = solveMonthlyContribution({
       targetFutureValue,
@@ -103,7 +103,7 @@ export default function SavingsGoalCalculator() {
     if (targetFutureValue === null || yearsValue === null || yearsValue <= 1 || yearsValue > MAX_GOAL_YEARS ||
         !Number.isFinite(ratePercent) || ratePercent < 0 || ratePercent > MAX_RETURN_PERCENT ||
         (currentSavings !== "" && (Number(currentSavings) < 0 || !Number.isFinite(Number(currentSavings)) ||
-          Number(currentSavings) > 1e15))) return null;
+          Number(currentSavings) > MAX_AMOUNT))) return null;
     const at = (y: number) =>
       solveMonthlyContribution({
         targetFutureValue,
