@@ -24,3 +24,20 @@ test("invalid shock hides projections", async ({ page }) => {
   await page.getByLabel("Income reduction to simulate").fill("150");
   await expect(page.getByText("Your 12-month cash-flow stress test")).toHaveCount(0);
 });
+
+test("resilience report downloads as a nonempty PDF with A4 signature", async ({ page }) => {
+  await page.goto("/tools/household-resilience");
+  await page.getByLabel("Accessible liquid savings (Ksh)").fill("420000");
+  await page.getByLabel("Monthly take-home income (Ksh)").fill("200000");
+  await page.getByLabel("Monthly essential spending, excluding loan payments (Ksh)").fill("140000");
+  const downloadPromise = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Download PDF" }).click();
+  const download = await downloadPromise;
+  expect(download.suggestedFilename()).toBe("household-resilience.pdf");
+  const path = await download.path();
+  expect(path).toBeTruthy();
+  const fs = await import("node:fs/promises");
+  const bytes = await fs.readFile(path!);
+  expect(bytes.subarray(0, 5).toString()).toBe("%PDF-");
+  expect(bytes.length).toBeGreaterThan(1000);
+});
