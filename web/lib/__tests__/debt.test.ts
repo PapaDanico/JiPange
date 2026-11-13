@@ -142,3 +142,39 @@ describe("compareStrategies", () => {
     expect(compareStrategies(loans, 100)).toEqual([]);
   });
 });
+
+describe("early-settlement fees", () => {
+  const base = [
+    { id: "a", name: "Tala", balance: 10_000, monthlyRatePct: 13 },
+    { id: "b", name: "Branch", balance: 6_000, monthlyRatePct: 12 },
+  ];
+
+  it("no fee, zero fee and a missing fee give the same plan", () => {
+    const none = calculateDebtStack(base, 5_000)!;
+    const zero = calculateDebtStack(base.map((l) => ({ ...l, settlementFee: 0 })), 5_000)!;
+    expect(zero).toEqual(none);
+    expect(none.totalFeesPaid).toBe(0);
+  });
+
+  it("a closing fee is paid once, costs money and never speeds the plan up", () => {
+    const none = calculateDebtStack(base, 5_000)!;
+    const withFee = calculateDebtStack([{ ...base[0], settlementFee: 1_500 }, base[1]], 5_000)!;
+    expect(withFee.totalFeesPaid).toBe(1_500);
+    expect(withFee.loans.find((l) => l.id === "a")!.settlementFeePaid).toBe(1_500);
+    expect(withFee.loans.find((l) => l.id === "b")!.settlementFeePaid).toBe(0);
+    expect(withFee.monthsToDebtFree).toBeGreaterThanOrEqual(none.monthsToDebtFree);
+    // Paying the fee diverts budget, so the other loan can stay open longer and
+    // accrue more interest: what must hold is that the total cost never falls.
+    expect(withFee.totalInterestPaid + withFee.totalFeesPaid).toBeGreaterThan(none.totalInterestPaid + none.totalFeesPaid);
+  });
+
+  it("every order pays the same fees, since every loan is closed", () => {
+    const loans = base.map((l) => ({ ...l, settlementFee: 800 }));
+    for (const c of compareStrategies(loans, 5_000)) expect(c.result.totalFeesPaid).toBe(1_600);
+  });
+
+  it("ignores a negative or non-numeric fee", () => {
+    const bad = calculateDebtStack([{ ...base[0], settlementFee: -50 }, { ...base[1], settlementFee: Number.NaN }], 5_000)!;
+    expect(bad.totalFeesPaid).toBe(0);
+  });
+});

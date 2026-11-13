@@ -30,6 +30,13 @@ export interface LoanInput {
   name: string;
   balance: number;
   monthlyRatePct: number;
+  /**
+   * A one-off charge the lender takes to close the loan (an early-settlement or
+   * exit fee), in shillings. Optional; absent means none. It is paid when the
+   * loan's balance reaches zero, carries no interest, and counts towards the
+   * cost and the months, so a plan that has to pay it says so.
+   */
+  settlementFee?: number;
 }
 
 export interface LoanPayoffDetail {
@@ -40,6 +47,8 @@ export interface LoanPayoffDetail {
   aprPct: number;
   avalancheRank: number;
   totalInterestPaid: number;
+  /** The one-off closing fee this loan cost, 0 when none was entered. */
+  settlementFeePaid: number;
   clearedAtMonth: number;
 }
 
@@ -49,6 +58,8 @@ export interface DebtStackResult {
   loans: LoanPayoffDetail[];
   monthsToDebtFree: number;
   totalInterestPaid: number;
+  /** Closing fees paid across all loans, on top of interest. */
+  totalFeesPaid: number;
   interestSavedVsMinOnly: number;
   mmfValue12m: number;
   debtFreeLabel: string;
@@ -111,6 +122,9 @@ export function calculateDebtStack(
     interestPaid: number;
     clearedAtMonth: number;
     rank: number;
+    fee: number;
+    feeCharged: boolean;
+    feesPaid: number;
   };
 
   const states: State[] = sorted.map((l, i) => ({
@@ -122,7 +136,25 @@ export function calculateDebtStack(
     interestPaid: 0,
     clearedAtMonth: -1,
     rank: i + 1,
+    fee: Number.isFinite(l.settlementFee) && (l.settlementFee ?? 0) > 0 ? (l.settlementFee as number) : 0,
+    feeCharged: false,
+    feesPaid: 0,
   }));
+
+  // When a loan's balance reaches zero, its closing fee (if any) becomes the
+  // amount still owed, at no interest; only once that is paid is it cleared.
+  const markPaid = (st: State, month: number) => {
+    if (st.balance >= 0.01) return;
+    if (st.fee > 0 && !st.feeCharged) {
+      st.feeCharged = true;
+      st.balance = st.fee;
+      st.rate = 0;
+      st.feesPaid = st.fee;
+      return;
+    }
+    st.balance = 0;
+    if (st.clearedAtMonth === -1) st.clearedAtMonth = month;
+  };
 
   let month = 0;
   let totalInterestPaid = 0;
@@ -155,10 +187,7 @@ export function calculateDebtStack(
       const minPay = Math.min(remaining, accrued[i], states[i].balance);
       states[i].balance -= minPay;
       remaining -= minPay;
-      if (states[i].balance < 0.01) {
-        states[i].balance = 0;
-        if (states[i].clearedAtMonth === -1) states[i].clearedAtMonth = month;
-      }
+      markPaid(states[i], month);
     }
 
     // Pour all remaining budget into avalanche targets; cascade if a loan clears mid-month.
@@ -169,10 +198,7 @@ export function calculateDebtStack(
       const pay = Math.min(surplus, states[nextTarget].balance);
       states[nextTarget].balance -= pay;
       surplus -= pay;
-      if (states[nextTarget].balance < 0.01) {
-        states[nextTarget].balance = 0;
-        if (states[nextTarget].clearedAtMonth === -1) states[nextTarget].clearedAtMonth = month;
-      }
+      markPaid(states[nextTarget], month);
     }
 
     timeline.push({
@@ -208,6 +234,7 @@ export function calculateDebtStack(
       aprPct: Math.round(((Math.pow(1 + s.rate, 12) - 1) * 100) * 10) / 10,
       avalancheRank: s.rank,
       totalInterestPaid: Math.round(s.interestPaid),
+      settlementFeePaid: Math.round(s.feesPaid),
       clearedAtMonth: s.clearedAtMonth,
     };
   });
@@ -218,6 +245,7 @@ export function calculateDebtStack(
     loans: loanDetails,
     monthsToDebtFree: month,
     totalInterestPaid: Math.round(totalInterestPaid),
+    totalFeesPaid: Math.round(states.reduce((a, st) => a + st.feesPaid, 0)),
     interestSavedVsMinOnly,
     mmfValue12m,
     debtFreeLabel,
