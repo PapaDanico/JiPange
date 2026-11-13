@@ -16,7 +16,12 @@ import {
 } from "@/lib/education-plan";
 import { assumedMmfYield } from "@/lib/mmf-assumption";
 import { formatKES } from "@/lib/budget";
-import { amountOrZero, positiveAmount } from "@/lib/money";
+import { amountOrZero, positiveAmount, typedNumber } from "@/lib/money";
+
+/** Optional money values must not silently become zero when malformed. */
+function validOptionalMoney(raw: string): boolean {
+  return raw.trim() === "" || (Number.isFinite(typedNumber(raw)) && typedNumber(raw) >= 0 && amountOrZero(raw) === typedNumber(raw));
+}
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
 import ExportCardButton from "./ExportCardButton";
@@ -106,13 +111,19 @@ export default function SchoolFeesLifetimeCalculator() {
   const returnRate = assumedMmfYield();
 
   const result = useMemo(() => {
+    // A damaged saved scenario or an invalid user input must not be converted
+    // into a plausible-looking lower school-fees estimate.
+    const escalation = typedNumber(escalationPct);
+    if (!Number.isFinite(escalation) || escalation < 0 || escalation > 20 ||
+        !validOptionalMoney(alreadySaved) || !validOptionalMoney(netPay) ||
+        (university && (positiveAmount(uniFee) === null))) return null;
     const inputs: ChildInput[] = children
       .filter((c) => positiveAmount(c.annualFee) !== null)
       .map((c) => ({
         name: c.name,
         gradeValue: c.gradeValue,
         annualFeeTodayKES: amountOrZero(c.annualFee),
-        escalation: Math.max(0, Number(escalationPct) || 0) / 100,
+        escalation: escalation / 100,
         universityYears: university ? 4 : 0,
         universityAnnualTodayKES: university ? amountOrZero(uniFee) : 0,
       }));

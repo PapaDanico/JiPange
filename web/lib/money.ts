@@ -115,3 +115,16 @@ export function isSaneRate(rate: number): boolean {
 export function finiteOr(value: number, fallback = 0): number {
   return Number.isFinite(value) ? value : fallback;
 }
+
+
+/**
+ * A typed value as a number, with NO range check: blank is 0 and "1e400" is
+ * Infinity, so the caller MUST test Number.isFinite and its own bounds before
+ * using the result. It exists so that the one place a raw string becomes a
+ * number is named and countable (see the unguarded-parse test in
+ * __tests__/money.test.ts); use positiveAmount() when a positive amount is
+ * what is wanted.
+ */
+export function typedNumber(raw: unknown): number {
+  return Number(raw);
+}

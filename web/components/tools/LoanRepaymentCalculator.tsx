@@ -1,8 +1,8 @@
 "use client";
 
-import { positiveAmount, amountOrZero } from "@/lib/money";
+import { positiveAmount, amountOrZero, typedNumber } from "@/lib/money";
 import { useMemo } from "react";
-import { calculateLoanAmortization, MAX_TERM_MONTHS } from "@/lib/loans";
+import { calculateLoanAmortization, MAX_TERM_MONTHS, MAX_ANNUAL_RATE } from "@/lib/loans";
 import { formatKES } from "@/lib/budget";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
 import { CBK_AVG_LENDING_RATE_PCT } from "@/lib/kenya-stats";
@@ -73,10 +73,12 @@ export default function LoanRepaymentCalculator() {
     // showing nothing.
     if (principalValue === null || years === null) return null;
     if (years > MAX_TERM_YEARS) return null;
+    const ratePct = typedNumber(annualRate);
+    if (annualRate.trim() === "" || !Number.isFinite(ratePct) || ratePct < 0 || ratePct > MAX_ANNUAL_RATE * 100) return null;
 
     return calculateLoanAmortization({
       principal: principalValue,
-      annualRate: Math.max(0, Number(annualRate) || 0) / 100,
+      annualRate: ratePct / 100,
       termMonths: Math.round(years * 12),
     });
   }, [principal, annualRate, termYears]);
@@ -111,6 +113,7 @@ export default function LoanRepaymentCalculator() {
       <div>
         <NumberField
           id="annualRate"
+          max={MAX_ANNUAL_RATE * 100}
           label="Annual interest rate"
           value={annualRate}
           onChange={setAnnualRate}
