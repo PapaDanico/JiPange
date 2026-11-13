@@ -81,9 +81,10 @@ export function importSnapshot(json: string): { restored: number } {
 
   // Validate the complete payload before changing a single existing key.
   // A partially restored financial plan can be more misleading than a rejected file.
-  const entries = Object.entries(file.data).filter(
-    ([key, value]) => key.startsWith(PREFIX) && typeof value === "string"
-  ) as [string, string][];
+  const entries = Object.entries(file.data).filter(([key]) => key.startsWith(PREFIX));
+  if (entries.some(([, value]) => typeof value !== "string")) {
+    throw new Error("That backup contains damaged JiPange data. Nothing was restored.");
+  }
   if (entries.length === 0) {
     throw new Error("That backup file contains no JiPange data.");
   }
