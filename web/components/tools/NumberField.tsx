@@ -68,7 +68,7 @@ export default function NumberField({
               .replace(/^(?:KES|KSH)[ ]*/i, "")
               .replace(/,/g, "");
             if (/^-?[0-9]+(?:[.][0-9]+)?$/.test(pasted)) onChange(pasted);
-          }
+          }}
           placeholder={placeholder}
           aria-describedby={hasError ? `${id}-error` : undefined}
           aria-invalid={hasError || undefined}
