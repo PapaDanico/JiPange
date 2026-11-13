@@ -43,6 +43,13 @@ export const TOOL_META: Record<string, ToolMeta> = {
     nextMove: { label: "Turn this into a FIRE number →", href: "/tools/fire-number" },
     primaryFields: ["monthly", "years"],
   },
+  "/tools/household-resilience": {
+    href: "/tools/household-resilience",
+    icon: "🛡️",
+    name: "Household Financial Resilience",
+    related: ["/tools/money-runway", "/tools/salary", "/planners/emergency"],
+    nextMove: { label: "Review your emergency fund →", href: "/planners/emergency" },
+  },
   "/tools/money-runway": {
     href: "/tools/money-runway",
     icon: "⏳",
