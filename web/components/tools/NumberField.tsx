@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { MAX_AMOUNT } from "@/lib/money";
 
 export default function NumberField({
   id,
@@ -35,9 +36,13 @@ export default function NumberField({
 }) {
   const [touched, setTouched] = useState(false);
   const num = Number(value);
+  // Reject hostile but finite magnitudes as well as Infinity/NaN. A field
+  // without a custom max must still respect the global arithmetic bound.
+  const maxAllowed = Math.min(max ?? MAX_AMOUNT, MAX_AMOUNT);
+  const invalidNumber = !Number.isFinite(num);
   const tooLow = num < min;
-  const tooHigh = max !== undefined && num > max;
-  const hasError = touched && value !== "" && (tooLow || tooHigh);
+  const tooHigh = num > maxAllowed;
+  const hasError = touched && value !== "" && (invalidNumber || tooLow || tooHigh);
   const showsCurrency = currency ?? /\(Ksh(?:\/month)?\)/i.test(label);
 
   return (
@@ -51,14 +56,18 @@ export default function NumberField({
           type="number"
           inputMode="decimal"
           min={min}
-          max={max}
+          max={maxAllowed}
           value={value}
           onBlur={() => setTouched(true)}
           onChange={(event) => onChange(event.target.value)}
           onPaste={(e) => {
             e.preventDefault();
-            const pasted = e.clipboardData.getData("text").replace(/,/g, "").replace(/[^\d.]/g, "");
-            if (pasted) onChange(pasted);
+            // Preserve the sign: the former digit-only filter silently changed
+            // a pasted debt of -5000 into a positive 5000.
+            const pasted = e.clipboardData.getData("text").trim()
+              .replace(/^(?:KES|KSH)[ ]*/i, "")
+              .replace(/,/g, "");
+            if (/^-?[0-9]+(?:[.][0-9]+)?$/.test(pasted)) onChange(pasted);
           }}
           placeholder={placeholder}
           aria-describedby={hasError ? `${id}-error` : undefined}
@@ -82,9 +91,11 @@ export default function NumberField({
       </div>
       {hasError && (
         <p id={`${id}-error`} role="alert" className="mt-1 text-xs text-danger">
-          {tooHigh
-            ? `That looks too high — enter ${max!.toLocaleString()} or less`
-            : min > 0
+          {invalidNumber
+            ? "Enter a valid number"
+            : tooHigh
+              ? `That looks too high — enter ${maxAllowed.toLocaleString()} or less`
+              : min > 0
               ? `Must be at least ${min.toLocaleString()}`
               : "Enter a positive number"}
         </p>
