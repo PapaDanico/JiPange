@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
+import ExportCardButton from "./ExportCardButton";
 import { formatKES } from "@/lib/budget";
 import { simulateHouseholdLiquidity } from "@/lib/household-liquidity";
 import { positiveAmount, typedNumber } from "@/lib/money";
@@ -8,6 +9,7 @@ import NumberField from "./NumberField";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
 
 export default function HouseholdResilienceCalculator() {
+  const reportRef = useRef<HTMLDivElement>(null);
   const [savings, setSavings] = useState("");
   const [income, setIncome] = useState("");
   const [essentials, setEssentials] = useState("");
@@ -47,7 +49,7 @@ export default function HouseholdResilienceCalculator() {
       <NumberField id="resilience-fee" label="One upcoming school-fee or other bill (Ksh)" value={fee} onChange={setFee} />
       <NumberField id="resilience-fee-month" label="Month the upcoming bill falls due (1–12)" value={feeMonth} onChange={setFeeMonth} />
       {result && (
-        <section className="space-y-3 rounded-2xl bg-white p-4 shadow-sm" aria-live="polite">
+        <section ref={reportRef} className="space-y-3 rounded-2xl bg-white p-4 shadow-sm" aria-live="polite">
           <h2 className="text-lg font-semibold text-primary">Your 12-month cash-flow stress test</h2>
           <p className="text-sm text-ink-soft">Emergency runway at current spending: <strong>{result.essentialRunwayMonths === null ? "Not applicable" : `${result.essentialRunwayMonths} months`}</strong></p>
           <p className="text-sm text-ink-soft">Income after simulated reduction: <strong>{formatKES(result.stressedMonthlyIncome)}/month</strong></p>
@@ -65,6 +67,14 @@ export default function HouseholdResilienceCalculator() {
           </div>
         </section>
       )}
+      {result && <ExportCardButton containerRef={reportRef} filename="household-resilience" title="Household financial resilience — 12-month scenario" assumptions={[
+        { label: "Accessible savings", value: formatKES(Number(savings)) },
+        { label: "Monthly income", value: formatKES(Number(income)) },
+        { label: "Essential expenses", value: formatKES(Number(essentials)) },
+        { label: "Debt repayments", value: formatKES(Number(debt)) },
+        { label: "Income shock", value: `${shock}%` },
+        { label: "Scheduled bill", value: `${formatKES(Number(fee))} in month ${feeMonth}` },
+      ]} notes={["Illustrative cash-only scenario; not a financial forecast.", "No investment returns, locked assets, inflation or unentered expenses are included."]} />}
       <CalculatorDisclaimer payroll={false} extraNotes={[
         "Illustrative cash-flow scenario, not a financial forecast or a guarantee.",
         "Only accessible cash savings are included; bond principal, investment returns, inflation and unentered bills are excluded.",
