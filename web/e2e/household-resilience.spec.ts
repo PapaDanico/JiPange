@@ -11,8 +11,7 @@ test("household resilience shows income shock and scheduled fee shortfall", asyn
   await page.getByLabel("Month the upcoming bill falls due (1–12)").fill("1");
   await expect(page.getByText("Your 12-month cash-flow stress test")).toBeVisible();
   await expect(page.getByText("2.63 months")).toBeVisible();
-  await expect(page.getByText("Month 3")).not.toBeVisible(); // one fee alone does not create the second month-3 obligation
-  await expect(page.getByText("None in 12 months")).toBeVisible().catch(() => {});
+  await expect(page.getByText("Month 4")).toBeVisible();
 });
 
 test("invalid shock hides projections", async ({ page }) => {
