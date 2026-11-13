@@ -28,6 +28,8 @@ interface LoanDraft {
   name: string;
   balance: string;
   rate: string;
+  /** Optional one-off charge to close this loan. */
+  fee?: string;
 }
 
 function emptyLoan(id: string): LoanDraft {
@@ -51,6 +53,7 @@ export default function DebtEscapeCalculator() {
           name: l.name || l.id,
           balance: amountOrZero(l.balance),
           monthlyRatePct: monthlyRateOrNull(l.rate) ?? 0,
+          settlementFee: amountOrZero(l.fee ?? ""),
         })),
     [loans]
   );
@@ -179,6 +182,14 @@ export default function DebtEscapeCalculator() {
                 min={0.1}
               />
             </div>
+            <NumberField
+              id={`fee-${loan.id}`}
+              label="Fee to close this loan early (Ksh), if the lender charges one"
+              value={loan.fee ?? ""}
+              onChange={(v) => setLoanField(loan.id, "fee", v)}
+              placeholder="optional"
+              min={0}
+            />
             {(monthlyRateOrNull(loan.rate) ?? 0) > 0 && (
               <p className="text-xs text-faint">
                 ≈ {Math.round(effectiveAprPct(monthlyRateOrNull(loan.rate) ?? 0)).toLocaleString("en-KE")}% effective APR — verify the current rate in
@@ -252,6 +263,12 @@ export default function DebtEscapeCalculator() {
               label="Total interest you'll pay (avalanche plan)"
               value={formatKES(result.totalInterestPaid)}
             />
+            {result.totalFeesPaid > 0 && (
+              <ResultCard
+                label="Closing fees included in the plan"
+                value={formatKES(result.totalFeesPaid)}
+              />
+            )}
             {result.interestSavedVsMinOnly > 0 && (
               <ResultCard
                 label="Interest saved vs minimum-only payments (same period)"
