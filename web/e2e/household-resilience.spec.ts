@@ -12,6 +12,7 @@ test("household resilience shows income shock and scheduled fee shortfall", asyn
   await expect(page.getByText("Your 12-month cash-flow stress test")).toBeVisible();
   await expect(page.getByText("2.63 months")).toBeVisible();
   await expect(page.getByText("Month 4")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Download PDF" })).toBeVisible();
 });
 
 test("invalid shock hides projections", async ({ page }) => {
