@@ -71,25 +71,56 @@ export function importSnapshot(json: string): { restored: number } {
     throw new Error("That file isn't valid JSON — choose a JiPange backup file.");
   }
 
-  const file = parsed as Partial<BackupFile>;
-  if (file?.app !== "jipange" || typeof file.data !== "object" || file.data === null) {
+  const file = parsed as Partial<BackupFile> | null;
+  if (file?.app !== "jipange" || typeof file.data !== "object" || file.data === null || Array.isArray(file.data)) {
     throw new Error("That file isn't a JiPange backup.");
   }
-  if (typeof file.version !== "number" || file.version > BACKUP_VERSION) {
+  if (!Number.isInteger(file.version) || file.version !== BACKUP_VERSION) {
     throw new Error("This backup was made by a newer version of JiPange — update and try again.");
   }
 
-  let restored = 0;
-  for (const [key, value] of Object.entries(file.data)) {
-    if (!key.startsWith(PREFIX) || typeof value !== "string") continue;
-    window.localStorage.setItem(key, value);
-    restored++;
-  }
-  if (restored === 0) {
+  // Validate the complete payload before changing a single existing key.
+  // A partially restored financial plan can be more misleading than a rejected file.
+  const entries = Object.entries(file.data).filter(
+    ([key, value]) => key.startsWith(PREFIX) && typeof value === "string"
+  ) as [string, string][];
+  if (entries.length === 0) {
     throw new Error("That backup file contains no JiPange data.");
   }
+  for (const [, value] of entries) {
+    try {
+      JSON.parse(value);
+    } catch {
+      throw new Error("That backup contains damaged JiPange data. Nothing was restored.");
+    }
+  }
+
+  // localStorage can reject writes (quota or browser policy). Roll back every
+  // change already made so users never receive half of a restored snapshot.
+  const previous = new Map<string, string | null>();
+  for (const [key] of entries) previous.set(key, window.localStorage.getItem(key));
+  const written: string[] = [];
+  try {
+    for (const [key, value] of entries) {
+      window.localStorage.setItem(key, value);
+      written.push(key);
+    }
+  } catch {
+    for (const key of written.reverse()) {
+      const old = previous.get(key);
+      try {
+        if (old === null || old === undefined) window.localStorage.removeItem(key);
+        else window.localStorage.setItem(key, old);
+      } catch {
+        // Browser storage is unavailable; preserve the original error and avoid
+        // claiming success. The reader can retry after freeing storage.
+      }
+    }
+    notifyStorageChange();
+    throw new Error("Your browser could not save the full backup. Restore was not completed.");
+  }
   notifyStorageChange();
-  return { restored };
+  return { restored: entries.length };
 }
 
 /** Erases every jipange-owned key (local + session). Irreversible. */
