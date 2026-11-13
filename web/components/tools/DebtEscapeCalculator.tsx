@@ -2,7 +2,8 @@
 
 import { useCallback, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
-import { calculateDebtStack, effectiveAprPct, monthlyRateOrNull, PRESET_LENDERS } from "@/lib/debt";
+import { calculateDebtStack, compareStrategies, effectiveAprPct, monthlyRateOrNull, PRESET_LENDERS, type DebtStrategy } from "@/lib/debt";
+import { assumedMmfYieldPct } from "@/lib/mmf-assumption";
 import { formatKES } from "@/lib/budget";
 import { amountOrZero, positiveAmount } from "@/lib/money";
 import { useStickyState, useScrollIntoView } from "@/lib/hooks";
@@ -13,6 +14,12 @@ import NumberField from "./NumberField";
 import ResetLink from "./ResetLink";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
+
+const STRATEGY_LABEL: Record<DebtStrategy, string> = {
+  avalanche: "Highest rate first",
+  snowball: "Smallest balance first",
+  relief: "Biggest monthly interest first",
+};
 
 const DebtPayoffChart = dynamic(() => import("./DebtPayoffChart"), { ssr: false });
 
@@ -60,6 +67,7 @@ export default function DebtEscapeCalculator() {
 
   const hasInput = positiveAmount(budget) !== null && loanInputs.length > 0;
   const tooLow = hasInput && amountOrZero(budget) <= interestThreshold;
+  const comparison = useMemo(() => compareStrategies(loanInputs, amountOrZero(budget)), [loanInputs, budget]);
   const horizonExceeded = hasInput && !tooLow && result === null;
 
   const resultsRef = useScrollIntoView<HTMLDivElement>(result !== null);
@@ -297,13 +305,61 @@ export default function DebtEscapeCalculator() {
 
           <DebtPayoffChart timeline={result.timeline} totalBalance={result.totalBalance} />
 
+          {comparison.length > 1 && (
+            <details className="rounded-2xl border border-line bg-surface px-4">
+              <summary className="flex min-h-11 cursor-pointer items-center text-sm font-semibold text-ink">
+                Compare ways to order your payments
+              </summary>
+              <div className="pb-4">
+                <p className="text-xs leading-relaxed text-ink-soft">
+                  Same loans, same monthly budget; only the loan that gets the spare money first changes. Your plan above uses the
+                  highest rate first.
+                </p>
+                <div className="mt-2 overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <caption className="sr-only">Debt payoff strategies on the same budget</caption>
+                    <thead>
+                      <tr className="border-b border-line text-left text-xs text-ink-soft">
+                        <th scope="col" className="py-2">Order</th>
+                        <th scope="col" className="py-2 text-right">Debt-free in</th>
+                        <th scope="col" className="py-2 text-right">Total interest</th>
+                        <th scope="col" className="py-2 text-right">First loan cleared</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {comparison.map((c) => {
+                        const first = Math.min(...c.result.loans.map((l) => l.clearedAtMonth).filter((m) => m > 0));
+                        return (
+                          <tr key={c.strategy} className="border-b border-line last:border-0">
+                            <th scope="row" className="py-1.5 text-left font-medium text-ink">{STRATEGY_LABEL[c.strategy]}</th>
+                            <td className="py-1.5 text-right tabular-nums">
+                              {c.result.monthsToDebtFree} months{c.extraMonthsVsBest > 0 ? ` (+${c.extraMonthsVsBest})` : ""}
+                            </td>
+                            <td className="py-1.5 text-right tabular-nums">
+                              {formatKES(c.result.totalInterestPaid)}{c.extraInterestVsBest > 0 ? ` (+${formatKES(c.extraInterestVsBest)})` : ""}
+                            </td>
+                            <td className="py-1.5 text-right tabular-nums">{Number.isFinite(first) ? `month ${first}` : "—"}</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+                <p className="mt-2 text-xs leading-relaxed text-ink-soft">
+                  Highest rate costs least. Smallest balance first clears a loan sooner, which some people find easier to stick with.
+                  Biggest monthly interest first frees the most cash each month. Pick the one you will actually follow, but note what it costs.
+                </p>
+              </div>
+            </details>
+          )}
+
           <BehavioralInsightStrip
             insight="Move your avalanche payment the day your salary lands — most Kenyan payroll cycles pay out around the 25th–28th. Routing it within 24 hours of payday, before it blends into M-Pesa spending, is what actually makes this plan stick."
           />
 
           {result.mmfValue12m > 0 && (
             <BehavioralInsightStrip
-              insight={`Once debt-free, redirect ${formatKES(amountOrZero(budget))}/month into a Money Market Fund. At 11.8% p.a., that grows to ${formatKES(result.mmfValue12m)} in 12 months — the same money that was disappearing in interest fees.`}
+              insight={`Once debt-free, redirect ${formatKES(amountOrZero(budget))}/month into a Money Market Fund. At an assumed ${assumedMmfYieldPct()}% a year (our working assumption for a money market fund, not a quoted or guaranteed rate), that grows to ${formatKES(result.mmfValue12m)} in 12 months — the same money that was disappearing in interest fees.`}
             />
           )}
 
@@ -314,7 +370,7 @@ export default function DebtEscapeCalculator() {
           <CalculatorDisclaimer payroll={false}
             extraNotes={[
               "Monthly rates shown are approximate — lenders change rates frequently. Always verify the current rate in your lender's app before relying on this figure.",
-              "The avalanche method minimises total interest paid. The snowball method (smallest balance first) builds psychological momentum but costs more overall.",
+              "Highest rate first minimises total interest. The comparison above shows what the other orders cost on your own numbers.",
             ]}
           />
           <ExportCardButton containerRef={resultsRef} filename="debt-escape" />

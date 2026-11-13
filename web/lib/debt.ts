@@ -55,9 +55,32 @@ export interface DebtStackResult {
   timeline: Array<{ month: number; remaining: number }>;
 }
 
+/**
+ * Which loan the spare money goes to first. Every strategy pays the same
+ * budget and the same interest on the other loans; only the TARGET differs, so
+ * the comparison is like for like.
+ *
+ *  avalanche  highest monthly rate: least total interest.
+ *  snowball   smallest balance: the first loan clears soonest, which is a
+ *             behavioural win, not a financial one.
+ *  relief     largest monthly interest bill in shillings: frees the most
+ *             monthly cash soonest, which matters when the month is tight.
+ *
+ * Non-target loans are held flat by paying their interest, so balances do not
+ * move except for the target and the order is stable for the whole plan.
+ */
+export type DebtStrategy = "avalanche" | "snowball" | "relief";
+
+const STRATEGY_ORDER: Record<DebtStrategy, (a: LoanInput, b: LoanInput) => number> = {
+  avalanche: (a, b) => b.monthlyRatePct - a.monthlyRatePct,
+  snowball: (a, b) => a.balance - b.balance,
+  relief: (a, b) => b.balance * b.monthlyRatePct - a.balance * a.monthlyRatePct,
+};
+
 export function calculateDebtStack(
   loans: LoanInput[],
-  monthlyBudget: number
+  monthlyBudget: number,
+  strategy: DebtStrategy = "avalanche"
 ): DebtStackResult | null {
   // >= 0, not > 0 — a 0% loan (e.g. interest-free from family) still owes
   // real money and belongs in the payoff plan; the avalanche loop below
@@ -74,8 +97,10 @@ export function calculateDebtStack(
   // Budget must exceed total monthly interest to make forward progress.
   if (monthlyBudget <= totalMonthlyInterest) return null;
 
-  // Avalanche: sort highest monthly rate first.
-  const sorted = [...valid].sort((a, b) => b.monthlyRatePct - a.monthlyRatePct);
+  // Order by the chosen strategy; ties keep the avalanche order so the result is deterministic.
+  const sorted = [...valid].sort(
+    (a, b) => STRATEGY_ORDER[strategy](a, b) || STRATEGY_ORDER.avalanche(a, b)
+  );
 
   type State = {
     id: string;
@@ -223,4 +248,29 @@ export function monthlyRateOrNull(raw: unknown): number | null {
 /** A monthly rate compounded to its effective annual rate, in percent. */
 export function effectiveAprPct(monthlyRatePct: number): number {
   return finiteOr((Math.pow(1 + monthlyRatePct / 100, 12) - 1) * 100);
+}
+
+export interface StrategyComparison {
+  strategy: DebtStrategy;
+  result: DebtStackResult;
+  /** Extra interest against the cheapest strategy, in shillings. */
+  extraInterestVsBest: number;
+  /** Extra months against the fastest strategy. */
+  extraMonthsVsBest: number;
+}
+
+/** Every strategy on the same loans and budget, or [] when the plan cannot be paid off. */
+export function compareStrategies(loans: LoanInput[], monthlyBudget: number): StrategyComparison[] {
+  const all = (["avalanche", "snowball", "relief"] as DebtStrategy[]).flatMap((strategy) => {
+    const result = calculateDebtStack(loans, monthlyBudget, strategy);
+    return result ? [{ strategy, result }] : [];
+  });
+  if (all.length === 0) return [];
+  const minInterest = Math.min(...all.map((a) => a.result.totalInterestPaid));
+  const minMonths = Math.min(...all.map((a) => a.result.monthsToDebtFree));
+  return all.map((a) => ({
+    ...a,
+    extraInterestVsBest: a.result.totalInterestPaid - minInterest,
+    extraMonthsVsBest: a.result.monthsToDebtFree - minMonths,
+  }));
 }

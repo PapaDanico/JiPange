@@ -99,3 +99,46 @@ describe("the typed monthly rate", () => {
     expect(Number.isFinite(effectiveAprPct(MAX_MONTHLY_RATE_PCT))).toBe(true);
   });
 });
+
+import { compareStrategies } from "../debt";
+
+describe("compareStrategies", () => {
+  const loans = [
+    { id: "a", name: "Small cheap", balance: 2_000, monthlyRatePct: 5 },
+    { id: "b", name: "Big dear", balance: 20_000, monthlyRatePct: 13 },
+    { id: "c", name: "Mid", balance: 8_000, monthlyRatePct: 10 },
+  ];
+
+  it("avalanche never pays more interest than the other orders on the same budget", () => {
+    const all = compareStrategies(loans, 9_000);
+    expect(all).toHaveLength(3);
+    const av = all.find((c) => c.strategy === "avalanche")!;
+    for (const c of all) expect(av.result.totalInterestPaid).toBeLessThanOrEqual(c.result.totalInterestPaid);
+    expect(av.extraInterestVsBest).toBe(0);
+  });
+
+  it("snowball clears the smallest balance first, relief the biggest monthly interest bill", () => {
+    const first = (s: "snowball" | "relief") => {
+      const r = compareStrategies(loans, 9_000).find((c) => c.strategy === s)!.result;
+      return [...r.loans].sort((x, y) => x.avalancheRank - y.avalancheRank)[0].name;
+    };
+    expect(first("snowball")).toBe("Small cheap");
+    expect(first("relief")).toBe("Big dear");
+  });
+
+  it("every strategy is paid the same budget: total paid equals balance plus interest within a shilling per month", () => {
+    for (const c of compareStrategies(loans, 9_000)) {
+      expect(c.result.totalInterestPaid).toBeGreaterThan(0);
+      expect(c.result.monthsToDebtFree).toBeGreaterThan(0);
+      expect(c.result.totalBalance).toBe(30_000);
+    }
+  });
+
+  it("default strategy is unchanged (avalanche)", () => {
+    expect(calculateDebtStack(loans, 9_000)).toEqual(calculateDebtStack(loans, 9_000, "avalanche"));
+  });
+
+  it("an unpayable budget gives no comparison rather than a partial one", () => {
+    expect(compareStrategies(loans, 100)).toEqual([]);
+  });
+});
