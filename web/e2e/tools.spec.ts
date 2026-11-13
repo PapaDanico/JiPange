@@ -356,7 +356,7 @@ test("sacco vs bank: shows comparison", async ({ page }) => {
   await inputs.nth(1).fill("12");
   // Per-product comparison rows only exist once results computed.
   await expect(visibleText(page, "Total repaid:")).toBeVisible();
-  await expect(visibleText(page, /% APR/)).toBeVisible();
+  await expect(visibleText(page, /% annualised indicator/)).toBeVisible();
 });
 
 // ─── Guarantor Shield ─────────────────────────────────────────────────────

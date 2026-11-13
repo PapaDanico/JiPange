@@ -23,3 +23,12 @@ test("invalid shock hides projections", async ({ page }) => {
   await page.getByLabel("Income reduction to simulate").fill("150");
   await expect(page.getByText("Your 12-month cash-flow stress test")).toHaveCount(0);
 });
+
+test("a household with no savings and no income still gets a result, not a blank page", async ({ page }) => {
+  await page.goto("/tools/household-resilience");
+  await page.getByLabel("Accessible liquid savings (Ksh)").fill("0");
+  await page.getByLabel("Monthly take-home income (Ksh)").fill("0");
+  await page.getByLabel("Monthly essential spending, excluding loan payments (Ksh)").fill("30000");
+  await expect(page.getByText("Your 12-month cash-flow stress test")).toBeVisible();
+  await expect(page.getByText("Month 1", { exact: true })).toBeVisible();
+});

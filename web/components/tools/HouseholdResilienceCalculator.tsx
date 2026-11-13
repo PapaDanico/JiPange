@@ -3,7 +3,14 @@
 import { useMemo, useState } from "react";
 import { formatKES } from "@/lib/budget";
 import { simulateHouseholdLiquidity } from "@/lib/household-liquidity";
-import { positiveAmount, typedNumber } from "@/lib/money";
+import { MAX_AMOUNT, positiveAmount, typedNumber } from "@/lib/money";
+
+/** A typed amount that may legitimately be zero (no savings, no income); blank is not zero. */
+function amountOrNull(raw: string): number | null {
+  if (raw.trim() === "") return null;
+  const v = typedNumber(raw);
+  return Number.isFinite(v) && v >= 0 && v <= MAX_AMOUNT ? v : null;
+}
 import NumberField from "./NumberField";
 import CalculatorDisclaimer from "./CalculatorDisclaimer";
 
@@ -17,8 +24,9 @@ export default function HouseholdResilienceCalculator() {
   const [fee, setFee] = useState("0");
 
   const result = useMemo(() => {
-    const reserves = positiveAmount(savings);
-    const earnings = positiveAmount(income);
+    // Zero savings and zero income are exactly the households this test is for.
+    const reserves = amountOrNull(savings);
+    const earnings = amountOrNull(income);
     const costs = positiveAmount(essentials);
     const debtAmount = typedNumber(debt);
     const feeAmount = typedNumber(fee);
