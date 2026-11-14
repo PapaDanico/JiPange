@@ -38,6 +38,7 @@ export function simulateHouseholdLiquidity(input: HouseholdLiquidityInput): Hous
   ) return null;
 
   const monthlyOutflow = essentialExpenses + monthlyDebtService;
+  if (!Number.isFinite(monthlyOutflow) || monthlyOutflow > MAX_AMOUNT) return null;
   const essentialRunwayMonths = monthlyOutflow === 0
     ? null
     : round2(liquidSavings / monthlyOutflow);
@@ -50,6 +51,7 @@ export function simulateHouseholdLiquidity(input: HouseholdLiquidityInput): Hous
     const obligation = (input.obligations ?? [])
       .filter((o) => o.month === month)
       .reduce((sum, o) => sum + o.amount, 0);
+    if (!Number.isFinite(obligation) || obligation > MAX_AMOUNT) return null;
     balance = round2(balance + stressedMonthlyIncome - monthlyOutflow - obligation);
     if (!Number.isFinite(balance)) return null;
     if (balance < 0 && firstShortfallMonth === null) firstShortfallMonth = month;

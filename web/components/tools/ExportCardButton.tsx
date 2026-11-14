@@ -292,14 +292,13 @@ export default function ExportCardButton({
     setLoading(as);
     setError("");
     try {
-      const src = await renderCard(el);
-      const out = frame(src);
-      if (!out) {
-        setError("Could not prepare the canvas. Try a screenshot instead.");
-        return;
-      }
-
       if (as === "image") {
+        const src = await renderCard(el);
+        const out = frame(src);
+        if (!out) {
+          setError("Could not prepare the canvas. Try a screenshot instead.");
+          return;
+        }
         const link = document.createElement("a");
         link.download = `${filename}.png`;
         link.href = out.toDataURL("image/png");

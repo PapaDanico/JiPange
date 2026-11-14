@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { simulateHouseholdLiquidity } from "../household-liquidity";
+import { MAX_AMOUNT } from "../money";
 
 const household = {
   liquidSavings: 420_000,
@@ -49,5 +50,13 @@ describe("simulateHouseholdLiquidity", () => {
     })!;
     expect(result.essentialRunwayMonths).toBeNull();
     expect(result.firstShortfallMonth).toBeNull();
+  });
+
+  it("refuses a combined outflow or a month's obligations beyond the numeric ceiling", () => {
+    expect(simulateHouseholdLiquidity({ ...household, essentialExpenses: MAX_AMOUNT, monthlyDebtService: MAX_AMOUNT })).toBeNull();
+    expect(simulateHouseholdLiquidity({
+      ...household,
+      obligations: [{ month: 2, amount: MAX_AMOUNT }, { month: 2, amount: MAX_AMOUNT }],
+    })).toBeNull();
   });
 });
