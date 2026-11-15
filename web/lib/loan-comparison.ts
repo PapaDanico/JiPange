@@ -1,6 +1,8 @@
 import { calculateLoanAmortization, MAX_TERM_MONTHS } from "./loans";
 import { MAX_AMOUNT, round2 } from "./money";
 import { calculateFulizaCost, FULIZA_MAX_LIMIT } from "./fuliza";
+import { SACCO_MONTHLY_RATE } from "./loan-assumptions";
+export { SACCO_MONTHLY_RATE } from "./loan-assumptions";
 
 export type LoanProductTier = "green" | "amber" | "red";
 
@@ -16,7 +18,6 @@ export interface LoanProductComparison {
   estimated: boolean;
 }
 
-export const SACCO_MONTHLY_RATE = 0.01; // 1% per month, reducing balance
 const BANK_ANNUAL_RATE = 0.15; // ~15% p.a., reducing balance
 const MOBILE_LENDER_MONTHLY_FLAT_RATE = 0.15; // Tala/Branch-style: ~15% per month, flat (not reducing)
 const MSHWARI_FACILITY_FEE_PER_CYCLE = 0.075; // 7.5% per 30-day cycle — Safaricom rates change; verify in-app
