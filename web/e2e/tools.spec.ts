@@ -56,6 +56,43 @@ test("take-home pay: the old address opens the Take-Home tab and shows net salar
  * checks. The old assertion is not weakened here, it is REPLACED — a
  * requirement changed, and the two cannot both be true.
  */
+test("loan repayment: the exported sheet prints the inputs behind the figures and carries document properties", async ({ page }) => {
+  // Seventeen of nineteen exporting tools printed results with none of the
+  // inputs behind them: "Ksh 11,122 a month" and not the amount, rate or term.
+  await page.goto("/tools/loan-repayment");
+  await page.getByLabel("Loan amount / HELB balance (Ksh)").fill("500000");
+  await page.getByLabel("Annual interest rate").fill("12");
+  await page.getByLabel("Repayment period (years)").fill("5");
+  await expect(page.getByRole("button", { name: /download pdf/i })).toBeVisible();
+
+  // The sheet is built, photographed and removed inside the click, so catch it as it is added.
+  await page.evaluate(() => {
+    const w = window as unknown as { __sheetText?: string };
+    w.__sheetText = "";
+    new MutationObserver((ms) =>
+      ms.forEach((m) =>
+        m.addedNodes.forEach((n) => {
+          const t = (n as HTMLElement).innerText;
+          if (t && /practical money tools/i.test(t)) w.__sheetText = t;
+        }),
+      ),
+    ).observe(document.body, { childList: true });
+  });
+  const downloadPromise = page.waitForEvent("download");
+  await page.getByRole("button", { name: /download pdf/i }).click();
+  const download = await downloadPromise;
+
+  // innerText applies the sheet's CSS capitals, so compare without case.
+  const sheet = (await page.evaluate(() => (window as unknown as { __sheetText?: string }).__sheetText ?? "")).toLowerCase();
+  expect(sheet).toContain("loan amount / helb balance");
+  expect(sheet).toContain("ksh 500,000");
+  expect(sheet).toContain("repayment period (years)");
+
+  const bytes = readFileSync(await download.path()).toString("latin1");
+  expect(bytes).toMatch(/\/Title\s*\(/);
+  expect(bytes).toMatch(/\/Author\s*\(JiPange\)/);
+});
+
 test("take-home pay: the PDF button downloads a real, single-page PDF", async ({ page }) => {
   // A phone viewport on purpose: it is what most readers are on, and it is the
   // case that used to overflow onto a second sheet. If one page holds here, it

@@ -158,7 +158,7 @@ export default function LoanRepaymentCalculator() {
               principal={Number(principal)}
             />
             <BehavioralInsightStrip
-              insight={`Loss aversion means debt pain is felt more acutely than investment gains of the same amount feel good. That's useful here: at ${annualRate}% annual interest, paying down this loan early delivers a guaranteed, tax-free return equal to the rate — which very few savings products can beat. The total interest above is money already allocated to the lender; every extra payment reclaims a share of it.`}
+              insight={`Loss aversion means debt pain is felt more acutely than investment gains of the same amount feel good. That's useful here: at ${annualRate}% annual interest, paying this loan down early saves interest at that rate, tax-free, if your lender charges no early-repayment fee and charges on the reducing balance. The total interest above is money already allocated to the lender; every extra payment reclaims a share of it.`}
             />
             <ShareResultButton
               message={`🏦 *My Loan Repayment*\n\nLoan amount: ${formatKES(amountOrZero(principal))}\nMonthly instalment: ${formatKES(result.monthlyPayment)}\nTotal interest: ${formatKES(result.totalInterest)}\n\nCalculate yours → jipangefinance.org/tools/loan-repayment`}

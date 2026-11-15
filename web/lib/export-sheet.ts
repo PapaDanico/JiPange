@@ -117,6 +117,10 @@ export interface BuiltSheet {
  *  one phone-width column used 45% of it. */
 export const FLOW_COLUMNS = { landscape: 3, portrait: 2 } as const;
 const FLOW_GAP = 24;
+/** A last page emptier than this share of a page is not worth a sheet; try shrinking to drop it. */
+const LAST_PAGE_MIN_FILL = 0.35;
+/** The smallest the flowed content is shrunk to, to avoid an almost-empty last page. */
+const MIN_FLOW_SCALE = 0.85;
 /** Narrowest grid cell (px) allowed to survive into a flow column. */
 const MIN_FLOW_CELL = 160;
 
@@ -254,7 +258,7 @@ export function buildSheet(input: SheetInput): BuiltSheet {
       }
       <div style="display:flex;justify-content:space-between;font-size:9px;color:${BRAND.faint};">
         <span>JiPange · jipangefinance.org</span>
-        <span>Analytics for education only, not financial advice.</span>
+        <span><span data-sheet-page></span>Analytics for education only, not financial advice.</span>
       </div>
     </footer>
   `;
@@ -532,12 +536,49 @@ export function buildSheet(input: SheetInput): BuiltSheet {
      * next band of them, slid into view. */
     const band = slot.clientWidth + FLOW_GAP;
     pages = Math.max(1, Math.ceil((clone.scrollWidth + FLOW_GAP - 1) / band));
+
+    /* No page for a few lines. Adding the reader's inputs to every sheet
+     * (15 Nov 2026) pushed FIRE Number's last three disclaimer lines onto a
+     * third page that was otherwise empty. When the final page is under
+     * LAST_PAGE_MIN_FILL full, try the same content slightly smaller (a
+     * taller, wider box scaled back down) and keep it if that saves a page,
+     * as the single-page path already does for a near miss. */
+    let flowScale = 1;
+    const lastFill = (clone.scrollWidth - (pages - 1) * band) / band;
+    if (pages > 1 && lastFill < LAST_PAGE_MIN_FILL) {
+      for (let sc = 0.97; sc >= MIN_FLOW_SCALE - 1e-9; sc -= 0.03) {
+        Object.assign(clone.style, {
+          transformOrigin: "top left",
+          transform: `scale(${sc})`,
+          height: `${avail / sc}px`,
+          width: `${slot.clientWidth / sc}px`,
+        } as CSSStyleDeclaration);
+        const p2 = Math.max(1, Math.ceil((clone.scrollWidth * sc + FLOW_GAP - 1) / band));
+        if (p2 < pages) {
+          pages = p2;
+          flowScale = sc;
+          break;
+        }
+      }
+      if (flowScale === 1) {
+        Object.assign(clone.style, { transform: "none", height: `${avail}px`, width: "100%" } as CSSStyleDeclaration);
+      }
+    }
     showPage = (k) => {
-      clone.style.transform = k ? `translateX(${-k * band}px)` : "none";
+      const shift = k ? `translateX(${-k * band}px) ` : "";
+      clone.style.transform = flowScale !== 1 ? `${shift}scale(${flowScale})` : k ? shift.trim() : "none";
     };
   }
   fitOverflowingText(clone);
-  return { node: sheet, dispose: () => sheet.remove(), pages, showPage };
+  /* "Page 2 of 2" on a sheet that flowed onto more than one page, so a printed
+   * set can be put back in order. A single page carries no number. */
+  const show = (k: number) => {
+    showPage(k);
+    const el = sheet.querySelector("[data-sheet-page]");
+    if (el) el.textContent = pages > 1 ? `Page ${k + 1} of ${pages} · ` : "";
+  };
+  show(0);
+  return { node: sheet, dispose: () => sheet.remove(), pages, showPage: show };
 }
 
 /**
