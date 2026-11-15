@@ -71,7 +71,7 @@ describe("the export wiring", () => {
     expect(read("lib/export-sheet.ts")).toMatch(/Page \$\{k \+ 1\} of \$\{pages\}/);
   });
 
-  it("the loan insight no longer calls early repayment a guaranteed return", () => {
+  it("the loan insight qualifies what early repayment saves", () => {
     const src = read("components/tools/LoanRepaymentCalculator.tsx");
     expect(src).not.toMatch(/guaranteed, tax-free return/);
     expect(src).toMatch(/no early-repayment fee/);
