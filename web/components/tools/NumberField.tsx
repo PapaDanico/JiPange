@@ -53,6 +53,8 @@ export default function NumberField({
       <div className="relative mt-1">
         <input
           id={id}
+          data-export-label={label}
+          data-export-suffix={suffix}
           type="number"
           inputMode="decimal"
           min={min}

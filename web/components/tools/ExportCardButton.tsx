@@ -1,5 +1,6 @@
 "use client";
 
+import { collectInputs } from "@/lib/export-inputs";
 import { titleFromFilename } from "@/lib/export-sheet";
 import { RefObject, useState, useSyncExternalStore } from "react";
 import {
@@ -317,6 +318,17 @@ export default function ExportCardButton({
         format: "a4",
         orientation: landscape ? "landscape" : "portrait",
       });
+      /* Document properties. The file carried none, so a PDF viewer, a search
+       * index and a screen reader showed the filename or nothing. */
+      const docTitle = title?.trim() || titleFromFilename(filename);
+      pdf.setProperties({
+        title: `${docTitle} — JiPange`,
+        subject: "Kenyan personal-finance calculation: inputs, assumptions and method are stated in the document. Education only, not financial advice.",
+        author: "JiPange",
+        creator: "JiPange (jipangefinance.org)",
+        keywords: "Kenya, personal finance, calculator",
+      });
+      pdf.setLanguage("en-GB");
       const pageW = pdf.internal.pageSize.getWidth();
       const pageH = pdf.internal.pageSize.getHeight();
 
@@ -336,9 +348,9 @@ export default function ExportCardButton({
        * smaller type.
        */
       const { node, dispose, pages, showPage } = buildSheet({
-        title: title?.trim() || titleFromFilename(filename),
+        title: docTitle,
         body: el,
-        assumptions,
+        assumptions: assumptions ?? collectInputs(),
         notes,
         orientation: landscape ? "landscape" : "portrait",
       });
