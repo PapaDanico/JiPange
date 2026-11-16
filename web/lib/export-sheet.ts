@@ -177,6 +177,25 @@ function stackNarrowGrids(root: HTMLElement): void {
   });
 }
 
+/**
+ * "Ksh" and its number must never be split across two lines: the 16 Nov audit
+ * found "Total repaid: Ksh / 687,500" and "Ksh / 1,500 – Ksh / 3,500/month" in
+ * the SACCO, SHA and Salary sheets. A no-break space binds them. Applied to the
+ * exported clone only; the live page is untouched.
+ */
+export function bindCurrency(text: string): string {
+  return text.replace(/\b(Ksh|USD)[ \t]+(?=[-\u2212(]?\d)/g, "$1\u00A0");
+}
+
+function keepAmountsTogether(root: HTMLElement): void {
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+    const v = n.nodeValue ?? "";
+    const t = bindCurrency(v);
+    if (t !== v) n.nodeValue = t;
+  }
+}
+
 export function buildSheet(input: SheetInput): BuiltSheet {
   const landscape = input.orientation === "landscape";
   const page = landscape ? A4_LANDSCAPE : A4_PORTRAIT;
@@ -476,10 +495,25 @@ export function buildSheet(input: SheetInput): BuiltSheet {
     const natural = Math.max(clone.scrollHeight, clone.offsetHeight);
     const factor =
       natural > 0 && natural < avail ? Math.min(MAX_FILL_SCALE, avail / natural) : fitScale(contentHeight, avail);
-    if (factor !== 1) {
+    let applied = factor;
+    const apply = (f: number) => {
       clone.style.transformOrigin = "top left";
-      clone.style.transform = `scale(${factor})`;
-      clone.style.width = `${100 / factor}%`;
+      clone.style.transform = f === 1 ? "none" : `scale(${f})`;
+      clone.style.width = f === 1 ? "100%" : `${100 / f}%`;
+    };
+    if (applied !== 1) apply(applied);
+    /* Verify, never assume. The factor above was worked out from a height
+     * measured before the grids were stacked and before the width changed, so
+     * it can be too generous: Land Purchase lost its table and notes, Loan
+     * Repayment its insight mid-sentence and the 1/3 Rule its sources (16 Nov
+     * audit) while every test passed. Measure what is actually on the page
+     * and shrink until the bottom of the content is inside the slot. */
+    for (let i = 0; i < 8; i++) {
+      const bottom = clone.getBoundingClientRect().bottom - slot.getBoundingClientRect().top;
+      const slotH = slot.clientHeight;
+      if (bottom <= slotH + 1 || applied <= MIN_FIT_SCALE + 1e-9) break;
+      applied = Math.max(MIN_FIT_SCALE, applied * (slotH / bottom) * 0.985);
+      apply(applied);
     }
   } else {
     const cols = landscape ? FLOW_COLUMNS.landscape : FLOW_COLUMNS.portrait;
@@ -518,6 +552,16 @@ export function buildSheet(input: SheetInput): BuiltSheet {
       d.style.background = "none";
       d.style.border = "none";
     });
+    /* A row must never be cut by a column break. Land Purchase's "Stamp duty"
+     * line was sliced across two columns: the figure clipped at the foot of one
+     * and its "4% of plot value" caption alone at the head of the next (16 Nov
+     * audit). Anything inside a splitting block that is small enough to be a
+     * row or a short paragraph moves whole. */
+    tall.forEach((t) =>
+      (t as HTMLElement).querySelectorAll<HTMLElement>("*").forEach((d) => {
+        if (d.offsetHeight > 0 && d.offsetHeight <= avail / 4 && !breakable.has(d)) d.style.breakInside = "avoid";
+      }),
+    );
     Array.from(clone.children).forEach((c) => {
       const el = c as HTMLElement;
       if (tall.has(el)) {
@@ -569,6 +613,7 @@ export function buildSheet(input: SheetInput): BuiltSheet {
       clone.style.transform = flowScale !== 1 ? `${shift}scale(${flowScale})` : k ? shift.trim() : "none";
     };
   }
+  keepAmountsTogether(clone);
   fitOverflowingText(clone);
   /* "Page 2 of 2" on a sheet that flowed onto more than one page, so a printed
    * set can be put back in order. A single page carries no number. */

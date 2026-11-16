@@ -129,3 +129,12 @@ describe('titleFromFilename', () => {
     expect(titleFromFilename('dhowcsd-ladder')).toBe(TOOL_META['/tools/dhowcsd'].name);
   });
 });
+
+import { bindCurrency } from "../export-sheet";
+describe("bindCurrency", () => {
+  it("binds the currency to its figure and leaves prose alone", () => {
+    expect(bindCurrency("Total repaid: Ksh 687,500")).toBe("Total repaid: Ksh 687,500");
+    expect(bindCurrency("Ksh 1,500 – Ksh 3,500/month")).toBe("Ksh 1,500 – Ksh 3,500/month");
+    expect(bindCurrency("the Ksh price is shown")).toBe("the Ksh price is shown");
+  });
+});
