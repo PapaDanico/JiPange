@@ -287,7 +287,7 @@ export function buildSheet(input: SheetInput): BuiltSheet {
           : ""
       }
       <div style="display:flex;justify-content:space-between;font-size:10px;color:${BRAND.faint};">
-        <span>JiPange · jipangefinance.org</span>
+        <span>JiPange · Know your money. Own your future. · jipangefinance.org</span>
         <span><span data-sheet-page></span>Analytics for education only, not financial advice.</span>
       </div>
     </footer>
