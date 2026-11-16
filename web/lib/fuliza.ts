@@ -1,6 +1,6 @@
 import { calculateLoanAmortization } from "./loans";
 import { round2 } from "./money";
-import { SACCO_MONTHLY_RATE } from "./loan-comparison";
+import { SACCO_MONTHLY_RATE } from "./loan-assumptions";
 
 /**
  * Fuliza costs what Safaricom actually charges, not a flat percentage.
