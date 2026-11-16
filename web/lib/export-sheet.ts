@@ -189,10 +189,21 @@ export function bindCurrency(text: string): string {
 
 function keepAmountsTogether(root: HTMLElement): void {
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  const changed: { n: Node; v: string }[] = [];
   for (let n = walker.nextNode(); n; n = walker.nextNode()) {
     const v = n.nodeValue ?? "";
     const t = bindCurrency(v);
-    if (t !== v) n.nodeValue = t;
+    if (t !== v) {
+      n.nodeValue = t;
+      changed.push({ n, v });
+    }
+  }
+  /* Binding must never push a figure out of a narrow card: DhowCSD's rung
+   * cards are about 100px wide and "Ksh 150,000" then ran into the next card.
+   * Where the bound text overflows its own block, wrapping is the lesser harm. */
+  for (const { n, v } of changed) {
+    const el = n.parentElement;
+    if (el && el.clientWidth > 0 && el.scrollWidth > el.clientWidth + 1) n.nodeValue = v;
   }
 }
 
@@ -250,8 +261,8 @@ export function buildSheet(input: SheetInput): BuiltSheet {
              ${assumptions
                .map(
                  (a) => `<div>
-                   <p style="margin:0;font-size:8.5px;letter-spacing:0.12em;text-transform:uppercase;color:${BRAND.faint};">${escape(a.label)}</p>
-                   <p style="margin:2px 0 0;font-size:12px;font-weight:600;color:${BRAND.inkSoft};">${escape(a.value)}</p>
+                   <p style="margin:0;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:${BRAND.faint};">${escape(a.label)}</p>
+                   <p style="margin:3px 0 0;font-size:14px;font-weight:600;color:${BRAND.inkSoft};">${escape(a.value)}</p>
                  </div>`
                )
                .join("")}
@@ -270,12 +281,12 @@ export function buildSheet(input: SheetInput): BuiltSheet {
     <footer style="margin-top:18px;border-top:1px solid ${BRAND.border};padding-top:10px;">
       ${
         (input.notes ?? []).length
-          ? `<p style="margin:0 0 6px;font-size:8px;line-height:1.55;color:${BRAND.faint};">${(input.notes ?? [])
+          ? `<p style="margin:0 0 6px;font-size:9.5px;line-height:1.5;color:${BRAND.faint};">${(input.notes ?? [])
               .map(escape)
               .join(" ")}</p>`
           : ""
       }
-      <div style="display:flex;justify-content:space-between;font-size:9px;color:${BRAND.faint};">
+      <div style="display:flex;justify-content:space-between;font-size:10px;color:${BRAND.faint};">
         <span>JiPange · jipangefinance.org</span>
         <span><span data-sheet-page></span>Analytics for education only, not financial advice.</span>
       </div>
