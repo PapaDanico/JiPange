@@ -70,3 +70,17 @@ describe("TOOL_META covers every calculator", () => {
     ).toBeGreaterThan(0);
   });
 });
+
+describe("calculator cards are not repeated", () => {
+  const cards = CALCULATOR_GROUPS.flatMap((g) => g.calculators);
+
+  it("no page appears as two cards", () => {
+    const hrefs = cards.map((c) => c.href);
+    expect(hrefs.filter((h, i) => hrefs.indexOf(h) !== i)).toEqual([]);
+  });
+
+  it("no two cards share a title", () => {
+    const titles = cards.map((c) => c.title.toLowerCase());
+    expect(titles.filter((t, i) => titles.indexOf(t) !== i)).toEqual([]);
+  });
+});
