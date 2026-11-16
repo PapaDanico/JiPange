@@ -32,3 +32,14 @@ test("a household with no savings and no income still gets a result, not a blank
   await expect(page.getByText("Your 12-month cash-flow stress test")).toBeVisible();
   await expect(page.getByText("Month 1", { exact: true })).toBeVisible();
 });
+
+test("household resilience: zero essential spending is accepted, and the result can be exported", async ({ page }) => {
+  await page.goto("/tools/household-resilience");
+  await page.getByLabel("Accessible liquid savings (Ksh)").fill("100000");
+  await page.getByLabel("Monthly take-home income (Ksh)").fill("0");
+  await page.getByLabel("Monthly essential spending, excluding loan payments (Ksh)").fill("0");
+  await expect(page.getByRole("heading", { name: "Your 12-month cash-flow stress test" })).toBeVisible();
+  const download = page.waitForEvent("download");
+  await page.getByRole("button", { name: /download pdf/i }).click();
+  expect((await download).suggestedFilename()).toBe("household-resilience.pdf");
+});

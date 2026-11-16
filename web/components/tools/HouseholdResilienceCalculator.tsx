@@ -1,9 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { formatKES } from "@/lib/budget";
 import { simulateHouseholdLiquidity } from "@/lib/household-liquidity";
-import { MAX_AMOUNT, positiveAmount, typedNumber } from "@/lib/money";
+import { MAX_AMOUNT, typedNumber } from "@/lib/money";
+import ExportCardButton from "./ExportCardButton";
 
 /** A typed amount that may legitimately be zero (no savings, no income); blank is not zero. */
 function amountOrNull(raw: string): number | null {
@@ -23,11 +24,13 @@ export default function HouseholdResilienceCalculator() {
   const [feeMonth, setFeeMonth] = useState("1");
   const [fee, setFee] = useState("0");
 
+  const resultsRef = useRef<HTMLDivElement>(null);
   const result = useMemo(() => {
     // Zero savings and zero income are exactly the households this test is for.
     const reserves = amountOrNull(savings);
     const earnings = amountOrNull(income);
-    const costs = positiveAmount(essentials);
+    // Zero essentials is valid too (the model supports it); blank is still not zero.
+    const costs = amountOrNull(essentials);
     const debtAmount = typedNumber(debt);
     const feeAmount = typedNumber(fee);
     const shockPct = typedNumber(shock);
@@ -55,6 +58,8 @@ export default function HouseholdResilienceCalculator() {
       <NumberField id="resilience-fee" label="One upcoming school-fee or other bill (Ksh)" value={fee} onChange={setFee} />
       <NumberField id="resilience-fee-month" label="Month the upcoming bill falls due (1–12)" value={feeMonth} onChange={setFeeMonth} />
       {result && (
+        <>
+        <div ref={resultsRef}>
         <section className="space-y-3 rounded-2xl bg-white p-4 shadow-sm" aria-live="polite">
           <h2 className="text-lg font-semibold text-primary">Your 12-month cash-flow stress test</h2>
           <p className="text-sm text-ink-soft">Emergency runway at current spending: <strong>{result.essentialRunwayMonths === null ? "Not applicable" : `${result.essentialRunwayMonths} months`}</strong></p>
@@ -72,6 +77,18 @@ export default function HouseholdResilienceCalculator() {
             </table>
           </div>
         </section>
+        </div>
+        {/* The sheet prints the reader's inputs itself (see lib/export-inputs.ts). */}
+        <ExportCardButton
+          containerRef={resultsRef}
+          filename="household-resilience"
+          title="Household Financial Resilience"
+          notes={[
+            "Month-end balance = previous balance + stressed income − essential spending − debt repayments − bills due that month.",
+            "Illustrative scenario, not a forecast. Only accessible cash is counted; investment returns and inflation are excluded.",
+          ]}
+        />
+        </>
       )}
       <CalculatorDisclaimer payroll={false} extraNotes={[
         "Illustrative cash-flow scenario, not a financial forecast or a guarantee.",
