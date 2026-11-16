@@ -104,8 +104,8 @@ export default function Footer() {
       </div>
       <div className="mx-auto mt-8 flex max-w-5xl flex-col items-center gap-2 border-t border-border pt-4 text-center sm:flex-row sm:justify-between sm:text-left">
         <p>
-          © {new Date().getFullYear()} JiPange. For guidance only — not licensed financial
-          advice.
+          © {new Date().getFullYear()} JiPange, a Danico Ventures Ltd product. For guidance only —
+          not licensed financial advice.
         </p>
         <div className="flex gap-4">
           <Link href="/about" className="underline hover:text-primary">
