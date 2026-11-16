@@ -10,6 +10,7 @@ import {
   A4_LANDSCAPE,
 } from "@/lib/export-sheet";
 import ContributionNote from "./ContributionNote";
+import { collectTextRuns } from "@/lib/export-text-layer";
 import { canShareFile, canvasToPngFile, shareFile } from "@/lib/share-file";
 
 /**
@@ -375,14 +376,19 @@ export default function ExportCardButton({
           const drawW = shot.width * fit;
           const drawH = shot.height * fit;
           if (k > 0) pdf.addPage("a4", landscape ? "landscape" : "portrait");
-          pdf.addImage(
-            shot.toDataURL("image/jpeg", 0.94),
-            "JPEG",
-            (pageW - drawW) / 2,
-            0,
-            drawW,
-            drawH,
-          );
+          const offX = (pageW - drawW) / 2;
+          pdf.addImage(shot.toDataURL("image/jpeg", 0.94), "JPEG", offX, 0, drawW, drawH);
+          /* Invisible text over the picture, so the PDF can be searched,
+           * selected and read aloud. See lib/export-text-layer. */
+          const mmPerPx = drawW / page.w;
+          pdf.setTextColor(0, 0, 0);
+          for (const run of collectTextRuns(node, page.w, page.h)) {
+            pdf.setFontSize(run.size * mmPerPx * 2.8346);
+            pdf.text(run.text, offX + run.x * mmPerPx, run.y * mmPerPx, {
+              renderingMode: "invisible",
+              baseline: "alphabetic",
+            });
+          }
         }
       } finally {
         dispose();
