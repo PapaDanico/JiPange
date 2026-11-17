@@ -121,16 +121,31 @@ export default function SupportPage() {
             worth; less is fine, and so is nothing.
           </p>
 
-          <div className="mt-4 rounded-xl bg-canvas p-4">
-            <p className="text-sm font-semibold text-faint">
-              Buy Goods &amp; Services — Till
-            </p>
-            <p className="mt-1 font-mono text-2xl font-bold tracking-wider text-primary">
-              {TILL.number}
-            </p>
-            <p className="mt-1 text-sm font-medium text-ink-soft">
-              {TILL.registeredName}
-            </p>
+          <div className="mt-4 flex flex-wrap items-center gap-4 rounded-xl bg-canvas p-4">
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-semibold text-faint">
+                Buy Goods &amp; Services — Till
+              </p>
+              <p className="mt-1 font-mono text-2xl font-bold tracking-wider text-primary">
+                {TILL.number}
+              </p>
+              <p className="mt-1 text-sm font-medium text-ink-soft">
+                {TILL.registeredName}
+              </p>
+            </div>
+            {/* The same till as a Lipa na M-PESA QR, 3.5 KB, fixed size so it moves nothing.
+              * It encodes the till number and the registered name above (decoded and
+              * checked 17 Nov 2026), so scanning it shows the name before paying. */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/pay/till-qr.png"
+              width={112}
+              height={112}
+              loading="lazy"
+              decoding="async"
+              alt={`Lipa na M-PESA QR code for till ${TILL.number}, ${TILL.registeredName}`}
+              className="h-28 w-28 rounded-md border border-border bg-white p-1 [image-rendering:pixelated]"
+            />
           </div>
 
           {/* The name is explained BEFORE they pay, not after they wonder. */}
