@@ -57,6 +57,16 @@ export const MAX_TERM_MONTHS = 600;
 export const MAX_ANNUAL_RATE = 100;
 
 /** Standard reducing-balance amortization: equal monthly payments, interest on the declining balance. */
+/**
+ * Rounding policy (JP-05): every figure on the schedule is rounded to the cent AS
+ * A LENDER WOULD, month by month: interest on the rounded balance, a fixed rounded
+ * instalment, and a final instalment that clears exactly what is left. The
+ * schedule therefore adds up to the cent by construction (principal repaid equals
+ * the loan; interest and payments reconcile with the totals), which
+ * lib/__tests__/loans.test.ts proves over 490 principal, rate and term
+ * combinations. The totals are sums of the rounded rows, not a separately
+ * computed closed form, so a reader can add the column and get the same number.
+ */
 export function calculateLoanAmortization(params: {
   principal: number;
   annualRate: number;
