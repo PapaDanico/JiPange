@@ -45,3 +45,18 @@ describe("calculateQuotedLoanCost", () => {
     expect(calculateQuotedLoanCost({ ...valid, annualRate: NaN })).toBeNull();
   });
 });
+
+describe("instalments add up to the total, to the cent", () => {
+  it.each([
+    [500_000, 0.12, 60],
+    [123_457, 0.1337, 37],
+    [1_000_000, 0.18, 84],
+    [77_777, 0, 11],
+  ])("principal %d at %d over %d months", (principal, annualRate, termMonths) => {
+    const q = calculateQuotedLoanCost({ principal, annualRate, termMonths, upfrontFee: 0, upfrontInsurance: 0 })!;
+    const sum = Math.round((q.monthlyPayment * (termMonths - 1) + q.finalPayment) * 100) / 100;
+    expect(sum).toBe(q.totalPayments);
+    // The last instalment differs from the others by at most half a cent per instalment.
+    expect(Math.abs(q.finalPayment - q.monthlyPayment)).toBeLessThanOrEqual(0.005 * termMonths + 0.01);
+  });
+});
