@@ -11,6 +11,7 @@ import {
 } from "@/lib/export-sheet";
 import ContributionNote from "./ContributionNote";
 import { collectTextRuns } from "@/lib/export-text-layer";
+import { loadFontsInClone } from "@/lib/export-fonts";
 import { canShareFile, canvasToPngFile, shareFile } from "@/lib/share-file";
 
 /**
@@ -194,6 +195,7 @@ export default function ExportCardButton({
         width: Math.ceil(bounds.width),
         height: Math.ceil(bounds.height) + 8,
         windowHeight: Math.ceil(bounds.height) + 8,
+        onclone: loadFontsInClone,
       });
     } finally {
       chrome.forEach((node, i) => {
@@ -371,6 +373,7 @@ export default function ExportCardButton({
             height: page.h,
             windowWidth: page.w,
             windowHeight: page.h,
+            onclone: loadFontsInClone,
           });
           const fit = Math.min(pageW / shot.width, pageH / shot.height);
           const drawW = shot.width * fit;
