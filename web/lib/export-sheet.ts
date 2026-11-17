@@ -88,7 +88,7 @@ export function sheetDate(d: Date = new Date()): string {
  */
 export const MIN_FIT_SCALE = 0.5;
 /** The most short content is enlarged to fill a page. */
-export const MAX_FILL_SCALE = 1.6;
+export const MAX_FILL_SCALE = 1.9;
 
 export function fitScale(contentHeight: number, availableHeight: number): number {
   if (!(availableHeight > 0) || !(contentHeight > 0)) return 1;
@@ -525,6 +525,13 @@ export function buildSheet(input: SheetInput): BuiltSheet {
       if (bottom <= slotH + 1 || applied <= MIN_FIT_SCALE + 1e-9) break;
       applied = Math.max(MIN_FIT_SCALE, applied * (slotH / bottom) * 0.985);
       apply(applied);
+    }
+    /* A short result sat at the top of a mostly blank page (Money Runway, Savings
+     * Goal: 25 to 45% empty, 16 Nov audit). Whatever space is left, a third of it
+     * goes above the content so the sheet reads as composed rather than cut off. */
+    const finalBottom = clone.getBoundingClientRect().bottom - slot.getBoundingClientRect().top;
+    if (finalBottom < slot.clientHeight * 0.9) {
+      clone.style.marginTop = `${(slot.clientHeight - finalBottom) / 3 / applied}px`;
     }
   } else {
     const cols = landscape ? FLOW_COLUMNS.landscape : FLOW_COLUMNS.portrait;
