@@ -20,6 +20,8 @@ export interface LoanQuote {
 export interface LoanQuoteCost {
   netDisbursed: number;
   monthlyPayment: number;
+  /** The last instalment: the rounded payment times (n - 1) plus this equals totalPayments to the cent. */
+  finalPayment: number;
   totalPayments: number;
   totalBorrowingCost: number;
   effectiveAnnualCost: number;
@@ -61,6 +63,7 @@ export function calculateQuotedLoanCost(quote: LoanQuote): LoanQuoteCost | null 
   const effectiveAnnualCost = Math.expm1(12 * Math.log1p((lo + hi) / 2));
   const totalPayments = round2(payment * termMonths);
   const totalBorrowingCost = round2(totalPayments - netDisbursed);
-  if (![effectiveAnnualCost, totalPayments, totalBorrowingCost].every(Number.isFinite)) return null;
-  return { netDisbursed, monthlyPayment, totalPayments, totalBorrowingCost, effectiveAnnualCost };
+  const finalPayment = round2(totalPayments - monthlyPayment * (termMonths - 1));
+  if (![effectiveAnnualCost, totalPayments, totalBorrowingCost, finalPayment].every(Number.isFinite)) return null;
+  return { netDisbursed, monthlyPayment, finalPayment, totalPayments, totalBorrowingCost, effectiveAnnualCost };
 }
