@@ -100,3 +100,36 @@ describe("a term nobody could repay", () => {
     expect(r.schedule.at(-1)!.remainingBalance).toBe(0);
   });
 });
+
+describe("the schedule adds up to the cent, whatever the rounding does (JP-05)", () => {
+  const cents = (n: number) => Math.round(n * 100);
+  const principals = [1_000, 9_999.99, 50_000, 123_457, 500_000, 1_000_003.37, 20_000_000];
+  const rates = [0, 0.0001, 0.05, 0.1337, 0.18, 0.36, 1.2];
+  const terms = [1, 2, 3, 11, 12, 37, 60, 84, 241, 600];
+
+  it("principal repaid equals the loan, interest and payments reconcile, and the balance never rises", () => {
+    for (const principal of principals) {
+      for (const annualRate of rates) {
+        for (const termMonths of terms) {
+          const r = calculateLoanAmortization({ principal, annualRate, termMonths });
+          const label = `${principal} @ ${annualRate} x ${termMonths}`;
+          expect(r.schedule.length, label).toBeGreaterThan(0);
+          const principalSum = r.schedule.reduce((s, e) => s + cents(e.principalPaid), 0);
+          const interestSum = r.schedule.reduce((s, e) => s + cents(e.interestPaid), 0);
+          const paymentSum = r.schedule.reduce((s, e) => s + cents(e.payment), 0);
+          expect(principalSum, `${label} principal`).toBe(cents(principal));
+          expect(interestSum, `${label} interest`).toBe(cents(r.totalInterest));
+          expect(paymentSum, `${label} payments`).toBe(cents(r.totalPaid));
+          expect(cents(r.totalPaid), `${label} total`).toBe(cents(principal) + cents(r.totalInterest));
+          expect(r.schedule[r.schedule.length - 1].remainingBalance, `${label} end`).toBe(0);
+          let prev = principal;
+          for (const e of r.schedule) {
+            expect(e.principalPaid, label).toBeGreaterThanOrEqual(0);
+            expect(e.remainingBalance, label).toBeLessThanOrEqual(prev);
+            prev = e.remainingBalance;
+          }
+        }
+      }
+    }
+  });
+});
