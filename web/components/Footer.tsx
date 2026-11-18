@@ -39,10 +39,7 @@ const COLUMNS: { heading: string; links: { href: string; label: string }[] }[] =
       { href: "/partners", label: "Partners & products" },
       { href: "/faq", label: "Money questions, answered" },
       { href: "/glossary", label: "Money words, decoded" },
-      { href: "/about", label: "About JiPange" },
       { href: "/support", label: "Supporting JiPange" },
-      { href: "/terms", label: "Terms of use" },
-      { href: "/privacy", label: "Privacy policy" },
     ],
   },
 ];
@@ -104,8 +101,8 @@ export default function Footer() {
       </div>
       <div className="mx-auto mt-8 flex max-w-5xl flex-col items-center gap-2 border-t border-border pt-4 text-center sm:flex-row sm:justify-between sm:text-left">
         <p>
-          © {new Date().getFullYear()} JiPange, a Danico Ventures Ltd product. For guidance only —
-          not licensed financial advice.
+          © {new Date().getFullYear()} JiPange, a Danico Ventures Ltd product. For education and
+          guidance only: not licensed financial advice, and not a lender, bank or SACCO.
         </p>
         <div className="flex gap-4">
           <Link href="/about" className="underline hover:text-primary">

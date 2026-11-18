@@ -65,7 +65,7 @@ export default function PrivacyPage() {
     <div className="flex flex-1 flex-col items-center px-6 py-12">
       <div className="w-full max-w-2xl">
         <h1 className="text-2xl font-semibold text-primary">Privacy notice</h1>
-        <p className="mt-1 text-sm text-ink-soft">Last updated: 13 November 2026</p>
+        <p className="mt-1 text-sm text-ink-soft">Last updated: 18 November 2026</p>
 
         <div className="mt-4 rounded-2xl border border-[#CFE3CF] bg-[#f0f7f0] px-5 py-4 text-sm text-success-deep">
           <strong>Short version:</strong> every calculator — and the action plan — runs
@@ -277,6 +277,13 @@ export default function PrivacyPage() {
               </a>{" "}
               is the supervisory authority for data protection in Kenya. You do not need to
               come to us first, though we would rather you did — it is usually faster.
+            </p>
+            <p className="mt-2">
+              <strong>If you do ask us.</strong> Use the Support page. For data we actually hold,
+              such as the confirmation Safaricom sends us when you contribute, the Data
+              Protection (General) Regulations, 2021 require us to answer an access request
+              within seven days and a correction or erasure request within fourteen. For what
+              stays in your browser there is nothing on our side to give you, and we will say so.
             </p>
           </section>
 
