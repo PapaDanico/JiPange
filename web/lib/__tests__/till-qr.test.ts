@@ -9,3 +9,11 @@ describe("the till QR on /support", () => {
     expect(statSync(file).size).toBeLessThan(10_000);
   });
 });
+
+describe("the Danico Ventures logo", () => {
+  it("ships, at a few kilobytes", () => {
+    const f = join(process.cwd(), "public", "brand", "danico-logo.webp");
+    expect(statSync(f).size).toBeGreaterThan(500);
+    expect(statSync(f).size).toBeLessThan(6_000);
+  });
+});
