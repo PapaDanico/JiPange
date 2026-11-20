@@ -129,7 +129,9 @@ export default function SupportPage() {
               <p className="mt-1 font-mono text-2xl font-bold tracking-wider text-primary">
                 {TILL.number}
               </p>
-              <p className="mt-1 text-sm font-medium text-ink-soft">
+              <p className="mt-2 flex items-center gap-2 text-sm font-medium text-ink-soft">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/brand/danico-logo.webp" alt="" width={32} height={32} loading="lazy" decoding="async" className="h-8 w-8 shrink-0 rounded-md" />
                 {TILL.registeredName}
               </p>
             </div>

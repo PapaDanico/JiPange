@@ -100,9 +100,13 @@ export default function Footer() {
         ))}
       </div>
       <div className="mx-auto mt-8 flex max-w-5xl flex-col items-center gap-2 border-t border-border pt-4 text-center sm:flex-row sm:justify-between sm:text-left">
-        <p>
+        <p className="flex items-center gap-3">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/brand/danico-logo.webp" alt="" width={28} height={28} loading="lazy" decoding="async" className="h-7 w-7 shrink-0 rounded-md" />
+          <span>
           © {new Date().getFullYear()} JiPange, a Danico Ventures Ltd product. For education and
           guidance only: not licensed financial advice, and not a lender, bank or SACCO.
+        </span>
         </p>
         <div className="flex gap-4">
           <Link href="/about" className="underline hover:text-primary">
