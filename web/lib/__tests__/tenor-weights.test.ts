@@ -34,9 +34,16 @@ describe("weights change the answer, in the right direction", () => {
     );
   });
 
-  it("weighting the shortest tenor lowers the blend, because it pays least", () => {
+  it("weighting the shortest tenor moves the blend toward the 91-day yield", () => {
+    /* This said "lowers the blend, because it pays least" and held until the
+     * 26 Nov 2026 auction, when the 91-day became the best-paying rung after
+     * tax. Like the 364-day assertion below, it was a fact about the curve,
+     * not about the weighting; the direction now follows the data. */
     const even = yieldFor(EVEN_WEIGHTS);
-    expect(yieldFor({ 91: 3, 182: 1, 364: 1 })).toBeLessThan(even);
+    const own91 = tbillRate(91)!.netEAY / 100;
+    const tilted = yieldFor({ 91: 3, 182: 1, 364: 1 });
+    if (own91 < even) expect(tilted).toBeLessThan(even);
+    else expect(tilted).toBeGreaterThan(even);
   });
 
   it("weighting a tenor pulls the blend toward that tenor's yield", () => {
@@ -71,7 +78,11 @@ describe("weights change the answer, in the right direction", () => {
     // Re-checked that day: all reader-facing copy asks bestPayingTenor() or
     // LONGEST_IS_BEST_PAYING rather than naming a tenor. When this fails again,
     // do the same check and update EXPECTED_TOP.
-    const EXPECTED_TOP = 364;
+    // 26 Nov 2026 auction: the 91-day (net 7.6452%) overtook 182d (7.6370%)
+    // and 364d (7.6387%). Re-checked: all ranking copy still asks
+    // bestPayingTenor(); the ladder's "Locked away for a year" hint already
+    // says the 91-day rung currently pays more.
+    const EXPECTED_TOP = 91;
     const [y91, y182, y364] = ([91, 182, 364] as const).map((d) => tbillRate(d)!.netEAY);
     const top = y364 >= Math.max(y91, y182) ? 364 : y182 >= y91 ? 182 : 91;
     expect(
