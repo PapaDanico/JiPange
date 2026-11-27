@@ -17,6 +17,10 @@ export default function PrintLetterhead({ title }: { title: string }) {
               alt=""
               width={973}
               height={833}
+              /* Without `sizes` the browser picked the 1,080px variant (78 KB) for
+                 a 28px mark, on every tool page, though this letterhead only
+                 shows when printing. Eager still, so it is there for print. */
+              sizes="40px"
               loading="eager"
               className="h-7 w-auto"
             />
