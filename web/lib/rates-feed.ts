@@ -55,6 +55,14 @@ export const SUPPORTED_SCHEMA = 1;
 /** Past this, the UI says the figures are old rather than quoting them plainly. */
 export const STALE_AFTER_DAYS = 14;
 
+/**
+ * How the publisher says a figure arrived (Mwangaza's recorded `via`). Optional
+ * and validated at sync time against scripts/route-field.mjs, which a test keeps
+ * equal to this union. ABSENT means unknown: never default it, never infer it
+ * from `source`, and show nothing rather than a guess.
+ */
+export type RateRoute = "supplied-document" | "search-corroborated" | "imf-weo" | "cbk-home";
+
 export interface TBillRate {
   tenorDays: number;
   /** CBK's published quote. NOT a return — see netEAY. */
@@ -69,6 +77,7 @@ export interface TBillRate {
   nextAuctionDate: string | null;
   minInvestmentKES: number | null;
   source: string | null;
+  via?: RateRoute;
 }
 
 export interface MacroReading {
@@ -94,6 +103,7 @@ export interface MacroReading {
    * products, one number, one of them disclosing.
    */
   fallback?: boolean;
+  via?: RateRoute;
 }
 
 /**
@@ -280,6 +290,44 @@ export function inflationBaskets(): InflationBaskets | null {
     date: core.date,
     source: core.source,
   };
+}
+
+/**
+ * The reader-facing words for each route. Same labels as Mwangaza's route badge
+ * so the two products say the same thing about the same figure. `primary` is
+ * true when the figure was read from the publisher's own document.
+ */
+export const ROUTE_LABELS: Record<RateRoute, { label: string; detail: string; primary: boolean }> = {
+  "supplied-document": {
+    label: "Official notice",
+    detail: "Transcribed from the publisher's own document and cross-checked against figures already held.",
+    primary: true,
+  },
+  "search-corroborated": {
+    label: "Corroborated",
+    detail: "Not read from the primary document: agreed across independent reports and reconciled arithmetically.",
+    primary: false,
+  },
+  "imf-weo": {
+    label: "IMF",
+    detail: "IMF World Economic Outlook series, corroborated against independent reports of the same vintage.",
+    primary: true,
+  },
+  "cbk-home": {
+    label: "CBK site",
+    detail: "Read from the Central Bank of Kenya's published figures.",
+    primary: true,
+  },
+};
+
+/**
+ * How the newest T-bill figures arrived, or null when the publisher did not
+ * say. Absent or unrecognised is null: the badge then shows nothing, never a
+ * guess. Uses the same row `attribution()` dates, so the two always agree.
+ */
+export function tbillRoute(): { label: string; detail: string; primary: boolean } | null {
+  const via = TBILL_RATES[0]?.via;
+  return via && Object.hasOwn(ROUTE_LABELS, via) ? ROUTE_LABELS[via] : null;
 }
 
 /** e.g. "CBK auction of 16 Jul 2026". Always shown next to a rate. */

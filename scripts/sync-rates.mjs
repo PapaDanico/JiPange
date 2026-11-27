@@ -24,6 +24,7 @@
  *   node scripts/sync-rates.mjs
  *   node scripts/sync-rates.mjs --from ../path/to/rates.json   (local testing)
  */
+import { sanitizeRoutes } from "./route-field.mjs";
 import { readFileSync, writeFileSync } from "node:fs";
 
 const FEED_URL = "https://mwangazayield.org/data/rates.json";
@@ -135,6 +136,12 @@ for (const tenor of REQUIRED_TENORS) {
   if (!(row.grossEAY > row.quotedDiscountRate)) {
     fail(`${tenor}-day gross is not above the quoted discount rate — check the feed`);
   }
+}
+
+/* ------------------------------------------------- publisher route field */
+
+for (const d of sanitizeRoutes(incoming)) {
+  console.warn(`::warning::Dropped an unrecognised route (via) from the feed — ${d}`);
 }
 
 /* ------------------------------------------------------- freshness check */
