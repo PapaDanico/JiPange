@@ -194,9 +194,12 @@ If `npm run doctor` ever reports that divergence again (a stale
 bug, and the fix is theirs.
 
 The 403 from `https://mwangazayield.org/data/rates.json` inside an agent
-session is a *separate* thing and is still the egress policy, not the origin:
-the failure is `CONNECT tunnel failed, response 403` from the proxy, which
-never reaches the site at all. The git route stays the way in.
+session was a *separate* thing: the egress policy, not the origin. **Re-tested
+27 Nov 2026: it is gone.** `mwangazayield.org`, `jipangefinance.org`,
+`centralbank.go.ke`, `treasury.go.ke` and `kra.go.ke` all answer 200 from a
+session, so the feed can be fetched over HTTP and the live site loaded to check
+a deploy. The git route stays as the fallback if the policy closes again;
+re-test before relying on either.
 
 ## Deploying, while CI is dead
 
@@ -294,8 +297,9 @@ Discovered 11 September 2026, unresolved, and the reason nobody should
 - The apex currently resolves to `98.84.224.111` / `18.208.88.157`, which are
   plain EC2 addresses in us-east-1 — **neither** Vercel's apex
   (`76.76.21.21`) nor Netlify's (`75.2.60.5`). So which provider actually
-  serves readers is NOT established, and an agent session cannot check it:
-  HTTPS to the domain is egress-blocked.
+  serves readers is NOT established. HTTPS to the domain was egress-blocked
+  when this was written; since 27 Nov 2026 a session can load the site, so
+  this can now be checked directly.
 
 **Therefore: do not disconnect, delete or pause that Vercel project until
 somebody has confirmed from outside this environment what answers
@@ -388,3 +392,16 @@ Money is `Ksh`, everywhere a user can see it. Figures carry their date and
 publisher. Projections (`IMF_WEO_*`) and measured outturns (KNBS/CBK) are never
 interchangeable: a page that looks forward may quote a projection; a page
 stating current conditions uses the measurement.
+
+## Closing evidence gaps: the deep-research workflow (adopted 27 Nov 2026)
+
+When a question needs outside evidence (a tax rule, a fee, a regulator's
+convention), run the `deep-research` skill: independent tracks in parallel
+(statute, regulator documents, market practice), researchers who read the
+primary document and reproduce a figure against the publisher's own numbers,
+labelled notes (read in full or search summary, URL, date, confidence), then a
+decision table. Verify any code finding a researcher reports yourself before
+acting on it, and bring a methodology change to the owner with reference cases
+first. Keep the notes and report under `docs/research/<date>-<title>/`. The
+first run (Kenya bond withholding tax; credit pricing; CBK bond conventions)
+is in PapaDanico/Mwangaza-Yield `docs/research/`.
