@@ -8,11 +8,11 @@ const ROUTES = [
   ...[
     // The take-home, budget-split, payday-router, tax-shield and salary-negotiation
     // addresses redirect to tabs of /tools/salary, so only the hub is listed.
-    "savings-goal", "loan-repayment",
-    "investment-returns", "fire-number", "dhowcsd", "money-runway",
+    "loan-repayment",
+    "investment-returns", "dhowcsd",
     "sacco-vs-bank", "inflation-reality",
     "kplc-optimizer", "fuliza-cost", "one-third-rule", "guarantor-shield",
-    "chama", "hustle-smoother", "20th-challenge", "debt-escape", "land-purchase",
+    "chama", "20th-challenge", "debt-escape", "land-purchase",
     "salary", "sha-health", "school-fees-lifetime",
   ].map((t) => `/tools/${t}`),
   "/terms", "/privacy", "/faq", "/glossary", "/support",

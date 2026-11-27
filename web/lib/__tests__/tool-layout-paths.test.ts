@@ -20,7 +20,8 @@ const toolDirs = readdirSync(TOOLS_DIR, { withFileTypes: true })
 
 describe("ToolLayout path props", () => {
   it("covers every tool directory", () => {
-    expect(toolDirs.length).toBeGreaterThanOrEqual(20);
+    /* 15, not 20: three duplicate tools were merged into planners on 27 Nov 2026. */
+    expect(toolDirs.length).toBeGreaterThanOrEqual(15);
   });
 
   it.each(toolDirs)("%s: page.tsx passes its own directory as path", (slug) => {

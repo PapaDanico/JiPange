@@ -187,7 +187,7 @@ describe("figures we attribute to ourselves are actually ours", () => {
   const pages = walk(toolsDir);
 
   it("scans a real set of tool pages", () => {
-    expect(pages.length, "no tool pages found — the scan below is vacuous").toBeGreaterThan(20);
+    expect(pages.length, "no tool pages found — the scan below is vacuous").toBeGreaterThan(15);
   });
 
   /**
@@ -327,9 +327,15 @@ describe("figures we attribute to ourselves are actually ours", () => {
     /* take-home-pay, tax-shield and salary-negotiation are tabs of the Salary &
      * Pay Hub now, so a retired figure would reappear in the hub component. */
     const HUB_TABS = ["take-home-pay", "tax-shield", "salary-negotiation"];
+    /* Tools merged into another page on 27 Nov 2026 (duplicates removed): a
+     * retired figure would reappear where the tool now lives. */
+    const MOVED: Record<string, string> = {
+      "fire-number": "components/tools/RetirementTool.tsx",
+      "savings-goal": "app/planners/page.tsx",
+    };
     const page = HUB_TABS.includes(slug)
       ? "components/tools/SalaryPlannerHub.tsx"
-      : pages.find((p) => p.includes(`/${slug}/`))!;
+      : MOVED[slug] ?? pages.find((p) => p.includes(`/${slug}/`))!;
     const src = readFileSync(page, "utf8")
       .replace(/\/\*[\s\S]*?\*\//g, " ")
       .replace(/^\s*\/\/.*$/gm, " ");

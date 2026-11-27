@@ -37,7 +37,7 @@ export const PLANNER_NAV_ITEMS: PlannerNavItem[] = [
   {
     href: "/planners/hustle",
     icon: "🌾",
-    title: "Cycle Venture Planner",
-    tagline: "Turn lumpy cycle payouts into a steady monthly salary, with next cycle's seed capital protected.",
+    title: "Irregular Income Planner",
+    tagline: "Cycle payouts or month-to-month earnings, turned into a steady monthly salary.",
   },
 ];

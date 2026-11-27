@@ -67,7 +67,7 @@ export const FAQS: Faq[] = [
     answer:
       "Three to six months of expenses is the usual answer, and the more useful question is how quickly you could reach it. If your income is irregular, lean toward six; if you have dependants relying on you, lean toward six as well. Keep it somewhere it can be withdrawn in a day — its job is availability, not return.",
     topic: "Getting started",
-    toolPath: "/tools/money-runway",
+    toolPath: "/tools/household-resilience",
     toolLabel: "See how long your money would last",
   },
 
@@ -197,7 +197,7 @@ export const FAQS: Faq[] = [
     answer:
       "Because it moves the opposite way to everything else. School fees end, the commute goes, the house gets paid for — ordinary costs drift down in real terms. Medical does not: premiums are banded by age and climb steeply, on top of general inflation. A household spending 6% of its budget on cover today typically needs around 19% of its retirement capital set aside for it. That amplification is invisible in a monthly budget.",
     topic: "Health & retirement",
-    toolPath: "/tools/fire-number",
+    toolPath: "/planners/retirement",
     toolLabel: "Price your own retirement",
   },
   {
@@ -205,14 +205,14 @@ export const FAQS: Faq[] = [
     answer:
       "Often not. Kenyan insurers commonly decline NEW members past their mid-sixties, admitting older people only where cover has been held continuously. So the decision about retirement medical cover expires BEFORE retirement does. If you intend to have private cover at seventy, the time to hold it is well before sixty-five.",
     topic: "Health & retirement",
-    toolPath: "/tools/fire-number",
+    toolPath: "/planners/retirement",
   },
   {
     question: "Is the 4% rule right for Kenya?",
     answer:
       "Not without adjustment. It comes from American market history and sizes a pot meant to last forever. Two Kenyan realities change it in opposite directions: retirement spending does fall in real terms here too, but less than the Western literature assumes because extended-family obligation does not retire — and medical costs climb steeply while everything else falls. This app prices those streams separately rather than applying any multiple.",
     topic: "Health & retirement",
-    toolPath: "/tools/fire-number",
+    toolPath: "/planners/retirement",
   },
 
   /* ────────────────────────────────────────────────── About JiPange */

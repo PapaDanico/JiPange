@@ -360,22 +360,22 @@ export default function HustleIncomeSmootherCalculator() {
             </div>
 
             <p className="text-xs text-ink-soft">
-              Running a cycle-based venture (poultry, horticulture, cash crops)?
-              Try the{" "}
+              Paid in lumps per cycle instead (poultry, horticulture, cash crops)?
+              Use the{" "}
               <Link
-                href="/planners/hustle"
+                href="/planners/hustle#cycle"
                 className="underline hover:text-primary"
               >
-                Cycle Venture Planner
+                cycle section above
               </Link>{" "}
               — it handles lump-sum payouts and protects next-cycle seed capital.
             </p>
 
             <ShareResultButton
-              message={`🔄 *My Hustle Income Smoother*\n\n${validIncomes.length} months · Median: ${formatKES(result.stats.median)}\nSmoothed monthly salary: ${formatKES(result.monthlyDraw)}\nBuffer built: ${formatKES(Math.max(0, result.finalBuffer))} (${result.finalBufferMonths.toFixed(1)} months)${result.goesNegative ? `\n⚠️ Runs dry in month ${result.lowestBufferMonth} — needs ${formatKES(result.requiredStartingBuffer)} saved up front` : ""}\n\nSmooth yours → jipangefinance.org/tools/hustle-smoother`}
+              message={`🔄 *My smoothed monthly income*\n\n${validIncomes.length} months · Median: ${formatKES(result.stats.median)}\nSmoothed monthly salary: ${formatKES(result.monthlyDraw)}\nBuffer built: ${formatKES(Math.max(0, result.finalBuffer))} (${result.finalBufferMonths.toFixed(1)} months)${result.goesNegative ? `\n⚠️ Runs dry in month ${result.lowestBufferMonth} — needs ${formatKES(result.requiredStartingBuffer)} saved up front` : ""}\n\nSmooth yours → jipangefinance.org/planners/hustle#monthly`}
             />
           </div>
-          <ExportCardButton containerRef={resultsRef} filename="hustle-smoother" />
+          <ExportCardButton containerRef={resultsRef} filename="hustle-monthly" />
           <CalculatorDisclaimer
             extraNotes={[
               "This tool uses median income as the basis for your salary draw. Your actual median will shift as your income changes — re-run the smoother every 3–6 months.",

@@ -14,7 +14,7 @@ import { test, expect } from "@playwright/test";
  * whole feature and it only exists in a browser.
  */
 
-const TOOL = "/tools/savings-goal";
+const TOOL = "/planners"; // the Savings Goal Calculator lives here since 27 Nov 2026
 
 test("a shared link fills the recipient's calculator in", async ({ page }) => {
   await page.goto(`${TOOL}?target=750000&years=7&currentSavings=50000&annualReturn=9`);

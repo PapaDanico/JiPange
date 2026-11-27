@@ -119,7 +119,8 @@ describe("the categorisation is complete", () => {
     // default silently to whatever CAPABILITY_TIER says, including for tools
     // that belong on the protected list.
     const hrefs = allToolHrefs();
-    expect(hrefs.length, "found no tools — this guard would be vacuous").toBeGreaterThan(20);
+    // 15, not 20, after the 27 Nov 2026 duplicate merges; this guards an empty scan.
+    expect(hrefs.length, "found no tools — this guard would be vacuous").toBeGreaterThan(15);
     for (const href of hrefs) {
       for (const cap of CAPABILITIES) {
         const t = tierFor(cap, href);

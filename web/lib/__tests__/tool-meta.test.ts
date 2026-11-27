@@ -42,7 +42,9 @@ describe("TOOL_META covers every calculator", () => {
   /* The premise. If app/tools were empty or unreadable the assertion above
    * would pass against nothing, which is how a guard gets quietly disabled. */
   it("actually found the calculators", () => {
-    expect(toolRoutes().length).toBeGreaterThan(20);
+    // 15, not 20: four duplicate tools were merged into other pages on
+    // 27 Nov 2026. The guard is against an empty scan, not a count to hit.
+    expect(toolRoutes().length).toBeGreaterThan(15);
   });
 
   it("does not claim tools that have no page", () => {

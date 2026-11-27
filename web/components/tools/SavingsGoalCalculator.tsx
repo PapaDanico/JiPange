@@ -238,7 +238,7 @@ export default function SavingsGoalCalculator() {
               </div>
             )}
             <ShareResultButton
-              message={`🎯 *My Savings Goal*\n\nTarget: ${formatKES(amountOrZero(target))} in ${years} year${Number(years) === 1 ? "" : "s"}\nMonthly savings needed: ${formatKES(result)}\n\nOpen my numbers and change them → ${shareableUrl("/tools/savings-goal", {
+              message={`🎯 *My Savings Goal*\n\nTarget: ${formatKES(amountOrZero(target))} in ${years} year${Number(years) === 1 ? "" : "s"}\nMonthly savings needed: ${formatKES(result)}\n\nOpen my numbers and change them → ${shareableUrl("/planners#custom", {
                 target: Number(target),
                 years: Number(years),
                 currentSavings: Number(currentSavings),
@@ -246,7 +246,7 @@ export default function SavingsGoalCalculator() {
               })}`}
             />
           </div>
-          <ExportCardButton containerRef={resultsRef} filename="savings-goal" />
+          <ExportCardButton containerRef={resultsRef} filename="jipange-result" />
           <CalculatorDisclaimer payroll={false}
             extraNotes={[
               "Returns compound monthly at the rate entered. Actual MMF yields fluctuate daily — check your provider's current rate before setting contribution amounts.",

@@ -731,7 +731,7 @@ export function titleFromFilename(name: string): string {
    * `chama-calculator`, `land-purchase-costs`), and missing the registry for
    * those printed "Dhowcsd Ladder". Trim trailing words until a route matches. */
   for (let slug = name; slug; slug = slug.includes("-") ? slug.slice(0, slug.lastIndexOf("-")) : "") {
-    const registered = TOOL_META[`/tools/${slug}`]?.name;
+    const registered = TOOL_META[`/tools/${slug}`]?.name ?? TOOL_META[`/planners/${slug}`]?.name;
     if (registered) return registered;
   }
   const words = name.replace(/[-_]+/g, " ").replace(/\s+/g, " ").trim();

@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import GoalPlanner from "@/components/planners/GoalPlanner";
 import TermlyFeeSmoother from "@/components/planners/TermlyFeeSmoother";
 import MjengoMilestone from "@/components/planners/MjengoMilestone";
+import RetirementTool, { RETIREMENT_METADATA } from "@/components/tools/RetirementTool";
 import JsonLd from "@/components/seo/JsonLd";
 import { breadcrumbJsonLd, softwareApplicationJsonLd } from "@/lib/structured-data";
 import { GOAL_CONFIGS, GOAL_TYPES, type GoalType } from "@/lib/goal-planner";
@@ -20,6 +21,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { goal } = await params;
   const config = GOAL_CONFIGS[goal as GoalType];
   if (!config) return {};
+  if (config.type === "retirement") return RETIREMENT_METADATA;
   return {
     title: `${config.title} — JiPange`,
     description: config.tagline,
@@ -30,6 +32,9 @@ export default async function GoalPlannerPage({ params }: PageProps) {
   const { goal } = await params;
   const config = GOAL_CONFIGS[goal as GoalType];
   if (!config) notFound();
+  // One retirement answer, not two: the fuller Kenya model (living and
+  // medical priced separately) replaces the one-figure goal planner here.
+  if (config.type === "retirement") return <RetirementTool />;
 
   const path = `/planners/${goal}`;
 

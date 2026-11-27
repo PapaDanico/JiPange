@@ -113,8 +113,8 @@ describe('nominal against real', () => {
 describe('the reasoning reaches the reader', () => {
   const read = (p: string) => readFileSync(new URL(`../../${p}`, import.meta.url), 'utf8');
 
-  it('renders the education section on the FIRE page', () => {
-    const page = read('app/tools/fire-number/page.tsx');
+  it('renders the education section on the retirement planner', () => {
+    const page = read('components/tools/RetirementTool.tsx');
     expect(page).toMatch(/FireEducation/);
     expect(page.match(/<FireEducation\s*\/>/), 'imported but never rendered').toBeTruthy();
   });
@@ -127,7 +127,7 @@ describe('the reasoning reaches the reader', () => {
      * the cheapest way to make it pass is to delete the explanation. That is
      * the second time today a guard has flagged its own rationale. Scan what
      * ships, not what explains it. */
-    const page = read('app/tools/fire-number/page.tsx')
+    const page = read('components/tools/RetirementTool.tsx')
       .replace(/\/\*[\s\S]*?\*\//g, '')
       .replace(/^\s*\/\/.*$/gm, '');
     const meta = page.slice(0, page.indexOf('export default'));

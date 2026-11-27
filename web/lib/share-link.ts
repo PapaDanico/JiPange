@@ -61,7 +61,13 @@ export function buildShareLink(path: string, params: ShareParams): string {
     search.set(key, String(Number(safe.toFixed(4))));
   }
   const query = search.toString();
-  return query ? `${path}?${query}` : path;
+  /* A section anchor (`/planners#custom`) goes AFTER the query: anything
+   * after `#` never reaches the server or `location.search`, so the figures
+   * would be lost on open. */
+  const hashAt = path.indexOf("#");
+  const base = hashAt === -1 ? path : path.slice(0, hashAt);
+  const hash = hashAt === -1 ? "" : path.slice(hashAt);
+  return query ? `${base}?${query}${hash}` : path;
 }
 
 /**

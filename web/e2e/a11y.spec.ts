@@ -22,10 +22,10 @@ import { readFileSync } from "node:fs";
  */
 
 const TOOLS = [
-  "savings-goal", "loan-repayment",
-  "investment-returns", "fire-number", "dhowcsd", "money-runway",
+  "loan-repayment",
+  "investment-returns", "dhowcsd",
   "sacco-vs-bank", "inflation-reality", "kplc-optimizer",
-  "fuliza-cost", "one-third-rule", "guarantor-shield", "chama", "hustle-smoother",
+  "fuliza-cost", "one-third-rule", "guarantor-shield", "chama",
   "20th-challenge", "debt-escape", "land-purchase", "salary", "sha-health",
   "school-fees-lifetime", "where-to-save",
 ];

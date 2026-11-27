@@ -170,10 +170,10 @@ export default function MoneyRunwayCalculator() {
               </p>
             )}
             <ShareResultButton
-              message={`⏳ *My Money Runway*\n\nMy savings will last: ${formatDuration(result)}\n\nCalculate yours → jipangefinance.org/tools/money-runway`}
+              message={`⏳ *My Money Runway*\n\nMy savings will last: ${formatDuration(result)}\n\nCalculate yours → jipangefinance.org/tools/household-resilience`}
             />
           </div>
-          <ExportCardButton containerRef={resultsRef} filename="money-runway" />
+          <ExportCardButton containerRef={resultsRef} filename="household-resilience-runway" />
           <CalculatorDisclaimer payroll={false}
             extraNotes={[
               "Returns assumed in this calculator are not guaranteed. For an emergency fund stress test, set the return rate to 0%.",

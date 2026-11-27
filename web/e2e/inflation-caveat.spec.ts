@@ -18,7 +18,7 @@ test("retirement plan warns whose inflation the headline is", async ({ page }) =
     "snapshot predates the inflation split — nothing to assert yet"
   );
 
-  await page.goto("/tools/fire-number");
+  await page.goto("/planners/retirement");
   const n = page.getByRole("spinbutton");
   await n.nth(0).fill("80000");
   await n.nth(1).fill("8000");

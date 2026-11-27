@@ -128,7 +128,8 @@ describe("money is never asked for before something has been given", () => {
     // A tool page is where somebody is mid-problem. It is the one place an ask
     // is guaranteed to interrupt rather than follow.
     const toolPages = walk(join(ROOT, "app/tools")).filter((f) => f.endsWith("page.tsx"));
-    expect(toolPages.length).toBeGreaterThan(20);
+    /* 15, not 20: three duplicate tools were merged into planners on 27 Nov 2026. */
+    expect(toolPages.length).toBeGreaterThan(15);
     const offenders = toolPages.filter((f) => ASKS_FOR_MONEY.test(rendered(f)));
     expect(offenders, `these tool pages ask for money:\n${offenders.join("\n")}`).toEqual([]);
   });

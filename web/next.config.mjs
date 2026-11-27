@@ -65,6 +65,13 @@ export default withPWAConfig({
         destination: "/tools/school-fees-lifetime",
         permanent: true,
       },
+      /* DUPLICATES REMOVED, 27 NOV 2026. Each of these answered a question
+       * another page already answered, so it now lives on that page and its
+       * old address redirects there permanently (shared, bookmarked, indexed). */
+      { source: "/tools/money-runway", destination: "/tools/household-resilience#runway", permanent: true },
+      { source: "/tools/fire-number", destination: "/planners/retirement", permanent: true },
+      { source: "/tools/savings-goal", destination: "/planners#custom", permanent: true },
+      { source: "/tools/hustle-smoother", destination: "/planners/hustle#monthly", permanent: true },
       /* THE SALARY TOOLS WERE ONE TOOL SHOWN TWICE.
        *
        * The Salary & Pay Hub has a tab for each of take-home pay, the 50/25/25

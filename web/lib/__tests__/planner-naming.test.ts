@@ -19,6 +19,10 @@ import { TOOL_META } from '../tool-meta';
  * in the planners menu landed on a different tool than the one they clicked in
  * the calculators menu, under a heading that matched neither.
  *
+ * 27 Nov 2026: the two tools were merged into one page, the Irregular Income
+ * Planner, with a section for each shape of income; /tools/hustle-smoother
+ * redirects there. The tests below still hold the name in one place.
+ *
  * Every copy came from the same cause — each surface retyped the name instead
  * of reading it — so the fix is to read it, and these tests hold that shut.
  */

@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 test("break-even appears and responds to what you save", async ({ page }) => {
-  await page.goto("/tools/fire-number");
+  await page.goto("/planners/retirement");
   const n = page.getByRole("spinbutton");
   await n.nth(0).fill("80000");
   await n.nth(1).fill("8000");

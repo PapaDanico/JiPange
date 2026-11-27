@@ -10,7 +10,8 @@ const COLUMNS: { heading: string; links: { href: string; label: string }[] }[] =
       { href: "/planners/emergency", label: "Emergency fund" },
       { href: "/planners/business", label: "Business capital" },
       { href: "/planners/retirement", label: "Retirement" },
-      { href: "/planners/hustle", label: "Cycle venture planner" },
+      { href: "/planners/hustle", label: "Irregular income" },
+      { href: "/planners#custom", label: "Any other goal" },
     ],
   },
   {
@@ -25,11 +26,10 @@ const COLUMNS: { heading: string; links: { href: string; label: string }[] }[] =
        * findable only from the tools index is findable only by someone already
        * browsing tools, which is not the reader this one is for. */
       { href: "/tools/where-to-save", label: "Where to save" },
-      { href: "/tools/fire-number", label: "FIRE number" },
       { href: "/tools/investment-returns", label: "Investment returns" },
       { href: "/tools/loan-repayment", label: "Loan repayment" },
       { href: "/tools/debt-escape", label: "Debt Stack Buster" },
-      { href: "/tools/money-runway", label: "Money runway" },
+      { href: "/tools/household-resilience", label: "Household resilience" },
       { href: "/tools", label: "All calculators →" },
     ],
   },
