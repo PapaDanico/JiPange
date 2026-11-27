@@ -1,6 +1,7 @@
 "use client";
 
 import { amountOrZero } from "@/lib/money";
+import RouteBadge from "@/components/data/RouteBadge";
 import { useMemo } from "react";
 import {
   BANK_SAVINGS_BASELINE,
@@ -298,7 +299,7 @@ export default function DhowcsdLadderCalculator() {
               You pay less than face value, so the discount is earned on a smaller outlay and the
               true yield is <em>higher</em> than the quote — then 15% withholding tax pulls it
               back <em>below</em> the quote. Every figure above is the net, after tax. Rates come
-              from the {attribution()}, and reset at each auction.
+              from the {attribution()}, and reset at each auction. <RouteBadge />
             </p>
           </div>
 

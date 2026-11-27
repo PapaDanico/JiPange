@@ -63,6 +63,13 @@ it computes nothing. State is a word plus colour, never colour alone:
 | Aging | `accent-ink` on `accent-soft` | "check" | 5.60 |
 | Stale / fallback | `danger-deep` on `danger-soft` | "stale" | 6.51 |
 
+Route badge: `components/data/RouteBadge.tsx` shows how the publisher says the T-bill
+figures arrived ("Source route: CBK site", "Official notice", "Corroborated", "IMF"),
+from the optional `via` in the snapshot. It renders nothing when the route is absent
+or unrecognised, never a default. It is distinct from freshness: the two can sit
+together. A route not read from the primary document uses `accent-ink` on
+`accent-soft` (5.60:1); the rest use `muted` with a `canvas` border (6.08:1).
+
 Never use raw `accent` as small text; on the passbook (`shell`) it is a figure
 colour (6.31:1).
 
