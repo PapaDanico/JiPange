@@ -87,19 +87,16 @@ describe("Fuliza: one screen, one APR", () => {
     expect(over.totalFee).toBeGreaterThan(under.totalFee * 3);
   });
 
-  it("the comparison table's Fuliza APR matches its own repayment figure", () => {
-    // The row used to show a 30-day repayment of ~1.32x principal beside an
-    // APR of 4,999%, which that repayment cannot produce.
+  it("the comparison table's Fuliza rate matches its own repayment figure", () => {
+    // The row once showed a 30-day repayment of ~1.32x principal beside an
+    // APR of 4,999%, which that repayment cannot produce. Since 27 Nov 2026
+    // every row's rate is the compounded effective annual rate of its own
+    // cash flows, so the identity is exact.
     const rows = compareLoanProducts(10_000, 1);
     const fuliza = rows.find((r) => r.name.startsWith("Fuliza"))!;
     const cost = calculateFulizaCost(10_000, 30);
-    expect(fuliza.apr).toBeCloseTo(cost.annualisedApr / 100, 10);
-    // Derived from the maintenance fee over the days it is charged, on a
-    // 365-day year. A 30-day month times 12 is a 360-day year and lands 1.4%
-    // low — the two conventions must not be mixed, which is this file's point.
-    const maintenance = cost.totalFee - cost.accessFee;
-    const impliedApr = (maintenance / 10_000) * (365 / cost.chargeableDays);
-    expect(fuliza.apr).toBeCloseTo(impliedApr, 2);
+    expect(fuliza.totalRepaid).toBe(cost.totalRepaid);
+    expect(fuliza.effectiveAnnualRate).toBeCloseTo(Math.pow(cost.totalRepaid / 10_000, 365 / 30) - 1, 10);
   });
 });
 
