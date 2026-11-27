@@ -25,10 +25,14 @@ export default function HeroRates() {
     <Link
       href="/tools/dhowcsd"
       className="group block rounded-3xl bg-shell p-5 text-background shadow-passbook ring-1 ring-inset ring-white/10 transition-colors hover:bg-shell-hover sm:p-7"
-      aria-label="Treasury bill rates after tax from the latest CBK auction; open the T-bill calculator"
+      aria-label="Treasury bill returns over a year after tax, reinvested, from the latest CBK auction; open the T-bill calculator"
     >
       <p className="text-sm font-medium text-[#E6D9C6]">
-        T-bills, after tax · CBK auction {fmt(bills[0].auctionDate)}
+        {/* What the big figure is: the after-tax yield over a year with each
+            bill reinvested at maturity (netEAY), which is why a 91-day bill
+            at a CBK rate of 8.75% shows about 7.65%. "After tax" alone left
+            the gap between the two numbers unexplained. */}
+        T-bills, a year after tax, reinvested · CBK auction {fmt(bills[0].auctionDate)}
       </p>
       <div className="mt-5 grid grid-cols-3 divide-x divide-white/10">
         {bills.map((t) => (
