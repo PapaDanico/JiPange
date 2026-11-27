@@ -44,6 +44,28 @@ tabular numerals and amber figures. It changes the surface only; the figures,
 dates and labels still come from `lib/rates-feed.ts`. Display headings are
 semibold (600), not black: weight carries authority here, volume does not.
 
+## One house, and the provenance line
+
+JiPange shares a house with its rates publisher, Mwangaza Yield (see its
+`DESIGN.md`). Shared: warm paper ground, one amber/gold signal, product-ink-tinted
+shadows, one dark surface per page, the four text tiers, and the provenance line.
+Different on purpose: umber ink and the Source Serif 4 display here, navy ink and
+JetBrains Mono figures there.
+
+Provenance line: a small tabular line by every feed-derived figure, from
+`attribution()` / `inflationAttribution()` (e.g. "CBK auction of 24 Sep 2026, via
+Mwangaza Yield"). It renders those strings and the `fallback` / `isStale()` flags;
+it computes nothing. State is a word plus colour, never colour alone:
+
+| State | Tokens | Word | Contrast (measured) |
+| --- | --- | --- | --- |
+| Current | `muted` | none | 6.08 on background, 5.40 on canvas |
+| Aging | `accent-ink` on `accent-soft` | "check" | 5.60 |
+| Stale / fallback | `danger-deep` on `danger-soft` | "stale" | 6.51 |
+
+Never use raw `accent` as small text; on the passbook (`shell`) it is a figure
+colour (6.31:1).
+
 ## Motion
 
 One entrance: `animate-rise` (`--animate-rise`, 400ms ease-out-quint,
