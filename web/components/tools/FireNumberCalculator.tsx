@@ -17,7 +17,7 @@ import ExportCardButton from "./ExportCardButton";
 import NumberField from "./NumberField";
 import ResetLink from "./ResetLink";
 import ProductLinks from "./ProductLinks";
-import Link from "next/link";
+import Link from "@/components/Link";
 import ResultCard from "./ResultCard";
 import ShareResultButton from "./ShareResultButton";
 import { MMF_AND_TBILL_LINKS } from "@/lib/affiliate-links";

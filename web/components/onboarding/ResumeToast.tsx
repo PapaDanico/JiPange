@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/Link";
 import { useProfileCache } from "@/hooks/useProfileCache";
 
 /** Inline top-row toast: one tap back into the deep wizard at the saved step. */

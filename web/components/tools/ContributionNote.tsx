@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/Link";
 
 /**
  * The only invitation to contribute that appears anywhere near a tool.

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/Link";
 import {
   BANK_NET_YIELD,
   CURRENT_INFLATION,

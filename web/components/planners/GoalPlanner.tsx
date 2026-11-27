@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
+import Link from "@/components/Link";
 import { formatKES } from "@/lib/budget";
 import { remainingCapacity, targetDateIn } from "@/lib/dashboard";
 import { amountOrZero, positiveAmount } from "@/lib/money";

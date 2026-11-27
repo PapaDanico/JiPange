@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Link from "next/link";
+import Link from "@/components/Link";
 import { CBC_GRADES } from "@/lib/cbc-grades";
 import {
   FEE_ANCHORS,

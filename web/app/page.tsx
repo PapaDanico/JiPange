@@ -1,6 +1,6 @@
 import ToolIcon from "@/components/tools/ToolIcon";
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/components/Link";
 import ResumeToast from "@/components/onboarding/ResumeToast";
 import ReturningUserRedirect from "@/components/onboarding/ReturningUserRedirect";
 import LandingInteractivity from "@/components/landing/LandingInteractivity";

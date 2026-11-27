@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Link from "next/link";
+import Link from "@/components/Link";
 import { CBK_BSAR_2025_CITE, CBK_INSURED_SHARE_OF_DEPOSITS_PCT } from "@/lib/kenya-stats";
 import {
   PRODUCT_LINKS,

@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/Link";
 import { formatKES } from "@/lib/budget";
 import { EMPTY_GOALS, getStoredGoals, removeStoredGoal } from "@/lib/storage";
 import { useStorageValue } from "@/lib/hooks";

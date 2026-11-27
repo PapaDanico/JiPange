@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Link from "next/link";
+import Link from "@/components/Link";
 import { formatKES } from "@/lib/budget";
 import { calculateLoanAmortization } from "@/lib/loans";
 import {

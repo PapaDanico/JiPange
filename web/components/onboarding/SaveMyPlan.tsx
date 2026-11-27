@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/Link";
 
 /**
  * Moving a plan to another device, without an account.

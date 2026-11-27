@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import Link from "@/components/Link";
 import { GOAL_CONFIGS, GOAL_TYPES } from "@/lib/goal-planner";
 import { PLANNER_NAV_ITEMS } from "@/lib/planner-nav";
 import JsonLd from "@/components/seo/JsonLd";

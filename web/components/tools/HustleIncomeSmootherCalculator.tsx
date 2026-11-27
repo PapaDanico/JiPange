@@ -2,7 +2,7 @@
 
 import { amountOrZero } from "@/lib/money";
 import { useMemo, useState } from "react";
-import Link from "next/link";
+import Link from "@/components/Link";
 import { barScale, smoothIncomes } from "@/lib/hustle-smoother";
 import { TARGET_MMF_YIELD } from "@/lib/journey";
 import { formatKES } from "@/lib/budget";

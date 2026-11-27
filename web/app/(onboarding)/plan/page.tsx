@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import Link from "@/components/Link";
 import PlanView from "@/components/onboarding/PlanView";
 import ExportableSection from "@/components/tools/ExportableSection";
 import PrintLetterhead from "@/components/tools/PrintLetterhead";

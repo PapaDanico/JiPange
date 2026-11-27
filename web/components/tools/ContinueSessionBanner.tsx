@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import Link from "@/components/Link";
 import { TOOL_META, findResumableTool } from "@/lib/tool-meta";
 import { useStorageValue } from "@/lib/hooks";
 

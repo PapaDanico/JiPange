@@ -2,7 +2,7 @@
 
 import ToolIcon from "@/components/tools/ToolIcon";
 import { useMemo, useRef, useState } from "react";
-import Link from "next/link";
+import Link from "@/components/Link";
 
 export interface ToolCard {
   href: string;

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import Link from "@/components/Link";
 import { attributionFor } from "@/lib/statutes";
 import { TOOL_META } from "@/lib/tool-meta";
 import { attribution, inflationAttribution } from "@/lib/rates-feed";
