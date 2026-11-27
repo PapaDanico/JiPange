@@ -194,7 +194,7 @@ export const GLOSSARY: GlossaryEntry[] = [
     whyItMatters:
       "Its job is availability, not return. Chasing yield with it converts an emergency fund into an investment that will be sold at the worst possible moment — which is what an emergency is.",
     topic: "Saving & investing",
-    toolPath: "/tools/money-runway",
+    toolPath: "/tools/household-resilience",
   },
   {
     term: "Chama / merry-go-round",
@@ -222,7 +222,7 @@ export const GLOSSARY: GlossaryEntry[] = [
     whyItMatters:
       "Premiums are banded by age and climb steeply, and Kenyan insurers commonly decline NEW members past their mid-sixties — admitting older people only on continuous membership. The decision therefore expires before retirement does.",
     topic: "Health & retirement",
-    toolPath: "/tools/fire-number",
+    toolPath: "/planners/retirement",
   },
   {
     term: "Safe withdrawal rate",
@@ -231,7 +231,7 @@ export const GLOSSARY: GlossaryEntry[] = [
     whyItMatters:
       "Those rules come from American market history and size a pot meant to last forever. Applied unchanged to Kenya they mislead in both directions at once: they ignore that spending falls in real terms here too, and that medical cover climbs steeply while everything else falls.",
     topic: "Health & retirement",
-    toolPath: "/tools/fire-number",
+    toolPath: "/planners/retirement",
   },
   {
     term: "FIRE",
@@ -240,7 +240,7 @@ export const GLOSSARY: GlossaryEntry[] = [
     whyItMatters:
       "The number is not one multiple of today's spending, because retirement spending is not one flat line. Ordinary costs drift down in real terms while medical care climbs; the honest answer prices those two streams separately.",
     topic: "Health & retirement",
-    toolPath: "/tools/fire-number",
+    toolPath: "/planners/retirement",
   },
   {
     term: "Housing levy",

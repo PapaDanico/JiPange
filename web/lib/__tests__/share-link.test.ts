@@ -18,6 +18,13 @@ describe("buildShareLink", () => {
 
   it("returns a bare path when nothing survives, rather than a dangling '?'", () => {
     expect(buildShareLink("/tools/savings-goal", {})).toBe("/tools/savings-goal");
+  });
+
+  it("keeps a section anchor after the query, where it cannot swallow the figures", () => {
+    expect(buildShareLink("/planners#custom", { target: 500000, years: 5 })).toBe(
+      "/planners?target=500000&years=5#custom"
+    );
+    expect(buildShareLink("/planners#custom", {})).toBe("/planners#custom");
     expect(buildShareLink("/tools/savings-goal", { target: 0, years: -3 })).toBe(
       "/tools/savings-goal"
     );

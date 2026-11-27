@@ -23,20 +23,6 @@ export const CALCULATOR_GROUPS: ToolGroup[] = [
         insight: "A SACCO dividend is not interest and is not guaranteed. It belongs in the conversation, not in the league table.",
       },
       {
-        href: "/tools/savings-goal",
-        icon: "🎯",
-        title: "Savings Goal Calculator",
-        description: "Work out how much to save each month to hit a target amount.",
-        insight: "Small, consistent amounts beat big, irregular ones.",
-      },
-      {
-        href: "/tools/hustle-smoother",
-        icon: "🔄",
-        title: "Hustle Income Smoother",
-        description: "Turn months of variable freelance or informal income into a steady, reliable monthly salary.",
-        insight: "Enter your last 3–12 months' earnings, get the safe draw and buffer fund needed to ride out lean months.",
-      },
-      {
         href: "/tools/20th-challenge",
         icon: "🔥",
         title: "20th-to-20th Savings Challenge",
@@ -63,10 +49,10 @@ export const CALCULATOR_GROUPS: ToolGroup[] = [
         insight: "Compounding grows your money fastest in the later years — start now.",
       },
       {
-        href: "/tools/fire-number",
+        href: "/planners/retirement",
         icon: "🏝️",
-        title: "FIRE Number Calculator",
-        description: "Your Kenya-localized retirement number: 20× expenses, inflation-adjusted to your retirement year.",
+        title: "Retirement Planner",
+        description: "What you need to retire in Kenya, in today's money, with medical care priced separately because it keeps rising.",
         insight: "A 5% withdrawal assumption is a scenario, not a guaranteed sustainable retirement rate.",
       },
       {
@@ -80,15 +66,8 @@ export const CALCULATOR_GROUPS: ToolGroup[] = [
         href: "/tools/household-resilience",
         icon: "🛡️",
         title: "Household Financial Resilience",
-        description: "Stress-test twelve months of savings, income shocks, debt service and school fees.",
+        description: "Stress-test twelve months of savings, income shocks, debt service and school fees, and see how long your savings would last with no income.",
         insight: "Identify the first projected cash shortfall under your assumptions.",
-      },
-      {
-        href: "/tools/money-runway",
-        icon: "⏳",
-        title: "Money Runway Calculator",
-        description: "See how long your savings will last at a given monthly withdrawal.",
-        insight: "A modest return can make your savings last years longer.",
       },
       {
         href: "/planners/education",

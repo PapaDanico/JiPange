@@ -32,24 +32,16 @@ export const TOOL_META: Record<string, ToolMeta> = {
     href: "/tools/salary",
     icon: "💰",
     name: "Salary & Pay Hub",
-    related: ["/tools/savings-goal", "/tools/investment-returns", "/tools/money-runway"],
+    related: ["/tools/investment-returns", "/tools/household-resilience"],
     nextMove: { label: "Put your take-home to work →", href: "/tools/investment-returns" },
   },
   "/tools/investment-returns": {
     href: "/tools/investment-returns",
     icon: "📈",
     name: "Investment Returns",
-    related: ["/tools/savings-goal", "/tools/fire-number", "/tools/dhowcsd"],
-    nextMove: { label: "Turn this into a FIRE number →", href: "/tools/fire-number" },
+    related: ["/planners/retirement", "/tools/dhowcsd"],
+    nextMove: { label: "Turn this into a retirement number →", href: "/planners/retirement" },
     primaryFields: ["monthly", "years"],
-  },
-  "/tools/money-runway": {
-    href: "/tools/money-runway",
-    icon: "⏳",
-    name: "Money Runway",
-    related: ["/tools/savings-goal", "/tools/salary", "/planners/emergency"],
-    nextMove: { label: "Check your SACCO guarantee exposure →", href: "/tools/guarantor-shield" },
-    primaryFields: ["startingBalance", "monthlyWithdrawal"],
   },
   "/tools/guarantor-shield": {
     href: "/tools/guarantor-shield",
@@ -69,7 +61,7 @@ export const TOOL_META: Record<string, ToolMeta> = {
     href: "/tools/fuliza-cost",
     icon: "📱",
     name: "Fuliza Cost",
-    related: ["/tools/salary", "/tools/savings-goal"],
+    related: ["/tools/salary"],
     nextMove: { label: "Build a plan to clear it →", href: "/tools/debt-escape" },
     primaryFields: ["amount", "days"],
   },
@@ -77,17 +69,21 @@ export const TOOL_META: Record<string, ToolMeta> = {
     href: "/tools/inflation-reality",
     icon: "📉",
     name: "Inflation Reality",
-    related: ["/tools/investment-returns", "/tools/dhowcsd", "/tools/savings-goal"],
+    related: ["/tools/investment-returns", "/tools/dhowcsd"],
     nextMove: { label: "Find a return that outpaces it →", href: "/tools/investment-returns" },
     primaryFields: ["salary"],
   },
-  "/tools/savings-goal": {
-    href: "/tools/savings-goal",
+  /* The Savings Goal Calculator lived at /tools/savings-goal until 27 Nov
+   * 2026 and is now the "Any other goal" section of the planners index. The
+   * entry keeps its share button, recent-tools name and resume banner. */
+  "/planners": {
+    href: "/planners",
     icon: "🎯",
     name: "Savings Goal",
-    related: ["/tools/investment-returns", "/tools/salary", "/tools/money-runway"],
+    related: ["/tools/investment-returns", "/tools/salary", "/tools/household-resilience"],
     nextMove: { label: "Project the full growth curve →", href: "/tools/investment-returns" },
     primaryFields: ["target", "years"],
+    storageSlug: "savings-goal",
   },
   "/tools/loan-repayment": {
     href: "/tools/loan-repayment",
@@ -97,12 +93,12 @@ export const TOOL_META: Record<string, ToolMeta> = {
     nextMove: { label: "Check this is legally compliant →", href: "/tools/one-third-rule" },
     primaryFields: ["principal", "termYears"],
   },
-  "/tools/fire-number": {
-    href: "/tools/fire-number",
+  "/planners/retirement": {
+    href: "/planners/retirement",
     icon: "🏝️",
-    name: "FIRE Number",
-    related: ["/tools/investment-returns", "/tools/savings-goal", "/tools/money-runway"],
-    nextMove: { label: "Stress-test your runway →", href: "/tools/money-runway" },
+    name: "Retirement Planner",
+    related: ["/tools/investment-returns", "/tools/household-resilience"],
+    nextMove: { label: "Stress-test your runway →", href: "/tools/household-resilience" },
   },
   "/tools/sacco-vs-bank": {
     href: "/tools/sacco-vs-bank",
@@ -120,7 +116,7 @@ export const TOOL_META: Record<string, ToolMeta> = {
      * cash-flow problem, then the whole liability, then how to fund it. The
      * three are complementary rather than alternatives, and listing them in
      * order is the cheapest way to say so. */
-    related: ["/planners/education", "/tools/savings-goal", "/tools/salary"],
+    related: ["/planners/education", "/tools/salary"],
     nextMove: { label: "Smooth this year's termly bills →", href: "/planners/education" },
     primaryFields: ["children"],
   },
@@ -128,7 +124,7 @@ export const TOOL_META: Record<string, ToolMeta> = {
     href: "/tools/dhowcsd",
     icon: "🪜",
     name: "DhowCSD T-Bill Ladder",
-    related: ["/tools/investment-returns", "/tools/inflation-reality", "/tools/fire-number"],
+    related: ["/tools/investment-returns", "/tools/inflation-reality", "/planners/retirement"],
     nextMove: { label: "Compare against other vehicles →", href: "/tools/investment-returns" },
     primaryFields: ["capital"],
   },
@@ -144,7 +140,7 @@ export const TOOL_META: Record<string, ToolMeta> = {
     href: "/tools/chama",
     icon: "🤝",
     name: "Chama Group Savings",
-    related: ["/tools/savings-goal", "/tools/investment-returns", "/tools/sacco-vs-bank"],
+    related: ["/tools/investment-returns", "/tools/sacco-vs-bank"],
     nextMove: { label: "Project your personal share long-term →", href: "/tools/investment-returns" },
   },
   "/tools/debt-escape": {
@@ -168,23 +164,25 @@ export const TOOL_META: Record<string, ToolMeta> = {
     href: "/tools/land-purchase",
     icon: "🏡",
     name: "Land Purchase Cost",
-    related: ["/tools/loan-repayment", "/tools/savings-goal", "/tools/investment-returns"],
-    nextMove: { label: "Save toward the true total cost →", href: "/tools/savings-goal" },
+    related: ["/tools/loan-repayment", "/tools/investment-returns"],
+    nextMove: { label: "Save toward the true total cost →", href: "/planners#custom" },
     primaryFields: ["price"],
     storageSlug: "land",
   },
-  "/tools/hustle-smoother": {
-    href: "/tools/hustle-smoother",
-    icon: "🔄",
-    name: "Hustle Income Smoother",
-    related: ["/tools/salary", "/tools/savings-goal", "/planners/hustle"],
+  /* The gig-income calculator lived at /tools/hustle-smoother until 27 Nov
+   * 2026 and now shares this page with the cycle planner. */
+  "/planners/hustle": {
+    href: "/planners/hustle",
+    icon: "🌾",
+    name: "Irregular Income Planner",
+    related: ["/tools/salary", "/tools/where-to-save"],
     nextMove: { label: "Split your smoothed salary →", href: "/tools/salary#allocate" },
   },
   "/tools/20th-challenge": {
     href: "/tools/20th-challenge",
     icon: "🔥",
     name: "20th-to-20th Challenge",
-    related: ["/tools/savings-goal", "/tools/salary"],
+    related: ["/tools/salary"],
     nextMove: { label: "Project where this streak leads →", href: "/tools/investment-returns" },
   },
 };

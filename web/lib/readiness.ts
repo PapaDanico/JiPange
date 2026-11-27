@@ -39,13 +39,13 @@ function emergencyBufferIndicator(journey: JourneyAnswers | null): ReadinessIndi
     return {
       key, label, status: "strong", statusLabel: "Buffered",
       hint: "See how long your savings last.",
-      href: "/tools/money-runway",
+      href: "/tools/household-resilience",
     };
   }
   return {
     key, label, status: "building", statusLabel: "Exposed",
     hint: "No dedicated buffer yet — set a savings goal.",
-    href: "/tools/savings-goal",
+    href: "/planners#custom",
   };
 }
 
@@ -122,7 +122,7 @@ function savingsTargetIndicator(calculations: Calculations | null): ReadinessInd
     status: "target",
     statusLabel: `${formatKES(calculations.budgetSplit.savings)}/mo`,
     hint: `${share}% of your take-home — the plan, not a measure of what you save.`,
-    href: "/tools/savings-goal",
+    href: "/planners#custom",
   };
 }
 
@@ -141,7 +141,7 @@ function goalIndicator(journey: JourneyAnswers | null, hasGoals: boolean): Readi
   return {
     key, label, status: "building", statusLabel: "Goal set, no plan",
     hint: "Turn your goal into a monthly number.",
-    href: "/tools/savings-goal",
+    href: "/planners#custom",
   };
 }
 

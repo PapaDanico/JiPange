@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import ToolLayout from "@/components/tools/ToolLayout";
 import FireNumberCalculator from "@/components/tools/FireNumberCalculator";
 import FireEducation from "@/components/tools/FireEducation";
@@ -13,7 +12,7 @@ import {
   EARLY_START_MONTHLY_KES,
 } from "@/lib/tool-stats";
 
-export const metadata: Metadata = {
+export const RETIREMENT_METADATA: Metadata = {
   title: "FIRE Number Calculator — Financial Independence Kenya",
   /* This used to name the 4% safe-withdrawal rule.
    *
@@ -26,12 +25,16 @@ export const metadata: Metadata = {
     "Work out what you need to retire in Kenya, in today's money — priced as the real cost of your years in retirement, with medical care rising faster than everything else.",
 };
 
-export default function FireNumberPage() {
+/* The single retirement tool. Until 27 Nov 2026 this was /tools/fire-number,
+ * and /planners/retirement ran a second, simpler model that answered the same
+ * question about 15% lower (see retirement-models-agree.test.ts). One answer
+ * now: this fuller model, at the planner address; the old URL redirects here. */
+export default function RetirementTool() {
   return (
     <ToolLayout
-      path="/tools/fire-number"
-      title="FIRE Number Calculator"
-      description="Find your Financial Independence number and how many years to reach it."
+      path="/planners/retirement"
+      title="Retirement Planner"
+      description="What you need to retire in Kenya, in today's money, and how many years your saving takes to get there."
       insights={[
         {
           icon: "⚠️",
@@ -62,17 +65,6 @@ export default function FireNumberPage() {
     >
       <FireNumberCalculator />
       <FireEducation />
-      <div className="mt-6 rounded-2xl bg-canvas p-4 text-sm text-ink-soft print:hidden">
-        <p className="font-semibold text-primary">Ready to build toward this number?</p>
-        <p className="mt-1 text-xs">
-          Use the{" "}
-          <Link href="/planners" className="underline hover:text-primary">
-            Retirement Planner
-          </Link>{" "}
-          to model your monthly contributions, investment growth, and the exact year you reach
-          Financial Independence — with Kenya&apos;s MMF and T-Bill yields built in.
-        </p>
-      </div>
     </ToolLayout>
   );
 }

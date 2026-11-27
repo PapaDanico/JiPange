@@ -201,7 +201,7 @@ const STEPS = [
 
 const TOOLS = [
   { href: "/tools/investment-returns", emoji: "📈", name: "Investment Returns", hook: "MMF vs bank vs T-Bill — see the compounding gap" },
-  { href: "/tools/money-runway", emoji: "⏳", name: "Money Runway", hook: "How long your savings survive a job loss" },
+  { href: "/tools/household-resilience", emoji: "⏳", name: "Household Resilience", hook: "How long your savings survive a job loss" },
   { href: "/tools/guarantor-shield", emoji: "🛡️", name: "Sacco Guarantor Shield", hook: "Your real unencumbered borrowing power" },
   { href: "/tools/kplc-optimizer", emoji: "⚡", name: "KPLC Token Checker", hook: "Your real cost per unit, from your own receipt" },
   { href: "/tools/fuliza-cost", emoji: "📱", name: "True Cost of Fuliza", hook: `What Ksh ${FULIZA_EXAMPLE_DAILY.toFixed(2)}/day really costs you annually` },
@@ -212,7 +212,7 @@ const PLANNERS = [
   { href: "/planners/home", emoji: "🏠", label: "Plot & Mjengo" },
   { href: "/planners/emergency", emoji: "🛡️", label: "Emergency fund" },
   { href: "/planners/retirement", emoji: "🌅", label: "Retirement milestone" },
-  { href: "/planners/hustle", emoji: "🌾", label: "Cycle venture" },
+  { href: "/planners/hustle", emoji: "🌾", label: "Irregular income" },
   { href: "/planners/business", emoji: "🚀", label: "Business capital" },
 ];
 
@@ -232,7 +232,7 @@ const QUICK_STARTS = [
     icon: "🧭",
   },
   {
-    href: "/tools/savings-goal",
+    href: "/planners#custom",
     eyebrow: "Make progress",
     title: "Plan a savings goal",
     detail: "Find the monthly amount that gets you there on time.",

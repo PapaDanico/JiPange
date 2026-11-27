@@ -726,9 +726,9 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
               This is the quick version: one figure in, one out. For a fuller
               answer that prices medical cover separately — it keeps rising while
               everything else falls — use the{" "}
-              <a href="/tools/fire-number" className="underline hover:text-primary">
+              <Link href="/planners/retirement" className="underline hover:text-primary">
                 retirement number tool
-              </a>
+              </Link>
               . It asks for roughly {FULLER_MODEL_UPLIFT}% more, because it can see
               the medical bill this page cannot.
             </p>

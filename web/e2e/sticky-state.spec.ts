@@ -26,7 +26,7 @@ import { test, expect } from "@playwright/test";
  * tests are for — they record what it does today, not a wish.
  */
 
-const TOOL = "/tools/savings-goal";
+const TOOL = "/planners"; // the Savings Goal Calculator lives here since 27 Nov 2026
 const KEY = "jipange:tool:savings-goal:target";
 const FIELD = "#target";
 

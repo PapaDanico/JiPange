@@ -4,12 +4,15 @@ import { GOAL_CONFIGS, GOAL_TYPES } from "@/lib/goal-planner";
 import { PLANNER_NAV_ITEMS } from "@/lib/planner-nav";
 import JsonLd from "@/components/seo/JsonLd";
 import { collectionPageJsonLd } from "@/lib/structured-data";
+import SavingsGoalCalculator from "@/components/tools/SavingsGoalCalculator";
+import ReportError from "@/components/tools/ReportError";
+import ToolEnhancements from "@/components/tools/ToolEnhancements";
 
 const hustleItem = PLANNER_NAV_ITEMS.find((item) => item.href === "/planners/hustle")!;
 
 const title = "Goal Planners";
 const description =
-  "Start from your life goal and work backwards to a monthly plan: education, home deposit, emergency fund, and business capital planners for Kenya.";
+  "Start from your life goal and work backwards to a monthly plan: education, home deposit, emergency fund, business capital, retirement and any other goal, for Kenya.";
 
 export const metadata: Metadata = {
   title: `${title} — JiPange`,
@@ -67,6 +70,24 @@ export default function PlannersPage() {
           </div>
         </Link>
       </div>
+
+      {/* The Savings Goal Calculator lived at /tools/savings-goal until 27 Nov
+          2026, a second copy of what every planner above does. It stays as the
+          planner for a goal none of them names; the old address redirects
+          here with its query string, so shared links still fill it in. */}
+      <section id="custom" className="mt-10 w-full max-w-3xl scroll-mt-24">
+        <h2 className="text-lg font-semibold text-primary">Any other goal</h2>
+        <p className="mt-1 mb-4 text-sm text-ink-soft">
+          A target, a date and what you have already: the monthly amount that gets you there.
+        </p>
+        <SavingsGoalCalculator />
+        {/* What ToolLayout gave it on its own page: a way to report a wrong
+            figure, and the share button. */}
+        <div className="mt-6 space-y-4">
+          <ReportError title="Savings Goal Calculator" path="/planners#custom" />
+          <ToolEnhancements />
+        </div>
+      </section>
 
       <div className="mt-8 w-full max-w-2xl rounded-2xl bg-white p-6 text-center shadow-sm">
         <p className="text-sm font-medium text-primary">Not sure where to start?</p>

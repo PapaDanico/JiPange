@@ -136,7 +136,7 @@ test("take-home pay: the PDF button downloads a real, single-page PDF", async ({
 // ─── Savings Goal ──────────────────────────────────────────────────────────
 
 test("savings goal: calculates required monthly deposit", async ({ page }) => {
-  await page.goto("/tools/savings-goal");
+  await page.goto("/planners#custom");
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   const inputs = page.getByRole("spinbutton");
   await inputs.nth(0).fill("500000");
@@ -185,7 +185,7 @@ test("investment returns: renders projection", async ({ page }) => {
 test("fire number: prices retirement in today's money and surfaces the medical share", async ({
   page,
 }) => {
-  await page.goto("/tools/fire-number");
+  await page.goto("/planners/retirement");
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
 
   const inputs = page.getByRole("spinbutton");
@@ -214,7 +214,7 @@ test("fire number: prices retirement in today's money and surfaces the medical s
  * nothing. Research a reader cannot see is worth what no research is worth.
  */
 test("fire number: shows where the retirement assumptions come from", async ({ page }) => {
-  await page.goto("/tools/fire-number");
+  await page.goto("/planners/retirement");
   const inputs = page.getByRole("spinbutton");
   await inputs.nth(0).fill("80000");
   await inputs.nth(1).fill("8000");
@@ -233,7 +233,7 @@ test("fire number: shows where the retirement assumptions come from", async ({ p
 test("fire number: says plainly that a plan with no medical cover is incomplete", async ({
   page,
 }) => {
-  await page.goto("/tools/fire-number");
+  await page.goto("/planners/retirement");
   await page.getByRole("spinbutton").nth(0).fill("80000");
   // Medical deliberately left empty.
   await expect(visibleText(page, /SHA is a floor, not a plan/i)).toBeVisible();
@@ -241,10 +241,14 @@ test("fire number: says plainly that a plan with no medical cover is incomplete"
 
 // ─── Money Runway ──────────────────────────────────────────────────────────
 
-test("money runway: shows months of runway", async ({ page }) => {
+test("money runway: shows months of runway, on the resilience page it moved to", async ({ page }) => {
   await page.goto("/tools/money-runway");
+  await expect(page).toHaveURL(/\/tools\/household-resilience/);
+  const runway = page.locator("#runway");
+  await runway.scrollIntoViewIfNeeded();
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-  const inputs = page.getByRole("spinbutton");
+  // Scoped: the resilience calculator above has spinbuttons of its own.
+  const inputs = runway.getByRole("spinbutton");
   await inputs.nth(0).fill("1000000");
   await inputs.nth(1).fill("50000");
   await expect(visibleText(page, "Your money will last")).toBeVisible();
@@ -458,7 +462,7 @@ test("education savings: the retired URL redirects to its successor", async ({ p
 });
 
 test("hustle smoother: shows smoothed salary for variable income", async ({ page }) => {
-  await page.goto("/tools/hustle-smoother");
+  await page.goto("/planners/hustle#monthly");
   await page.fill("#income-0", "40000");
   await page.fill("#income-1", "25000");
   await page.fill("#income-2", "55000");
@@ -480,7 +484,7 @@ test("20th challenge: setup screen loads and accepts a commitment", async ({ pag
 // ─── Affiliate links / product links ─────────────────────────────────────
 
 test("affiliate links: savings goal shows MMF product cards", async ({ page }) => {
-  await page.goto("/tools/savings-goal");
+  await page.goto("/planners#custom");
   const inputs = page.getByRole("spinbutton");
   await inputs.nth(0).fill("500000");
   await inputs.nth(1).fill("24");
@@ -508,7 +512,7 @@ test("tool enhancements: shows Try next section with chips", async ({ page }) =>
 });
 
 test("tool enhancements: share button is present", async ({ page }) => {
-  await page.goto("/tools/savings-goal");
+  await page.goto("/planners#custom");
   await expect(page.getByRole("button", { name: /share/i })).toBeVisible();
 });
 
@@ -519,7 +523,7 @@ test("recent tools bar: appears after visiting a tool", async ({ page }) => {
   await page.evaluate(() => {
     localStorage.setItem(
       "jipange_recent_tools",
-      JSON.stringify(["/tools/salary", "/tools/savings-goal"])
+      JSON.stringify(["/tools/salary", "/tools/loan-repayment"])
     );
   });
   await page.reload();
@@ -543,7 +547,7 @@ test("tool insights: loan repayment caution card is visible", async ({ page }) =
 // ─── Navigation ───────────────────────────────────────────────────────────
 
 test("header: logo links back to home", async ({ page }) => {
-  await page.goto("/tools/fire-number");
+  await page.goto("/planners/retirement");
   await page.getByRole("link", { name: /jipange home/i }).click();
   await expect(page).toHaveURL("/");
 });
@@ -586,10 +590,10 @@ test("header: calculators dropdown opens and jumps straight to a tool", async ({
   await page.goto("/");
   const header = page.locator("header");
   await header.getByRole("button", { name: "Calculators", exact: true }).click();
-  const link = page.getByRole("link", { name: /savings goal calculator/i });
+  const link = page.getByRole("link", { name: /loan \/ helb repayment calculator/i });
   await expect(link).toBeVisible();
   await link.click();
-  await expect(page).toHaveURL("/tools/savings-goal");
+  await expect(page).toHaveURL("/tools/loan-repayment");
 });
 
 test("header: planners dropdown opens and jumps straight to a goal", async ({ page }) => {
@@ -610,14 +614,14 @@ test("header: dropdown closes on outside click and on Escape", async ({ page }) 
   const trigger = header.getByRole("button", { name: "Calculators", exact: true });
 
   await trigger.click();
-  await expect(page.getByRole("link", { name: /savings goal calculator/i })).toBeVisible();
+  await expect(page.getByRole("link", { name: /loan \/ helb repayment calculator/i })).toBeVisible();
   await page.mouse.click(10, 400);
-  await expect(page.getByRole("link", { name: /savings goal calculator/i })).not.toBeVisible();
+  await expect(page.getByRole("link", { name: /loan \/ helb repayment calculator/i })).not.toBeVisible();
 
   await trigger.click();
-  await expect(page.getByRole("link", { name: /savings goal calculator/i })).toBeVisible();
+  await expect(page.getByRole("link", { name: /loan \/ helb repayment calculator/i })).toBeVisible();
   await page.keyboard.press("Escape");
-  await expect(page.getByRole("link", { name: /savings goal calculator/i })).not.toBeVisible();
+  await expect(page.getByRole("link", { name: /loan \/ helb repayment calculator/i })).not.toBeVisible();
   await expect(trigger).toBeFocused();
 });
 
@@ -655,7 +659,7 @@ test("landing page: loads and has CTA", async ({ page }) => {
  *     getBoundingClientRect reports a defect where someone already did the
  *     right thing.
  */
-const ERGONOMIC_ROUTES = ["/tools/savings-goal", "/tools/salary", "/tools"];
+const ERGONOMIC_ROUTES = ["/planners", "/tools/salary", "/tools"];
 
 for (const route of ERGONOMIC_ROUTES) {
   test(`mobile: ${route} has no sub-40px controls and no sideways scroll`, async ({ page }) => {
@@ -778,7 +782,7 @@ test("no image is rendered at an aspect ratio its source does not have", async (
  * figure from the page along the way.
  */
 test("every calculator offers a way to report a wrong figure", async ({ page }) => {
-  for (const route of ["/tools/salary", "/tools/fire-number", "/tools/savings-goal"]) {
+  for (const route of ["/tools/salary", "/planners/retirement", "/planners"]) {
     await page.goto(route);
 
     const link = page.getByRole("link", { name: /tell us what it should be/i });
@@ -819,7 +823,7 @@ test("every calculator offers a way to report a wrong figure", async ({ page }) 
 test("insight cards render below the calculator, not above it", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
 
-  for (const route of ["/tools/salary", "/tools/savings-goal"]) {
+  for (const route of ["/tools/salary", "/planners"]) {
     await page.goto(route);
 
     const input = page.locator("input[type=number]").first();
@@ -878,7 +882,7 @@ test("toggle: the knob is left when off, right when on, and inside the track", a
 /* Finite is not the same as sane: `1e308` passes Number.isFinite, is typeable
  * into any number field, and used to print "Infinity%" or "NaN×" on eight
  * pages. The parsers now cap amounts at MAX_AMOUNT (lib/money.ts). */
-for (const path of ["/tools/fuliza-cost", "/tools/sha-health", "/tools/fire-number", "/tools/debt-escape"]) {
+for (const path of ["/tools/fuliza-cost", "/tools/sha-health", "/planners/retirement", "/tools/debt-escape"]) {
   test(`${path}: a typed 1e308 never renders NaN or Infinity`, async ({ page }) => {
     // networkidle, not load: a fill that lands before hydration is reset by
     // React to "", nothing computes, and the negative assertion below passes
@@ -909,7 +913,7 @@ for (const path of ["/tools/fuliza-cost", "/tools/sha-health", "/tools/fire-numb
  * horizontal overflow. Each field is filled, then the page is measured. */
 for (const path of [
   "/tools/investment-returns",
-  "/tools/money-runway",
+  "/tools/household-resilience",
   "/planners/education",
   "/planners/home",
   "/planners/retirement",

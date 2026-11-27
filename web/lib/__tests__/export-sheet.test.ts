@@ -92,7 +92,9 @@ describe('the page the sheet is built for', () => {
  */
 describe('export titles come from the registry', () => {
   it('has a registered name for the tool whose sheet was mistitled', () => {
-    expect(TOOL_META['/tools/hustle-smoother']?.name).toBe('Hustle Income Smoother');
+    // The calculator moved to /planners/hustle on 27 Nov 2026; its export
+    // filename is `hustle-monthly`, which trims to that route.
+    expect(TOOL_META['/planners/hustle']?.name).toBe('Irregular Income Planner');
   });
 
   it('consults the registry before title-casing a slug', () => {

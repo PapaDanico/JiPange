@@ -48,13 +48,13 @@ export default function manifest(): MetadataRoute.Manifest {
         name: "Savings Goal",
         short_name: "Savings",
         description: "Plan your monthly savings amount",
-        url: "/tools/savings-goal",
+        url: "/planners",
       },
       {
         name: "FIRE Number",
         short_name: "FIRE",
         description: "Your Kenya retirement target",
-        url: "/tools/fire-number",
+        url: "/planners/retirement",
       },
     ],
   };

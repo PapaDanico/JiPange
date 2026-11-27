@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 
 test("savings goal does not calculate on an impossible horizon", async ({ page }) => {
-  await page.goto("/tools/savings-goal");
+  await page.goto("/planners");
   await page.getByLabel("Savings target (Ksh)").fill("500000");
   await page.getByLabel("Time to reach it (years)").fill("3");
   await expect(page.getByText("Monthly savings needed")).toBeVisible();
@@ -10,7 +10,7 @@ test("savings goal does not calculate on an impossible horizon", async ({ page }
 });
 
 test("savings goal rejects invalid return and existing savings rather than computing with defaults", async ({ page }) => {
-  await page.goto("/tools/savings-goal");
+  await page.goto("/planners");
   await page.getByLabel("Savings target (Ksh)").fill("500000");
   await page.getByLabel("Time to reach it (years)").fill("3");
   await expect(page.getByText("Monthly savings needed")).toBeVisible();

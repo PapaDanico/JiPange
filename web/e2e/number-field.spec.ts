@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 /** Common numeric fields must reject absurd values and never reverse a pasted sign. */
 test.describe("calculator numeric input safety", () => {
   test("a finite out-of-range value warns rather than silently accepting it", async ({ page }) => {
-    await page.goto("/tools/savings-goal");
+    await page.goto("/planners");
     const field = page.getByLabel("Savings target (Ksh)");
     await field.fill("10000000000000000");
     await field.blur();
@@ -13,7 +13,7 @@ test.describe("calculator numeric input safety", () => {
 
   test("pasting a negative amount never changes it into a positive amount", async ({ page, context }) => {
     await context.grantPermissions(["clipboard-read", "clipboard-write"]);
-    await page.goto("/tools/savings-goal");
+    await page.goto("/planners");
     const field = page.getByLabel("Savings target (Ksh)");
     await field.fill("");
     await page.evaluate(async () => navigator.clipboard.writeText("-5000"));

@@ -14,7 +14,7 @@ test.describe("NumberField paste formats", () => {
   ] as const) {
     test(`pastes ${JSON.stringify(pasted)} as ${expected}`, async ({ page, context }) => {
       await context.grantPermissions(["clipboard-read", "clipboard-write"]);
-      await page.goto("/tools/savings-goal");
+      await page.goto("/planners");
       const field = page.locator("#target");
       await field.click();
       await page.evaluate((text) => navigator.clipboard.writeText(text), pasted);
