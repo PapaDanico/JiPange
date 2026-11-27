@@ -396,8 +396,11 @@ test("sacco vs bank: shows comparison", async ({ page }) => {
   await inputs.nth(0).fill("500000");
   await inputs.nth(1).fill("12");
   // Per-product comparison rows only exist once results computed.
-  await expect(visibleText(page, "Total repaid:")).toBeVisible();
-  await expect(visibleText(page, /% annualised indicator/)).toBeVisible();
+  // Total cost first, then one effective annual rate for every row (27 Nov 2026).
+  await expect(visibleText(page, /total cost over 12 months/)).toBeVisible();
+  await expect(visibleText(page, "Effective annual rate:")).toBeVisible();
+  // 30-day products are labelled as such, never shown as instalment loans.
+  await expect(visibleText(page, "30-day loan")).toBeVisible();
 });
 
 // ─── Guarantor Shield ─────────────────────────────────────────────────────

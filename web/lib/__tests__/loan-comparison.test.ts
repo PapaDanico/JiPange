@@ -1,55 +1,88 @@
 import { describe, expect, it } from "vitest";
-import { compareLoanProducts } from "../loan-comparison";
+import { compareLoanProducts, SHORT_TERM_DAYS } from "../loan-comparison";
+import { calculateFulizaCost } from "../fuliza";
 
-describe("compareLoanProducts", () => {
-  it("returns all 5 products with sensible shapes, when all 5 are available", () => {
-    const results = compareLoanProducts(60_000, 6);
-    expect(results).toHaveLength(5);
-    for (const product of results) {
-      expect(product.totalRepaid).toBeGreaterThan(60_000);
-      expect(product.totalInterest).toBeGreaterThan(0);
-      expect(product.totalRepaid).toBeCloseTo(60_000 + product.totalInterest, 2);
+/* Rebuilt 27 Nov 2026 (docs/research/2026-11-27-credit-and-bond-engine-gaps
+ * in PapaDanico/Mwangaza-Yield). Each reference case below is arithmetic a
+ * reader can check by hand, not a figure read back from the code. */
+const row = (principal: number, months: number, prefix: string) =>
+  compareLoanProducts(principal, months).find((r) => r.name.startsWith(prefix))!;
+
+describe("compareLoanProducts: reference cases", () => {
+  it("M-Shwari: 7.5% fee plus 20% excise on it, taken at payout (KSh 10,000)", () => {
+    const m = row(10_000, 1, "M-Shwari");
+    expect(m.cashReceived).toBe(9_850); // 10,000 less 1.5% excise
+    expect(m.totalRepaid).toBe(10_750); // 10,000 plus the 7.5% fee
+    expect(m.totalCost).toBe(900); // 9.14% of the cash received, for 30 days
+    expect(m.effectiveAnnualRate).toBeCloseTo(Math.pow(10_750 / 9_850, 365 / 30) - 1, 10);
+  });
+
+  it("SACCO at 1% a month reducing: 12.68% a year", () => {
+    expect(row(60_000, 12, "SACCO").effectiveAnnualRate).toBeCloseTo(Math.pow(1.01, 12) - 1, 4); // instalments are billed in whole cents
+  });
+
+  it("bank at 14.5% nominal, monthly instalments: 15.50% a year, not the 14.5% printed", () => {
+    expect(row(60_000, 12, "Bank").effectiveAnnualRate).toBeCloseTo(Math.pow(1 + 0.145 / 12, 12) - 1, 4);
+  });
+
+  it("app lender at 0.45% a day for 30 days: KSh 1,350 on 10,000", () => {
+    const a = row(10_000, 1, "App lender");
+    expect(a.totalCost).toBe(1_350);
+    expect(a.effectiveAnnualRate).toBeCloseTo(Math.pow(1.135, 365 / 30) - 1, 10);
+  });
+
+  it("Fuliza: the 30-day tariff, and a rate its own repayment produces", () => {
+    const f = row(10_000, 1, "Fuliza");
+    const cost = calculateFulizaCost(10_000, SHORT_TERM_DAYS);
+    expect(f.totalRepaid).toBe(cost.totalRepaid);
+    expect(f.effectiveAnnualRate).toBeCloseTo(Math.pow(cost.totalRepaid / 10_000, 365 / 30) - 1, 10);
+  });
+});
+
+describe("compareLoanProducts: one method for every row", () => {
+  it("prices short products for their own 30 days, never stretched over the reader's term", () => {
+    for (const months of [1, 6, 36]) {
+      for (const r of compareLoanProducts(50_000, months).filter((x) => x.kind === "short")) {
+        expect(r.termDays).toBe(30);
+        expect(r.monthlyPayment).toBeNull();
+        // Same cost whatever term the reader typed.
+        expect(r.totalCost).toBe(row(50_000, 1, r.name).totalCost);
+      }
     }
   });
 
-  it("labels every assumed lender rate as estimated rather than a verified quote", () => {
-    const results = compareLoanProducts(60_000, 6);
-    expect(results.length).toBeGreaterThan(0);
-    expect(results.every((product) => product.estimated)).toBe(true);
+  it("states only a floor for rolling a short product over a longer need", () => {
+    const m6 = row(10_000, 6, "M-Shwari");
+    // At least one 30-day cycle for each month needed, each costing at least the first.
+    expect(m6.rolloverFloorCost).toBe(6 * 900);
+    expect(row(10_000, 1, "M-Shwari").rolloverFloorCost).toBeNull();
   });
 
-  it("tiers SACCO as green and mobile lenders/Fuliza/M-Shwari as red", () => {
-    const results = compareLoanProducts(60_000, 6);
-    const byName = Object.fromEntries(results.map((r) => [r.name, r]));
-    expect(byName["SACCO loan (1% pm reducing)"].tier).toBe("green");
-    expect(byName["Bank personal loan (~15% p.a.)"].tier).toBe("amber");
-    expect(byName["Digital lender (Tala/Branch-style, ~15% pm flat)"].tier).toBe("red");
-    expect(byName["Fuliza (banded daily fee)"].tier).toBe("red");
-    expect(byName["M-Shwari (7.5% facility fee)"].tier).toBe("red");
-  });
-
-  it("SACCO is always the cheapest option a borrower could actually take", () => {
-    /* At Ksh 200,000 the corrected Fuliza tariff looked CHEAPER than a SACCO —
-     * a flat Ksh 25 a day does not scale with the balance. It is not cheaper,
-     * it is unavailable: Fuliza caps at Ksh 70,000. The comparison now omits
-     * rows the borrower cannot draw, which is why this test runs inside the
-     * limit and the shape test above says "when all 5 are available". */
-    const results = compareLoanProducts(60_000, 12);
-    const sacco = results.find((r) => r.name.startsWith("SACCO"))!;
-    const others = results.filter((r) => !r.name.startsWith("SACCO"));
-    for (const other of others) {
-      expect(sacco.totalInterest).toBeLessThan(other.totalInterest);
+  it("gives term loans a monthly instalment and a cost that adds up", () => {
+    for (const r of compareLoanProducts(60_000, 12).filter((x) => x.kind === "term")) {
+      expect(r.monthlyPayment).toBeGreaterThan(0);
+      expect(r.totalCost).toBeCloseTo(r.totalRepaid - r.cashReceived, 2);
     }
   });
 
-  it("Fuliza and M-Shwari have no monthly payment (short-term facility fees)", () => {
-    const results = compareLoanProducts(50_000, 3);
-    const fuliza = results.find((r) => r.name.startsWith("Fuliza"))!;
-    const mshwari = results.find((r) => r.name.startsWith("M-Shwari"))!;
-    expect(fuliza.monthlyPayment).toBeNull();
-    expect(mshwari.monthlyPayment).toBeNull();
+  it("keeps the SACCO cheapest of the term loans", () => {
+    expect(row(60_000, 12, "SACCO").totalCost).toBeLessThan(row(60_000, 12, "Bank").totalCost);
   });
 
+  it("labels every row as an illustration and says how it was priced", () => {
+    for (const r of compareLoanProducts(60_000, 6)) {
+      expect(r.estimated).toBe(true);
+      expect(r.basis.length).toBeGreaterThan(20);
+    }
+  });
+
+  it("offers Fuliza only within its KSh 70,000 limit", () => {
+    expect(compareLoanProducts(60_000, 6).some((r) => r.name === "Fuliza")).toBe(true);
+    expect(compareLoanProducts(200_000, 6).some((r) => r.name === "Fuliza")).toBe(false);
+  });
+});
+
+describe("compareLoanProducts: input guards", () => {
   it("rejects non-finite amounts, fractional months, and terms beyond engine limits", () => {
     expect(compareLoanProducts(Number.NaN, 12)).toEqual([]);
     expect(compareLoanProducts(Number.POSITIVE_INFINITY, 12)).toEqual([]);

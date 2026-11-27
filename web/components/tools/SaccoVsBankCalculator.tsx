@@ -42,6 +42,9 @@ export default function SaccoVsBankCalculator() {
     if (!Number.isSafeInteger(months) || months > MAX_TERM_MONTHS) return null;
     return compareLoanProducts(principal, months);
   }, [amount, termMonths]);
+  // The same parsed values, for the sentences beside each row.
+  const principal = positiveAmount(amount) ?? 0;
+  const months = positiveAmount(termMonths) ?? 0;
 
   const resultsRef = useScrollIntoView<HTMLDivElement>(results !== null);
 
@@ -94,36 +97,55 @@ export default function SaccoVsBankCalculator() {
             {results.map((product) => (
               <div key={product.name} className="rounded-2xl bg-white p-4 shadow-sm">
                 <div className="flex items-start justify-between gap-2">
-                  <p className="text-sm font-semibold text-primary">{product.name}</p>
                   <p className="text-sm font-semibold text-primary">
-                    ~{Math.round(product.apr * 100)}% annualised indicator
+                    {product.name}
+                    {product.kind === "short" && (
+                      <span className="ml-2 rounded-full bg-canvas px-2 py-0.5 text-xs font-normal text-ink-soft">30-day loan</span>
+                    )}
+                  </p>
+                  <p className="text-right text-sm font-semibold text-primary">
+                    {formatKES(product.totalCost)}
+                    <span className="block text-xs font-normal text-ink-soft">
+                      total cost over {product.kind === "short" ? "30 days" : `${months} month${months === 1 ? "" : "s"}`}
+                    </span>
                   </p>
                 </div>
                 <div className="mt-2 grid grid-cols-2 gap-2 text-xs text-ink-soft">
                   <p>
-                    Monthly payment:{" "}
+                    {product.kind === "short" ? "Repay in one go:" : "Monthly payment:"}{" "}
                     <span className="font-medium text-primary">
-                      {product.monthlyPayment !== null ? formatKES(product.monthlyPayment) : "N/A"}
+                      {product.monthlyPayment !== null ? formatKES(product.monthlyPayment) : formatKES(product.totalRepaid)}
                     </span>
                   </p>
                   <p>
-                    Total repaid:{" "}
-                    <span className="font-medium text-primary">{formatKES(product.totalRepaid)}</span>
+                    Effective annual rate:{" "}
+                    <span className="font-medium text-primary">{Math.round(product.effectiveAnnualRate * 100)}%</span>
                   </p>
+                  {product.cashReceived < principal && (
+                    <p className="col-span-2">
+                      You receive{" "}
+                      <span className="font-medium text-primary">{formatKES(product.cashReceived)}</span>
+                      {" "}— part of the cost is taken when the loan is paid out.
+                    </p>
+                  )}
                 </div>
-                {product.estimated && (
-                  <p className="mt-1 text-xs text-ink-soft">Illustrative assumption — obtain a current lender quotation and verify all fees.</p>
+                {product.rolloverFloorCost !== null && (
+                  <p className="mt-1 text-xs text-ink-soft">
+                    Needed for {months} months? This is not an instalment loan. Rolling it over every 30 days would cost
+                    at least <span className="font-medium text-primary">{formatKES(product.rolloverFloorCost)}</span>.
+                  </p>
                 )}
+                <p className="mt-1 text-xs text-ink-soft">{product.basis}</p>
               </div>
             ))}
           </div>
 
           <p className="text-xs text-ink-soft">
-            No colour ranking or cheapest-loan recommendation is implied. These are illustrative scenarios, not current lender offers. The annualised indicators use
-            different approximation methods and are not fee-inclusive effective APRs. SACCO and bank
-            rates exclude membership, insurance and processing costs. Fuliza and M-Shwari are short-term
-            facilities; extending their fees across the selected term does not represent an available
-            instalment loan or predict the cost of repeated rollovers.
+            Total cost is what you pay beyond the cash you receive, the Total Cost of Credit lenders must
+            disclose. Every effective annual rate is worked out the same way, compounded, on the cash you
+            actually receive, so the rows can be compared. These are illustrative product types, not
+            current offers, and they leave out fees only a lender can quote (membership, insurance,
+            processing). Fuliza, M-Shwari and app loans are 30-day loans and are shown for 30 days.
           </p>
 
           <details className="rounded-2xl bg-white p-4 shadow-sm text-sm text-ink-soft">
