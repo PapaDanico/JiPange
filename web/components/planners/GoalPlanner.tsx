@@ -19,6 +19,7 @@ import {
   asShareOfIncome,
 } from "@/lib/retirement-evidence";
 import { inflationAdjust } from "@/lib/projections";
+import { educationPrefill } from "@/lib/planner-prefill";
 import { getStoredCalculations, getStoredGoals, getStoredProfile, saveStoredGoal } from "@/lib/storage";
 import type { GoalStrategy } from "@/lib/types";
 import { useCountUp } from "@/hooks/useCountUp";
@@ -182,6 +183,7 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
   const [capacityFromProfile, setCapacityFromProfile] = useState(false);
   /** Ksh/mo already committed to the reader's OTHER goals, so unavailable to this one. */
   const [claimedByOthers, setClaimedByOthers] = useState(0);
+  const [feeFromNjia, setFeeFromNjia] = useState(false);
 
   /* Each is stamped with the inputs it was produced for (see `inputsKey`),
    * rather than cleared by an effect when those inputs change. */
@@ -218,6 +220,15 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
       // Their real spending: take-home minus what they can save.
       const spending = Math.round(stored.netMonthly - stored.savingsCapacity);
       if (spending > 0) setExpenses(String(spending));
+    }
+    if (isChildrenBuilder) {
+      // A fee handed over in the link (Njia's course cards send one). See
+      // lib/planner-prefill.ts for what is accepted and why.
+      const prefill = educationPrefill(window.location.search, maxYears);
+      if (prefill) {
+        setChildren([{ age: "", amount: prefill.amount, years: prefill.years, stageLabel: null }]);
+        setFeeFromNjia(prefill.fromNjia);
+      }
     }
     if (config.retireAtAge !== undefined) {
       const profile = getStoredProfile();
@@ -441,6 +452,25 @@ export default function GoalPlanner({ config }: { config: GoalConfig }) {
         {/* Children builder (education) */}
         {isChildrenBuilder && (
           <div className="space-y-4">
+            {feeFromNjia && (
+              <p className="rounded-xl bg-canvas p-3 text-xs text-ink-soft">
+                The fee below was carried over from{" "}
+                <a href="https://njiacareerpathways.work/" target="_blank" rel="noopener noreferrer" className="underline hover:text-primary">
+                  Njia
+                </a>
+                . It is tuition only: check it against the institution&apos;s fee letter, and add
+                accommodation and upkeep if the student will live away from home.
+              </p>
+            )}
+            {!feeFromNjia && (
+              <p className="text-xs text-faint">
+                Planning for college or university after school? Our sister tool{" "}
+                <a href="https://njiacareerpathways.work/" target="_blank" rel="noopener noreferrer" className="underline hover:text-primary">
+                  Njia
+                </a>{" "}
+                compares courses, entry grades and sourced fees, and can bring a fee back here.
+              </p>
+            )}
             {children.map((child, index) => (
               <div key={index} className="rounded-xl border border-border p-4">
                 <div className="flex items-center justify-between">
