@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/Link";
 import PrintLetterhead from "./PrintLetterhead";
 import ExportableSection from "./ExportableSection";
 import ToolInsights from "./ToolInsights";

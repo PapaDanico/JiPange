@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/Link";
 import { TBILL_RATES } from "@/lib/rates-feed";
 
 const fmt = (iso: string) =>

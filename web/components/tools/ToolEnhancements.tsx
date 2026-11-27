@@ -2,7 +2,7 @@
 
 import ToolIcon from "@/components/tools/ToolIcon";
 import { useEffect, useState } from "react";
-import Link from "next/link";
+import Link from "@/components/Link";
 import { usePathname } from "next/navigation";
 import { TOOL_META, recordToolVisit } from "@/lib/tool-meta";
 

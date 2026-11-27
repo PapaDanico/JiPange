@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import Link from "@/components/Link";
 import { GLOSSARY, GLOSSARY_TOPICS, glossaryByTopic } from "@/lib/glossary";
 import JsonLd from "@/components/seo/JsonLd";
 import { breadcrumbJsonLd, glossaryJsonLd } from "@/lib/structured-data";

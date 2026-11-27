@@ -1,7 +1,7 @@
 "use client";
 
 import ToolIcon from "@/components/tools/ToolIcon";
-import Link from "next/link";
+import Link from "@/components/Link";
 import { TOOL_META, getRecentTools } from "@/lib/tool-meta";
 import { useStorageValue } from "@/lib/hooks";
 

@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/Link";
 import { getStoredProfile, getStoredJourneyAnswers } from "@/lib/storage";
 import { useStorageValue } from "@/lib/hooks";
 

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/Link";
 import { PESA_SMART_CHANNEL, PESA_SMART_NAME } from "@/lib/channel";
 
 const COLUMNS: { heading: string; links: { href: string; label: string }[] }[] = [

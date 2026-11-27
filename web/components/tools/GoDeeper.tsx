@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/Link";
 
 /**
  * A handoff from a JiPange calculator to the sister tool that goes deeper on

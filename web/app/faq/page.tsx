@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import Link from "@/components/Link";
 import { FAQS, FAQ_TOPICS, faqsByTopic } from "@/lib/faqs";
 import JsonLd from "@/components/seo/JsonLd";
 import { breadcrumbJsonLd, faqPageJsonLd } from "@/lib/structured-data";

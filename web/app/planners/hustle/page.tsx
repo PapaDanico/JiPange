@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import Link from "@/components/Link";
 import HustleSmoother from "@/components/planners/HustleSmoother";
 import HustleIncomeSmootherCalculator from "@/components/tools/HustleIncomeSmootherCalculator";
 import ReportError from "@/components/tools/ReportError";

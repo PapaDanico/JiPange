@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import Link from "next/link";
+import Link from "@/components/Link";
 import { computeReadiness, type IndicatorStatus, type ReadinessIndicator } from "@/lib/readiness";
 import { getStoredCalculations, getStoredGoals, getStoredJourneyAnswers } from "@/lib/storage";
 import { useStorageValue } from "@/lib/hooks";

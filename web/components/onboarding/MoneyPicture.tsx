@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
+import Link from "@/components/Link";
 import dynamic from "next/dynamic";
 import { getStoredProfile, setStoredCalculations } from "@/lib/storage";
 import { useStorageValue } from "@/lib/hooks";
