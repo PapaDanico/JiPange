@@ -70,6 +70,12 @@ or unrecognised, never a default. It is distinct from freshness: the two can sit
 together. A route not read from the primary document uses `accent-ink` on
 `accent-soft` (5.60:1); the rest use `muted` with a `canvas` border (6.08:1).
 
+Decision (28 Nov 2026): the route badge appears on the DhowCSD ladder note and as a
+line on the About page, not on the passbook. The passbook already carries publisher
+and date, and a badge there would add noise to the page's one dark surface, whose
+colours the badge tokens (built for light surfaces) do not fit. Revisit only if the
+passbook stops showing its publisher.
+
 Never use raw `accent` as small text; on the passbook (`shell`) it is a figure
 colour (6.31:1).
 
