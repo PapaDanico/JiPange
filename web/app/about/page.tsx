@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "@/components/Link";
 import { attributionFor } from "@/lib/statutes";
 import { TOOL_META } from "@/lib/tool-meta";
-import { attribution, inflationAttribution } from "@/lib/rates-feed";
+import { attribution, inflationAttribution, tbillRoute } from "@/lib/rates-feed";
 import { CBK_BSAR_2025_CITE } from "@/lib/kenya-stats";
 
 export const metadata: Metadata = {
@@ -41,7 +41,9 @@ const STANDARD = [
 
 export default function AboutPage() {
   const sources = [
-    `Treasury bill yields — ${attribution()}, shown after withholding tax`,
+    `Treasury bill yields — ${attribution()}, shown after withholding tax${
+      tbillRoute() ? `. Source route: ${tbillRoute()?.label}` : ""
+    }`,
     `Inflation — ${inflationAttribution()}`,
     `Banking-sector rates, deposits, lending and mobile money — ${CBK_BSAR_2025_CITE}`,
     `PAYE bands and personal relief — ${attributionFor("paye")}`,
